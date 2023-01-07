@@ -10,7 +10,8 @@ namespace Botticelli.Framework.Extensions
         public static IServiceCollection AddTelegramBot(this IServiceCollection services, BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
         {
             var settings = optionsBuilder.Build();
-            services.AddSingleton<ITelegramBotClient, TelegramBotClient>(sp => new TelegramBotClient(settings.TelegramToken))
+            services.AddSingleton<ITelegramBotClient, TelegramBotClient>(sp =>
+                new TelegramBotClient(settings.TelegramToken));
             services.AddSingleton(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>()));
 
             return services;

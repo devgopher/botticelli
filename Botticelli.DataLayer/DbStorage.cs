@@ -3,19 +3,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Botticelli.DataLayer
 {
-    public class DbStorage<T,  TId> : IStorage<T, TId>
+    /// <summary>
+    /// Database storage
+    /// </summary>
+    /// <typeparam name="T">Entity type</typeparam>
+    /// <typeparam name="TId">ID type</typeparam>
+    public class DbStorage<T, TId> : IStorage<T, TId>
         where T : class
     {
         private readonly DbContext _context;
 
-        public DbStorage(DbContext context)
-        {
-            _context = context;
-        }
+        public DbStorage(DbContext context) => _context = context;
 
         public T Get(TId id) => _context.Find<T>(id);
 
-        public ICollection<T> Get(Func<T, bool> filter) 
+        public ICollection<T> Get(Func<T, bool> filter)
             => _context.Set<T>().Where(filter).ToList();
 
         public void Add(params T[] entites)

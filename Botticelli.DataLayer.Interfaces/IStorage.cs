@@ -1,5 +1,10 @@
 ﻿namespace Botticelli.DataLayer.Interfaces
 {
+    /// <summary>
+    /// Interface of storage
+    /// </summary>
+    /// <typeparam name="T">Entity type</typeparam>
+    /// <typeparam name="TId">ID type</typeparam>
     public interface IStorage<T, in TId>
     where T : class
     {
