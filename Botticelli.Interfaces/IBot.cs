@@ -1,5 +1,9 @@
 ﻿namespace Botticelli.Interfaces;
 
-public interface IBot : IEventBasedBotAdminApi, IEventBasedBotClientApi
+/// <summary>
+/// Common interface for bots
+/// </summary>
+public interface IBot<T> : IEventBasedBotAdminApi, IEventBasedBotClientApi
+    where T: IBot<T>
 {
 }

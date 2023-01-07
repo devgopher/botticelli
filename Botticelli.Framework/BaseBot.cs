@@ -7,32 +7,31 @@ using Botticelli.Shared.API.Client.Responses;
 
 namespace Botticelli.Framework;
 
-public abstract class BaseBot<T> : IBot
+/// <summary>
+///     A base class for bot
+/// </summary>
+/// <typeparam name="T"></typeparam>
+public abstract class BaseBot<T> : IBot<T>
     where T : BaseBot<T>
 {
-    private readonly IList<IAdminResponseProcessor> _adminProcessors = new List<IAdminResponseProcessor>();
-    private readonly IList<IClientResponseProcessor> _clientProcessors = new List<IClientResponseProcessor>();
+    private readonly IList<IAdminRequestProcessor> _adminProcessors = new List<IAdminRequestProcessor>();
+    private readonly IList<IClientRequestProcessor> _clientProcessors = new List<IClientRequestProcessor>();
 
     private readonly ManualResetEventSlim _startEventSlim = new(false);
-
-    public BaseBot()
-    {
-        ProcessAsync();
-    }
 
     public async Task<PingResponse> PingAsync(PingRequest request)
     {
         return PingResponse.GetInstance(request.Uid);
     }
 
-    public void AddAdminEventProcessor(IAdminResponseProcessor responseProcessor)
+    public void AddAdminEventProcessor(IAdminRequestProcessor requestProcessor)
     {
-        _adminProcessors.Add(responseProcessor);
+        _adminProcessors.Add(requestProcessor);
     }
 
-    public void AddClientEventProcessor(IClientResponseProcessor responseProcessor)
+    public void AddClientEventProcessor(IClientRequestProcessor requestProcessor)
     {
-        _clientProcessors.Add(responseProcessor);
+        _clientProcessors.Add(requestProcessor);
     }
 
     public async Task<StartBotResponse> StartBotAsync(StartBotRequest request)
@@ -73,31 +72,46 @@ public abstract class BaseBot<T> : IBot
         return response;
     }
 
+    /// <summary>
+    ///     Sends a message
+    /// </summary>
+    /// <param name="request">Request</param>
+    /// <returns></returns>
     public abstract Task<SendMessageResponse> SendAsync(SendMessageRequest request);
 
     /// <summary>
-    ///     Processes responses
+    ///     Processes requests
     /// </summary>
-    /// <param name="response"></param>
-    protected void ProcessAsync(BaseResponse response)
+    /// <param name="request"></param>
+    /// <param name="token"></param>
+    protected void ProcessAsync(BaseRequest request, CancellationToken token)
     {
         while (true)
         {
-            var clientTasks = _clientProcessors.Select(p => ProcessForTask(p, response));
-            var adminTasks = _adminProcessors.Select(p => ProcessForTask(p, response));
+            if (token is { CanBeCanceled: true, IsCancellationRequested: true })
+                break;
+
+            var clientTasks = _clientProcessors.Select(p => ProcessForProcessor(p, request, token));
+            var adminTasks = _adminProcessors.Select(p => ProcessForProcessor(p, request, token));
             var allTasks = clientTasks.Union(adminTasks);
 
             Task.WhenAll(allTasks);
         }
     }
 
-
-    private Task ProcessForTask(IResponseProcessor processor, BaseResponse response)
+    /// <summary>
+    /// Request processing for a particular processor
+    /// </summary>
+    /// <param name="processor"></param>
+    /// <param name="request"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    private Task ProcessForProcessor(IRequestProcessor processor, BaseRequest request, CancellationToken token)
     {
         return Task.Run(() =>
         {
-            _startEventSlim.Wait();
-            processor.ProcessAsync(response);
-        });
+            _startEventSlim.Wait(token);
+            processor.ProcessAsync(request, token);
+        }, token);
     }
 }

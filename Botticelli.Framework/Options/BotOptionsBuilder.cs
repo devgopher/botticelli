@@ -11,8 +11,5 @@ public class BotOptionsBuilder<T>
         return this;
     }
 
-    public T Build()
-    {
-        return _settings;
-    }
+    public T Build() => _settings;
 }

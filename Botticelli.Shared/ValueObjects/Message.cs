@@ -16,6 +16,11 @@ public class Message
     public string Uid { get; }
 
     /// <summary>
+    /// Chat id
+    /// </summary>
+    public string ChatId { get; }
+
+    /// <summary>
     ///     Message subj
     /// </summary>
     public string? Subject { get; }

@@ -2,7 +2,7 @@
 
 public class PingResponse : BaseResponse<PingResponse>
 {
-    protected PingResponse(string uid) : base(uid)
+    protected PingResponse(string uid) : base(uid, string.Empty)
     {
     }
 

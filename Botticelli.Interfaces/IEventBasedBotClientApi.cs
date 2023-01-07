@@ -7,5 +7,5 @@ public interface IEventBasedBotClientApi
 {
     public Task<SendMessageResponse> SendAsync(SendMessageRequest request);
 
-    public void AddClientEventProcessor(IClientResponseProcessor responseProcessor);
+    public void AddClientEventProcessor(IClientRequestProcessor requestProcessor);
 }
