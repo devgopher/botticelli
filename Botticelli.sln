@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Serialization", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework", "Botticelli.Framework\Botticelli.Framework.csproj", "{B620052D-DA8D-42F6-ACC8-6228B1840A23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.DataLayer.Interfaces", "Botticelli.DataLayer.Interfaces\Botticelli.DataLayer.Interfaces.csproj", "{CE76D182-375D-4CB9-A322-B40F11A59F11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.DataLayer", "Botticelli.DataLayer\Botticelli.DataLayer.csproj", "{5762C12F-EA6B-46EB-9B2A-B34ECD0C9848}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{B620052D-DA8D-42F6-ACC8-6228B1840A23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B620052D-DA8D-42F6-ACC8-6228B1840A23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B620052D-DA8D-42F6-ACC8-6228B1840A23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE76D182-375D-4CB9-A322-B40F11A59F11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE76D182-375D-4CB9-A322-B40F11A59F11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE76D182-375D-4CB9-A322-B40F11A59F11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE76D182-375D-4CB9-A322-B40F11A59F11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5762C12F-EA6B-46EB-9B2A-B34ECD0C9848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5762C12F-EA6B-46EB-9B2A-B34ECD0C9848}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5762C12F-EA6B-46EB-9B2A-B34ECD0C9848}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5762C12F-EA6B-46EB-9B2A-B34ECD0C9848}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +67,8 @@ Global
 		{B1EEED03-3863-4673-8690-8A89912AA865} = {41AA926F-88C1-4FC4-8F04-6FBA3CA6C741}
 		{C8E2C2FB-FC08-444A-B285-57F2986637A3} = {41AA926F-88C1-4FC4-8F04-6FBA3CA6C741}
 		{B620052D-DA8D-42F6-ACC8-6228B1840A23} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
+		{CE76D182-375D-4CB9-A322-B40F11A59F11} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
+		{5762C12F-EA6B-46EB-9B2A-B34ECD0C9848} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
