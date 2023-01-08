@@ -11,10 +11,29 @@ namespace Botticelli.DataLayer.Extensions
     /// </summary>
     public static class ServiceExtensions
     {
+        /// <summary>
+        /// Adds a storage for chats
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="dbFunc"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
         public static IServiceCollection AddChatStorage(this IServiceCollection services,
             Action<DbContextOptionsBuilder, StorageSettings> dbFunc,
             IConfiguration config)
-            => AddStorage<ChatContext>(services, dbFunc, config);
+            => AddStorage<BotticelliContext>(services, dbFunc, config);
+
+        /// <summary>
+        /// Adds a storage for messages
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="dbFunc"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddMessageStorage(this IServiceCollection services,
+            Action<DbContextOptionsBuilder, StorageSettings> dbFunc,
+            IConfiguration config)
+            => AddStorage<BotticelliContext>(services, dbFunc, config);
 
         /// <summary>
         /// Adds a new storage

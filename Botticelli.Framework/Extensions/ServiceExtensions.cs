@@ -9,6 +9,12 @@ namespace Botticelli.Framework.Extensions
 {
     public static class ServiceExtensions
     {
+        /// <summary>
+        /// Adds a Telegram bot
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="optionsBuilder"></param>
+        /// <returns></returns>
         public static IServiceCollection AddTelegramBot(this IServiceCollection services, BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
         {
             var settings = optionsBuilder.Build();

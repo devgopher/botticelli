@@ -8,7 +8,7 @@ namespace Botticelli.DataLayer;
 /// </summary>
 public class MessageStorage : DbStorage<Chat, string>
 {
-    public MessageStorage(ChatContext context) : base(context)
+    public MessageStorage(BotticelliContext context) : base(context)
     {
     }
 }
