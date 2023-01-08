@@ -15,23 +15,23 @@ public interface IEventBasedBotAdminApi
     /// <returns></returns>
     public Task<PingResponse> PingAsync(PingRequest request);
 
-    /// <summary>
-    /// Adds event processor
-    /// </summary>
-    /// <param name="requestProcessor"></param>
-    public void AddAdminEventProcessor(IAdminRequestProcessor requestProcessor);
+    ///// <summary>
+    ///// Adds event processor
+    ///// </summary>
+    ///// <param name="messageProcessor"></param>
+    //public void AddAdminEventProcessor(IAdminMessageProcessor messageProcessor);
 
     /// <summary>
     /// Starts serving
     /// </summary>
     /// <param name="request">Request</param>
     /// <returns></returns>
-    public Task<StartBotResponse> StartBotAsync(StartBotRequest request);
+    public Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token);
 
     /// <summary>
     /// Stops serving
     /// </summary>
     /// <param name="request">Request</param>
     /// <returns></returns>
-    public Task<StopBotResponse> StopBotAsync(StopBotRequest request);
+    public Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token);
 }

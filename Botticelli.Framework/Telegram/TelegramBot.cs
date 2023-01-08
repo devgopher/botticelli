@@ -1,10 +1,14 @@
 ﻿using Botticelli.Framework.Exceptions;
 using Botticelli.Shared.API;
+using Botticelli.Shared.API.Admin.Requests;
+using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.Utils;
+using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
+using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 
@@ -13,14 +17,16 @@ namespace Botticelli.Framework.Telegram
     public class TelegramBot : BaseBot<TelegramBot>
     {
         private readonly ITelegramBotClient _client;
+        private readonly IServiceProvider _sp;
 
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="client"></param>
-        public TelegramBot(ITelegramBotClient client)
+        public TelegramBot(ITelegramBotClient client, IServiceCollection services)
         {
             _client = client;
+            _sp = services.BuildServiceProvider();
         }
 
         /// <summary>
@@ -30,7 +36,7 @@ namespace Botticelli.Framework.Telegram
         /// <returns></returns>
         /// <exception cref="BotException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public override async Task<SendMessageResponse> SendAsync(SendMessageRequest request)
+        public override async Task<SendMessageResponse> SendAsync(SendMessageRequest request, CancellationToken token)
         {
 
             SendMessageResponse response = new(request.Uid, string.Empty);
@@ -42,7 +48,7 @@ namespace Botticelli.Framework.Telegram
                 var text = $"{request.Message.Subject} {request.Message.Body}";
                 if (!string.IsNullOrWhiteSpace(text))
                 {
-                    await _client.SendTextMessageAsync(request.Message.ChatId, text, ParseMode.MarkdownV2);
+                    await _client.SendTextMessageAsync(request.Message.ChatId, text, ParseMode.MarkdownV2, cancellationToken:token);
                 }
 
                 if (request.Message.Attachments != null)
@@ -54,11 +60,11 @@ namespace Botticelli.Framework.Telegram
                             case MediaType.Audio:
                                 var audio = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
                                 await _client.SendAudioAsync(request.Message.ChatId, audio, request.Message.Subject,
-                                    ParseMode.MarkdownV2);
+                                    ParseMode.MarkdownV2, cancellationToken:token);
                                 break;
                             case MediaType.Video:
                                 var video = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
-                                await _client.SendVideoAsync(request.Message.ChatId, video);
+                                await _client.SendVideoAsync(request.Message.ChatId, video, cancellationToken:token);
                                 break;
                             case MediaType.Text:
                                 // nothing to do
@@ -66,7 +72,7 @@ namespace Botticelli.Framework.Telegram
                             case MediaType.Voice:
                                 var voice = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
                                 await _client.SendVoiceAsync(request.Message.ChatId, voice, request.Message.Subject,
-                                    ParseMode.MarkdownV2);
+                                    ParseMode.MarkdownV2, cancellationToken:token);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -80,6 +86,26 @@ namespace Botticelli.Framework.Telegram
             {
                 response.MessageSentStatus = MessageSentStatus.FAIL;
             }
+
+            return response;
+        }
+
+        public override async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
+        {
+            var response =  await base.StartBotAsync(request, token);
+
+            if (response.Status == AdminCommandStatus.OK) 
+               _client.StartReceiving(_sp.GetRequiredService<IUpdateHandler>(), cancellationToken: token);
+
+            return response;
+        }
+
+        public override async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
+        {
+            var response = await base.StopBotAsync(request, token);
+
+            if (response.Status == AdminCommandStatus.OK)
+                await _client.CloseAsync(cancellationToken: token);
 
             return response;
         }

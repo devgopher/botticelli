@@ -3,6 +3,6 @@
 /// <summary>
 /// Administration request processor
 /// </summary>
-public interface IAdminRequestProcessor : IRequestProcessor
-{
-}
+//public interface IAdminMessageProcessor : IMessageProcessor
+//{
+//}

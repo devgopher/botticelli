@@ -12,17 +12,25 @@ namespace Botticelli.DataLayer.Extensions
     public static class ServiceExtensions
     {
         public static IServiceCollection AddChatStorage(this IServiceCollection services,
-            Action<DbContextOptionsBuilder> dbFunc,
+            Action<DbContextOptionsBuilder, StorageSettings> dbFunc,
             IConfiguration config)
             => AddStorage<ChatContext>(services, dbFunc, config);
 
+        /// <summary>
+        /// Adds a new storage
+        /// </summary>
+        /// <typeparam name="TContext"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="dbFunc"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
         public static IServiceCollection AddStorage<TContext>(this IServiceCollection services,
-            Action<DbContextOptionsBuilder> dbFunc,
+            Action<DbContextOptionsBuilder, StorageSettings> dbFunc,
             IConfiguration config)
         where TContext : DbContext
         {
             var settings = config.Get<StorageSettings>();
-            services.AddDbContext<TContext>(o => dbFunc(o));
+            services.AddDbContext<TContext>(o => dbFunc(o, settings));
 
             return services;
         }

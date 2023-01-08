@@ -3,6 +3,6 @@
 /// <summary>
 /// Client API request processor
 /// </summary>
-public interface IClientRequestProcessor : IRequestProcessor
+public interface IClientMessageProcessor : IMessageProcessor
 {
 }

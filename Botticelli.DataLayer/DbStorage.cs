@@ -15,10 +15,10 @@ namespace Botticelli.DataLayer
 
         public DbStorage(DbContext context) => _context = context;
 
-        public T Get(TId id) => _context.Find<T>(id);
+        public T? Get(TId id) => _context.Find<T>(id);
 
-        public ICollection<T> Get(Func<T, bool> filter)
-            => _context.Set<T>().Where(filter).ToList();
+        public ICollection<T>? Get(Func<T, bool> filter)
+            => _context.Set<T>()?.Where(filter).ToList();
 
         public void Add(params T[] entites)
             => _context.AddRange(entites);
@@ -26,7 +26,7 @@ namespace Botticelli.DataLayer
         public void Remove(TId id)
         {
             var entity = Get(id);
-            if (entity != default)
+            if (entity == default)
                 return;
 
             Remove(entity);
