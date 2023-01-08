@@ -6,7 +6,7 @@ public class StartBotRequest : BaseRequest<StartBotRequest>
     {
     }
 
-    public override StartBotRequest GetInstance()
+    public static StartBotRequest GetInstance()
     {
         return new(Utils.Uid.GenerateShortUid());
     }

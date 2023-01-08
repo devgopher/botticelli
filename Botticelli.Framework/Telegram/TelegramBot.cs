@@ -66,6 +66,10 @@ namespace Botticelli.Framework.Telegram
                                 var video = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
                                 await _client.SendVideoAsync(request.Message.ChatId, video, cancellationToken:token);
                                 break;
+                            case MediaType.Image:
+                                var image = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                await _client.SendPhotoAsync(request.Message.ChatId, image, cancellationToken: token);
+                                break;
                             case MediaType.Text:
                                 // nothing to do
                                 break;

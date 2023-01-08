@@ -5,6 +5,7 @@
         Audio,
         Video,
         Text,
-        Voice
+        Voice,
+        Image
     }
 }

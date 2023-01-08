@@ -10,7 +10,7 @@ public class SendMessageRequest : BaseRequest<SendMessageRequest>
 
     public Message Message { get; set; }
 
-    public override SendMessageRequest GetInstance()
+    public static SendMessageRequest GetInstance()
     {
         return new(Utils.Uid.GenerateShortUid());
     }

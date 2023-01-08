@@ -1,11 +1,10 @@
-﻿using System.Net.Mime;
-using Botticelli.Shared.Constants;
+﻿using Botticelli.Shared.Constants;
 
 namespace Botticelli.Shared.ValueObjects;
 
 public class BinaryAttachment
 {
-    protected BinaryAttachment(string uid, string name, MediaType mediaType, byte[] data)
+   public BinaryAttachment(string uid, string name, MediaType mediaType, byte[] data)
     {
         Uid = uid;
         Name = name;

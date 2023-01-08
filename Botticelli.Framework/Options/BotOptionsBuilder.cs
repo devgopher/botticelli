@@ -5,9 +5,9 @@ public class BotOptionsBuilder<T>
 {
     private readonly T _settings = new();
 
-    public BotOptionsBuilder<T> Set(Func<T> func)
+    public BotOptionsBuilder<T> Set(Action<T> func)
     {
-        func();
+        func(_settings);
         return this;
     }
 

@@ -6,7 +6,7 @@ public class PingRequest : BaseRequest<PingRequest>
     {
     }
 
-    public override PingRequest GetInstance()
+    public static PingRequest GetInstance()
     {
         return new(Utils.Uid.GenerateShortUid());
     }

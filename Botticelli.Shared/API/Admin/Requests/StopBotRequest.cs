@@ -6,7 +6,7 @@ public class StopBotRequest : BaseRequest<StopBotRequest>
     {
     }
 
-    public override StopBotRequest GetInstance()
+    public static StopBotRequest GetInstance()
     {
         return new(Utils.Uid.GenerateShortUid());
     }

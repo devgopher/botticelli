@@ -7,8 +7,6 @@ public abstract class BaseRequest<T> : BaseRequest
         : base(uid)
     {
     }
-
-    public abstract T GetInstance();
 }
 
 public abstract class BaseRequest
