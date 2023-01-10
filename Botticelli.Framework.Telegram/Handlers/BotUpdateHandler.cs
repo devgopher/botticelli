@@ -5,7 +5,7 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Message = Botticelli.Shared.ValueObjects.Message;
 
-namespace Botticelli.Framework.Handlers
+namespace Botticelli.Framework.Telegram.Handlers
 {
     public class BotUpdateHandler : IUpdateHandler
     {

@@ -1,13 +1,12 @@
-﻿using Botticelli.Framework.Handlers;
-using Botticelli.Framework.HostedService;
-using Botticelli.Framework.Options;
-using Botticelli.Framework.Telegram;
+﻿using Botticelli.Framework.Options;
+using Botticelli.Framework.Telegram.Handlers;
+using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 
-namespace Botticelli.Framework.Extensions
+namespace Botticelli.Framework.Telegram.Extensions
 {
     public static class ServiceExtensions
     {
@@ -24,7 +23,7 @@ namespace Botticelli.Framework.Extensions
                 new TelegramBotClient(settings.TelegramToken));
             services.AddSingleton(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services));
             services.AddSingleton<IBot<TelegramBot>, TelegramBot>(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services));
-            services.AddHostedService<BotHostedService<IBot<TelegramBot>>>();
+            services.AddHostedService<Telegram.HostedService.TelegramBotHostedService>();
 
             services.AddSingleton<IUpdateHandler, BotUpdateHandler>();
             return services;

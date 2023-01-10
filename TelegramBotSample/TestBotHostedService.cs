@@ -1,10 +1,9 @@
 ﻿using Botticelli.Framework.Telegram;
+using Botticelli.Framework.Viber;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
-using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.Constants;
-using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
 using Newtonsoft.Json;
 
@@ -12,9 +11,14 @@ namespace TelegramBotSample
 {
     public class TestBotHostedService : IHostedService
     {
-        private readonly IBot<TelegramBot> _bot;
+        private readonly IBot<TelegramBot> _telegramBot;
+        private readonly IBot<ViberBot> _viberBot;
 
-        public TestBotHostedService(IBot<TelegramBot> bot) => _bot = bot;
+        public TestBotHostedService(IBot<TelegramBot> telegramBot, IBot<ViberBot> viberBot)
+        {
+            _telegramBot = telegramBot;
+            _viberBot = viberBot;
+        }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -49,13 +53,30 @@ namespace TelegramBotSample
             var req = SendMessageRequest.GetInstance();
             req.Message = msg;
 
-            var sentResponse = await _bot.SendAsync(req, CancellationToken.None);
+          //  await SendTelegramMessage(req);
+            await SendViberMessage(req);
+        }
+
+        private async Task SendTelegramMessage(SendMessageRequest req)
+        {
+            var sentResponse = await _telegramBot.SendAsync(req, CancellationToken.None);
 
             Console.WriteLine($"msg sent: {sentResponse.MessageSentStatus}");
 
             if (sentResponse.MessageSentStatus == MessageSentStatus.FAIL)
                 return;
         }
+
+        private async Task SendViberMessage(SendMessageRequest req)
+        {
+            var sentResponse = await _viberBot.SendAsync(req, CancellationToken.None);
+
+            Console.WriteLine($"msg sent: {sentResponse.MessageSentStatus}");
+
+            if (sentResponse.MessageSentStatus == MessageSentStatus.FAIL)
+                return;
+        }
+
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
