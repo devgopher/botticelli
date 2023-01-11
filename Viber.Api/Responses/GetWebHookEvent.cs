@@ -7,7 +7,7 @@ namespace Viber.Api.Responses
     public class GetWebHookEvent
     {
         [JsonPropertyName("event")]
-        public string Event { get; set; }
+        public string? Event { get; set; }
 
         [JsonPropertyName("timestamp")]
         public long Timestamp { get; set; }
@@ -16,15 +16,15 @@ namespace Viber.Api.Responses
         public long MessageToken { get; set; }
 
         [JsonPropertyName("user_id")]
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         [JsonPropertyName("desc")]
-        public string Desc { get; set; }
+        public string? Desc { get; set; }
 
         [JsonPropertyName("sender")]
-        public MessageSender Sender { get; set; }
+        public MessageSender? Sender { get; set; }
 
         [JsonPropertyName("message")]
-        public Message Message { get; set; }
+        public Message? Message { get; set; }
     }
 }

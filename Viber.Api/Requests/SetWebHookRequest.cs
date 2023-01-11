@@ -6,10 +6,10 @@ namespace Viber.Api.Requests
     public class SetWebHookRequest : BaseRequest
     {
         [JsonPropertyName("url")]
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         [JsonPropertyName("event_types")]
-        public List<string> EventTypes { get; set; }
+        public List<string>? EventTypes { get; set; }
 
         [JsonPropertyName("send_name")]
         public bool SendName { get; set; }

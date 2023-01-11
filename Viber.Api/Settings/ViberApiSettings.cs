@@ -2,8 +2,8 @@
 {
     public class ViberApiSettings
     {
-        public string RemoteUrl { get; set; }
-        public string HookUrl { get; set; }
-        public string ViberToken { get; set; }
+        public string? RemoteUrl { get; set; }
+        public string? HookUrl { get; set; }
+        public string? ViberToken { get; set; }
     }
 }

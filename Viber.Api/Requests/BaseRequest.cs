@@ -5,6 +5,6 @@ namespace Viber.Api.Requests
     public abstract class BaseRequest
     {
         [JsonPropertyName("auth_token")]
-        public string AuthToken { get; set; }
+        public string? AuthToken { get; set; }
     }
 }

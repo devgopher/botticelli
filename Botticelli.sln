@@ -39,7 +39,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Telegr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Viber", "Botticelli.Framework.Viber\Botticelli.Framework.Viber.csproj", "{FE6FFA3D-820C-4E24-949E-DD28F09FA824}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viber.Api", "Viber.Api\Viber.Api.csproj", "{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Viber.Api", "Viber.Api\Viber.Api.csproj", "{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Container", "Botticelli.Container\Botticelli.Container.csproj", "{E927BFAF-688D-4AB3-A34F-DC209AB55487}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +105,10 @@ Global
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E927BFAF-688D-4AB3-A34F-DC209AB55487}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E927BFAF-688D-4AB3-A34F-DC209AB55487}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E927BFAF-688D-4AB3-A34F-DC209AB55487}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E927BFAF-688D-4AB3-A34F-DC209AB55487}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +127,7 @@ Global
 		{71008870-2212-4A74-8777-B5B268C27911} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{FE6FFA3D-820C-4E24-949E-DD28F09FA824} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
+		{E927BFAF-688D-4AB3-A34F-DC209AB55487} = {A05D5A20-E0D3-4844-8311-C98E8B67DA7F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
