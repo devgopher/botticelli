@@ -53,8 +53,8 @@ namespace TelegramBotSample
             var req = SendMessageRequest.GetInstance();
             req.Message = msg;
 
-          //  await SendTelegramMessage(req);
-            await SendViberMessage(req);
+            await SendTelegramMessage(req);
+          //  await SendViberMessage(req);
         }
 
         private async Task SendTelegramMessage(SendMessageRequest req)

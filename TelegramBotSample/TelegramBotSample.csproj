@@ -17,6 +17,7 @@
     <Folder Include="Media\" />
   </ItemGroup>
 
+
   <ItemGroup>
     <None Update="Media\testpic.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli", "Botticelli\Botticelli.csproj", "{36B50C90-9C92-42D8-AB33-F7726A528233}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Server", "Botticelli\Botticelli.Server.csproj", "{36B50C90-9C92-42D8-AB33-F7726A528233}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Admin", "Admin", "{A05D5A20-E0D3-4844-8311-C98E8B67DA7F}"
 EndProject
@@ -41,7 +41,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Viber"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Viber.Api", "Viber.Api\Viber.Api.csproj", "{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Container", "Botticelli.Container\Botticelli.Container.csproj", "{E927BFAF-688D-4AB3-A34F-DC209AB55487}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.API", "Botticelli.API", "{460FBEED-CF76-47AE-8252-77D091A59A80}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.BotBase", "Botticelli.API\Botticelli.BotBase.csproj", "{E9FB2EC3-6C4F-4886-AFED-A2518733CF2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,10 +107,10 @@ Global
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E927BFAF-688D-4AB3-A34F-DC209AB55487}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E927BFAF-688D-4AB3-A34F-DC209AB55487}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E927BFAF-688D-4AB3-A34F-DC209AB55487}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E927BFAF-688D-4AB3-A34F-DC209AB55487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9FB2EC3-6C4F-4886-AFED-A2518733CF2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9FB2EC3-6C4F-4886-AFED-A2518733CF2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9FB2EC3-6C4F-4886-AFED-A2518733CF2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9FB2EC3-6C4F-4886-AFED-A2518733CF2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,7 +129,7 @@ Global
 		{71008870-2212-4A74-8777-B5B268C27911} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{FE6FFA3D-820C-4E24-949E-DD28F09FA824} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
-		{E927BFAF-688D-4AB3-A34F-DC209AB55487} = {A05D5A20-E0D3-4844-8311-C98E8B67DA7F}
+		{E9FB2EC3-6C4F-4886-AFED-A2518733CF2A} = {460FBEED-CF76-47AE-8252-77D091A59A80}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
