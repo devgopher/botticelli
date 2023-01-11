@@ -1,11 +1,11 @@
 ﻿using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 using Viber.Api.Entities;
 
 namespace Viber.Api.Requests
 {
-    public class ApiSendMessageRequest
+    public class ApiSendMessageRequest : BaseRequest
     {
+
         [JsonPropertyName("receiver")]
         public string Receiver { get; set; }
 

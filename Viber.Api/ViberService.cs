@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -26,7 +27,7 @@ namespace Viber.Api
             _httpListener = new HttpListener();
             _httpClientFactory = httpClientFactory;
             _settings = settings;
-            _httpListener.Prefixes.Add(_settings.HookUrl);
+            _httpListener.Prefixes.Add("https://localhost:8081/");
 
             Start();
         }
@@ -40,8 +41,17 @@ namespace Viber.Api
 
             SetWebHook(new SetWebHookRequest
             {
-                Url = _settings.HookUrl,
-                AuthToken = _settings.ViberToken
+                Url = "https://*:8081/",
+                AuthToken = _settings.ViberToken,
+                EventTypes = new List<string>()
+                {
+                    "delivered",
+                    "seen",
+                    "failed",
+                    "subscribed",
+                    "unsubscribed",
+                    "conversation_started"
+                }
             });
         }
 
@@ -54,6 +64,7 @@ namespace Viber.Api
         public async Task<SetWebHookResponse> SetWebHook(SetWebHookRequest request,
             CancellationToken cancellationToken = default)
         {
+            request.AuthToken = _settings.ViberToken;
             return await InnerSend<SetWebHookRequest, SetWebHookResponse>(request,
                 "set_webhook",
                 cancellationToken);
@@ -62,6 +73,7 @@ namespace Viber.Api
         public async Task<ApiSendMessageResponse> SendMessage(ApiSendMessageRequest request,
             CancellationToken cancellationToken = default)
         {
+            request.AuthToken = _settings.ViberToken;
             return await InnerSend<ApiSendMessageRequest, ApiSendMessageResponse>(request,
                 "send_message",
                 cancellationToken);

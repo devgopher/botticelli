@@ -19,9 +19,9 @@ public static class ServiceExtensions
         BotOptionsBuilder<ViberBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
-        services.AddSingleton(new ViberApiSettings()
+        services.AddSingleton(new ViberApiSettings
         {
-            HookUrl = "https://localhost:8080/",
+            HookUrl = "https://*:8081/",
             RemoteUrl = "https://chatapi.viber.com/pa/",
             ViberToken = settings.ViberToken
         });

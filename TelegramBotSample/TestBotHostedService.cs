@@ -36,7 +36,7 @@ namespace TelegramBotSample
             {
                 Body = "testmsg",
                 Subject = "subj",
-                ChatId = "156620699",
+                ChatId = "77058216799",
                 Attachments = new List<BinaryAttachment>()
                 {
                     new BinaryAttachment(Guid.NewGuid().ToString(), "testpic.png", MediaType.Image,

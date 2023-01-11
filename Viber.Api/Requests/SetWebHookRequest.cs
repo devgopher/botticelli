@@ -1,15 +1,10 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Viber.Api.Requests
 {
-    public class SetWebHookRequest
+    public class SetWebHookRequest : BaseRequest
     {
-        [JsonPropertyName("auth_token")]
-        public string AuthToken { get; set; }
-
         [JsonPropertyName("url")]
         public string Url { get; set; }
 
