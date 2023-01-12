@@ -2,11 +2,11 @@
 {
     public static class ServiceCollectionExtensions
     {
-        public static IHost UseBotticelli(this IHost host, IConfiguration config)
+        public static IServiceCollection UseBotticelli(this IServiceCollection services, IConfiguration config)
         {
-            host.Services.AddHostedService<BotAdminConnectionService>();
+            services.AddHostedService<BotAdminConnectionService>();
             
-            return host;
+            return services;
         }
     }
 }

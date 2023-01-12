@@ -1,9 +1,7 @@
-﻿using System.Net.Http.Json;
-using Botticelli.BotBase.Exceptions;
+﻿using Botticelli.BotBase.Exceptions;
 using Botticelli.BotBase.Settings;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
-using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
 namespace Botticelli.BotBase
@@ -40,7 +38,7 @@ namespace Botticelli.BotBase
                     {
                         var request = new KeepAliveNotificationRequest
                         {
-                            BotId = null
+                            BotId = Utils.BotDataUtils.GetBotId()
                         };
 
                         var response = await InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(request, "KeepAlive", cancellationToken);
@@ -59,6 +57,8 @@ namespace Botticelli.BotBase
                         Thread.Sleep(15000);
                     }
                 }, cancellationToken);
+
+
             }
         }
 

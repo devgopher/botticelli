@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Новая папка\" />
+    <Folder Include="Data\" />
   </ItemGroup>
 
 </Project>

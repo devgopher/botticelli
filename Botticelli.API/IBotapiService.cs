@@ -11,5 +11,7 @@ namespace Botticelli.BotBase
     {
         public Task<StartBotResponse> Start(StartBotRequest request);
         public Task<StopBotResponse> Stop(StopBotRequest request);
+
+
     }
 }
