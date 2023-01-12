@@ -3,5 +3,6 @@
 public enum BotStatus
 {
     Active,
-    NonActive
+    NonActive,
+    Unknown
 }

@@ -9,9 +9,21 @@ namespace Botticelli.BotBase
     /// </summary>
     public interface IBotApiService
     {
-        public Task<StartBotResponse> Start(StartBotRequest request);
-        public Task<StopBotResponse> Stop(StopBotRequest request);
+        public Task<StartBotResponse> StartAsync(StartBotRequest request);
+        public Task<StopBotResponse> StopAsync(StopBotRequest request);
+    }
 
 
+    public class BaseBotApiService : IBotApiService
+    {
+        public Task<StartBotResponse> StartAsync(StartBotRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<StopBotResponse> StopAsync(StopBotRequest request)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
