@@ -12,9 +12,3 @@ public interface IBotStatusDataService
     Task<BotStatus?> GetRequiredBotStatus(string botId);
 
 }
-
-public interface IBotManagementService
-{
-
-    Task SetRequiredBotStatus(string botId, BotStatus status);
-}
