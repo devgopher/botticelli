@@ -3,6 +3,9 @@ using Botticelli.Shared.API.Admin.Responses;
 
 namespace Botticelli.Server.Services
 {
+    /// <summary>
+    /// This class is intended for bot management purposes (start/stop/block/add/remove)
+    /// </summary>
     public class BotStatusDataService : IBotStatusDataService
     {
         private readonly BotInfoContext _context;

@@ -4,14 +4,17 @@ namespace Botticelli.BotBase.Utils
 {
     public static class BotDataUtils
     {
+        private const string SubDir = "Data";
+
         public static string? GetPath()
-            => Path.Combine("Data", "botId");
+            => Path.Combine(SubDir, "botId");
 
         public static string? GetBotId()
         {
             string uid;
             if (!File.Exists(GetPath()))
             {
+                Directory.CreateDirectory(SubDir);
                 uid = Uid.GenerateShortUid();
                 File.WriteAllText(GetPath()!, uid);
             }

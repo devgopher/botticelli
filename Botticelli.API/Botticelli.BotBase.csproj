@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
     <ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj" />
   </ItemGroup>
 

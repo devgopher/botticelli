@@ -12,12 +12,12 @@ namespace TelegramBotSample
     public class TestBotHostedService : IHostedService
     {
         private readonly IBot<TelegramBot> _telegramBot;
-        private readonly IBot<ViberBot> _viberBot;
+        //private readonly IBot<ViberBot> _viberBot;
 
-        public TestBotHostedService(IBot<TelegramBot> telegramBot, IBot<ViberBot> viberBot)
+        public TestBotHostedService(IBot<TelegramBot> telegramBot/*, IBot<ViberBot> viberBot*/)
         {
             _telegramBot = telegramBot;
-            _viberBot = viberBot;
+            //_viberBot = viberBot;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ namespace TelegramBotSample
             {
                 Body = "testmsg",
                 Subject = "subj",
-                ChatId = "77058216799",
+                ChatId = "156620699",
                 Attachments = new List<BinaryAttachment>()
                 {
                     new BinaryAttachment(Guid.NewGuid().ToString(), "testpic.png", MediaType.Image,
@@ -54,7 +54,6 @@ namespace TelegramBotSample
             req.Message = msg;
 
             await SendTelegramMessage(req);
-          //  await SendViberMessage(req);
         }
 
         private async Task SendTelegramMessage(SendMessageRequest req)
@@ -67,15 +66,15 @@ namespace TelegramBotSample
                 return;
         }
 
-        private async Task SendViberMessage(SendMessageRequest req)
-        {
-            var sentResponse = await _viberBot.SendAsync(req, CancellationToken.None);
+        //private async Task SendViberMessage(SendMessageRequest req)
+        //{
+        //    var sentResponse = await _viberBot.SendAsync(req, CancellationToken.None);
 
-            Console.WriteLine($"msg sent: {sentResponse.MessageSentStatus}");
+        //    Console.WriteLine($"msg sent: {sentResponse.MessageSentStatus}");
 
-            if (sentResponse.MessageSentStatus == MessageSentStatus.FAIL)
-                return;
-        }
+        //    if (sentResponse.MessageSentStatus == MessageSentStatus.FAIL)
+        //        return;
+        //}
 
 
         public async Task StopAsync(CancellationToken cancellationToken)

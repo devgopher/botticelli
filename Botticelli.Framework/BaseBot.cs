@@ -14,12 +14,7 @@ namespace Botticelli.Framework;
 public abstract class BaseBot<T> : IBot<T>
     where T : BaseBot<T>
 {
-    //private readonly IList<IAdminMessageProcessor> _adminProcessors = new List<IAdminMessageProcessor>();
-
-    public async Task<PingResponse> PingAsync(PingRequest request)
-    {
-        return PingResponse.GetInstance(request.Uid);
-    }
+    public async Task<PingResponse> PingAsync(PingRequest request) => PingResponse.GetInstance(request.Uid);
 
     public virtual async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
     {

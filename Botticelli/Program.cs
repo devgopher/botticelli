@@ -1,15 +1,17 @@
 using Botticelli.Server.Data;
+using Botticelli.Server.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    .AddDbContext<BotInfoContext>(c 
+    .AddScoped<IBotManagementService, BotManagementService>()
+    .AddScoped<IBotStatusDataService, BotStatusDataService>()
+    .AddDbContext<BotInfoContext>(c
         => c.UseSqlite(@"Data source=botInfo.Db"));
 
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -19,11 +21,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
 
 app.MapControllers();
 

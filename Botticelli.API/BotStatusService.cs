@@ -1,19 +1,23 @@
-﻿using Botticelli.BotBase.Exceptions;
+﻿using System.Net.Http.Json;
+using Botticelli.BotBase.Exceptions;
 using Botticelli.BotBase.Settings;
+using Botticelli.Interfaces;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
 namespace Botticelli.BotBase
 {
     /// <summary>
     /// This service is intended for sending keepalive/hello messages
-    /// to Botticelli Admin server
+    /// to Botticelli Admin server and receiving status messages from it
     /// </summary>
-    internal class BotAdminConnectionService : IHostedService
+    internal class BotStatusService : IHostedService
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IBotApiService _botApiService;
+        private readonly IServiceProvider _serviceProvider;
         private readonly ServerSettings _serverSettings;
         private Task _keepAliveTask;
         private Task _getRequiredStatusEventTask;
@@ -22,13 +26,17 @@ namespace Botticelli.BotBase
         private const short MaxRetryCount = 5;
         private const short PausePeriod = 5000;
         private readonly string? _botId;
+        private IEnumerable<IBot> _subBots;
 
-        public BotAdminConnectionService(IHttpClientFactory httpClientFactory,
-            IBotApiService botApiService,
+        public BotStatusService()
+        {}
+
+        public BotStatusService(IHttpClientFactory httpClientFactory,
+            IServiceProvider serviceProvider,
             ServerSettings serverSettings)
         {
             _httpClientFactory = httpClientFactory;
-            _botApiService = botApiService;
+            _serviceProvider = serviceProvider;
             _serverSettings = serverSettings;
             _keepAliveEvent.Reset();
             _getRequiredStatusEvent.Reset();
@@ -58,6 +66,7 @@ namespace Botticelli.BotBase
                 {
                     BotId = _botId
                 };
+
                 short unsuccessCounter = 0;
 
                 while (!cancellationToken.IsCancellationRequested || _keepAliveEvent.IsSet)
@@ -94,6 +103,9 @@ namespace Botticelli.BotBase
             _getRequiredStatusEvent.Set();
             _getRequiredStatusEventTask = Task.Run(async () =>
             {
+                if (_subBots == null || !_subBots.Any())
+                    _subBots = _serviceProvider.GetServices<IBot>().ToArray();
+
                 var request = new GetRequiredStatusFromServerRequest()
                 {
                     BotId = _botId
@@ -121,11 +133,15 @@ namespace Botticelli.BotBase
                         switch (response.Status)
                         {
                             case BotStatus.Active:
-                                await _botApiService.StopAsync(StopBotRequest.GetInstance());
+                                foreach (var bot in _subBots)
+                                    await bot.StartBotAsync(StartBotRequest.GetInstance(), cancellationToken);
                                 break;
                             case BotStatus.NonActive:
-                                await _botApiService.StartAsync(StartBotRequest.GetInstance());
+                                foreach (var bot in _subBots)
+                                    await bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
+
                                 break;
+                            case BotStatus.Unknown:
                             case null:
                             default:
                                 throw new ArgumentOutOfRangeException();
