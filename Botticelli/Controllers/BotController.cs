@@ -2,7 +2,7 @@ using Botticelli.Server.Services;
 using Botticelli.Shared.API.Admin.Responses;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Botticelli.Controllers;
+namespace Botticelli.Server.Controllers;
 
 [ApiController]
 [Route("admin")]

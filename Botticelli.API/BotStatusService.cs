@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Json;
-using Botticelli.BotBase.Exceptions;
+﻿using Botticelli.BotBase.Exceptions;
 using Botticelli.BotBase.Settings;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Admin.Requests;
@@ -7,6 +6,7 @@ using Botticelli.Shared.API.Admin.Responses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using System.Net.Http.Json;
 
 namespace Botticelli.BotBase
 {
@@ -17,7 +17,7 @@ namespace Botticelli.BotBase
     internal class BotStatusService : IHostedService
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceCollection _services;
         private readonly ServerSettings _serverSettings;
         private Task _keepAliveTask;
         private Task _getRequiredStatusEventTask;
@@ -26,17 +26,19 @@ namespace Botticelli.BotBase
         private const short MaxRetryCount = 5;
         private const short PausePeriod = 5000;
         private readonly string? _botId;
-        private IEnumerable<IBot> _subBots;
+        private IEnumerable<IBot?> _subBots;
+        private IEnumerable<Type> _serviceTypes = new List<Type>();
+
 
         public BotStatusService()
         {}
 
         public BotStatusService(IHttpClientFactory httpClientFactory,
-            IServiceProvider serviceProvider,
+            IServiceCollection services,
             ServerSettings serverSettings)
         {
             _httpClientFactory = httpClientFactory;
-            _serviceProvider = serviceProvider;
+            _services = services;
             _serverSettings = serverSettings;
             _keepAliveEvent.Reset();
             _getRequiredStatusEvent.Reset();
@@ -52,8 +54,8 @@ namespace Botticelli.BotBase
         /// <summary>
         /// Sends KeepAlive messages
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <exception cref="BotException"></exception>
+        /// <param name="cancellationToken"/>
+        /// <exception cref="BotException"/>
         private void KeepAlive(CancellationToken cancellationToken)
         {
             if (_keepAliveTask != default)
@@ -103,9 +105,6 @@ namespace Botticelli.BotBase
             _getRequiredStatusEvent.Set();
             _getRequiredStatusEventTask = Task.Run(async () =>
             {
-                if (_subBots == null || !_subBots.Any())
-                    _subBots = _serviceProvider.GetServices<IBot>().ToArray();
-
                 var request = new GetRequiredStatusFromServerRequest()
                 {
                     BotId = _botId
@@ -114,38 +113,54 @@ namespace Botticelli.BotBase
                 short unsuccessCounter = 0;
                 while (!cancellationToken.IsCancellationRequested || _getRequiredStatusEvent.IsSet)
                 {
-                    var response =
-                        await InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request, "GetRequiredStatus",
-                            cancellationToken);
-
-                    if (!response.IsSuccess)
+                    try
                     {
-                        ++unsuccessCounter;
-                        if (unsuccessCounter == MaxRetryCount)
+                        if (_subBots == null || !_subBots.Any())
                         {
-                            // TODO: log
+                            _serviceTypes = _services
+                                .Where(s => s.ServiceType.Name.StartsWith("IBot"))
+                                .Select(s => s.ServiceType)
+                                .ToArray();
+                            var sp = _services.BuildServiceProvider();
+                            _subBots = _serviceTypes.Select(s => sp.GetRequiredService(s) as IBot).ToList();
+                        }
 
-                            break;
+                        var response =
+                            await InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(
+                                request, "GetRequiredStatus",
+                                cancellationToken);
+
+                        if (!response.IsSuccess)
+                        {
+                            ++unsuccessCounter;
+                            if (unsuccessCounter == MaxRetryCount)
+                            {
+                                // TODO: log
+
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            unsuccessCounter = 0;
+                            switch (response.Status)
+                            {
+                                case BotStatus.Active:
+                                    foreach (var bot in _subBots)
+                                        await bot.StartBotAsync(StartBotRequest.GetInstance(), cancellationToken);
+                                    break;
+                                case BotStatus.NonActive:
+                                    foreach (var bot in _subBots)
+                                        await bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        switch (response.Status)
-                        {
-                            case BotStatus.Active:
-                                foreach (var bot in _subBots)
-                                    await bot.StartBotAsync(StartBotRequest.GetInstance(), cancellationToken);
-                                break;
-                            case BotStatus.NonActive:
-                                foreach (var bot in _subBots)
-                                    await bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
-
-                                break;
-                            case BotStatus.Unknown:
-                            case null:
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
+                        throw new BotException("Error receiving bot status!", ex);
                     }
 
                     Thread.Sleep(PausePeriod);

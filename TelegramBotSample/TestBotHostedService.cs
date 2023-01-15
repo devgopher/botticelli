@@ -22,12 +22,12 @@ namespace TelegramBotSample
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
-            {
+            //while (!cancellationToken.IsCancellationRequested)
+            //{
                 Console.WriteLine($"Start sending messages...");
                 await SendTestMessage();
-                Thread.Sleep(20000);
-            }
+            //    Thread.Sleep(20000);
+            //}
         }
 
         private async Task SendTestMessage()
@@ -39,11 +39,11 @@ namespace TelegramBotSample
                 ChatId = "156620699",
                 Attachments = new List<BinaryAttachment>()
                 {
-                    new BinaryAttachment(Guid.NewGuid().ToString(), "testpic.png", MediaType.Image,
+                    new(Guid.NewGuid().ToString(), "testpic.png", MediaType.Image,
                         File.ReadAllBytes($"Media/testpic.png")),
-                    new BinaryAttachment(Guid.NewGuid().ToString(), "voice.mp3", MediaType.Voice,
+                    new(Guid.NewGuid().ToString(), "voice.mp3", MediaType.Voice,
                         File.ReadAllBytes($"Media/voice.mp3")),
-                    new BinaryAttachment(Guid.NewGuid().ToString(), "video.mp4", MediaType.Video,
+                    new(Guid.NewGuid().ToString(), "video.mp4", MediaType.Video,
                         File.ReadAllBytes($"Media/video.mp4")),
                 }
             };
