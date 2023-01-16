@@ -1,11 +1,11 @@
 using Botticelli.Server.Services;
+using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Controllers;
 
 [ApiController]
-[Route("admin")]
 public class BotController
 {
     private readonly IBotManagementService _botManagementService;
@@ -31,7 +31,7 @@ public class BotController
 
     #region Client pane
 
-    [HttpGet("client/[action]")]
+    [HttpPost("client/[action]")]
     public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus(
         [FromBody] GetRequiredStatusFromServerResponse request)
         => new()
@@ -40,6 +40,17 @@ public class BotController
             IsSuccess = true,
             Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId)
         };
+
+
+    [HttpPost("client/[action]")]
+    public async Task<KeepAliveNotificationResponse> KeepAlive(
+        [FromBody] KeepAliveNotificationRequest request)
+        => new()
+        {
+            BotId = request.BotId,
+            IsSuccess = true
+        };
+
 
     #endregion
 }

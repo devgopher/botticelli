@@ -1,10 +1,7 @@
 using Botticelli.BotBase.Extensions;
-using Botticelli.BotBase.Settings;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
-using Botticelli.Framework.Viber.Extensions;
-using Botticelli.Framework.Viber.Options;
 using TelegramBotSample;
 
 var builder = WebApplication.CreateBuilder(args);

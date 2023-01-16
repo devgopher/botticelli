@@ -14,6 +14,11 @@ namespace Botticelli.Framework;
 public abstract class BaseBot<T> : IBot<T>
     where T : BaseBot<T>
 {
+    protected bool isStarted { get; set; }
+
+    public BaseBot()
+        => isStarted = false;
+
     public async Task<PingResponse> PingAsync(PingRequest request) => PingResponse.GetInstance(request.Uid);
 
     public virtual async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
@@ -29,6 +34,7 @@ public abstract class BaseBot<T> : IBot<T>
             response = StartBotResponse.GetInstance(request.Uid, $"Error: {ex.Message}", AdminCommandStatus.FAIL);
         }
 
+        isStarted = true;
         return response;
     }
 
@@ -45,6 +51,7 @@ public abstract class BaseBot<T> : IBot<T>
             response = StopBotResponse.GetInstance(request.Uid, $"Error: {ex.Message}", AdminCommandStatus.FAIL);
         }
 
+        isStarted = false;
         return response;
     }
 

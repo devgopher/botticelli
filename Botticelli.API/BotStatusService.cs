@@ -127,7 +127,7 @@ namespace Botticelli.BotBase
 
                         var response =
                             await InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(
-                                request, "GetRequiredStatus",
+                                request, "/client/GetRequiredBotStatus",
                                 cancellationToken);
 
                         if (!response.IsSuccess)
@@ -160,7 +160,9 @@ namespace Botticelli.BotBase
                     }
                     catch (Exception ex)
                     {
-                        throw new BotException("Error receiving bot status!", ex);
+                        ++unsuccessCounter;
+
+                        // throw new BotException("Error receiving bot status!", ex);
                     }
 
                     Thread.Sleep(PausePeriod);

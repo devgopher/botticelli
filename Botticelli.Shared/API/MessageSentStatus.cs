@@ -3,5 +3,6 @@
 public enum MessageSentStatus
 {
     OK,
-    FAIL
+    FAIL,
+    NONSTARTED
 }

@@ -23,7 +23,7 @@ namespace Botticelli.Framework.Telegram.Extensions
                 new TelegramBotClient(settings.TelegramToken));
             services.AddSingleton(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services));
             services.AddSingleton<IBot<TelegramBot>, TelegramBot>(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services));
-            services.AddHostedService<Telegram.HostedService.TelegramBotHostedService>();
+          //  services.AddHostedService<Telegram.HostedService.TelegramBotHostedService>();
 
             services.AddSingleton<IUpdateHandler, BotUpdateHandler>();
             return services;
