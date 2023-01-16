@@ -45,12 +45,28 @@ public class BotController
     [HttpPost("client/[action]")]
     public async Task<KeepAliveNotificationResponse> KeepAlive(
         [FromBody] KeepAliveNotificationRequest request)
-        => new()
+    {
+        try
         {
-            BotId = request.BotId,
-            IsSuccess = true
-        };
+            await _botManagementService.SetKeepAlive(request.BotId);
 
+            return new()
+            {
+                BotId = request.BotId,
+                IsSuccess = true
+            };
+        }
+        catch (Exception ex)
+        {
+            //log
+
+            return new()
+            {
+                BotId = request.BotId,
+                IsSuccess = false
+            };
+        }
+    }
 
     #endregion
 }

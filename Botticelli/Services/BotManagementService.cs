@@ -29,22 +29,62 @@ public class BotManagementService : IBotManagementService
     /// <returns></returns>
     public async Task SetRequiredBotStatus(string botId, BotStatus status)
     {
-        var botInfo = _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
+        var botInfo = GetBotInfo(botId);
 
         if (botInfo == default)
-        {
-            botInfo = new BotInfo
-            {
-                BotId = botId,
-                LastKeepAlive = null,
-                Status = status
-            };
-
-            _context.BotInfos.Add(botInfo);
-        }
+            AddNewBotInfo(botId, status);
         else
+        {
+            botInfo.Status = status;
             _context.BotInfos.Update(botInfo);
+        }
 
         await _context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Add a new bot info to a DB
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <param name="status"></param>
+    /// <param name="lastKeepAliveUtc"></param>
+    private void AddNewBotInfo(string botId, BotStatus status, DateTime? lastKeepAliveUtc = null)
+    {
+        var botInfo = new BotInfo
+        {
+            BotId = botId,
+            LastKeepAlive = lastKeepAliveUtc,
+            Status = status
+        };
+
+        _context.BotInfos.Add(botInfo);
+    }
+
+    /// <summary>
+    /// Set keep alive mark
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <returns></returns>
+    public async Task SetKeepAlive(string botId)
+    {
+        var botInfo = GetBotInfo(botId);
+
+        var keepAlive = DateTime.UtcNow;
+
+        if (botInfo == default)
+            AddNewBotInfo(botId, BotStatus.Unknown, keepAlive);
+        else
+        {
+            botInfo.LastKeepAlive = keepAlive;
+            _context.BotInfos.Update(botInfo);
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    private BotInfo? GetBotInfo(string botId)
+    {
+        var botInfo = _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
+        return botInfo;
     }
 }

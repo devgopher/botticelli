@@ -16,8 +16,8 @@ builder.Services.AddTelegramBot(new BotOptionsBuilder<TelegramBotSettings>()
 //    .Set(s => s.ViberToken = "5065bdf5c527dfe8-3dfad317d974d1-ac5916e258fc1a93")
 //    .Set(s => s.Name = "test_bot"));
 
-builder.Services.AddHostedService<TestBotHostedService>();
 builder.Services.UseBotticelli(builder.Configuration);
+builder.Services.AddHostedService<TestBotHostedService>();
 
 var app = builder.Build();
 
