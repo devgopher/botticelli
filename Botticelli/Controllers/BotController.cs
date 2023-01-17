@@ -1,3 +1,4 @@
+using Botticelli.Server.Data.Entities;
 using Botticelli.Server.Services;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
@@ -18,6 +19,10 @@ public class BotController
     }
 
     #region Admin pane
+
+    [HttpGet("admin/[action]")]
+    public async Task<ICollection<BotInfo>> GetBots()
+        => await _botStatusDataService.GetBots();
 
     [HttpGet("admin/[action]")]
     public async Task SetBotActiveStatus([FromQuery] string botId)

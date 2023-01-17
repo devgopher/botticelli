@@ -1,4 +1,5 @@
 ﻿using Botticelli.Server.Data;
+using Botticelli.Server.Data.Entities;
 using Botticelli.Shared.API.Admin.Responses;
 
 namespace Botticelli.Server.Services
@@ -11,6 +12,9 @@ namespace Botticelli.Server.Services
         private readonly BotInfoContext _context;
 
         public BotStatusDataService(BotInfoContext context) => _context = context;
+
+        public async Task<ICollection<BotInfo>> GetBots()
+            => _context.BotInfos.ToArray();
 
         /// <summary>
         /// Gets a bot required status for answering on a poll request from a bot
