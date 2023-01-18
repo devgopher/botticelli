@@ -1,6 +1,7 @@
 ﻿using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities;
 using Botticelli.Shared.API.Admin.Responses;
+using Botticelli.Shared.Constants;
 
 namespace Botticelli.Server.Services;
 
@@ -27,12 +28,12 @@ public class BotManagementService : IBotManagementService
     /// <param name="botId"></param>
     /// <param name="status"></param>
     /// <returns></returns>
-    public async Task SetRequiredBotStatus(string botId, BotStatus status)
+    public async Task SetRequiredBotStatus(string botId, BotStatus status, BotType botType)
     {
         var botInfo = GetBotInfo(botId);
 
         if (botInfo == default)
-            AddNewBotInfo(botId, status);
+            AddNewBotInfo(botId, status, botType);
         else
         {
             botInfo.Status = status;
@@ -47,14 +48,16 @@ public class BotManagementService : IBotManagementService
     /// </summary>
     /// <param name="botId"></param>
     /// <param name="status"></param>
+    /// <param name="botType"></param>
     /// <param name="lastKeepAliveUtc"></param>
-    private void AddNewBotInfo(string botId, BotStatus status, DateTime? lastKeepAliveUtc = null)
+    private void AddNewBotInfo(string botId, BotStatus status, BotType botType, DateTime? lastKeepAliveUtc = null)
     {
         var botInfo = new BotInfo
         {
             BotId = botId,
             LastKeepAlive = lastKeepAliveUtc,
-            Status = status
+            Status = status,
+            Type = botType
         };
 
         _context.BotInfos.Add(botInfo);
@@ -65,14 +68,14 @@ public class BotManagementService : IBotManagementService
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
-    public async Task SetKeepAlive(string botId)
+    public async Task SetKeepAlive(string botId, BotType botType)
     {
         var botInfo = GetBotInfo(botId);
 
         var keepAlive = DateTime.UtcNow;
 
         if (botInfo == default)
-            AddNewBotInfo(botId, BotStatus.Unknown, keepAlive);
+            AddNewBotInfo(botId, BotStatus.Unknown, botType, keepAlive);
         else
         {
             botInfo.LastKeepAlive = keepAlive;

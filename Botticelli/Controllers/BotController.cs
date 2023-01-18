@@ -2,6 +2,7 @@ using Botticelli.Server.Data.Entities;
 using Botticelli.Server.Services;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
+using Botticelli.Shared.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Controllers;
@@ -53,7 +54,7 @@ public class BotController
     {
         try
         {
-            await _botManagementService.SetKeepAlive(request.BotId);
+            await _botManagementService.SetKeepAlive(request.BotId, BotType.Unknown);
 
             return new()
             {

@@ -6,7 +6,8 @@
         WhatsApp,
         Viber,
         RocketChat,
-        Signal
+        Signal, 
+        Unknown
     }
 }
 
