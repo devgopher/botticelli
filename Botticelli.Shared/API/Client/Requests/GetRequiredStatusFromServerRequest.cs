@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Shared.API.Admin.Requests;
+﻿namespace Botticelli.Shared.API.Client.Requests;
 
 /// <summary>
 /// Requests a needed status from a server (started/stopped)

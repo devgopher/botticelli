@@ -5,6 +5,7 @@ namespace Botticelli.Server.Services;
 
 public interface IBotManagementService
 {
-    Task SetRequiredBotStatus(string botId, BotStatus status, BotType botType); 
-    Task SetKeepAlive(string botId, BotType botType);
+    Task<bool> RegisterBot(string botId, BotType botType);
+    Task SetRequiredBotStatus(string botId, BotStatus status); 
+    Task SetKeepAlive(string botId);
 }

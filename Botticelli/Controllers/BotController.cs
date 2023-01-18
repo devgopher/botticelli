@@ -2,6 +2,8 @@ using Botticelli.Server.Data.Entities;
 using Botticelli.Server.Services;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
+using Botticelli.Shared.API.Client.Requests;
+using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,12 +51,25 @@ public class BotController
 
 
     [HttpPost("client/[action]")]
+    public async Task<RegisterBotResponse> RegisterBot(
+        [FromBody] RegisterBotRequest request)
+    {
+        var sussess = await _botManagementService.RegisterBot(request.BotId, request.Type);
+     
+        return new()
+        {
+            BotId = request.BotId,
+            IsSuccess = sussess
+        };
+    }
+
+    [HttpPost("client/[action]")]
     public async Task<KeepAliveNotificationResponse> KeepAlive(
         [FromBody] KeepAliveNotificationRequest request)
     {
         try
         {
-            await _botManagementService.SetKeepAlive(request.BotId, BotType.Unknown);
+            await _botManagementService.SetKeepAlive(request.BotId);
 
             return new()
             {

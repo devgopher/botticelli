@@ -4,6 +4,7 @@ using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.Constants;
 
 namespace Botticelli.Framework;
 
@@ -40,7 +41,7 @@ public abstract class BaseBot<T> : IBot<T>
 
     public virtual async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
     {
-        StopBotResponse response = null;
+        StopBotResponse response;
 
         try
         {
@@ -61,4 +62,6 @@ public abstract class BaseBot<T> : IBot<T>
     /// <param name="request">Request</param>
     /// <returns></returns>
     public abstract Task<SendMessageResponse> SendAsync(SendMessageRequest request, CancellationToken token);
+
+    public abstract BotType Type { get; }
 }

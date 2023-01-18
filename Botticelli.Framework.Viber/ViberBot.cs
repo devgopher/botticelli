@@ -5,6 +5,7 @@ using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.Constants;
 using Viber.Api;
 using Viber.Api.Entities;
 using Viber.Api.Requests;
@@ -99,6 +100,8 @@ namespace Botticelli.Framework.Viber
 
             return response;
         }
+
+        public override BotType Type => BotType.Viber;
 
         public override async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
         {

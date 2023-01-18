@@ -1,5 +1,7 @@
 ﻿using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
+using Botticelli.Shared.API.Client.Requests;
+using Botticelli.Shared.API.Client.Responses;
 
 namespace Botticelli.Interfaces;
 

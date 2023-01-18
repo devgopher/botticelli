@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Shared.API.Admin.Requests;
+﻿namespace Botticelli.Shared.API.Client.Requests;
 
 public class PingRequest : BaseRequest<PingRequest>
 {

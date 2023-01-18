@@ -14,9 +14,12 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+    <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
     <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
     <ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj" />
   </ItemGroup>

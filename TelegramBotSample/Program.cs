@@ -1,10 +1,13 @@
 using Botticelli.BotBase.Extensions;
 using Botticelli.Framework.Options;
+using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
+using Botticelli.Interfaces;
 using TelegramBotSample;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Services.AddTelegramBot(new BotOptionsBuilder<TelegramBotSettings>()
     .Set(s => s.ChatPollingIntervalMs = 500)
@@ -15,7 +18,7 @@ builder.Services.AddTelegramBot(new BotOptionsBuilder<TelegramBotSettings>()
 //    .Set(s => s.ViberToken = "5065bdf5c527dfe8-3dfad317d974d1-ac5916e258fc1a93")
 //    .Set(s => s.Name = "test_bot"));
 
-builder.Services.UseBotticelli(builder.Configuration);
+builder.Services.UseBotticelli<IBot<TelegramBot>>(builder.Configuration);
 builder.Services.AddHostedService<TestBotHostedService>();
 
 var app = builder.Build();

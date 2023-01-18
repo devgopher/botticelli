@@ -12,8 +12,7 @@ namespace Botticelli.Framework.Telegram.Handlers
         private readonly IList<IClientMessageProcessor> _clientProcessors = new List<IClientMessageProcessor>();
 
         private readonly ManualResetEventSlim _startEventSlim = new(false);
-
-
+        
         public BotUpdateHandler()
         {
         }
@@ -33,7 +32,7 @@ namespace Botticelli.Framework.Telegram.Handlers
             {
                 var botMessage = update.Message;
 
-                var boticcelliMessage = new Message(Guid.Empty.ToString())
+                var botticelliMessage = new Message(Guid.Empty.ToString())
                 {
                     ChatId = botMessage.MessageId.ToString(),
                     Subject = string.Empty,
@@ -41,22 +40,14 @@ namespace Botticelli.Framework.Telegram.Handlers
                     Attachments = new List<BinaryAttachment>(5)
                 };
 
-                Process(boticcelliMessage, cancellationToken);
-
-                //if (botMessage.Audio != null)
-                //    boticcelliMessage.Attachments.Add(new BinaryAttachment(botMessage.MessageId.ToString(), 
-                //        botMessage.Audio.Title,
-                //        MediaType.Audio,
-                //        botMessage.Audio.));
+                Process(botticelliMessage, cancellationToken);
             }
             catch (Exception ex)
             {
                 // TODO:
             }
         }
-
-
-
+        
         /// <summary>
         ///     Processes requests
         /// </summary>
@@ -91,9 +82,6 @@ namespace Botticelli.Framework.Telegram.Handlers
             }, token);
         }
 
-        public void AddClientEventProcessor(IClientMessageProcessor messageProcessor)
-        {
-            _clientProcessors.Add(messageProcessor);
-        }
+        public void AddClientEventProcessor(IClientMessageProcessor messageProcessor) => _clientProcessors.Add(messageProcessor);
     }
 }

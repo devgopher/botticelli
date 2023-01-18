@@ -23,6 +23,7 @@ namespace Botticelli.Framework.Telegram
         /// ctor
         /// </summary>
         /// <param name="client"></param>
+        /// <param name="services"></param>
         public TelegramBot(ITelegramBotClient client, IServiceCollection services)
         {
             _client = client;
@@ -97,6 +98,8 @@ namespace Botticelli.Framework.Telegram
 
             return response;
         }
+
+        public override BotType Type => BotType.Telegram;
 
         /// <summary>
         /// Starts a bot

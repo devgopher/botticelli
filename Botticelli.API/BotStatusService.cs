@@ -2,12 +2,17 @@
 using Botticelli.BotBase.Exceptions;
 using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
+using Botticelli.Framework;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
+using Botticelli.Shared.API.Client.Requests;
+using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.Constants;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using Polly;
 
 namespace Botticelli.BotBase;
 
@@ -15,7 +20,8 @@ namespace Botticelli.BotBase;
 ///     This service is intended for sending keepalive/hello messages
 ///     to Botticelli Admin server and receiving status messages from it
 /// </summary>
-internal class BotStatusService : IHostedService
+internal class BotStatusService<TBot> : IHostedService
+    where TBot : IBot
 {
     private const short MaxRetryCount = 5;
     private const short PausePeriod = 5000;
@@ -24,26 +30,18 @@ internal class BotStatusService : IHostedService
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ManualResetEventSlim _keepAliveEvent = new(false);
     private readonly ServerSettings _serverSettings;
-    private readonly IServiceCollection _services;
-    private readonly IServiceProvider _sp;
+    private readonly BotType _type;
     private Task _getRequiredStatusEventTask;
     private Task _keepAliveTask;
-    private IEnumerable<Type> _serviceTypes = new List<Type>();
-    private IEnumerable<IBot?> _subBots;
-    
-    public BotStatusService()
-    {
-    }
+    private TBot _bot;
 
     public BotStatusService(IHttpClientFactory httpClientFactory,
-        IServiceCollection services,
-        IServiceProvider sp,
-        ServerSettings serverSettings)
+        ServerSettings serverSettings,
+        TBot bot)
     {
         _httpClientFactory = httpClientFactory;
-        _services = services;
-        _sp = sp;
         _serverSettings = serverSettings;
+        _bot = bot;
         _keepAliveEvent.Reset();
         _getRequiredStatusEvent.Reset();
         _botId = BotDataUtils.GetBotId();
@@ -51,6 +49,19 @@ internal class BotStatusService : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        var request = new RegisterBotRequest
+        {
+            BotId = _botId,
+            Type = _bot.Type
+        };
+
+        var response =
+            await InnerSend<RegisterBotRequest, RegisterBotResponse>(request,
+                "/client/RegisterBot", cancellationToken);
+
+        if (!response.IsSuccess)
+            throw new BotException("Error starting a bot!");
+
         KeepAlive(cancellationToken);
         GetRequiredStatus(cancellationToken);
     }
@@ -104,6 +115,11 @@ internal class BotStatusService : IHostedService
                 _keepAliveTask.Exception);
     }
 
+    /// <summary>
+    /// Get required status for a bot from server
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <exception cref="BotException"></exception>
     private void GetRequiredStatus(CancellationToken cancellationToken)
     {
         if (_getRequiredStatusEventTask != default)
@@ -122,16 +138,6 @@ internal class BotStatusService : IHostedService
             {
                 try
                 {
-                    if (_subBots == null || !_subBots.Any())
-                    {
-                        _serviceTypes = _services
-                            .Where(s => s.ServiceType.Name.StartsWith("IBot"))
-                            .Select(s => s.ServiceType)
-                            .ToArray();
-                        
-                        _subBots = _serviceTypes.Select(s => _sp.GetRequiredService(s) as IBot).ToList();
-                    }
-
                     var response =
                         await InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(
                             request, "/client/GetRequiredBotStatus",
@@ -150,15 +156,13 @@ internal class BotStatusService : IHostedService
                         switch (response.Status)
                         {
                             case BotStatus.Active:
-                                foreach (var bot in _subBots)
-                                    await bot.StartBotAsync(StartBotRequest.GetInstance(), cancellationToken);
+                                await _bot.StartBotAsync(StartBotRequest.GetInstance(), cancellationToken);
                                 break;
                             case BotStatus.NonActive:
-                                foreach (var bot in _subBots)
-                                    await bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
+                                await _bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
                                 break;
-                            //default: log
-                            //throw new ArgumentOutOfRangeException();
+                                //default: log
+                                //throw new ArgumentOutOfRangeException();
                         }
                     }
                 }
@@ -185,14 +189,23 @@ internal class BotStatusService : IHostedService
         using var httpClient = _httpClientFactory.CreateClient();
         httpClient.BaseAddress = new Uri(_serverSettings.ServerUri);
 
+
         var content = JsonContent.Create(request);
 
-        var httpResponse = await httpClient.PostAsync(funcName, content, cancellationToken);
+        var policyResult = await Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+            .WaitAndRetryAsync(5,
+                _ => TimeSpan.FromMilliseconds(3000),
+                async (result, timespan, retryNo, context) =>
+                {
+                    // log
+                    Console.WriteLine("NONE");
+                })
+            .ExecuteAndCaptureAsync(async () => await httpClient.PostAsync(funcName, content, cancellationToken));
 
-        if (!httpResponse.IsSuccessStatusCode)
+        if (policyResult.Result == null || !policyResult.Result.IsSuccessStatusCode)
             throw new BotException("Error sending request to a Botticelli server!");
 
-        var responseJson = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+        var responseJson = await policyResult.Result.Content.ReadAsStringAsync(cancellationToken);
 
         return JsonConvert.DeserializeObject<TResp>(responseJson);
     }

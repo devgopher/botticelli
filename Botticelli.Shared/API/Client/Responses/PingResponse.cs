@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Shared.API.Admin.Responses;
+﻿namespace Botticelli.Shared.API.Client.Responses;
 
 public class PingResponse : BaseResponse<PingResponse>
 {

@@ -12,7 +12,8 @@ public class BotManagementService : IBotManagementService
 {
     private readonly BotInfoContext _context;
 
-    public BotManagementService(BotInfoContext context) => _context = context;
+    public BotManagementService(BotInfoContext context)
+        => _context = context;
 
     /// <summary>
     /// Gets a bot required status for answering on a poll request from a bot
@@ -23,18 +24,39 @@ public class BotManagementService : IBotManagementService
         => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
 
     /// <summary>
+    /// Registers a bot if it's not registered
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <param name="botType"></param>
+    /// <returns></returns>
+    public async Task<bool> RegisterBot(string botId, BotType botType)
+    {
+        try
+        {
+            if (GetBotInfo(botId) == default)
+                AddNewBotInfo(botId, BotStatus.Unknown, botType);
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // todo: log
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Sets a needed bot status in a database
     /// </summary>
     /// <param name="botId"></param>
     /// <param name="status"></param>
     /// <returns></returns>
-    public async Task SetRequiredBotStatus(string botId, BotStatus status, BotType botType)
+    public async Task SetRequiredBotStatus(string botId, BotStatus status)
     {
         var botInfo = GetBotInfo(botId);
 
-        if (botInfo == default)
-            AddNewBotInfo(botId, status, botType);
-        else
+        if (botInfo != default)
         {
             botInfo.Status = status;
             _context.BotInfos.Update(botInfo);
@@ -68,15 +90,13 @@ public class BotManagementService : IBotManagementService
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
-    public async Task SetKeepAlive(string botId, BotType botType)
+    public async Task SetKeepAlive(string botId)
     {
         var botInfo = GetBotInfo(botId);
 
         var keepAlive = DateTime.UtcNow;
 
-        if (botInfo == default)
-            AddNewBotInfo(botId, BotStatus.Unknown, botType, keepAlive);
-        else
+        if (botInfo != default)
         {
             botInfo.LastKeepAlive = keepAlive;
             _context.BotInfos.Update(botInfo);
@@ -85,9 +105,11 @@ public class BotManagementService : IBotManagementService
         await _context.SaveChangesAsync();
     }
 
-    private BotInfo? GetBotInfo(string botId)
-    {
-        var botInfo = _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
-        return botInfo;
-    }
+    /// <summary>
+    /// Gets info about a bot
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <returns></returns>
+    private BotInfo? GetBotInfo(string botId) 
+        => _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
 }
