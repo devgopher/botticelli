@@ -16,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Botticelli.DataLayer.Interfaces\Botticelli.DataLayer.Interfaces.csproj" />
+    <ProjectReference Include="..\Botticelli.DataLayer\Botticelli.DataLayer.csproj" />
     <ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj" />
   </ItemGroup>
 
