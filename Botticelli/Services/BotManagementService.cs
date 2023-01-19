@@ -12,7 +12,10 @@ public class BotManagementService : IBotManagementService
 {
     private readonly BotInfoContext _context;
 
-    public BotManagementService(BotInfoContext context) => _context = context;
+    public BotManagementService(BotInfoContext context)
+    {
+        _context = context;
+    }
 
     /// <summary>
     ///     Registers a bot if it's not registered

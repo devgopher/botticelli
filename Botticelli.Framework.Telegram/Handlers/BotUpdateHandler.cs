@@ -76,8 +76,5 @@ public class BotUpdateHandler : IUpdateHandler
                         token);
     }
 
-    public void AddClientEventProcessor(IClientMessageProcessor messageProcessor)
-    {
-        _clientProcessors.Add(messageProcessor);
-    }
+    public void AddClientEventProcessor(IClientMessageProcessor messageProcessor) => _clientProcessors.Add(messageProcessor);
 }

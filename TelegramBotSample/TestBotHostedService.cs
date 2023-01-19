@@ -13,7 +13,10 @@ public class TestBotHostedService : IHostedService
 
     //private readonly IBot<ViberBot> _viberBot;
 
-    public TestBotHostedService(IBot<TelegramBot> telegramBot /*, IBot<ViberBot> viberBot*/) => _telegramBot = telegramBot;
+    public TestBotHostedService(IBot<TelegramBot> telegramBot /*, IBot<ViberBot> viberBot*/)
+    {
+        _telegramBot = telegramBot;
+    }
 
     //_viberBot = viberBot;
     public Task StartAsync(CancellationToken cancellationToken)

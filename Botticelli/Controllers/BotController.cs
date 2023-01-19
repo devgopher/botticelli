@@ -22,7 +22,10 @@ public class BotController
     #region Admin pane
 
     [HttpGet("admin/[action]")]
-    public async Task<ICollection<BotInfo>> GetBots() => await _botStatusDataService.GetBots();
+    public async Task<ICollection<BotInfo>> GetBots()
+    {
+        return await _botStatusDataService.GetBots();
+    }
 
     [HttpGet("admin/[action]")]
     public async Task SetBotActiveStatus([FromQuery] string botId)
@@ -42,13 +45,15 @@ public class BotController
     #region Client pane
 
     [HttpPost("client/[action]")]
-    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus([FromBody] GetRequiredStatusFromServerResponse request) =>
-            new GetRequiredStatusFromServerResponse
-            {
-                BotId = request.BotId,
-                IsSuccess = true,
-                Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId)
-            };
+    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus([FromBody] GetRequiredStatusFromServerResponse request)
+    {
+        return new GetRequiredStatusFromServerResponse
+        {
+            BotId = request.BotId,
+            IsSuccess = true,
+            Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId)
+        };
+    }
 
 
     [HttpPost("client/[action]")]

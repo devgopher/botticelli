@@ -30,7 +30,10 @@ public class TelegramBot : BaseBot<TelegramBot>
         _sp = services.BuildServiceProvider();
     }
 
-    public override BotType Type => BotType.Telegram;
+    public override BotType Type
+    {
+        get { return BotType.Telegram; }
+    }
 
     /// <summary>
     ///     Sends a message as a telegram bot

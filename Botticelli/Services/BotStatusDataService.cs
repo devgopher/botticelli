@@ -11,9 +11,15 @@ public class BotStatusDataService : IBotStatusDataService
 {
     private readonly BotInfoContext _context;
 
-    public BotStatusDataService(BotInfoContext context) => _context = context;
+    public BotStatusDataService(BotInfoContext context)
+    {
+        _context = context;
+    }
 
-    public async Task<ICollection<BotInfo>> GetBots() => _context.BotInfos.ToArray();
+    public async Task<ICollection<BotInfo>> GetBots()
+    {
+        return _context.BotInfos.ToArray();
+    }
 
     /// <summary>
     ///     Gets a bot required status for answering on a poll request from a bot

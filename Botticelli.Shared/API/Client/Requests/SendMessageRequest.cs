@@ -10,5 +10,5 @@ public class SendMessageRequest : BaseRequest<SendMessageRequest>
 
     public Message Message { get; set; }
 
-    public static SendMessageRequest GetInstance() => new SendMessageRequest(Utils.Uid.GenerateShortUid());
+    public static SendMessageRequest GetInstance() => new(Utils.Uid.GenerateShortUid());
 }

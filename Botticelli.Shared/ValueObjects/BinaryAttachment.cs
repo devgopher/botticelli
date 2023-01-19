@@ -23,9 +23,11 @@ public class BinaryAttachment
     public BinaryAttachment GetInstance(string uid,
                                         string name,
                                         MediaType mediaType,
-                                        byte[] data) =>
-            new BinaryAttachment(uid,
-                                 name,
-                                 mediaType,
-                                 data);
+                                        byte[] data)
+    {
+        return new BinaryAttachment(uid,
+                                    name,
+                                    mediaType,
+                                    data);
+    }
 }

@@ -12,5 +12,7 @@ public class BotInfoContext : DbContext
     public DbSet<BotInfo> BotInfos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-        => modelBuilder.Entity<BotInfo>();
+    {
+        modelBuilder.Entity<BotInfo>();
+    }
 }
