@@ -1,7 +1,6 @@
-﻿namespace Botticelli.BotBase.Settings
+﻿namespace Botticelli.BotBase.Settings;
+
+public class ServerSettings
 {
-    public class ServerSettings
-    {
-        public string ServerUri { get; set; }
-    }
+    public string ServerUri { get; set; }
 }

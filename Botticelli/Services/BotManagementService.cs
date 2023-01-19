@@ -6,25 +6,16 @@ using Botticelli.Shared.Constants;
 namespace Botticelli.Server.Services;
 
 /// <summary>
-/// This class is intended for managing bots state (start/ stop/ block/ remove)
+///     This class is intended for managing bots state (start/ stop/ block/ remove)
 /// </summary>
 public class BotManagementService : IBotManagementService
 {
     private readonly BotInfoContext _context;
 
-    public BotManagementService(BotInfoContext context)
-        => _context = context;
+    public BotManagementService(BotInfoContext context) => _context = context;
 
     /// <summary>
-    /// Gets a bot required status for answering on a poll request from a bot
-    /// </summary>
-    /// <param name="botId"></param>
-    /// <returns></returns>
-    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
-        => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
-
-    /// <summary>
-    /// Registers a bot if it's not registered
+    ///     Registers a bot if it's not registered
     /// </summary>
     /// <param name="botId"></param>
     /// <param name="botType"></param>
@@ -33,9 +24,8 @@ public class BotManagementService : IBotManagementService
     {
         try
         {
-            if (GetBotInfo(botId) == default)
-                AddNewBotInfo(botId, BotStatus.Unknown, botType);
-            
+            if (GetBotInfo(botId) == default) AddNewBotInfo(botId, BotStatus.Unknown, botType);
+
             return true;
         }
         catch (Exception ex)
@@ -47,7 +37,7 @@ public class BotManagementService : IBotManagementService
     }
 
     /// <summary>
-    /// Sets a needed bot status in a database
+    ///     Sets a needed bot status in a database
     /// </summary>
     /// <param name="botId"></param>
     /// <param name="status"></param>
@@ -66,27 +56,7 @@ public class BotManagementService : IBotManagementService
     }
 
     /// <summary>
-    /// Add a new bot info to a DB
-    /// </summary>
-    /// <param name="botId"></param>
-    /// <param name="status"></param>
-    /// <param name="botType"></param>
-    /// <param name="lastKeepAliveUtc"></param>
-    private void AddNewBotInfo(string botId, BotStatus status, BotType botType, DateTime? lastKeepAliveUtc = null)
-    {
-        var botInfo = new BotInfo
-        {
-            BotId = botId,
-            LastKeepAlive = lastKeepAliveUtc,
-            Status = status,
-            Type = botType
-        };
-
-        _context.BotInfos.Add(botInfo);
-    }
-
-    /// <summary>
-    /// Set keep alive mark
+    ///     Set keep alive mark
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
@@ -106,10 +76,45 @@ public class BotManagementService : IBotManagementService
     }
 
     /// <summary>
-    /// Gets info about a bot
+    ///     Gets a bot required status for answering on a poll request from a bot
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
-    private BotInfo? GetBotInfo(string botId) 
-        => _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
+    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
+    {
+        return _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
+    }
+
+    /// <summary>
+    ///     Add a new bot info to a DB
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <param name="status"></param>
+    /// <param name="botType"></param>
+    /// <param name="lastKeepAliveUtc"></param>
+    private void AddNewBotInfo(string botId,
+                               BotStatus status,
+                               BotType botType,
+                               DateTime? lastKeepAliveUtc = null)
+    {
+        var botInfo = new BotInfo
+        {
+            BotId = botId,
+            LastKeepAlive = lastKeepAliveUtc,
+            Status = status,
+            Type = botType
+        };
+
+        _context.BotInfos.Add(botInfo);
+    }
+
+    /// <summary>
+    ///     Gets info about a bot
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <returns></returns>
+    private BotInfo? GetBotInfo(string botId)
+    {
+        return _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
+    }
 }

@@ -1,7 +1,5 @@
-﻿namespace Botticelli.Framework.RocketChat
-{
-    public class Class1
-    {
+﻿namespace Botticelli.Framework.RocketChat;
 
-    }
+public class Class1
+{
 }

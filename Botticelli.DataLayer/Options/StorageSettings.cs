@@ -1,13 +1,12 @@
-﻿namespace Botticelli.DataLayer.Options
+﻿namespace Botticelli.DataLayer.Options;
+
+/// <summary>
+///     Storage settings
+/// </summary>
+public class StorageSettings
 {
     /// <summary>
-    /// Storage settings
+    ///     Storage connection string
     /// </summary>
-    public class StorageSettings
-    {
-        /// <summary>
-        /// Storage connection string
-        /// </summary>
-        public string ConnectionString { get; set; }
-    }
+    public string ConnectionString { get; set; }
 }

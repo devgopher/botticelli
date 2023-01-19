@@ -6,12 +6,12 @@ using Botticelli.Shared.API.Client.Responses;
 namespace Botticelli.Interfaces;
 
 /// <summary>
-/// Administration API
+///     Administration API
 /// </summary>
 public interface IEventBasedBotAdminApi
 {
     /// <summary>
-    /// Ping
+    ///     Ping
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
@@ -24,14 +24,14 @@ public interface IEventBasedBotAdminApi
     //public void AddAdminEventProcessor(IAdminMessageProcessor messageProcessor);
 
     /// <summary>
-    /// Starts serving
+    ///     Starts serving
     /// </summary>
     /// <param name="request">Request</param>
     /// <returns></returns>
     public Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token);
 
     /// <summary>
-    /// Stops serving
+    ///     Stops serving
     /// </summary>
     /// <param name="request">Request</param>
     /// <returns></returns>

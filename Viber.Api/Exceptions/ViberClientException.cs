@@ -6,7 +6,6 @@ namespace Viber.Api.Exceptions
     {
         public ViberClientException(string message, Exception inner = default) : base(message, inner)
         {
-            
         }
     }
 }

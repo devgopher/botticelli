@@ -4,7 +4,7 @@ using Botticelli.Shared.ValueObjects;
 namespace Botticelli.DataLayer;
 
 /// <summary>
-/// A storage for messages
+///     A storage for messages
 /// </summary>
 public class MessageStorage : DbStorage<Chat, string>
 {

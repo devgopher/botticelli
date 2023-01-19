@@ -1,27 +1,28 @@
 ﻿using Botticelli.Shared.Utils;
 
-namespace Botticelli.BotBase.Utils
+namespace Botticelli.BotBase.Utils;
+
+public static class BotDataUtils
 {
-    public static class BotDataUtils
+    private const string SubDir = "Data";
+
+    public static string? GetPath() => Path.Combine(SubDir, "botId");
+
+    public static string? GetBotId()
     {
-        private const string SubDir = "Data";
+        string uid;
 
-        public static string? GetPath()
-            => Path.Combine(SubDir, "botId");
-
-        public static string? GetBotId()
+        if (!File.Exists(GetPath()))
         {
-            string uid;
-            if (!File.Exists(GetPath()))
-            {
-                Directory.CreateDirectory(SubDir);
-                uid = Uid.GenerateShortUid();
-                File.WriteAllText(GetPath()!, uid);
-            }
-            else
-                uid = File.ReadAllText(GetPath()!);
-
-            return uid;
+            Directory.CreateDirectory(SubDir);
+            uid = Uid.GenerateShortUid();
+            File.WriteAllText(GetPath()!, uid);
         }
+        else
+        {
+            uid = File.ReadAllText(GetPath()!);
+        }
+
+        return uid;
     }
 }

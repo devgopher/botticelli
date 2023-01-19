@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer()
-    .AddSwaggerGen()
-    .AddScoped<IBotManagementService, BotManagementService>()
-    .AddScoped<IBotStatusDataService, BotStatusDataService>()
-    .AddDbContext<BotInfoContext>(c
-        => c.UseSqlite(@"Data source=botInfo.Db"));
+       .AddSwaggerGen()
+       .AddScoped<IBotManagementService, BotManagementService>()
+       .AddScoped<IBotStatusDataService, BotStatusDataService>()
+       .AddDbContext<BotInfoContext>(c
+                                             => c.UseSqlite(@"Data source=botInfo.Db"));
 
 builder.Services.AddControllers();
 

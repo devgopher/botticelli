@@ -5,7 +5,6 @@ namespace Viber.Api.Requests
 {
     public class ApiSendMessageRequest : BaseRequest
     {
-
         [JsonPropertyName("receiver")]
         public string? Receiver { get; set; }
 

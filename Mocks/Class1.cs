@@ -1,7 +1,5 @@
-﻿namespace Mocks
-{
-    public class Class1
-    {
+﻿namespace Mocks;
 
-    }
+public class Class1
+{
 }

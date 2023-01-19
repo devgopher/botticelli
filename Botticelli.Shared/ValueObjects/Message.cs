@@ -5,10 +5,7 @@
 /// </summary>
 public class Message
 {
-    public Message(string uid)
-    {
-        Uid = uid;
-    }
+    public Message(string uid) => Uid = uid;
 
     /// <summary>
     ///     Message uid
@@ -16,7 +13,7 @@ public class Message
     public string Uid { get; set; }
 
     /// <summary>
-    /// Chat id
+    ///     Chat id
     /// </summary>
     public string ChatId { get; set; }
 

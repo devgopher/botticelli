@@ -13,12 +13,11 @@ namespace Botticelli.Framework;
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public abstract class BaseBot<T> : IBot<T>
-    where T : BaseBot<T>
+        where T : BaseBot<T>
 {
-    protected bool isStarted { get; set; }
+    public BaseBot() => isStarted = false;
 
-    public BaseBot()
-        => isStarted = false;
+    protected bool isStarted { get; set; }
 
     public async Task<PingResponse> PingAsync(PingRequest request) => PingResponse.GetInstance(request.Uid);
 
@@ -36,6 +35,7 @@ public abstract class BaseBot<T> : IBot<T>
         }
 
         isStarted = true;
+
         return response;
     }
 
@@ -53,6 +53,7 @@ public abstract class BaseBot<T> : IBot<T>
         }
 
         isStarted = false;
+
         return response;
     }
 

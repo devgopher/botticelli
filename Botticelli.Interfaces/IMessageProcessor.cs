@@ -3,12 +3,12 @@
 namespace Botticelli.Interfaces;
 
 /// <summary>
-/// Request processor interface
+///     Request processor interface
 /// </summary>
 public interface IMessageProcessor
 {
     /// <summary>
-    /// Process
+    ///     Process
     /// </summary>
     /// <param name="response"></param>
     /// <returns></returns>

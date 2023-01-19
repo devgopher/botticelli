@@ -1,7 +1,6 @@
 ﻿@page "/BotList"
 @using Botticelli.Server.Data.Entities
 @using System.Text.Json
-@using System.Collections
 @inject IHttpClientFactory ClientFactory
 
 <PageTitle>Your bots</PageTitle>
@@ -15,7 +14,7 @@
         try
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                "http://localhost:5145/admin/GetBots");
+                                                 "http://localhost:5145/admin/GetBots");
             var client = ClientFactory.CreateClient();
 
             var response = await client.SendAsync(request);
@@ -34,6 +33,7 @@
             Console.WriteLine(ex.Message);
         }
     }
+
 }
 
 @foreach (var botInfo in _botInfos)

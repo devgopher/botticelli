@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 using Viber.Api.Entities;
 
 namespace Viber.Api.Responses

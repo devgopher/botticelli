@@ -1,9 +1,8 @@
-﻿namespace Botticelli.Framework.Exceptions
+﻿namespace Botticelli.Framework.Exceptions;
+
+public class BotException : Exception
 {
-    public class BotException : Exception
+    public BotException(string message, Exception inner = default) : base(message, inner)
     {
-        public BotException(string message, Exception inner = default) : base(message, inner)
-        {
-        }
     }
 }

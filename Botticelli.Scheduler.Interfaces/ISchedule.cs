@@ -1,8 +1,7 @@
-﻿namespace Botticelli.Scheduler.Interfaces
+﻿namespace Botticelli.Scheduler.Interfaces;
+
+public interface ISchedule
 {
-    public interface ISchedule
-    {
-        public string Name { get; }
-        public string Cron { get; }
-    }
+    public string Name { get; }
+    public string Cron { get; }
 }

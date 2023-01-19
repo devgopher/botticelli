@@ -1,11 +1,10 @@
-﻿namespace Botticelli.Shared.Constants
+﻿namespace Botticelli.Shared.Constants;
+
+public enum MediaType
 {
-    public enum MediaType
-    {
-        Audio,
-        Video,
-        Text,
-        Voice,
-        Image
-    }
+    Audio,
+    Video,
+    Text,
+    Voice,
+    Image
 }

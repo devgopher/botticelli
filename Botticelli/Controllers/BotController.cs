@@ -1,10 +1,8 @@
 using Botticelli.Server.Data.Entities;
 using Botticelli.Server.Services;
-using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
-using Botticelli.Shared.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Controllers;
@@ -24,39 +22,41 @@ public class BotController
     #region Admin pane
 
     [HttpGet("admin/[action]")]
-    public async Task<ICollection<BotInfo>> GetBots()
-        => await _botStatusDataService.GetBots();
+    public async Task<ICollection<BotInfo>> GetBots() => await _botStatusDataService.GetBots();
 
     [HttpGet("admin/[action]")]
     public async Task SetBotActiveStatus([FromQuery] string botId)
-        => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Active);
+    {
+        await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Active);
+    }
 
 
     [HttpGet("admin/[action]")]
     public async Task SetBotNonActiveStatus([FromQuery] string botId)
-        => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.NonActive);
+    {
+        await _botManagementService.SetRequiredBotStatus(botId, BotStatus.NonActive);
+    }
+
     #endregion
 
     #region Client pane
 
     [HttpPost("client/[action]")]
-    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus(
-        [FromBody] GetRequiredStatusFromServerResponse request)
-        => new()
-        {
-            BotId = request.BotId,
-            IsSuccess = true,
-            Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId)
-        };
+    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus([FromBody] GetRequiredStatusFromServerResponse request) =>
+            new GetRequiredStatusFromServerResponse
+            {
+                BotId = request.BotId,
+                IsSuccess = true,
+                Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId)
+            };
 
 
     [HttpPost("client/[action]")]
-    public async Task<RegisterBotResponse> RegisterBot(
-        [FromBody] RegisterBotRequest request)
+    public async Task<RegisterBotResponse> RegisterBot([FromBody] RegisterBotRequest request)
     {
         var sussess = await _botManagementService.RegisterBot(request.BotId, request.Type);
-     
-        return new()
+
+        return new RegisterBotResponse
         {
             BotId = request.BotId,
             IsSuccess = sussess
@@ -64,14 +64,13 @@ public class BotController
     }
 
     [HttpPost("client/[action]")]
-    public async Task<KeepAliveNotificationResponse> KeepAlive(
-        [FromBody] KeepAliveNotificationRequest request)
+    public async Task<KeepAliveNotificationResponse> KeepAlive([FromBody] KeepAliveNotificationRequest request)
     {
         try
         {
             await _botManagementService.SetKeepAlive(request.BotId);
 
-            return new()
+            return new KeepAliveNotificationResponse
             {
                 BotId = request.BotId,
                 IsSuccess = true
@@ -81,7 +80,7 @@ public class BotController
         {
             //log
 
-            return new()
+            return new KeepAliveNotificationResponse
             {
                 BotId = request.BotId,
                 IsSuccess = false

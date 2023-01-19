@@ -16,7 +16,7 @@ public static class ServiceExtensions
     /// <param name="optionsBuilder"></param>
     /// <returns></returns>
     public static IServiceCollection AddViberBot(this IServiceCollection services,
-        BotOptionsBuilder<ViberBotSettings> optionsBuilder)
+                                                 BotOptionsBuilder<ViberBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
         services.AddSingleton(new ViberApiSettings
