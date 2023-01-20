@@ -19,14 +19,10 @@ public static class ServiceExtensions
     public static IServiceCollection AddTelegramBot(this IServiceCollection services, BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
-        services.AddSingleton<ITelegramBotClient, TelegramBotClient>(sp =>
-                                                                             new TelegramBotClient(settings.TelegramToken));
-        services.AddSingleton(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services));
-        services.AddSingleton<IBot<TelegramBot>, TelegramBot>(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services));
-        //  services.AddHostedService<Telegram.HostedService.TelegramBotHostedService>();
-
-        services.AddSingleton<IUpdateHandler, BotUpdateHandler>();
-
-        return services;
+        return services.AddSingleton<ITelegramBotClient, TelegramBotClient>(sp =>
+                                                                             new TelegramBotClient(settings.TelegramToken))
+                .AddSingleton(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
+                .AddSingleton<IBot<TelegramBot>, TelegramBot>(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
+                .AddSingleton<IUpdateHandler, BotUpdateHandler>();
     }
 }

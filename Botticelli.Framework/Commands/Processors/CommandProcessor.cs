@@ -25,7 +25,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
     public async Task ProcessAsync(long chatId, CancellationToken token, params string[] args)
     {
-        SendMessageRequest request = SendMessageRequest.GetInstance();
+        var request = SendMessageRequest.GetInstance();
         request.Message = new Message(Guid.NewGuid().ToString());
 
         try

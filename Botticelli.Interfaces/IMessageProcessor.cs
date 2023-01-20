@@ -10,7 +10,6 @@ public interface IMessageProcessor
     /// <summary>
     ///     Process
     /// </summary>
-    /// <param name="response"></param>
     /// <returns></returns>
     public Task ProcessAsync(Message message, CancellationToken token);
 }

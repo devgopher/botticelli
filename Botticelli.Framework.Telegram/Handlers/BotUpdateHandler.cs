@@ -9,9 +9,7 @@ namespace Botticelli.Framework.Telegram.Handlers;
 
 public class BotUpdateHandler : IUpdateHandler
 {
-    private readonly IList<IClientMessageProcessor> _clientProcessors = new List<IClientMessageProcessor>();
-
-    private readonly ManualResetEventSlim _startEventSlim = new(false);
+    //private readonly ManualResetEventSlim _startEventSlim = new(false);
 
     public async Task HandlePollingErrorAsync(ITelegramBotClient botClient,
                                               Exception exception,
@@ -49,14 +47,14 @@ public class BotUpdateHandler : IUpdateHandler
     /// <param name="token"></param>
     protected void Process(Message request, CancellationToken token)
     {
-        while (true)
-        {
-            if (token is {CanBeCanceled: true, IsCancellationRequested: true}) break;
+        if (token is { CanBeCanceled: true, IsCancellationRequested: true })
+            return;
 
-            var clientTasks = _clientProcessors.Select(p => ProcessForProcessor(p, request, token));
+        var clientTasks = ClientProcessorFactory
+                          .GetProcessors()
+                          .Select(p => ProcessForProcessor(p, request, token));
 
-            Task.WhenAll(clientTasks);
-        }
+        Task.WhenAll(clientTasks);
     }
 
     /// <summary>
@@ -70,11 +68,9 @@ public class BotUpdateHandler : IUpdateHandler
     {
         return Task.Run(() =>
                         {
-                            _startEventSlim.Wait(token);
+                            //_startEventSlim.Wait(token);
                             processor.ProcessAsync(request, token);
                         },
                         token);
     }
-
-    public void AddClientEventProcessor(IClientMessageProcessor messageProcessor) => _clientProcessors.Add(messageProcessor);
 }
