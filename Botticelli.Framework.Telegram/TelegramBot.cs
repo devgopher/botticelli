@@ -26,14 +26,12 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="services"></param>
     public TelegramBot(ITelegramBotClient client, IServiceCollection services)
     {
+        isStarted = false;
         _client = client;
         _sp = services.BuildServiceProvider();
     }
 
-    public override BotType Type
-    {
-        get { return BotType.Telegram; }
-    }
+    public override BotType Type => BotType.Telegram;
 
     /// <summary>
     ///     Sends a message as a telegram bot
@@ -44,7 +42,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public override async Task<SendMessageResponse> SendAsync(SendMessageRequest request, CancellationToken token)
     {
-        if (!isStarted)
+        if (isStarted)
             return new SendMessageResponse(request.Uid, "Bot wasn't started!")
             {
                 MessageSentStatus = MessageSentStatus.NONSTARTED
@@ -121,7 +119,14 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         var response = await base.StartBotAsync(request, token);
 
-        if (response.Status == AdminCommandStatus.OK) _client.StartReceiving(_sp.GetRequiredService<IUpdateHandler>(), cancellationToken: token);
+        if (isStarted) return response;
+        
+
+            if (response.Status == AdminCommandStatus.OK && !isStarted)
+            {
+                _client.StartReceiving(_sp.GetRequiredService<IUpdateHandler>(), cancellationToken: token);
+                isStarted = true;
+            }
 
         return response;
     }
@@ -135,9 +140,13 @@ public class TelegramBot : BaseBot<TelegramBot>
     public override async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
     {
         var response = await base.StopBotAsync(request, token);
+        
+        if (response.Status == AdminCommandStatus.OK && isStarted)
+        {
+            await _client.CloseAsync(token);
 
-        if (response.Status == AdminCommandStatus.OK) await _client.CloseAsync(token);
-
+            isStarted = false;
+            }
         return response;
     }
 }

@@ -9,12 +9,12 @@ namespace Botticelli.Framework.Telegram.Handlers;
 
 public class BotUpdateHandler : IUpdateHandler
 {
-    //private readonly ManualResetEventSlim _startEventSlim = new(false);
-
     public async Task HandlePollingErrorAsync(ITelegramBotClient botClient,
                                               Exception exception,
-                                              CancellationToken cancellationToken) =>
-            throw new NotImplementedException();
+                                              CancellationToken cancellationToken)
+
+    {
+    }
 
     public async Task HandleUpdateAsync(ITelegramBotClient botClient,
                                         Update update,
@@ -24,12 +24,32 @@ public class BotUpdateHandler : IUpdateHandler
         {
             var botMessage = update.Message;
 
+            if (botMessage == null) return;
+
             var botticelliMessage = new Message(Guid.Empty.ToString())
             {
                 ChatId = botMessage.MessageId.ToString(),
                 Subject = string.Empty,
                 Body = botMessage.Text,
-                Attachments = new List<BinaryAttachment>(5)
+                Attachments = new List<BinaryAttachment>(5),
+                From = new Shared.ValueObjects.User
+                {
+                    Id = botMessage.From?.Id.ToString(),
+                    Name = botMessage.From?.FirstName,
+                    Surname = botMessage.From?.LastName,
+                    Info = string.Empty,
+                    IsBot = botMessage.From?.IsBot,
+                    NickName = botMessage.From?.Username
+                },
+                ForwardFrom = new Shared.ValueObjects.User
+                {
+                    Id = botMessage.ForwardFrom?.Id.ToString(),
+                    Name = botMessage.ForwardFrom?.FirstName,
+                    Surname = botMessage.ForwardFrom?.LastName,
+                    Info = string.Empty,
+                    IsBot = botMessage.ForwardFrom?.IsBot,
+                    NickName = botMessage.ForwardFrom?.Username
+                }
             };
 
             Process(botticelliMessage, cancellationToken);
@@ -64,13 +84,11 @@ public class BotUpdateHandler : IUpdateHandler
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private Task ProcessForProcessor(IMessageProcessor processor, Message request, CancellationToken token)
-    {
-        return Task.Run(() =>
-                        {
-                            //_startEventSlim.Wait(token);
-                            processor.ProcessAsync(request, token);
-                        },
-                        token);
-    }
+    private Task ProcessForProcessor(IMessageProcessor processor, Message request, CancellationToken token) =>
+            Task.Run(() =>
+                     {
+                         //_startEventSlim.Wait(token);
+                         processor.ProcessAsync(request, token);
+                     },
+                     token);
 }

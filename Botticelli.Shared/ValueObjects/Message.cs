@@ -31,4 +31,8 @@ public class Message
     ///     Message attachments
     /// </summary>
     public ICollection<BinaryAttachment>? Attachments { get; set; }
+
+    public User From { get; set; }
+
+    public User ForwardFrom { get; set; }
 }

@@ -34,8 +34,6 @@ public abstract class BaseBot<T> : IBot<T>
             response = StartBotResponse.GetInstance(request.Uid, $"Error: {ex.Message}", AdminCommandStatus.FAIL);
         }
 
-        isStarted = true;
-
         return response;
     }
 

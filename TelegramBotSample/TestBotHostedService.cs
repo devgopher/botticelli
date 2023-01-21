@@ -59,7 +59,7 @@ public class TestBotHostedService : IHostedService
         {
             Body = "testmsg",
             Subject = "subj",
-            ChatId = "156620699",
+            ChatId = "-844372214",// "156620699",
             Attachments = new List<BinaryAttachment>
             {
                 new(Guid.NewGuid().ToString(),
