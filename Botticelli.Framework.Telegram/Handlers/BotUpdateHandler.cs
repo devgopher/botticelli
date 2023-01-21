@@ -26,9 +26,9 @@ public class BotUpdateHandler : IUpdateHandler
 
             if (botMessage == null) return;
 
-            var botticelliMessage = new Message(Guid.Empty.ToString())
+            var botticelliMessage = new Message(botMessage.MessageId.ToString())
             {
-                ChatId = botMessage.MessageId.ToString(),
+                ChatId = botMessage.Chat.Id.ToString(),
                 Subject = string.Empty,
                 Body = botMessage.Text,
                 Attachments = new List<BinaryAttachment>(5),

@@ -60,7 +60,9 @@ public abstract class BaseBot<T> : IBot<T>
     /// </summary>
     /// <param name="request">Request</param>
     /// <returns></returns>
-    public abstract Task<SendMessageResponse> SendAsync(SendMessageRequest request, CancellationToken token);
+    public abstract Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token);
+
+    public abstract Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token);
 
     public abstract BotType Type { get; }
 }

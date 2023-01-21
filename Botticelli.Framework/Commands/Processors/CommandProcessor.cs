@@ -35,7 +35,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             else
             {
                 request.Message.Body = _validator.Help();
-                await _botClient.SendAsync(request, token);
+                await _botClient.SendMessageAsync(request, token);
             }
         }
         catch (Exception ex)

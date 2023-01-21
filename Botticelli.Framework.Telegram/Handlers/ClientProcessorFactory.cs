@@ -7,7 +7,7 @@ public static class ClientProcessorFactory
     private static readonly IList<IClientMessageProcessor> _clientProcessors
             = new List<IClientMessageProcessor>(10);
 
-    public static void AddProcessor<TProcessor>()
+    public static void AddProcessor<TProcessor>(IBot bot)
             where TProcessor : class, IClientMessageProcessor, new()
     {
         var proc = _clientProcessors
@@ -17,6 +17,7 @@ public static class ClientProcessorFactory
             return;
 
         proc = new TProcessor();
+        proc.SetBot(bot);
         _clientProcessors.Add(proc);
     }
 

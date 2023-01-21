@@ -27,6 +27,8 @@ public class ViberBot : BaseBot<ViberBot> //, IDisposable
     }
 
     //_settings = settings;
+    public override Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token) => throw new NotImplementedException();
+
     public override BotType Type
     {
         get { return BotType.Viber; }
@@ -39,7 +41,7 @@ public class ViberBot : BaseBot<ViberBot> //, IDisposable
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public override async Task<SendMessageResponse> SendAsync(SendMessageRequest request, CancellationToken token)
+    public override async Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token)
     {
         SendMessageResponse response = new(request.Uid, string.Empty);
         ApiSendMessageRequest messageRequest;

@@ -5,5 +5,6 @@ namespace Botticelli.Interfaces;
 
 public interface IEventBasedBotClientApi
 {
-    public Task<SendMessageResponse> SendAsync(SendMessageRequest request, CancellationToken token);
+    public Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token);
+    public Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token);
 }

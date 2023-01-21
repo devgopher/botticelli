@@ -1,9 +1,11 @@
 ﻿using Botticelli.Framework.Telegram;
+using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
+using TelegramBotSample.MessageProcessors;
 
 namespace TelegramBotSample;
 
@@ -13,9 +15,10 @@ public class TestBotHostedService : IHostedService
 
     //private readonly IBot<ViberBot> _viberBot;
 
-    public TestBotHostedService(IBot<TelegramBot> telegramBot /*, IBot<ViberBot> viberBot*/)
+    public TestBotHostedService(IBot<TelegramBot> telegramBot, IServiceProvider sp)
     {
         _telegramBot = telegramBot;
+        ClientProcessorFactory.AddProcessor<SampleMessageProcessor>(sp.GetRequiredService<IBot<TelegramBot>>());
     }
 
     //_viberBot = viberBot;
@@ -29,7 +32,7 @@ public class TestBotHostedService : IHostedService
                                              Console.WriteLine("Start sending messages...");
                                              await SendTestMessage();
 
-                                             Thread.Sleep(3000);
+                                             Thread.Sleep(30000);
                                          }
                                      },
                                      cancellationToken);
@@ -37,7 +40,7 @@ public class TestBotHostedService : IHostedService
 
     //private async Task SendViberMessage(SendMessageRequest req)
     //{
-    //    var sentResponse = await _viberBot.SendAsync(req, CancellationToken.None);
+    //    var sentResponse = await _viberBot.SendMessageAsync(req, CancellationToken.None);
 
     //    Console.WriteLine($"msg sent: {sentResponse.MessageSentStatus}");
 
@@ -87,7 +90,7 @@ public class TestBotHostedService : IHostedService
 
     private async Task SendTelegramMessage(SendMessageRequest req)
     {
-        var sentResponse = await _telegramBot.SendAsync(req, CancellationToken.None);
+        var sentResponse = await _telegramBot.SendMessageAsync(req, CancellationToken.None);
 
         Console.WriteLine($"msg sent: {sentResponse.MessageSentStatus}");
 

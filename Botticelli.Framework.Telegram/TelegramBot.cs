@@ -33,6 +33,35 @@ public class TelegramBot : BaseBot<TelegramBot>
 
     public override BotType Type => BotType.Telegram;
 
+    public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token)
+    {
+        if (!isStarted)
+            return new RemoveMessageResponse(request.Uid, "Bot wasn't started!")
+            {
+                MessageRemovedStatus = MessageRemovedStatus.NONSTARTED
+            };
+
+        RemoveMessageResponse response = new(request.Uid, string.Empty);
+
+        try
+        {
+            if (string.IsNullOrWhiteSpace(request.Uid)) throw new BotException("request/message is null!");
+
+            await _client.DeleteMessageAsync(request.ChatId,
+                                             int.Parse(request.Uid),
+                                             token);
+            response.MessageRemovedStatus = MessageRemovedStatus.OK;
+        }
+        catch (Exception ex)
+        {
+            response.MessageRemovedStatus = MessageRemovedStatus.FAIL;
+        }
+
+        response.MessageUid = request.Uid;
+
+        return response;
+    }
+
     /// <summary>
     ///     Sends a message as a telegram bot
     /// </summary>
@@ -40,9 +69,9 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public override async Task<SendMessageResponse> SendAsync(SendMessageRequest request, CancellationToken token)
+    public override async Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token)
     {
-        if (isStarted)
+        if (!isStarted)
             return new SendMessageResponse(request.Uid, "Bot wasn't started!")
             {
                 MessageSentStatus = MessageSentStatus.NONSTARTED
@@ -120,13 +149,13 @@ public class TelegramBot : BaseBot<TelegramBot>
         var response = await base.StartBotAsync(request, token);
 
         if (isStarted) return response;
-        
 
-            if (response.Status == AdminCommandStatus.OK && !isStarted)
-            {
-                _client.StartReceiving(_sp.GetRequiredService<IUpdateHandler>(), cancellationToken: token);
-                isStarted = true;
-            }
+
+        if (response.Status == AdminCommandStatus.OK && !isStarted)
+        {
+            _client.StartReceiving(_sp.GetRequiredService<IUpdateHandler>(), cancellationToken: token);
+            isStarted = true;
+        }
 
         return response;
     }
@@ -140,13 +169,13 @@ public class TelegramBot : BaseBot<TelegramBot>
     public override async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
     {
         var response = await base.StopBotAsync(request, token);
-        
-        if (response.Status == AdminCommandStatus.OK && isStarted)
-        {
-            await _client.CloseAsync(token);
 
-            isStarted = false;
-            }
+        if (response.Status != AdminCommandStatus.OK || !isStarted) return response;
+
+        await _client.CloseAsync(token);
+
+        isStarted = false;
+
         return response;
     }
 }

@@ -16,7 +16,8 @@ public static class ServiceExtensions
     /// <param name="services"></param>
     /// <param name="optionsBuilder"></param>
     /// <returns></returns>
-    public static IServiceCollection AddTelegramBot(this IServiceCollection services, BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
+    public static IServiceCollection AddTelegramBot(this IServiceCollection services,
+                                                    BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
         return services.AddSingleton<ITelegramBotClient, TelegramBotClient>(sp =>
