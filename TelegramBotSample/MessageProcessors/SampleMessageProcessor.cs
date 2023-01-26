@@ -17,9 +17,10 @@ namespace TelegramBotSample.MessageProcessors
 
         }
 
-        public void SetBot(IBot bot)
-        {
-            _bot = bot;
-        }
+        /// <summary>
+        /// Sets a bot (perhaps, we do it in another way)
+        /// </summary>
+        /// <param name="bot"></param>
+        public void SetBot(IBot bot) => _bot = bot;
     }
 }

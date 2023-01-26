@@ -12,10 +12,7 @@ public class BotManagementService : IBotManagementService
 {
     private readonly BotInfoContext _context;
 
-    public BotManagementService(BotInfoContext context)
-    {
-        _context = context;
-    }
+    public BotManagementService(BotInfoContext context) => _context = context;
 
     /// <summary>
     ///     Registers a bot if it's not registered
@@ -83,10 +80,8 @@ public class BotManagementService : IBotManagementService
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
-    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
-    {
-        return _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
-    }
+    public async Task<BotStatus?> GetRequiredBotStatus(string botId) 
+        => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
 
     /// <summary>
     ///     Add a new bot info to a DB
@@ -109,6 +104,7 @@ public class BotManagementService : IBotManagementService
         };
 
         _context.BotInfos.Add(botInfo);
+        _context.SaveChanges();
     }
 
     /// <summary>
@@ -116,8 +112,5 @@ public class BotManagementService : IBotManagementService
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
-    private BotInfo? GetBotInfo(string botId)
-    {
-        return _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
-    }
+    private BotInfo? GetBotInfo(string botId) => _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
 }

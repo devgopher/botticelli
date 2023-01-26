@@ -1,4 +1,5 @@
-﻿using Botticelli.Framework.Exceptions;
+﻿using System.Text;
+using Botticelli.Framework.Exceptions;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
@@ -83,10 +84,14 @@ public class TelegramBot : BaseBot<TelegramBot>
         {
             if (request?.Message == default) throw new BotException("request/message is null!");
 
-            var text = $"{request.Message.Subject} {request.Message.Body}";
-            if (!string.IsNullOrWhiteSpace(text))
+            var text = new StringBuilder($"{request.Message.Subject} {request.Message.Body}");
+
+            text = Escape(text);
+            var retText = text.ToString();
+
+            if (!string.IsNullOrWhiteSpace(retText))
                 await _client.SendTextMessageAsync(request.Message.ChatId,
-                                                   text,
+                                                   retText,
                                                    ParseMode.MarkdownV2,
                                                    cancellationToken: token);
 
@@ -137,6 +142,17 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         return response;
     }
+
+    private static StringBuilder Escape(StringBuilder text) =>
+            text.Replace("!", @"\!")
+                .Replace("*", @"\*")
+                .Replace("'", @"\'")
+                .Replace(".", @"\.")
+                .Replace("_", @"\_")
+                .Replace("(", @"\(")
+                .Replace(")", @"\)")
+                .Replace("-", @"\-")
+                .Replace("`", @"\`");
 
     /// <summary>
     ///     Starts a bot

@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddTelegramBot(new BotOptionsBuilder<TelegramBotSettings>()
-                                .Set(s => s.ChatPollingIntervalMs = 2000)
+                                .Set(s => s.ChatPollingIntervalMs = 20000)
                                 .Set(s => s.TelegramToken = "5746549361:AAFZcvuRcEk7QO4OfAjTYQQUeUpcaES3kqk")
                                 .Set(s => s.Name = "test_bot"));
 

@@ -4,9 +4,8 @@ namespace Botticelli.Shared.API.Client.Requests;
 
 public class SendMessageRequest : BaseRequest<SendMessageRequest>
 {
-    public SendMessageRequest(string uid) : base(uid)
-    {
-    }
+    public SendMessageRequest(string uid) : base(uid) 
+        => Message = new Message(uid);
 
     public Message Message { get; set; }
 
