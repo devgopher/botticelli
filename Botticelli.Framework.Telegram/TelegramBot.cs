@@ -166,12 +166,10 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         if (isStarted) return response;
 
+        if (response.Status != AdminCommandStatus.OK || isStarted) return response;
 
-        if (response.Status == AdminCommandStatus.OK && !isStarted)
-        {
-            _client.StartReceiving(_sp.GetRequiredService<IUpdateHandler>(), cancellationToken: token);
-            isStarted = true;
-        }
+        _client.StartReceiving(_sp.GetRequiredService<IUpdateHandler>(), cancellationToken: token);
+        isStarted = true;
 
         return response;
     }

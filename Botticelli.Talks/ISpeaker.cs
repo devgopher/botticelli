@@ -2,6 +2,6 @@
 {
     public interface ISpeaker
     {
-        public Task<byte[]> Speak(string markedText, string language);
+        public Task<byte[]> Speak(string markedText, string language, CancellationToken token);
     }
 }
