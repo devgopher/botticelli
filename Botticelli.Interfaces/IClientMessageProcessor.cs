@@ -6,4 +6,5 @@
 public interface IClientMessageProcessor : IMessageProcessor
 {
     public void SetBot(IBot bot);
+    public void SetServiceProvider(IServiceProvider sp);
 }

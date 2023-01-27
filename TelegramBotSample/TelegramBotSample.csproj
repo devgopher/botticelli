@@ -12,12 +12,17 @@
     <ProjectReference Include="..\Botticelli.Framework.Viber\Botticelli.Framework.Viber.csproj" />
     <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
     <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
+    <ProjectReference Include="..\Botticelli.Talks\Botticelli.Talks.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Media\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.2" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="Media\testpic.png">

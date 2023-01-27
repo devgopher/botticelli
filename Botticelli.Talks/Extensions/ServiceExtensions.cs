@@ -10,9 +10,7 @@ namespace Botticelli.Talks.Extensions
         public static IServiceCollection AddOpenTtsTalks(this IServiceCollection services,
                                                   IConfiguration config)
         {
-            var settings = config.Get<TtsSettings>();
-
-            services.ConfigureOptions<TtsSettings>();
+            services.Configure<TtsSettings>(config.GetSection(nameof(TtsSettings)));
             services.AddHttpClient<OpenTtsSpeaker>();
             services.AddScoped<ISpeaker, OpenTtsSpeaker>();
 

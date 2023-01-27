@@ -7,6 +7,7 @@ namespace TelegramBotSample.MessageProcessors
     public class SampleMessageProcessor : IClientMessageProcessor
     {
         private IBot _bot;
+        private IServiceProvider _sp;
 
         public async Task ProcessAsync(Message message, CancellationToken token)
         {
@@ -22,5 +23,8 @@ namespace TelegramBotSample.MessageProcessors
         /// </summary>
         /// <param name="bot"></param>
         public void SetBot(IBot bot) => _bot = bot;
+
+        public void SetServiceProvider(IServiceProvider sp)
+            => _sp = sp;
     }
 }

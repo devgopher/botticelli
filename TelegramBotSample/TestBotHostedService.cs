@@ -18,10 +18,10 @@ public class TestBotHostedService : IHostedService
     public TestBotHostedService(IBot<TelegramBot> telegramBot, IServiceProvider sp)
     {
         _telegramBot = telegramBot;
-        ClientProcessorFactory.AddProcessor<SampleMessageProcessor>(sp.GetRequiredService<IBot<TelegramBot>>());
+        //ClientProcessorFactory.AddProcessor<SampleMessageProcessor>(sp.GetRequiredService<IBot<TelegramBot>>(), sp);
+        ClientProcessorFactory.AddProcessor<InputMessageProcessor>(sp.GetRequiredService<IBot<TelegramBot>>(), sp);
     }
 
-    //_viberBot = viberBot;
     public Task StartAsync(CancellationToken cancellationToken)
     {
         return Task.Factory.StartNew(async ()
@@ -37,17 +37,6 @@ public class TestBotHostedService : IHostedService
                                      },
                                      cancellationToken);
     }
-
-    //private async Task SendViberMessage(SendMessageRequest req)
-    //{
-    //    var sentResponse = await _viberBot.SendMessageAsync(req, CancellationToken.None);
-
-    //    Console.WriteLine($"msg sent: {sentResponse.MessageSentStatus}");
-
-    //    if (sentResponse.MessageSentStatus == MessageSentStatus.FAIL)
-    //        return;
-    //}
-
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
