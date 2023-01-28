@@ -21,7 +21,7 @@ public class InputMessageProcessor : IClientMessageProcessor
         {
             var scope = _sp.CreateScope();
             var speaker = scope.ServiceProvider.GetRequiredService<ISpeaker>();
-            var result = await speaker.Speak(message.Body, "en", token);
+            var result = await speaker.Speak(message.Body, token);
             var resultMessage = new SendMessageRequest(Guid.NewGuid().ToString())
             {
                 Message =
@@ -36,8 +36,6 @@ public class InputMessageProcessor : IClientMessageProcessor
                                                                        MediaType.Audio,
                                                                        result));
             await _bot.SendMessageAsync(resultMessage, token);
-            {
-            }
         }
         catch (Exception ex)
         {

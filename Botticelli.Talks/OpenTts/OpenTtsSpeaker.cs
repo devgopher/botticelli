@@ -1,46 +1,49 @@
-﻿using Botticelli.Talks.Exceptions;
-using Botticelli.Talks.Settings;
+﻿using Botticelli.Talks.Settings;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Botticelli.Talks.OpenTts
 {
-    public class OpenTtsSpeaker : ISpeaker
+    public class OpenTtsSpeaker : BaseTtsSpeaker
     {
-        private readonly ILogger _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IOptionsMonitor<TtsSettings> _settings;
+
 
         public OpenTtsSpeaker(IHttpClientFactory httpClientFactory,
-                              ILogger logger,
-                              IOptionsMonitor<TtsSettings> settings)
+                              ILogger<OpenTtsSpeaker> logger,
+                              IOptionsMonitor<TtsSettings> settings) 
+                : base(logger, httpClientFactory, settings)
         {
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-            _settings = settings;
         }
 
-        public async Task<byte[]> Speak(string markedText, string lang, CancellationToken token)
+        public override async Task<byte[]> Speak(string markedText, string voice, string lang, CancellationToken token)
         {
-            var urlEncodedText = $"?voice={_settings.CurrentValue.DefaultVoice}:{lang}&text={Url.Encode(markedText)}&vocoder=high&denoiserStrength=0.03&cache=true";
+            var urlEncodedText = $"?voice={voice}:{lang}&text={Url.Encode(markedText)}&vocoder=high&denoiserStrength=0.03&cache=true";
 
-            using (var client = _httpClientFactory.CreateClient())
+            using var client = HttpClientFactory.CreateClient();
+
+            var fullUrl = Url.Combine(Settings.CurrentValue.EngineConnection, urlEncodedText);
+            var result = await client.GetAsync(fullUrl, token);
+
+            if (!result.IsSuccessStatusCode)
             {
-                var fullUrl = Url.Combine(_settings.CurrentValue.EngineConnection, urlEncodedText);
-                var result = await client.GetAsync(fullUrl, token);
+                Logger.LogError($"Can't get response from voice: {result.StatusCode}: {result.ReasonPhrase}!");
 
-                if (!result.IsSuccessStatusCode)
-                {
-                    _logger.LogError($"Can't get response from engine: {result.StatusCode}: {result.ReasonPhrase}!");
-
-                    return Array.Empty<byte>();
-                    //throw new BotticelliTalksException($"Can't get response from engine: {result.StatusCode}!");
-                }
-
-                var byteResult = await result.Content.ReadAsByteArrayAsync(token);
-                return byteResult;
+                return Array.Empty<byte>();
+                //throw new BotticelliTalksException($"Can't get response from voice: {result.StatusCode}!");
             }
+
+            var byteResult = await result.Content.ReadAsByteArrayAsync(token);
+
+            byteResult = await Compress(byteResult, token);
+
+            return byteResult;
         }
+
+        public override async Task<byte[]> Speak(string markedText, CancellationToken token)
+            => await Speak(markedText,
+                           Settings.CurrentValue.DefaultVoice,
+                           Settings.CurrentValue.Language,
+                           token);
     }
 }

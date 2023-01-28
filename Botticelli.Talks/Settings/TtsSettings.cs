@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Talks.Settings
+﻿using Botticelli.Talks.Constants;
+
+namespace Botticelli.Talks.Settings
 {
     public class TtsSettings
     {
@@ -6,5 +8,7 @@
         public string? EngineConnection { get; set; }
         public string? Language { get; set; }
         public string? DefaultVoice { get; set; }
+
+        public CompressionLevels CompressionLevel { get; set; }
     }
 }
