@@ -9,10 +9,9 @@ namespace Botticelli.Talks.OpenTts;
 
 public abstract class BaseTtsSpeaker : ISpeaker
 {
-    protected readonly ILogger Logger;
     protected readonly IHttpClientFactory HttpClientFactory;
+    protected readonly ILogger Logger;
     protected readonly IOptionsMonitor<TtsSettings> Settings;
-    private readonly WaveFormat _waveFormat = new();
 
     protected BaseTtsSpeaker(ILogger logger, IHttpClientFactory httpClientFactory, IOptionsMonitor<TtsSettings> settings)
     {
@@ -34,7 +33,7 @@ public abstract class BaseTtsSpeaker : ISpeaker
         {
             if (Settings.CurrentValue.CompressionLevel == CompressionLevels.None) return input;
 
-            LAMEPreset preset = Settings.CurrentValue.CompressionLevel switch
+            var preset = Settings.CurrentValue.CompressionLevel switch
             {
                 CompressionLevels.Low    => LAMEPreset.EXTREME_FAST,
                 CompressionLevels.Medium => LAMEPreset.MEDIUM_FAST,
@@ -45,9 +44,11 @@ public abstract class BaseTtsSpeaker : ISpeaker
             using var resultStream = new MemoryStream();
             using var bufferStream = new MemoryStream(input);
             using var wavReader = new WaveFileReader(bufferStream);
+
             using (var mp3Writer = new LameMP3FileWriter(resultStream, wavReader.WaveFormat, preset))
             {
                 wavReader.CopyTo(mp3Writer);
+
                 return resultStream.ToArray();
             }
         }

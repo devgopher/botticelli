@@ -11,10 +11,6 @@ public class InputMessageProcessor : IClientMessageProcessor
     private IBot _bot;
     private IServiceProvider _sp;
 
-    public InputMessageProcessor()
-    {
-    }
-
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
         try

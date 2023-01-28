@@ -7,8 +7,6 @@ namespace Botticelli.Talks.OpenTts
 {
     public class OpenTtsSpeaker : BaseTtsSpeaker
     {
-
-
         public OpenTtsSpeaker(IHttpClientFactory httpClientFactory,
                               ILogger<OpenTtsSpeaker> logger,
                               IOptionsMonitor<TtsSettings> settings) 
@@ -30,7 +28,6 @@ namespace Botticelli.Talks.OpenTts
                 Logger.LogError($"Can't get response from voice: {result.StatusCode}: {result.ReasonPhrase}!");
 
                 return Array.Empty<byte>();
-                //throw new BotticelliTalksException($"Can't get response from voice: {result.StatusCode}!");
             }
 
             var byteResult = await result.Content.ReadAsByteArrayAsync(token);
