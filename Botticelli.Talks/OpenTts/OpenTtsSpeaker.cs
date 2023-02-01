@@ -14,7 +14,11 @@ namespace Botticelli.Talks.OpenTts
         {
         }
 
-        public override async Task<byte[]> Speak(string markedText, string voice, string lang, CancellationToken token)
+        public override async Task<byte[]> Speak(string markedText, 
+                                                 string voice,
+                                                 string lang, 
+                                                 double speed, 
+                                                 CancellationToken token)
         {
             var urlEncodedText = $"?voice={voice}:{lang}&text={Url.Encode(markedText)}&vocoder=high&denoiserStrength=0.03&cache=true";
 
@@ -41,6 +45,7 @@ namespace Botticelli.Talks.OpenTts
             => await Speak(markedText,
                            Settings.CurrentValue.DefaultVoice,
                            Settings.CurrentValue.Language,
+                           1.0,
                            token);
     }
 }

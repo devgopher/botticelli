@@ -1,4 +1,5 @@
 ﻿using Botticelli.BotBase.Settings;
+using Botticelli.Framework.Extensions;
 using Botticelli.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ public static class ServiceCollectionExtensions
                                                          IConfiguration config)
             where TBot : IBot
     {
+        services.AddBotticelliFramework();
         services.AddHttpClient<BotStatusService<TBot>>();
 
         var serverConfig = new ServerSettings();
