@@ -53,7 +53,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Rocket
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Talks", "Botticelli.Talks\Botticelli.Talks.csproj", "{9F4B5D3F-661C-433B-BC9F-CAC4048EF9EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Talks.Tests", "Botticelli.Talks.Tests\Botticelli.Talks.Tests.csproj", "{A837401C-06F3-4573-9066-B911D55A1C9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Talks.Tests", "Botticelli.Talks.Tests\Botticelli.Talks.Tests.csproj", "{A837401C-06F3-4573-9066-B911D55A1C9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI", "Botticelli.AI\Botticelli.AI.csproj", "{F2270850-361A-4654-A893-718332560B02}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,6 +143,10 @@ Global
 		{A837401C-06F3-4573-9066-B911D55A1C9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A837401C-06F3-4573-9066-B911D55A1C9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A837401C-06F3-4573-9066-B911D55A1C9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2270850-361A-4654-A893-718332560B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2270850-361A-4654-A893-718332560B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2270850-361A-4654-A893-718332560B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2270850-361A-4654-A893-718332560B02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,6 +171,7 @@ Global
 		{0E260B6E-5E27-4261-83AA-F45A5AC742E7} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{9F4B5D3F-661C-433B-BC9F-CAC4048EF9EA} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{A837401C-06F3-4573-9066-B911D55A1C9D} = {346A18CA-EB1F-483B-8BC3-EDF250DA72E6}
+		{F2270850-361A-4654-A893-718332560B02} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
