@@ -28,6 +28,11 @@ public abstract class BaseTtsSpeaker : ISpeaker
                                        double speed,
                                        CancellationToken token);
 
+    public abstract Task<byte[]> Speak(string markedText,
+                              string voice,
+                              string lang,
+                              CancellationToken token);
+
     public abstract Task<byte[]> Speak(string markedText, CancellationToken token);
 
     protected async Task<byte[]> Compress(byte[] input, CancellationToken token)
