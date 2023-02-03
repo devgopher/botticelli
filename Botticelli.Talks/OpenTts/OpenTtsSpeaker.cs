@@ -41,6 +41,12 @@ namespace Botticelli.Talks.OpenTts
             return byteResult;
         }
 
+        public override Task<byte[]> Speak(string markedText,
+                                           string voice,
+                                           string lang,
+                                           CancellationToken token) =>
+                Speak(markedText, voice,lang, 1.0, token);
+
         public override async Task<byte[]> Speak(string markedText, CancellationToken token)
             => await Speak(markedText,
                            Settings.CurrentValue.DefaultVoice,
