@@ -5,7 +5,7 @@ namespace Botticelli.Framework.Commands.Processors
     public class CommandProcessorFactory
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly Dictionary<Type, Type> _types;
+        private readonly Dictionary<Type, Type> _types = new Dictionary<Type, Type>();
 
 
         public CommandProcessorFactory(IServiceProvider serviceProvider)

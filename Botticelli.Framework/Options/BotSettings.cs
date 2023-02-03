@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Framework.Options;
+﻿using BotDataSecureStorage.Settings;
+
+namespace Botticelli.Framework.Options;
 
 /// <summary>
 ///     Bot general settings
@@ -9,4 +11,6 @@ public abstract class BotSettings
     ///     Bot name
     /// </summary>
     public string? Name { get; set; }
+
+    public SecureStorageSettings SecureStorageSettings { get; set; }
 }

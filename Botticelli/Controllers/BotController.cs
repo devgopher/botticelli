@@ -59,7 +59,7 @@ public class BotController
     [HttpPost("client/[action]")]
     public async Task<RegisterBotResponse> RegisterBot([FromBody] RegisterBotRequest request)
     {
-        var sussess = await _botManagementService.RegisterBot(request.BotId, request.Type);
+        var sussess = await _botManagementService.RegisterBot(request.BotId, request.BotKey, request.Type);
 
         return new RegisterBotResponse
         {

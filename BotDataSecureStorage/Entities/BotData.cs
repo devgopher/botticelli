@@ -8,7 +8,7 @@ public class BotData
     /// <summary>
     /// botticelli bot id
     /// </summary>
-    public string BotId { get; set; }
+    public string Id { get; set; }
     /// <summary>
     /// Bot data
     /// </summary>

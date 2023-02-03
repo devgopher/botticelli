@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
     <ProjectReference Include="..\Botticelli.Server.Data\Botticelli.Server.Data.csproj" />
   </ItemGroup>
 

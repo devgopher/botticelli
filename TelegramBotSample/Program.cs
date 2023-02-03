@@ -1,3 +1,4 @@
+using BotDataSecureStorage.Settings;
 using Botticelli.BotBase.Extensions;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
@@ -16,13 +17,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTelegramBot(new BotOptionsBuilder<TelegramBotSettings>()
                                 .Set(s => s.ChatPollingIntervalMs = 20000)
-                                .Set(s => s.TelegramToken = "5746549361:AAFZcvuRcEk7QO4OfAjTYQQUeUpcaES3kqk")
+                                .Set(s => s.SecureStorageSettings = new SecureStorageSettings
+                                {
+                                    ConnectionString = "Filename=../../../database.db;Password=123;ReadOnly=true"
+                                })
                                 .Set(s => s.Name = "test_bot"));
 
 builder.Services.UseBotticelli<IBot<TelegramBot>>(builder.Configuration);
 builder.Services.AddLogging(cfg => cfg.AddNLog());
 builder.Services.AddOpenTtsTalks(builder.Configuration);
-builder.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor>();
+//builder.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor>();
 
 builder.Services.AddHostedService<TestBotHostedService>();
 

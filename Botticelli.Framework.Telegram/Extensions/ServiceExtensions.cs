@@ -1,4 +1,7 @@
-﻿using Botticelli.Framework.Options;
+﻿using BotDataSecureStorage;
+using BotDataSecureStorage.Settings;
+using Botticelli.BotBase.Utils;
+using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
@@ -20,10 +23,15 @@ public static class ServiceExtensions
                                                     BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
+        var token = "";
+
+        var secureStorage = new SecureStorage(settings.SecureStorageSettings);
+        token = secureStorage.GetBotKey(BotDataUtils.GetBotId()).Key;
+
         return services.AddSingleton<ITelegramBotClient, TelegramBotClient>(sp =>
-                                                                             new TelegramBotClient(settings.TelegramToken))
-                .AddSingleton(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
-                .AddSingleton<IBot<TelegramBot>, TelegramBot>(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
-                .AddSingleton<IUpdateHandler, BotUpdateHandler>();
+                                                                                    new TelegramBotClient(token))
+                       .AddSingleton(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
+                       .AddSingleton<IBot<TelegramBot>, TelegramBot>(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
+                       .AddSingleton<IUpdateHandler, BotUpdateHandler>();
     }
 }

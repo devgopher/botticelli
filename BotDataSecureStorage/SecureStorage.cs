@@ -1,4 +1,5 @@
 ﻿using BotDataSecureStorage.Entities;
+using BotDataSecureStorage.Settings;
 using LiteDB;
 
 namespace BotDataSecureStorage
@@ -6,14 +7,19 @@ namespace BotDataSecureStorage
     /// <summary>
     /// This storage is intended for keeping bot keys safely
     /// </summary>
-    public class SecureStorage : IDisposable
+    public class SecureStorage 
     {
         private readonly LiteDatabase _db;
 
-        public SecureStorage(string connectionString) => _db = new LiteDatabase(connectionString, BsonMapper.Global);
+        public SecureStorage(SecureStorageSettings settings) 
+            => _db = new LiteDatabase(settings.ConnectionString, BsonMapper.Global);
 
+        public BotKey GetBotKey(string botId)
+        {
+            var allRecs = _db.GetCollection<BotKey>().FindAll().ToList();
+            return allRecs.FirstOrDefault(x=> x.Id == botId);
+        }
 
-        public BotKey GetBotKey(string botId) => _db.GetCollection<BotKey>().FindById(botId);
         public void SetBotKey(string botId, string key) => _db.GetCollection<BotKey>().Upsert(botId, new BotKey()
         {
             Id = botId,
@@ -27,9 +33,6 @@ namespace BotDataSecureStorage
             Data = data
         });
 
-
-
-
-        public void Dispose() => _db.Dispose();
+        //public void Dispose() => _db?.Dispose();
     }
 }

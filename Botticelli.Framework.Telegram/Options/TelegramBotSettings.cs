@@ -9,9 +9,4 @@ public class TelegramBotSettings : BotSettings
     ///     Chat polling interval
     /// </summary>
     public int ChatPollingIntervalMs { get; set; }
-
-    /// <summary>
-    ///     Telegram API token
-    /// </summary>
-    public string TelegramToken { get; set; }
 }

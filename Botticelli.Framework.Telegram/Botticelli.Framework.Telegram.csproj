@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
+    <ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj" />
     <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="Telegram.Bot" Version="18.0.*" />
