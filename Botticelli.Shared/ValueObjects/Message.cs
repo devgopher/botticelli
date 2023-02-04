@@ -30,7 +30,7 @@ public class Message
     /// <summary>
     ///     Message attachments
     /// </summary>
-    public ICollection<BinaryAttachment>? Attachments { get; set; }
+    public ICollection<IAttachment>? Attachments { get; set; }
 
     public User From { get; set; }
 

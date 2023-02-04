@@ -6,5 +6,6 @@ public enum MediaType
     Video,
     Text,
     Voice,
-    Image
+    Image,
+    Sticker
 }

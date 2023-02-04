@@ -31,7 +31,7 @@ public class BotUpdateHandler : IUpdateHandler
                 ChatId = botMessage.Chat.Id.ToString(),
                 Subject = string.Empty,
                 Body = botMessage.Text,
-                Attachments = new List<BinaryAttachment>(5),
+                Attachments = new List<IAttachment>(5),
                 From = new Shared.ValueObjects.User
                 {
                     Id = botMessage.From?.Id.ToString(),

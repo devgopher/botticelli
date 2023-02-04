@@ -30,6 +30,7 @@ public class InputMessageProcessor : IClientMessageProcessor
             resultMessage.Message.Attachments.Add(new BinaryAttachment(Guid.NewGuid().ToString(),
                                                                        "response",
                                                                        MediaType.Audio,
+                                                                       string.Empty,
                                                                        result));
             await _bot.SendMessageAsync(resultMessage, token);
         }

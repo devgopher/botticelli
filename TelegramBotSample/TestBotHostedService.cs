@@ -57,14 +57,17 @@ public class TestBotHostedService : IHostedService
                 new(Guid.NewGuid().ToString(),
                     "testpic.png",
                     MediaType.Image,
+                    string.Empty,
                     File.ReadAllBytes("Media/testpic.png")),
                 new(Guid.NewGuid().ToString(),
                     "voice.mp3",
                     MediaType.Voice,
+                    string.Empty,
                     File.ReadAllBytes("Media/voice.mp3")),
                 new(Guid.NewGuid().ToString(),
                     "video.mp4",
                     MediaType.Video,
+                    string.Empty,
                     File.ReadAllBytes("Media/video.mp4"))
             }
         };
