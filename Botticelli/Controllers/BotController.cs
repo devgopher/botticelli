@@ -21,52 +21,39 @@ public class BotController
 
     #region Admin pane
 
-    [HttpGet("admin/[action]")]
-    public async Task<ICollection<BotInfo>> GetBots()
+    [HttpPost("client/[action]")]
+    public async Task<RegisterBotResponse> AddNewBot([FromBody] RegisterBotRequest request)
     {
-        return await _botStatusDataService.GetBots();
+        var success = await _botManagementService.RegisterBot(request.BotId, request.BotKey, request.Type);
+
+        return new RegisterBotResponse
+        {
+            BotId = request.BotId,
+            IsSuccess = success
+        };
     }
 
     [HttpGet("admin/[action]")]
-    public async Task SetBotActiveStatus([FromQuery] string botId)
-    {
-        await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Active);
-    }
-
+    public async Task<ICollection<BotInfo>> GetBots() => await _botStatusDataService.GetBots();
 
     [HttpGet("admin/[action]")]
-    public async Task SetBotNonActiveStatus([FromQuery] string botId)
-    {
-        await _botManagementService.SetRequiredBotStatus(botId, BotStatus.NonActive);
-    }
+    public async Task ActivateBot([FromQuery] string botId) => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Active);
+
+    [HttpGet("admin/[action]")]
+    public async Task DeactivateBot([FromQuery] string botId) => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.NonActive);
 
     #endregion
 
     #region Client pane
 
     [HttpPost("client/[action]")]
-    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus([FromBody] GetRequiredStatusFromServerResponse request)
-    {
-        return new GetRequiredStatusFromServerResponse
-        {
-            BotId = request.BotId,
-            IsSuccess = true,
-            Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId)
-        };
-    }
-
-
-    [HttpPost("client/[action]")]
-    public async Task<RegisterBotResponse> RegisterBot([FromBody] RegisterBotRequest request)
-    {
-        var sussess = await _botManagementService.RegisterBot(request.BotId, request.BotKey, request.Type);
-
-        return new RegisterBotResponse
-        {
-            BotId = request.BotId,
-            IsSuccess = sussess
-        };
-    }
+    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus([FromBody] GetRequiredStatusFromServerResponse request) =>
+            new()
+            {
+                BotId = request.BotId,
+                IsSuccess = true,
+                Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId)
+            };
 
     [HttpPost("client/[action]")]
     public async Task<KeepAliveNotificationResponse> KeepAlive([FromBody] KeepAliveNotificationRequest request)

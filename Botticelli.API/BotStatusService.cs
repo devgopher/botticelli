@@ -47,18 +47,18 @@ internal class BotStatusService<TBot> : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        var request = new RegisterBotRequest
-        {
-            BotId = _botId,
-            Type = _bot.Type
-        };
+        //var request = new RegisterBotRequest
+        //{
+        //    BotId = _botId,
+        //    Type = _bot.Type
+        //};
 
-        var response =
-                await InnerSend<RegisterBotRequest, RegisterBotResponse>(request,
-                                                                         "/client/RegisterBot",
-                                                                         cancellationToken);
+        //var response =
+        //        await InnerSend<RegisterBotRequest, RegisterBotResponse>(request,
+        //                                                                 "/client/RegisterBot",
+        //                                                                 cancellationToken);
 
-        if (!response.IsSuccess) throw new BotException("Error starting a bot!");
+        //if (!response.IsSuccess) throw new BotException("Error starting a bot!");
 
         KeepAlive(cancellationToken);
         GetRequiredStatus(cancellationToken);

@@ -152,19 +152,23 @@ public class TelegramBot : BaseBot<TelegramBot>
                     }
                 }
 
-                foreach (var genAttach in request.Message.Attachments.Where(a => a is InvoiceAttachment))
-                {
-                    var attachment = (InvoiceAttachment) genAttach;
+                //foreach (var genAttach in request.Message.Attachments.Where(a => a is InvoiceAttachment))
+                //{
+                //    var attachment = (InvoiceAttachment) genAttach;
 
-                    var telegramAttach = new Invoice
-                    {
-                        Title = attachment.Title,
-                        Description = attachment.Description,
-                        StartParameter = attachment.StartParameter,
-                        Currency = attachment.Currency,
-                        TotalAmount = Currencies.SmallestUnits(attachment.Currency, attachment.TotalAmount)
-                    };
-                }
+                //    var telegramAttach = new Invoice
+                //    {
+                //        Title = attachment.Title,
+                //        Description = attachment.Description,
+                //        StartParameter = attachment.StartParameter,
+                //        Currency = attachment.Currency,
+                //        TotalAmount = Currencies.SmallestUnits(attachment.Currency, attachment.TotalAmount)
+                //    };
+
+                //    await _client.SendInvoiceAsync(request.Message.ChatId, attachment.Title,
+                //                                   attachment.Description,
+                //                                   attachment.);
+                //}
             }
 
             response.MessageSentStatus = MessageSentStatus.OK;

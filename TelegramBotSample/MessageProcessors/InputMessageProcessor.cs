@@ -23,7 +23,7 @@ public class InputMessageProcessor : IClientMessageProcessor
                 Message =
                 {
                     ChatId = message.ChatId,
-                    Attachments = new List<BinaryAttachment>()
+                    Attachments = new List<IAttachment>()
                 }
             };
 
