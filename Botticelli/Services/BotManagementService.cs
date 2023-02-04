@@ -31,6 +31,8 @@ public class BotManagementService : IBotManagementService
     {
         try
         {
+            botKey ??= _secureStorage.GetBotKey(botId).Key;
+
             if (GetBotInfo(botId) == default)
                 AddNewBotInfo(botId, botKey, BotStatus.Unknown, botType);
 

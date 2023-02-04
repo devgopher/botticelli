@@ -1,4 +1,6 @@
-﻿namespace BotDataSecureStorage.Entities;
+﻿using LiteDB;
+
+namespace BotDataSecureStorage.Entities;
 
 /// <summary>
 /// Bot additional data
@@ -8,6 +10,7 @@ public class BotData
     /// <summary>
     /// botticelli bot id
     /// </summary>
+    [BsonId]
     public string Id { get; set; }
     /// <summary>
     /// Bot data

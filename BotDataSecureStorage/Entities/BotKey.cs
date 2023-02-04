@@ -1,4 +1,6 @@
-﻿namespace BotDataSecureStorage.Entities
+﻿using LiteDB;
+
+namespace BotDataSecureStorage.Entities
 {
     /// <summary>
     /// Bot keys
@@ -8,6 +10,7 @@
         /// <summary>
         /// botticelli bot id
         /// </summary>
+        [BsonId]
         public string Id { get; set; }
         /// <summary>
         /// A key for a concrete messenger
