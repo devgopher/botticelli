@@ -10,12 +10,12 @@ public class Message
     /// <summary>
     ///     Message uid
     /// </summary>
-    public string Uid { get; set; }
+    public string? Uid { get; set; }
 
     /// <summary>
     ///     Chat id
     /// </summary>
-    public string ChatId { get; set; }
+    public string? ChatId { get; set; }
 
     /// <summary>
     ///     Message subj
@@ -32,7 +32,7 @@ public class Message
     /// </summary>
     public ICollection<IAttachment>? Attachments { get; set; }
 
-    public User From { get; set; }
+    public User? From { get; set; }
 
-    public User ForwardFrom { get; set; }
+    public User? ForwardFrom { get; set; }
 }
