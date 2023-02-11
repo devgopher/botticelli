@@ -14,4 +14,8 @@
     <Folder Include="Interfaces\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Botticelli.Bus\Botticelli.Bus.None.csproj" />
+  </ItemGroup>
+
 </Project>

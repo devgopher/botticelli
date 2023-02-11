@@ -61,7 +61,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Pay", "Botticell
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SecureStorage", "SecureStorage", "{67600124-6694-4A1D-AB60-86ABC999254A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotDataSecureStorage", "BotDataSecureStorage\BotDataSecureStorage.csproj", "{54E9BED2-9760-4B78-966F-17500C29D323}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotDataSecureStorage", "BotDataSecureStorage\BotDataSecureStorage.csproj", "{54E9BED2-9760-4B78-966F-17500C29D323}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bus.None", "Botticelli.Bus\Botticelli.Bus.None.csproj", "{79DEC257-916B-402D-BBB9-BF4E6518FF8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bot.Interfaces", "Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj", "{2851D399-D071-421A-B5B1-AB24883F82E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bus.Rabbit", "Botticelli.Bus.Rabbit\Botticelli.Bus.Rabbit.csproj", "{1EE16F3E-B208-4211-9C77-9A24037668AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -161,6 +167,18 @@ Global
 		{54E9BED2-9760-4B78-966F-17500C29D323}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54E9BED2-9760-4B78-966F-17500C29D323}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54E9BED2-9760-4B78-966F-17500C29D323}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79DEC257-916B-402D-BBB9-BF4E6518FF8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79DEC257-916B-402D-BBB9-BF4E6518FF8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79DEC257-916B-402D-BBB9-BF4E6518FF8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79DEC257-916B-402D-BBB9-BF4E6518FF8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2851D399-D071-421A-B5B1-AB24883F82E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2851D399-D071-421A-B5B1-AB24883F82E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2851D399-D071-421A-B5B1-AB24883F82E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2851D399-D071-421A-B5B1-AB24883F82E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EE16F3E-B208-4211-9C77-9A24037668AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EE16F3E-B208-4211-9C77-9A24037668AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EE16F3E-B208-4211-9C77-9A24037668AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EE16F3E-B208-4211-9C77-9A24037668AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +206,9 @@ Global
 		{F2270850-361A-4654-A893-718332560B02} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{C010219B-6ECA-429F-98BA-839F6BAC0D6B} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{54E9BED2-9760-4B78-966F-17500C29D323} = {67600124-6694-4A1D-AB60-86ABC999254A}
+		{79DEC257-916B-402D-BBB9-BF4E6518FF8F} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
+		{2851D399-D071-421A-B5B1-AB24883F82E0} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
+		{1EE16F3E-B208-4211-9C77-9A24037668AC} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
