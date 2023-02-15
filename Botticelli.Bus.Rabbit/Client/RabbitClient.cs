@@ -3,14 +3,14 @@ using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 
-namespace Botticelli.Bus.None.Client;
+namespace Botticelli.Bus.Rabbit.Client;
 
-public class PassClient<TBot> : IBotticelliBusClient
+public class RabbitClient<TBot> : IBotticelliBusClient
         where TBot : IBot
 {
     private readonly TBot _bot;
 
-    public PassClient(TBot bot) => _bot = bot;
+    public RabbitClient(TBot bot) => _bot = bot;
 
     public async Task<SendMessageResponse> GetResponse(SendMessageRequest request,
                                                        CancellationToken token,

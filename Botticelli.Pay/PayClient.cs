@@ -1,4 +1,4 @@
-﻿using Botticelli.Bus.Agent;
+﻿using Botticelli.Bot.Interfaces.Agent;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 

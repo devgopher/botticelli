@@ -1,6 +1,6 @@
 ﻿using Botticelli.AI.Extensions;
 using Botticelli.AI.Message;
-using Botticelli.Bus.Agent;
+using Botticelli.Bot.Interfaces.Agent;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Microsoft.Extensions.Logging;
@@ -10,7 +10,7 @@ namespace Botticelli.AI.AIProvider;
 
 public abstract class GenericAiProvider : IAiProvider
 {
-    private readonly IBotticelliBusAgent _bus;
+    private readonly IBotticelliBusAgent<> _bus;
     private readonly IHttpClientFactory _factory;
     private readonly ILogger _logger;
     private readonly IOptionsMonitor<AISettings> _settings;

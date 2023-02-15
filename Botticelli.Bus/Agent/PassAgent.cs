@@ -1,16 +1,17 @@
 ﻿using Botticelli.Bot.Interfaces.Agent;
+using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 
-namespace Botticelli.Bus.Agent
+namespace Botticelli.Bus.None.Agent
 {
     /// <summary>
     /// Simple pass agent (no bus)
     /// </summary>
     /// <typeparam name="TBot"></typeparam>
-    public class PassAgent<TBot> : IBotticelliBusAgent
-            where TBot : IBot
+    public class PassAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
+            where TBot : IBot where THandler : IHandler<SendMessageResponse>
     {
         private readonly TBot _bot;
 
@@ -20,5 +21,9 @@ namespace Botticelli.Bus.Agent
                                                             CancellationToken token,
                                                             int timeoutMs = 10000) =>
                 await _bot.SendMessageAsync(request, token);
+
+        public void Subscribe(THandler handler)
+        {
+        }
     }
 }

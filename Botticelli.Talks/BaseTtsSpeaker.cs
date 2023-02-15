@@ -7,6 +7,9 @@ using NAudio.Wave;
 
 namespace Botticelli.Talks;
 
+/// <summary>
+/// TODO: think about a bus usage  
+/// </summary>
 public abstract class BaseTtsSpeaker : ISpeaker
 {
     protected readonly IHttpClientFactory HttpClientFactory;
