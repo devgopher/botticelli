@@ -12,9 +12,9 @@ public abstract class GenericAiProvider : IAiProvider
     private readonly IBotticelliBusAgent _bus;
     private readonly IHttpClientFactory _factory;
     private readonly ILogger _logger;
-    private readonly IOptionsMonitor<AISettings> _settings;
+    private readonly IOptionsMonitor<AiSettings> _settings;
 
-    public GenericAiProvider(IOptionsMonitor<AISettings> settings,
+    public GenericAiProvider(IOptionsMonitor<AiSettings> settings,
                              IHttpClientFactory factory,
                              ILogger logger,
                              IBotticelliBusAgent bus)
@@ -25,7 +25,7 @@ public abstract class GenericAiProvider : IAiProvider
         _bus = bus;
     }
 
-    public abstract Task SendAsync(AIMessage message, CancellationToken token);
+    public abstract Task SendAsync(AiMessage message, CancellationToken token);
 
     public virtual async Task ProcessResponses(CancellationToken token)
     {
@@ -58,5 +58,5 @@ public abstract class GenericAiProvider : IAiProvider
         _logger.LogInformation($"{nameof(ProcessResponses)}() stopped");
     }
 
-    protected abstract Task<AIMessage?> InnerReceiveResponse();
+    protected abstract Task<AiMessage?> InnerReceiveResponse();
 }

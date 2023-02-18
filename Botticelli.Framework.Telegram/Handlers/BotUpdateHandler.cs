@@ -1,5 +1,6 @@
 ﻿using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -10,12 +11,14 @@ namespace Botticelli.Framework.Telegram.Handlers;
 
 public class BotUpdateHandler : IUpdateHandler
 {
+    private readonly ILogger<BotUpdateHandler> _logger;
+
+    public BotUpdateHandler(ILogger<BotUpdateHandler> logger) => _logger = logger;
+
     public async Task HandlePollingErrorAsync(ITelegramBotClient botClient,
                                               Exception exception,
-                                              CancellationToken cancellationToken)
-
-    {
-    }
+                                              CancellationToken cancellationToken) =>
+            _logger.LogError($"{nameof(HandlePollingErrorAsync)}() error: {exception.Message}", exception);
 
     public async Task HandleUpdateAsync(ITelegramBotClient botClient,
                                         Update update,
@@ -23,6 +26,8 @@ public class BotUpdateHandler : IUpdateHandler
     {
         try
         {
+            _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
+
             var botMessage = update.Message;
 
             if (botMessage == null) return;
@@ -54,10 +59,12 @@ public class BotUpdateHandler : IUpdateHandler
             };
 
             Process(botticelliMessage, cancellationToken);
+
+            _logger.LogDebug($"{nameof(HandleUpdateAsync)}() finished...");
         }
         catch (Exception ex)
         {
-            // TODO:
+            _logger.LogError($"{nameof(HandleUpdateAsync)}() error", ex);
         }
     }
 
@@ -68,6 +75,7 @@ public class BotUpdateHandler : IUpdateHandler
     /// <param name="token"></param>
     protected void Process(Message request, CancellationToken token)
     {
+        _logger.LogDebug($"{nameof(Process)}({request.Uid}) started...");
         if (token is {CanBeCanceled: true, IsCancellationRequested: true}) return;
 
         var clientTasks = ClientProcessorFactory
@@ -75,6 +83,8 @@ public class BotUpdateHandler : IUpdateHandler
                           .Select(p => ProcessForProcessor(p, request, token));
 
         Task.WhenAll(clientTasks);
+
+        _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
     }
 
     /// <summary>
@@ -85,10 +95,5 @@ public class BotUpdateHandler : IUpdateHandler
     /// <param name="token"></param>
     /// <returns></returns>
     private Task ProcessForProcessor(IMessageProcessor processor, Message request, CancellationToken token) =>
-            Task.Run(() =>
-                     {
-                         //_startEventSlim.Wait(token);
-                         processor.ProcessAsync(request, token);
-                     },
-                     token);
+            Task.Run(() => processor.ProcessAsync(request, token), token);
 }

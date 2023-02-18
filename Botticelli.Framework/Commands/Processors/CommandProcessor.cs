@@ -10,8 +10,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         where TCommand : class, ICommand
 {
     private readonly IBot _botClient;
-    protected readonly ILogger _logger;
-    protected readonly ICommandValidator<TCommand> _validator;
+    protected readonly ILogger Logger;
+    protected readonly ICommandValidator<TCommand> Validator;
 
     protected CommandProcessor(IBot botClient,
                                ILogger logger,
@@ -19,8 +19,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     {
         _botClient = botClient;
         _botClient = botClient;
-        _logger = logger;
-        _validator = validator;
+        Logger = logger;
+        Validator = validator;
     }
 
     public async Task ProcessAsync(long chatId, CancellationToken token, params string[] args)
@@ -30,19 +30,19 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
         try
         {
-            if (await _validator.Validate(chatId, args))
+            if (await Validator.Validate(chatId, args))
             {
                 await InnerProcess(chatId, token, args);
             }
             else
             {
-                request.Message.Body = _validator.Help();
+                request.Message.Body = Validator.Help();
                 await _botClient.SendMessageAsync(request, token);
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error in {GetType().Name}: {ex.Message}");
+            Logger.LogError(ex, $"Error in {GetType().Name}: {ex.Message}");
         }
     }
 

@@ -4,13 +4,13 @@ namespace Botticelli.Framework.Telegram.Handlers;
 
 public static class ClientProcessorFactory
 {
-    private static readonly IList<IClientMessageProcessor> _clientProcessors
+    private static readonly IList<IClientMessageProcessor> ClientProcessors
             = new List<IClientMessageProcessor>(10);
 
     public static void AddProcessor<TProcessor>(IBot bot, IServiceProvider sp)
             where TProcessor : class, IClientMessageProcessor, new()
     {
-        var proc = _clientProcessors
+        var proc = ClientProcessors
                 .FirstOrDefault(x => x is TProcessor);
 
         if (proc != default) return;
@@ -18,9 +18,9 @@ public static class ClientProcessorFactory
         proc = new TProcessor();
         proc.SetBot(bot);
         proc.SetServiceProvider(sp);
-        _clientProcessors.Add(proc);
+        ClientProcessors.Add(proc);
     }
 
     public static IEnumerable<IClientMessageProcessor> GetProcessors()
-        => _clientProcessors.AsEnumerable();
+        => ClientProcessors.AsEnumerable();
 }

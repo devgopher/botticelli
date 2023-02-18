@@ -28,7 +28,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="services"></param>
     public TelegramBot(ITelegramBotClient client, IServiceCollection services)
     {
-        isStarted = false;
+        IsStarted = false;
         _client = client;
         _sp = services.BuildServiceProvider();
     }
@@ -37,10 +37,10 @@ public class TelegramBot : BaseBot<TelegramBot>
 
     public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token)
     {
-        if (!isStarted)
+        if (!IsStarted)
             return new RemoveMessageResponse(request.Uid, "Bot wasn't started!")
             {
-                MessageRemovedStatus = MessageRemovedStatus.NONSTARTED
+                MessageRemovedStatus = MessageRemovedStatus.Nonstarted
             };
 
         RemoveMessageResponse response = new(request.Uid, string.Empty);
@@ -52,11 +52,11 @@ public class TelegramBot : BaseBot<TelegramBot>
             await _client.DeleteMessageAsync(request.ChatId,
                                              int.Parse(request.Uid),
                                              token);
-            response.MessageRemovedStatus = MessageRemovedStatus.OK;
+            response.MessageRemovedStatus = MessageRemovedStatus.Ok;
         }
         catch (Exception ex)
         {
-            response.MessageRemovedStatus = MessageRemovedStatus.FAIL;
+            response.MessageRemovedStatus = MessageRemovedStatus.Fail;
         }
 
         response.MessageUid = request.Uid;
@@ -73,10 +73,10 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public override async Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token)
     {
-        if (!isStarted)
+        if (!IsStarted)
             return new SendMessageResponse(request.Uid, "Bot wasn't started!")
             {
-                MessageSentStatus = MessageSentStatus.NONSTARTED
+                MessageSentStatus = MessageSentStatus.Nonstarted
             };
 
         SendMessageResponse response = new(request.Uid, string.Empty);
@@ -149,26 +149,11 @@ public class TelegramBot : BaseBot<TelegramBot>
                     }
                 }
 
-            //foreach (var genAttach in request.Message.Attachments.Where(a => a is InvoiceAttachment))
-            //{
-            //    var attachment = (InvoiceAttachment) genAttach;
-            //    var telegramAttach = new Invoice
-            //    {
-            //        Title = attachment.Title,
-            //        Description = attachment.Description,
-            //        StartParameter = attachment.StartParameter,
-            //        Currency = attachment.Currency,
-            //        TotalAmount = Currencies.SmallestUnits(attachment.Currency, attachment.TotalAmount)
-            //    };
-            //    await _client.SendInvoiceAsync(request.Message.ChatId, attachment.Title,
-            //                                   attachment.Description,
-            //                                   attachment.);
-            //}
-            response.MessageSentStatus = MessageSentStatus.OK;
+            response.MessageSentStatus = MessageSentStatus.Ok;
         }
         catch (Exception ex)
         {
-            response.MessageSentStatus = MessageSentStatus.FAIL;
+            response.MessageSentStatus = MessageSentStatus.Fail;
         }
 
         return response;
@@ -195,12 +180,12 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         var response = await base.StartBotAsync(request, token);
 
-        if (isStarted) return response;
+        if (IsStarted) return response;
 
-        if (response.Status != AdminCommandStatus.OK || isStarted) return response;
+        if (response.Status != AdminCommandStatus.Ok || IsStarted) return response;
 
         _client.StartReceiving(_sp.GetRequiredService<IUpdateHandler>(), cancellationToken: token);
-        isStarted = true;
+        IsStarted = true;
 
         return response;
     }
@@ -215,11 +200,11 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         var response = await base.StopBotAsync(request, token);
 
-        if (response.Status != AdminCommandStatus.OK || !isStarted) return response;
+        if (response.Status != AdminCommandStatus.Ok || !IsStarted) return response;
 
         await _client.CloseAsync(token);
 
-        isStarted = false;
+        IsStarted = false;
 
         return response;
     }

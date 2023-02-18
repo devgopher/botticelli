@@ -54,11 +54,11 @@ public abstract class BaseTtsSpeaker : ISpeaker
 
             using var resultStream = new MemoryStream();
             using var bufferStream = new MemoryStream(input);
-            using var wavReader = new WaveFileReader(bufferStream);
+            await using var wavReader = new WaveFileReader(bufferStream);
 
-            using (var mp3Writer = new LameMP3FileWriter(resultStream, wavReader.WaveFormat, preset))
+            await using (var mp3Writer = new LameMP3FileWriter(resultStream, wavReader.WaveFormat, preset))
             {
-                wavReader.CopyTo(mp3Writer);
+                await wavReader.CopyToAsync(mp3Writer, token);
 
                 return resultStream.ToArray();
             }

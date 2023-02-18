@@ -2,6 +2,6 @@
 
 public enum AdminCommandStatus
 {
-    OK,
-    FAIL
+    Ok,
+    Fail
 }

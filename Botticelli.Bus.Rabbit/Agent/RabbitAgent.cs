@@ -84,7 +84,7 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
             _logger.LogDebug($"{nameof(Subscribe)}() message received");
 
             var deserialized = JsonSerializer.Deserialize<SendMessageRequest>(ea.Body.ToArray());
-            var policy = Policy.HandleResult<MessageSentStatus>(result => result != MessageSentStatus.OK)
+            var policy = Policy.HandleResult<MessageSentStatus>(result => result != MessageSentStatus.Ok)
                                .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
             policy.Execute(() => handler.Handle(deserialized).Result.MessageSentStatus);

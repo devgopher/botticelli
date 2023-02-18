@@ -2,7 +2,7 @@
 
 public enum MessageRemovedStatus
 {
-    OK,
-    FAIL,
-    NONSTARTED
+    Ok,
+    Fail,
+    Nonstarted
 }

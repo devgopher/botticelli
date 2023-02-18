@@ -27,8 +27,7 @@ public static class ServiceExtensions
         var secureStorage = new SecureStorage(settings.SecureStorageSettings);
         token = secureStorage.GetBotKey(BotDataUtils.GetBotId()).Key;
 
-        return services.AddSingleton<ITelegramBotClient, TelegramBotClient>(sp =>
-                                                                                    new TelegramBotClient(token))
+        return services.AddSingleton<ITelegramBotClient, TelegramBotClient>(sp => new TelegramBotClient(token))
                        .AddSingleton(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
                        .AddSingleton<IBot<TelegramBot>, TelegramBot>(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
                        .AddSingleton<IUpdateHandler, BotUpdateHandler>();

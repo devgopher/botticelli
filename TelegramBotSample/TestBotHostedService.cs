@@ -86,6 +86,6 @@ public class TestBotHostedService : IHostedService
 
         Console.WriteLine($"msg sent: {sentResponse.MessageSentStatus}");
 
-        if (sentResponse.MessageSentStatus == MessageSentStatus.FAIL) return;
+        if (sentResponse.MessageSentStatus == MessageSentStatus.Fail) return;
     }
 }

@@ -1,42 +1,54 @@
-﻿using System.Text.RegularExpressions;
-using Botticelli.Framework.Commands.Processors;
+﻿using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
-using Telegram.Bot;
+using System.Text.RegularExpressions;
 
 namespace Botticelli.Framework.Telegram.MessageProcessors;
 
 public class ChatMessageProcessor : IClientMessageProcessor
 {
-    private const string simpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
-    private const string argsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
+    private const string SimpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
+    private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
 
-    private readonly ITelegramBotClient _botClient;
     private readonly CommandProcessorFactory _cpFactory;
-    private readonly ILogger _logger;
+    private readonly ILogger<ChatMessageProcessor> _logger;
+
+    public ChatMessageProcessor(ILogger<ChatMessageProcessor> logger, 
+                                CommandProcessorFactory cpFactory)
+    {
+        _logger = logger;
+        _cpFactory = cpFactory;
+    }
 
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
-        string command;
+        _logger.LogDebug($"{nameof(ProcessAsync)}({message.Uid}) started...");
 
         try
         {
             var chatId = Convert.ToInt64(message.ChatId);
 
-            if (Regex.IsMatch(message.Body, simpleCommandPattern))
+            string command;
+
+            if (Regex.IsMatch(message.Body, SimpleCommandPattern))
             {
-                command = Regex.Matches(message.Body, simpleCommandPattern)
-                               .FirstOrDefault()
-                               .Groups[1]
+                var match = Regex.Matches(message.Body, SimpleCommandPattern)
+                               .FirstOrDefault();
+
+                if (match == default)
+                    return;
+
+                command = match.Groups[1]
                                .Value;
+
                 await _cpFactory.Get(command)
                                 .ProcessAsync(Convert.ToInt64(message.ChatId), token, null);
             }
-            else if (Regex.IsMatch(message.Body, argsCommandPattern))
+            else if (Regex.IsMatch(message.Body, ArgsCommandPattern))
             {
-                var match = Regex.Matches(message.Body, argsCommandPattern)
+                var match = Regex.Matches(message.Body, ArgsCommandPattern)
                                  .FirstOrDefault();
 
                 command = match.Groups[1].Value;
@@ -50,6 +62,8 @@ public class ChatMessageProcessor : IClientMessageProcessor
                 await _cpFactory.Get(command)
                                 .ProcessAsync(chatId, token, args);
             }
+
+            _logger.LogDebug($"{nameof(ProcessAsync)}({message.Uid}) finished...");
         }
         catch (Exception ex)
         {
@@ -59,7 +73,6 @@ public class ChatMessageProcessor : IClientMessageProcessor
 
     public void SetBot(IBot bot)
     {
-        throw new NotImplementedException();
     }
 
     public void SetServiceProvider(IServiceProvider sp)

@@ -1,8 +1,8 @@
 ﻿namespace Botticelli.AI.Message;
 
-public class AIMessage : Shared.ValueObjects.Message
+public class AiMessage : Shared.ValueObjects.Message
 {
-    public AIMessage(string uid) : base(uid)
+    public AiMessage(string uid) : base(uid)
     {
     }
 

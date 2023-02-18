@@ -2,7 +2,7 @@
 
 public static class Currencies
 {
-    private static readonly Dictionary<string, int> _currencies = new()
+    private static readonly Dictionary<string, int> Currencies = new()
     {
         {"AED", 2},
         {"ALL", 2},
@@ -146,13 +146,13 @@ public static class Currencies
     };
 
     public static int GetDecimals(string curr)
-        => _currencies[curr];
+        => Currencies[curr];
 
     public static int SmallestUnits(string curr, decimal amount)
     {
-        if (!_currencies.ContainsKey(curr)) throw new InvalidDataException($"Can't find currency for: {curr}");
+        if (!Currencies.ContainsKey(curr)) throw new InvalidDataException($"Can't find currency for: {curr}");
 
-        var decimalCount = _currencies[curr];
+        var decimalCount = Currencies[curr];
 
         if (decimalCount == 0) return (int) amount;
 

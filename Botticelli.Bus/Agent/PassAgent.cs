@@ -13,7 +13,7 @@ namespace Botticelli.Bus.None.Agent;
 public class PassAgent<THandler> : IBotticelliBusAgent<THandler> where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
     private readonly IList<THandler> _handlers = new List<THandler>(5);
-    private readonly bool isStarted = false;
+    private readonly bool _isStarted = false;
 
     /// <summary>
     /// Sends a response
@@ -37,7 +37,7 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler> where THandler 
     {
         _handlers.Add(handler);
 
-        if (!isStarted) await InnerProcess(handler, token);
+        if (!_isStarted) await InnerProcess(handler, token);
     }
 
     private async Task InnerProcess(THandler handler, CancellationToken token)

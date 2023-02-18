@@ -90,11 +90,11 @@ public class ViberBot : BaseBot<ViberBot> //, IDisposable
             //    }
             //}
 
-            response.MessageSentStatus = MessageSentStatus.OK;
+            response.MessageSentStatus = MessageSentStatus.Ok;
         }
         catch (Exception ex)
         {
-            response.MessageSentStatus = MessageSentStatus.FAIL;
+            response.MessageSentStatus = MessageSentStatus.Fail;
         }
 
         return response;

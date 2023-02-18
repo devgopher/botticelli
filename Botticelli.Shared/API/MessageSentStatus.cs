@@ -2,7 +2,7 @@
 
 public enum MessageSentStatus
 {
-    OK,
-    FAIL,
-    NONSTARTED
+    Ok,
+    Fail,
+    Nonstarted
 }

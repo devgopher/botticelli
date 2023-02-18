@@ -1,8 +1,8 @@
 ﻿namespace Botticelli.AI.Extensions;
 
-public class AIBotSettings
+public class AiBotSettings
 {
-    public AIBotSettings() => Settings = new List<AISettings>(5);
+    public AiBotSettings() => Settings = new List<AiSettings>(5);
 
-    public List<AISettings> Settings { get; set; }
+    public List<AiSettings> Settings { get; set; }
 }

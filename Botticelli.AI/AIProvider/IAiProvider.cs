@@ -4,5 +4,5 @@ namespace Botticelli.AI.AIProvider;
 
 public interface IAiProvider
 {
-    public Task SendAsync(AIMessage message, CancellationToken token);
+    public Task SendAsync(AiMessage message, CancellationToken token);
 }
