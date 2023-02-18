@@ -1,7 +1,6 @@
-﻿namespace Botticelli.Framework.Commands
+﻿namespace Botticelli.Framework.Commands;
+
+public interface ICommand
 {
-    public interface ICommand
-    {
-        Guid Id { get; }
-    }
+    Guid Id { get; }
 }

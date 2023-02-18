@@ -3,17 +3,18 @@
 namespace BotDataSecureStorage.Entities;
 
 /// <summary>
-/// Bot additional data
+///     Bot additional data
 /// </summary>
 public class BotData
 {
     /// <summary>
-    /// botticelli bot id
+    ///     botticelli bot id
     /// </summary>
     [BsonId]
     public string Id { get; set; }
+
     /// <summary>
-    /// Bot data
+    ///     Bot data
     /// </summary>
-    public string[] Data{ get; set; }
+    public string[] Data { get; set; }
 }

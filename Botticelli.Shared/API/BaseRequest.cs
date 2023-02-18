@@ -11,10 +11,7 @@ public abstract class BaseRequest<T> : BaseRequest
 
 public abstract class BaseRequest
 {
-    protected BaseRequest(string uid)
-    {
-        Uid = uid;
-    }
+    protected BaseRequest(string uid) => Uid = uid;
 
     public string? Uid { get; }
 }

@@ -13,20 +13,11 @@ public class DbStorage<T, TId> : IStorage<T, TId>
 {
     private readonly DbContext _context;
 
-    public DbStorage(DbContext context)
-    {
-        _context = context;
-    }
+    public DbStorage(DbContext context) => _context = context;
 
-    public T? Get(TId id)
-    {
-        return _context.Find<T>(id);
-    }
+    public T? Get(TId id) => _context.Find<T>(id);
 
-    public ICollection<T>? Get(Func<T, bool> filter)
-    {
-        return _context.Set<T>()?.Where(filter).ToList();
-    }
+    public ICollection<T>? Get(Func<T, bool> filter) => _context.Set<T>()?.Where(filter).ToList();
 
     public void Add(params T[] entites)
     {

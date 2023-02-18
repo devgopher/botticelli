@@ -1,9 +1,8 @@
 ﻿using Botticelli.Framework.Commands;
 
-namespace TelegramBotSample.Commands
+namespace TelegramBotSample.Commands;
+
+public class SampleCommand : ICommand
 {
-    public class SampleCommand : ICommand
-    {
-        public Guid Id { get; }
-    }
+    public Guid Id { get; }
 }

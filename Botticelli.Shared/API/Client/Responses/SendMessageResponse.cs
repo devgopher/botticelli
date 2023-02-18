@@ -10,7 +10,7 @@ public class SendMessageResponse : BaseResponse<SendMessageResponse>
 
     public MessageSentStatus MessageSentStatus { get; set; }
 
-    public static SendMessageResponse GetInstance(string? techMessage) => new SendMessageResponse(Utils.Uid.GenerateShortUid(), techMessage);
+    public static SendMessageResponse GetInstance(string? techMessage) => new(Utils.Uid.GenerateShortUid(), techMessage);
 
-    public static SendMessageResponse GetInstance(string uid, string? techMessage) => new SendMessageResponse(uid, techMessage);
+    public static SendMessageResponse GetInstance(string uid, string? techMessage) => new(uid, techMessage);
 }

@@ -1,5 +1,4 @@
 ﻿using BotDataSecureStorage;
-using BotDataSecureStorage.Settings;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Handlers;

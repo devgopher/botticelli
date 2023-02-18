@@ -1,7 +1,5 @@
-﻿namespace Botticelli.Bus.Rabbit
-{
-    public class Class1
-    {
+﻿namespace Botticelli.Bus.Rabbit;
 
-    }
+public class Class1
+{
 }

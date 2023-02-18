@@ -1,7 +1,6 @@
-﻿namespace Botticelli.Interfaces
+﻿namespace Botticelli.Interfaces;
+
+public interface IMessageHandler
 {
-    public interface IMessageHandler
-    {
-        public void AddClientEventProcessor(IClientMessageProcessor messageProcessor);
-    }
+    public void AddClientEventProcessor(IClientMessageProcessor messageProcessor);
 }

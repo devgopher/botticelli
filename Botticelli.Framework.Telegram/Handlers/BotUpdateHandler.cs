@@ -4,6 +4,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Message = Botticelli.Shared.ValueObjects.Message;
+using User = Botticelli.Shared.ValueObjects.User;
 
 namespace Botticelli.Framework.Telegram.Handlers;
 
@@ -32,7 +33,7 @@ public class BotUpdateHandler : IUpdateHandler
                 Subject = string.Empty,
                 Body = botMessage.Text,
                 Attachments = new List<IAttachment>(5),
-                From = new Shared.ValueObjects.User
+                From = new User
                 {
                     Id = botMessage.From?.Id.ToString(),
                     Name = botMessage.From?.FirstName,
@@ -41,7 +42,7 @@ public class BotUpdateHandler : IUpdateHandler
                     IsBot = botMessage.From?.IsBot,
                     NickName = botMessage.From?.Username
                 },
-                ForwardFrom = new Shared.ValueObjects.User
+                ForwardFrom = new User
                 {
                     Id = botMessage.ForwardFrom?.Id.ToString(),
                     Name = botMessage.ForwardFrom?.FirstName,
@@ -67,8 +68,7 @@ public class BotUpdateHandler : IUpdateHandler
     /// <param name="token"></param>
     protected void Process(Message request, CancellationToken token)
     {
-        if (token is { CanBeCanceled: true, IsCancellationRequested: true })
-            return;
+        if (token is {CanBeCanceled: true, IsCancellationRequested: true}) return;
 
         var clientTasks = ClientProcessorFactory
                           .GetProcessors()

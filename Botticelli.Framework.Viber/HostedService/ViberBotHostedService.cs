@@ -8,10 +8,7 @@ public class ViberBotHostedService : IHostedService
 {
     private readonly IBot<ViberBot> _bot;
 
-    public ViberBotHostedService(IBot<ViberBot> bot)
-    {
-        _bot = bot;
-    }
+    public ViberBotHostedService(IBot<ViberBot> bot) => _bot = bot;
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {

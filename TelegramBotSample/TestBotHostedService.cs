@@ -51,14 +51,14 @@ public class TestBotHostedService : IHostedService
         {
             Body = "testmsg",
             Subject = "subj",
-            ChatId = "-844372214",// "156620699",
+            ChatId = "-844372214", // "156620699",
             Attachments = new List<IAttachment>
             {
                 new BinaryAttachment(Guid.NewGuid().ToString(),
-                    "testpic.png",
-                    MediaType.Image,
-                    string.Empty,
-                    File.ReadAllBytes("Media/testpic.png")),
+                                     "testpic.png",
+                                     MediaType.Image,
+                                     string.Empty,
+                                     File.ReadAllBytes("Media/testpic.png")),
                 new BinaryAttachment(Guid.NewGuid().ToString(),
                                      "voice.mp3",
                                      MediaType.Voice,

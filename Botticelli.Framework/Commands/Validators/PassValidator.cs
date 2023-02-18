@@ -1,10 +1,9 @@
-﻿namespace Botticelli.Framework.Commands.Validators
-{
-    public class PassValidator<TCommand> : ICommandValidator<TCommand>
-        where TCommand : ICommand
-    {
-        public string Help() => String.Empty;
+﻿namespace Botticelli.Framework.Commands.Validators;
 
-        public async Task<bool> Validate(long chatId, params string[] args) => true;
-    }
+public class PassValidator<TCommand> : ICommandValidator<TCommand>
+        where TCommand : ICommand
+{
+    public string Help() => string.Empty;
+
+    public async Task<bool> Validate(long chatId, params string[] args) => true;
 }

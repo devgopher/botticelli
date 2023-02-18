@@ -12,7 +12,7 @@ namespace Botticelli.Server.Services;
 public class BotManagementService : IBotManagementService
 {
     private readonly BotInfoContext _context;
-    private readonly SecureStorage _secureStorage; 
+    private readonly SecureStorage _secureStorage;
 
     public BotManagementService(BotInfoContext context, SecureStorage secureStorage)
     {
@@ -34,9 +34,13 @@ public class BotManagementService : IBotManagementService
             botKey ??= _secureStorage.GetBotKey(botId).Key;
 
             if (GetBotInfo(botId) == default)
-                AddNewBotInfo(botId, botKey, BotStatus.Unknown, botType);
+                AddNewBotInfo(botId,
+                              botKey,
+                              BotStatus.Unknown,
+                              botType);
 
             _secureStorage.SetBotKey(botId, botKey);
+
             //var tst = _secureStorage.GetBotKey(botId);
             return true;
         }
@@ -92,7 +96,7 @@ public class BotManagementService : IBotManagementService
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
-    public async Task<BotStatus?> GetRequiredBotStatus(string botId) 
+    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
         => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
 
     /// <summary>

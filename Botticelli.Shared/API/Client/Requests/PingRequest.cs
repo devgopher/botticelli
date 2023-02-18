@@ -6,8 +6,5 @@ public class PingRequest : BaseRequest<PingRequest>
     {
     }
 
-    public static PingRequest GetInstance()
-    {
-        return new PingRequest(Utils.Uid.GenerateShortUid());
-    }
+    public static PingRequest GetInstance() => new PingRequest(Utils.Uid.GenerateShortUid());
 }

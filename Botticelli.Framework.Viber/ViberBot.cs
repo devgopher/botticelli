@@ -21,18 +21,12 @@ public class ViberBot : BaseBot<ViberBot> //, IDisposable
     /// </summary>
     /// <param name="viberService"></param>
     /// <param name="settings"></param>
-    public ViberBot(IViberService viberService /*, ViberBotSettings setting*/)
-    {
-        _viberService = viberService;
-    }
+    public ViberBot(IViberService viberService /*, ViberBotSettings setting*/) => _viberService = viberService;
+
+    public override BotType Type => BotType.Viber;
 
     //_settings = settings;
     public override Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token) => throw new NotImplementedException();
-
-    public override BotType Type
-    {
-        get { return BotType.Viber; }
-    }
 
     /// <summary>
     ///     Sends a message as a telegram bot

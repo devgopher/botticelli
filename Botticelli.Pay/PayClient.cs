@@ -1,13 +1,11 @@
 ﻿using Botticelli.Bot.Interfaces.Agent;
 using Botticelli.Shared.API.Client.Requests;
-using Botticelli.Shared.API.Client.Responses;
 
-namespace Botticelli.Pay
+namespace Botticelli.Pay;
+
+public class PayClient : IBotticelliBusAgent
 {
-    public class PayClient : IBotticelliBusAgent
-    {
-        public async Task<SendMessageResponse> SendResponse(SendMessageRequest request, 
-                                                            CancellationToken token, 
-                                                            int timeoutMs = 10000) => throw new NotImplementedException();
-    }
+    public async Task SendResponse(SendMessageRequest request,
+                                   CancellationToken token,
+                                   int timeoutMs = 10000) => throw new NotImplementedException();
 }

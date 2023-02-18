@@ -1,33 +1,30 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Botticelli.Framework.Commands.Processors
+namespace Botticelli.Framework.Commands.Processors;
+
+public class CommandProcessorFactory
 {
-    public class CommandProcessorFactory
+    private readonly IServiceProvider _serviceProvider;
+    private readonly Dictionary<Type, Type> _types = new();
+
+
+    public CommandProcessorFactory(IServiceProvider serviceProvider)
+        => _serviceProvider = serviceProvider;
+
+
+    public void AddCommandType(Type commandType, Type procType)
+        => _types[commandType] = procType;
+
+    public ICommandProcessor? Get(string command)
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly Dictionary<Type, Type> _types = new Dictionary<Type, Type>();
+        if (string.IsNullOrEmpty(command)) throw new ArgumentNullException(nameof(command), "Can't be null or empty!");
 
+        var canonized = command.Length == 1 ? command.ToUpperInvariant() : $"{command[..1].ToUpperInvariant()}{command[1..].ToLowerInvariant()}";
 
-        public CommandProcessorFactory(IServiceProvider serviceProvider)
-            => _serviceProvider = serviceProvider;
+        if (_types.Keys.All(t => t.Name != canonized)) return _serviceProvider.GetRequiredService<CommandProcessor<Unknown>>();
 
+        var type = _types.First(k => k.Key.Name == canonized).Value;
 
-        public void AddCommandType(Type commandType, Type procType)
-            => _types[commandType] = procType; 
-
-        public ICommandProcessor? Get(string command)
-        {
-            if (string.IsNullOrEmpty(command))
-                throw new ArgumentNullException(nameof(command), "Can't be null or empty!");
-
-            var canonized = command.Length == 1 ? command.ToUpperInvariant() : $"{command[..1].ToUpperInvariant()}{command[1..].ToLowerInvariant()}";
-
-            if (_types.Keys.All(t => t.Name != canonized))
-                return _serviceProvider.GetRequiredService<CommandProcessor<Unknown>>();
-
-            var type = _types.First(k => k.Key.Name == canonized).Value;
-
-            return _serviceProvider.GetRequiredService(type) as ICommandProcessor;
-        }
+        return _serviceProvider.GetRequiredService(type) as ICommandProcessor;
     }
 }

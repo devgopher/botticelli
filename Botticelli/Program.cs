@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-SecureStorageSettings secureStorageSettings = new SecureStorageSettings();
+var secureStorageSettings = new SecureStorageSettings();
 builder.Configuration.Bind(nameof(SecureStorageSettings), secureStorageSettings);
 
 builder.Services.AddEndpointsApiExplorer()
        .AddSwaggerGen()
        .AddScoped<IBotManagementService, BotManagementService>()
        .AddScoped<IBotStatusDataService, BotStatusDataService>()
-       .AddSingleton<SecureStorage>(new SecureStorage(secureStorageSettings))
+       .AddSingleton(new SecureStorage(secureStorageSettings))
        .AddDbContext<BotInfoContext>(c
                                              => c.UseSqlite(@"Data source=botInfo.Db"));
 

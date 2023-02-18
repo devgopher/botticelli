@@ -21,32 +21,33 @@ public class InvoiceAttachment : IAttachment
         TotalAmount = totalAmount;
     }
 
-    public string Uid { get; }
-    public string Name { get; }
     public string Url { get; }
-  
+
     /// <summary>
-    /// Invoice title
+    ///     Invoice title
     /// </summary>
     public string Title { get; set; } = default!;
 
     /// <summary>
-    /// Description
+    ///     Description
     /// </summary>
     public string Description { get; set; } = default!;
 
     /// <summary>
-    /// Unique bot deep-linking parameter that can be used to generate this invoice
+    ///     Unique bot deep-linking parameter that can be used to generate this invoice
     /// </summary>
     public string StartParameter { get; set; } = default!;
 
     /// <summary>
-    /// Currency: USB, EUR, CNY...
+    ///     Currency: USB, EUR, CNY...
     /// </summary>
     public string Currency { get; set; } = default!;
 
     /// <summary>
-    /// Total amount like this: 11.95 $ 
+    ///     Total amount like this: 11.95 $
     /// </summary>
     public decimal TotalAmount { get; set; }
+
+    public string Uid { get; }
+    public string Name { get; }
 }

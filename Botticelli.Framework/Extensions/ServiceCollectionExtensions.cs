@@ -18,7 +18,7 @@ public static class ServiceCollectionExtensions
             where TCommandProcessor : class, ICommandProcessor
     {
         var factory = services.BuildServiceProvider().GetRequiredService<CommandProcessorFactory>();
-        
+
         services.AddScoped<TCommand>()
                 .AddScoped<TCommandProcessor>();
 

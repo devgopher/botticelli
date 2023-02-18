@@ -20,10 +20,8 @@ public static class ServiceExtensions
     /// <returns></returns>
     public static IServiceCollection AddChatStorage(this IServiceCollection services,
                                                     Action<DbContextOptionsBuilder, StorageSettings> dbFunc,
-                                                    IConfiguration config)
-    {
-        return AddStorage<BotticelliContext>(services, dbFunc, config);
-    }
+                                                    IConfiguration config) =>
+            AddStorage<BotticelliContext>(services, dbFunc, config);
 
     /// <summary>
     ///     Adds a storage for messages
@@ -34,10 +32,8 @@ public static class ServiceExtensions
     /// <returns></returns>
     public static IServiceCollection AddMessageStorage(this IServiceCollection services,
                                                        Action<DbContextOptionsBuilder, StorageSettings> dbFunc,
-                                                       IConfiguration config)
-    {
-        return AddStorage<BotticelliContext>(services, dbFunc, config);
-    }
+                                                       IConfiguration config) =>
+            AddStorage<BotticelliContext>(services, dbFunc, config);
 
     /// <summary>
     ///     Adds a new storage

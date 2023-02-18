@@ -31,7 +31,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         try
         {
             if (await _validator.Validate(chatId, args))
+            {
                 await InnerProcess(chatId, token, args);
+            }
             else
             {
                 request.Message.Body = _validator.Help();

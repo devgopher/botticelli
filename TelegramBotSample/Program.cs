@@ -1,6 +1,5 @@
 using BotDataSecureStorage.Settings;
 using Botticelli.BotBase.Extensions;
-using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
@@ -9,10 +8,8 @@ using Botticelli.Interfaces;
 using Botticelli.Talks.Extensions;
 using NLog.Extensions.Logging;
 using TelegramBotSample;
-using TelegramBotSample.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 
 builder.Services.AddTelegramBot(new BotOptionsBuilder<TelegramBotSettings>()

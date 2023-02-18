@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Botticelli.Framework.Constants;
 using Botticelli.Framework.Exceptions;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
@@ -14,7 +13,6 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
-using Telegram.Bot.Types.Payments;
 
 namespace Botticelli.Framework.Telegram;
 
@@ -99,7 +97,6 @@ public class TelegramBot : BaseBot<TelegramBot>
                                                    cancellationToken: token);
 
             if (request.Message.Attachments != null)
-            {
                 foreach (var genAttach in request.Message.Attachments.Where(a => a is BinaryAttachment))
                 {
                     var attachment = (BinaryAttachment) genAttach;
@@ -152,25 +149,21 @@ public class TelegramBot : BaseBot<TelegramBot>
                     }
                 }
 
-                //foreach (var genAttach in request.Message.Attachments.Where(a => a is InvoiceAttachment))
-                //{
-                //    var attachment = (InvoiceAttachment) genAttach;
-
-                //    var telegramAttach = new Invoice
-                //    {
-                //        Title = attachment.Title,
-                //        Description = attachment.Description,
-                //        StartParameter = attachment.StartParameter,
-                //        Currency = attachment.Currency,
-                //        TotalAmount = Currencies.SmallestUnits(attachment.Currency, attachment.TotalAmount)
-                //    };
-
-                //    await _client.SendInvoiceAsync(request.Message.ChatId, attachment.Title,
-                //                                   attachment.Description,
-                //                                   attachment.);
-                //}
-            }
-
+            //foreach (var genAttach in request.Message.Attachments.Where(a => a is InvoiceAttachment))
+            //{
+            //    var attachment = (InvoiceAttachment) genAttach;
+            //    var telegramAttach = new Invoice
+            //    {
+            //        Title = attachment.Title,
+            //        Description = attachment.Description,
+            //        StartParameter = attachment.StartParameter,
+            //        Currency = attachment.Currency,
+            //        TotalAmount = Currencies.SmallestUnits(attachment.Currency, attachment.TotalAmount)
+            //    };
+            //    await _client.SendInvoiceAsync(request.Message.ChatId, attachment.Title,
+            //                                   attachment.Description,
+            //                                   attachment.);
+            //}
             response.MessageSentStatus = MessageSentStatus.OK;
         }
         catch (Exception ex)

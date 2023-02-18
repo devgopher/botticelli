@@ -1,7 +1,6 @@
-﻿namespace BotDataSecureStorage.Settings
+﻿namespace BotDataSecureStorage.Settings;
+
+public class SecureStorageSettings
 {
-    public class SecureStorageSettings
-    {
-        public string ConnectionString { get; set; }
-    }
+    public string ConnectionString { get; set; }
 }

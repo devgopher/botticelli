@@ -13,8 +13,7 @@ public static class ClientProcessorFactory
         var proc = _clientProcessors
                 .FirstOrDefault(x => x is TProcessor);
 
-        if (proc != default) 
-            return;
+        if (proc != default) return;
 
         proc = new TProcessor();
         proc.SetBot(bot);

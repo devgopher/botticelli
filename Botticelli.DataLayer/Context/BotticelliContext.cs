@@ -12,6 +12,6 @@ public class BotticelliContext : DbContext
     public DbSet<Chat> Chats { get; set; }
     public DbSet<Message> Messages { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder.Entity<Chat>();
 }

@@ -26,12 +26,12 @@ public class SecureStorage
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 
         db.GetCollection<BotKey>()
-           .Upsert(botId,
-                   new BotKey
-                   {
-                       Id = botId,
-                       Key = key
-                   });
+          .Upsert(botId,
+                  new BotKey
+                  {
+                      Id = botId,
+                      Key = key
+                  });
     }
 
     public BotData GetBotData(string botId)
@@ -48,11 +48,11 @@ public class SecureStorage
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 
         db.GetCollection<BotData>()
-           .Upsert(botId,
-                   new BotData
-                   {
-                       Id = botId,
-                       Data = data
-                   });
+          .Upsert(botId,
+                  new BotData
+                  {
+                      Id = botId,
+                      Data = data
+                  });
     }
 }

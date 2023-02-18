@@ -1,7 +1,6 @@
-﻿namespace Botticelli.Bot.Interfaces.Handlers
+﻿namespace Botticelli.Bot.Interfaces.Handlers;
+
+public interface IHandler<in TRequest, TResponse>
 {
-    public interface IHandler<in T>
-    {
-        public Task Handle(T input);
-    }
+    public Task<TResponse> Handle(TRequest input);
 }
