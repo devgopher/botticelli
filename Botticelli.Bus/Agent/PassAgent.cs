@@ -44,7 +44,8 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler> where THandler 
     {
         while (!token.IsCancellationRequested)
         {
-            if (NoneBus.SendMessageRequests.TryDequeue(out var request)) await handler.Handle(request);
+            if (NoneBus.SendMessageRequests.TryDequeue(out var request))
+                await handler.Handle(request);
             Thread.Sleep(5);
         }
     }
