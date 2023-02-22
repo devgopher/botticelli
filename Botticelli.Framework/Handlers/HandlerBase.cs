@@ -1,10 +1,12 @@
-﻿namespace Botticelli.Framework.Handlers;
+﻿using Botticelli.Bot.Interfaces.Handlers;
 
-public abstract class HandlerBase<T> : IHandler<T>
+namespace Botticelli.Framework.Handlers;
+
+public abstract class HandlerBase<TRequest, TResponse> : IHandler<TRequest, TResponse>
 {
-    private readonly IHandler<T> _handler;
+    protected HandlerBase()
+    {
+    }
 
-    public HandlerBase(IHandler<T> handler) => _handler = handler;
-
-    public abstract Task Handle(T input);
+    public abstract Task<TResponse> Handle(TRequest input);
 }

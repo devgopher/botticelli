@@ -10,7 +10,8 @@ namespace Botticelli.Bus.None.Agent;
 ///     Simple pass agent (no bus)
 /// </summary>
 /// <typeparam name="THandler"></typeparam>
-public class PassAgent<THandler> : IBotticelliBusAgent<THandler> where THandler : IHandler<SendMessageRequest, SendMessageResponse>
+public class PassAgent<THandler> : IBotticelliBusAgent<THandler> 
+        where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
     private readonly IList<THandler> _handlers = new List<THandler>(5);
     private readonly bool _isStarted = false;

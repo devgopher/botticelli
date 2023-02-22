@@ -1,5 +1,7 @@
 using BotDataSecureStorage.Settings;
 using Botticelli.BotBase.Extensions;
+using Botticelli.Bus.None.Extensions;
+using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
@@ -8,6 +10,7 @@ using Botticelli.Interfaces;
 using Botticelli.Talks.Extensions;
 using NLog.Extensions.Logging;
 using TelegramBotSample;
+using TelegramBotSample.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +26,8 @@ builder.Services.AddTelegramBot(new BotOptionsBuilder<TelegramBotSettings>()
 builder.Services.UseBotticelli<IBot<TelegramBot>>(builder.Configuration);
 builder.Services.AddLogging(cfg => cfg.AddNLog());
 builder.Services.AddOpenTtsTalks(builder.Configuration);
-//builder.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor>();
-
+builder.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor>();
+builder.Services.UsePassBusClient<IBot<TelegramBot>>();
 builder.Services.AddHostedService<TestBotHostedService>();
 
 var app = builder.Build();

@@ -6,12 +6,10 @@ public class CommandProcessorFactory
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly Dictionary<Type, Type> _types = new();
-
-
+    
     public CommandProcessorFactory(IServiceProvider serviceProvider)
         => _serviceProvider = serviceProvider;
-
-
+    
     public void AddCommandType(Type commandType, Type procType)
         => _types[commandType] = procType;
 
