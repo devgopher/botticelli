@@ -11,7 +11,7 @@ public static class ClientProcessorFactory
     private static readonly IList<IClientMessageProcessor> ClientProcessors
             = new List<IClientMessageProcessor>(10);
 
-    public static void AddProcessor<TProcessor>(IBot bot, IServiceProvider sp)
+    public static void AddProcessor<TProcessor>(IServiceProvider sp)
             where TProcessor : class, IClientMessageProcessor, new()
     {
         var proc = ClientProcessors
@@ -19,6 +19,7 @@ public static class ClientProcessorFactory
 
         if (proc != default) return;
 
+        var bot = sp.GetRequiredService<IBot<TelegramBot>>();
         proc = new TProcessor();
         proc.SetBot(bot);
         proc.SetServiceProvider(sp);

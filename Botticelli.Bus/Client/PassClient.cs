@@ -34,7 +34,7 @@ public class PassClient<TBot> : IBotticelliBusClient
                     NoneBus.SendMessageResponses.Enqueue(response);
                 }
 
-                Task.Delay(delta, token);
+                Task.Delay(delta, token).Wait(token);
                 period += delta;
             }
 

@@ -17,16 +17,14 @@ public class TestBotHostedService : IHostedService
     private readonly IBot<TelegramBot> _telegramBot;
     private readonly CommandProcessorFactory _commandProcessorFactory;
 
-    //private readonly IBot<ViberBot> _viberBot;
-
     public TestBotHostedService(IBot<TelegramBot> telegramBot,
                                 IServiceProvider sp,
                                 CommandProcessorFactory commandProcessorFactory)
     {
         _telegramBot = telegramBot;
         _commandProcessorFactory = commandProcessorFactory;
-        ClientProcessorFactory.AddProcessor<SampleMessageProcessor>(sp.GetRequiredService<IBot<TelegramBot>>(), sp);
-        ClientProcessorFactory.AddProcessor<InputMessageProcessor>(sp.GetRequiredService<IBot<TelegramBot>>(), sp);
+        ClientProcessorFactory.AddProcessor<SampleMessageProcessor>(sp);
+        ClientProcessorFactory.AddProcessor<InputMessageProcessor>(sp);
         ClientProcessorFactory.AddChatMessageProcessor(sp.GetRequiredService<IBot<TelegramBot>>(), sp);
         _commandProcessorFactory.AddCommandType(typeof(SampleCommand), typeof(SampleCommandProcessor));
         _commandProcessorFactory.AddCommandType(typeof(AiCommand), typeof(AiCommandProcessor));
