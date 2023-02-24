@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using Botticelli.Shared.API.Client.Requests;
+using Botticelli.Shared.API.Client.Responses;
 
 namespace Botticelli.AI.AIProvider;
 
@@ -51,7 +52,7 @@ public class GptJProvider : GenericAiProvider
                               content, token);
 
             if (response.IsSuccessStatusCode)
-                await _bus.SendResponse(new SendMessageRequest(Guid.NewGuid().ToString())
+                await _bus.SendResponse(new SendMessageResponse(Guid.NewGuid().ToString())
                                     {
                                         Message = new Shared.ValueObjects.Message(Guid.NewGuid().ToString())
                                         {
@@ -65,7 +66,7 @@ public class GptJProvider : GenericAiProvider
                                     },
                                     token);
             else
-                await _bus.SendResponse(new SendMessageRequest(Guid.NewGuid().ToString())
+                await _bus.SendResponse(new SendMessageResponse(Guid.NewGuid().ToString())
                                         {
                                             Message = new Shared.ValueObjects.Message(Guid.NewGuid().ToString())
                                             {

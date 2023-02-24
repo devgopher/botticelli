@@ -3,6 +3,7 @@ using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Bus.None.Bus;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Bus.None.Agent;
 
@@ -16,6 +17,9 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     private readonly IList<THandler> _handlers = new List<THandler>(5);
     private readonly bool _isStarted = false;
 
+    public PassAgent(IServiceProvider sp) 
+        => _handlers.Add(sp.GetService<THandler>());
+
     /// <summary>
     /// Sends a response
     /// </summary>
@@ -23,7 +27,7 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     /// <param name="token"></param>
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
-    public async Task SendResponse(SendMessageRequest request,
+    public async Task SendResponse(SendMessageResponse request,
                                    CancellationToken token,
                                    int timeoutMs = 10000) =>
             NoneBus.SendMessageResponses.Enqueue(request);
@@ -46,7 +50,7 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
         while (!token.IsCancellationRequested)
         {
             if (NoneBus.SendMessageRequests.TryDequeue(out var request))
-                await handler.Handle(request);
+                await handler.Handle(request, token);
             Thread.Sleep(5);
         }
     }

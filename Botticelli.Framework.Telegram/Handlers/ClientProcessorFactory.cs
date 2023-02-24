@@ -1,4 +1,8 @@
-﻿using Botticelli.Interfaces;
+﻿using Botticelli.Framework.Commands.Processors;
+using Botticelli.Framework.Telegram.MessageProcessors;
+using Botticelli.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Telegram.Handlers;
 
@@ -18,6 +22,18 @@ public static class ClientProcessorFactory
         proc = new TProcessor();
         proc.SetBot(bot);
         proc.SetServiceProvider(sp);
+        ClientProcessors.Add(proc);
+    }
+
+    public static void AddChatMessageProcessor(IBot bot, IServiceProvider sp)
+    {
+        var proc = ClientProcessors
+                .FirstOrDefault(x => x is ChatMessageProcessor);
+
+        if (proc != default) return;
+
+        proc = new ChatMessageProcessor(sp.GetRequiredService<ILogger<ChatMessageProcessor>>(), 
+                                        sp.GetRequiredService<CommandProcessorFactory>());
         ClientProcessors.Add(proc);
     }
 

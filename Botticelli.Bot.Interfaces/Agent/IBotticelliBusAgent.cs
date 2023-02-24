@@ -10,7 +10,7 @@ namespace Botticelli.Bot.Interfaces.Agent;
 /// </summary>
 public interface IBotticelliBusAgent
 {
-    public Task SendResponse(SendMessageRequest request,
+    public Task SendResponse(SendMessageResponse request,
                              CancellationToken token,
                              int timeoutMs = 10000);
 }

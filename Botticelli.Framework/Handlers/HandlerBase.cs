@@ -8,5 +8,5 @@ public abstract class HandlerBase<TRequest, TResponse> : IHandler<TRequest, TRes
     {
     }
 
-    public abstract Task<TResponse> Handle(TRequest input);
+    public abstract Task<TResponse> Handle(TRequest input, CancellationToken token);
 }

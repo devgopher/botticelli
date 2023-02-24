@@ -87,7 +87,7 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
             var policy = Policy.HandleResult<MessageSentStatus>(result => result != MessageSentStatus.Ok)
                                .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
-            policy.Execute(() => handler.Handle(deserialized).Result.MessageSentStatus);
+            policy.Execute(() => handler.Handle(deserialized, token).Result.MessageSentStatus);
         };
 
         channel.BasicConsume(queue,

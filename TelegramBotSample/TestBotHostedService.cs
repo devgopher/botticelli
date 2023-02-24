@@ -1,10 +1,13 @@
-﻿using Botticelli.Framework.Telegram;
+﻿using Botticelli.Framework.Commands.Processors;
+using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Handlers;
+using Botticelli.Framework.Telegram.MessageProcessors;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
+using TelegramBotSample.Commands;
 using TelegramBotSample.MessageProcessors;
 
 namespace TelegramBotSample;
@@ -12,14 +15,22 @@ namespace TelegramBotSample;
 public class TestBotHostedService : IHostedService
 {
     private readonly IBot<TelegramBot> _telegramBot;
+    private readonly CommandProcessorFactory _commandProcessorFactory;
 
     //private readonly IBot<ViberBot> _viberBot;
 
-    public TestBotHostedService(IBot<TelegramBot> telegramBot, IServiceProvider sp)
+    public TestBotHostedService(IBot<TelegramBot> telegramBot,
+                                IServiceProvider sp,
+                                CommandProcessorFactory commandProcessorFactory)
     {
         _telegramBot = telegramBot;
-        //ClientProcessorFactory.AddProcessor<SampleMessageProcessor>(sp.GetRequiredService<IBot<TelegramBot>>(), sp);
+        _commandProcessorFactory = commandProcessorFactory;
+        ClientProcessorFactory.AddProcessor<SampleMessageProcessor>(sp.GetRequiredService<IBot<TelegramBot>>(), sp);
         ClientProcessorFactory.AddProcessor<InputMessageProcessor>(sp.GetRequiredService<IBot<TelegramBot>>(), sp);
+        ClientProcessorFactory.AddChatMessageProcessor(sp.GetRequiredService<IBot<TelegramBot>>(), sp);
+        _commandProcessorFactory.AddCommandType(typeof(SampleCommand), typeof(SampleCommandProcessor));
+        _commandProcessorFactory.AddCommandType(typeof(AiCommand), typeof(AiCommandProcessor));
+
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
