@@ -1,6 +1,9 @@
 using BotDataSecureStorage.Settings;
+using Botticelli.AI.Extensions;
 using Botticelli.BotBase.Extensions;
 using Botticelli.Bus.None.Extensions;
+using Botticelli.Bus.None.Handler;
+using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
@@ -26,8 +29,10 @@ builder.Services.AddTelegramBot(new BotOptionsBuilder<TelegramBotSettings>()
 builder.Services.UseBotticelli<IBot<TelegramBot>>(builder.Configuration);
 builder.Services.AddLogging(cfg => cfg.AddNLog());
 builder.Services.AddOpenTtsTalks(builder.Configuration);
+builder.Services.AddGptJProvider(builder.Configuration);
 builder.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor>();
-builder.Services.UsePassBusClient<IBot<TelegramBot>>();
+builder.Services.AddScoped<ICommandValidator<SampleCommand>, PassValidator<SampleCommand>>();
+builder.Services.UsePassBusAgent<IBot<TelegramBot>, DefaultPassHandler>();
 builder.Services.AddHostedService<TestBotHostedService>();
 
 var app = builder.Build();

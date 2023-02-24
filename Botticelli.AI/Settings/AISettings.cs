@@ -1,4 +1,4 @@
-﻿namespace Botticelli.AI.Extensions;
+﻿namespace Botticelli.AI.Settings;
 
 public class AiSettings
 {

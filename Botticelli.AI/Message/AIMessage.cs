@@ -5,6 +5,4 @@ public class AiMessage : Shared.ValueObjects.Message
     public AiMessage(string uid) : base(uid)
     {
     }
-
-    public string? AiName { get; set; }
 }

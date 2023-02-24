@@ -31,5 +31,5 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection UsePassBusAgent<TBot, THandler>(this IServiceCollection services)
             where TBot : IBot where THandler : IHandler<SendMessageRequest, SendMessageResponse> =>
-            services.AddScoped<IBotticelliBusAgent<THandler>, PassAgent<THandler>>();
+            services.AddScoped<IBotticelliBusAgent, PassAgent<THandler>>();
 }

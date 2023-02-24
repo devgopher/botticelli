@@ -1,6 +1,7 @@
 ﻿using BotDataSecureStorage.Entities;
 using BotDataSecureStorage.Settings;
 using LiteDB;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace BotDataSecureStorage;
 
@@ -17,7 +18,7 @@ public class SecureStorage
     public BotKey GetBotKey(string botId)
     {
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
-
+     
         return db.GetCollection<BotKey>().FindById(botId);
     }
 
