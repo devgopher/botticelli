@@ -15,4 +15,3 @@ public class SampleCommandProcessor : CommandProcessor<SampleCommand>
     protected override async Task InnerProcess(long chatId, CancellationToken token, params string[] args)
         => Console.WriteLine("Command received!!");
 }
-

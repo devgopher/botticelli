@@ -77,6 +77,7 @@ public class BotUpdateHandler : IUpdateHandler
     protected void Process(Message request, CancellationToken token)
     {
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) started...");
+
         if (token is {CanBeCanceled: true, IsCancellationRequested: true}) return;
 
         var clientTasks = ClientProcessorFactory

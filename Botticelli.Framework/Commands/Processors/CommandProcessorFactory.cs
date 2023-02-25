@@ -4,10 +4,10 @@ namespace Botticelli.Framework.Commands.Processors;
 
 public class CommandProcessorFactory
 {
-    private readonly IServiceProvider _serviceProvider;
     private readonly IServiceScope _scope;
+    private readonly IServiceProvider _serviceProvider;
     private readonly Dictionary<Type, Type> _types = new();
-    
+
     public CommandProcessorFactory(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;

@@ -8,7 +8,7 @@ public class StopBotResponse : BaseResponse<StopBotResponse>
 
     public AdminCommandStatus Status { get; }
 
-    public static StopBotResponse GetInstance(AdminCommandStatus status, string techMessage) => new StopBotResponse(Utils.Uid.GenerateShortUid(), techMessage, status);
+    public static StopBotResponse GetInstance(AdminCommandStatus status, string techMessage) => new(Utils.Uid.GenerateShortUid(), techMessage, status);
 
-    public static StopBotResponse GetInstance(string uid, string techMessage, AdminCommandStatus status) => new StopBotResponse(uid, techMessage, status);
+    public static StopBotResponse GetInstance(string uid, string techMessage, AdminCommandStatus status) => new(uid, techMessage, status);
 }

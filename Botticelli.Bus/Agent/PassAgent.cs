@@ -11,17 +11,17 @@ namespace Botticelli.Bus.None.Agent;
 ///     Simple pass agent (no bus)
 /// </summary>
 /// <typeparam name="THandler"></typeparam>
-public class PassAgent<THandler> : IBotticelliBusAgent<THandler> 
+public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
         where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
     private readonly IList<THandler> _handlers = new List<THandler>(5);
     private readonly bool _isStarted = false;
 
-    public PassAgent(IServiceProvider sp) 
+    public PassAgent(IServiceProvider sp)
         => _handlers.Add(sp.GetService<THandler>());
 
     /// <summary>
-    /// Sends a response
+    ///     Sends a response
     /// </summary>
     /// <param name="response"></param>
     /// <param name="token"></param>
@@ -33,7 +33,7 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
             NoneBus.SendMessageResponses.Enqueue(response);
 
     /// <summary>
-    /// Subscription
+    ///     Subscription
     /// </summary>
     /// <param name="handler"></param>
     /// <param name="token"></param>
@@ -49,8 +49,7 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     {
         while (!token.IsCancellationRequested)
         {
-            if (NoneBus.SendMessageRequests.TryDequeue(out var request))
-                await handler.Handle(request, token);
+            if (NoneBus.SendMessageRequests.TryDequeue(out var request)) await handler.Handle(request, token);
             Thread.Sleep(5);
         }
     }

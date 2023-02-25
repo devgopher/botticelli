@@ -21,28 +21,29 @@ public class PassClient<TBot> : IBotticelliBusClient
         await _bot.SendMessageAsync(request, token);
 
         var waitTask = Task.Run(() =>
-        {
-            int period = 0;
-            int delta = 50;
+                                {
+                                    var period = 0;
+                                    var delta = 50;
 
-            while (period < timeoutMs)
-            {
-                if (NoneBus.SendMessageResponses.TryDequeue(out var response))
-                {
-                    if (response.MessageUid == request.Message.Uid)
-                        return response;
-                    NoneBus.SendMessageResponses.Enqueue(response);
-                }
+                                    while (period < timeoutMs)
+                                    {
+                                        if (NoneBus.SendMessageResponses.TryDequeue(out var response))
+                                        {
+                                            if (response.MessageUid == request.Message.Uid) return response;
 
-                Task.Delay(delta, token).Wait(token);
-                period += delta;
-            }
+                                            NoneBus.SendMessageResponses.Enqueue(response);
+                                        }
 
-            return new SendMessageResponse(request.Message.Uid, $"Timeout")
-            {
-                MessageSentStatus = MessageSentStatus.Fail
-            };
-        }, token);
+                                        Task.Delay(delta, token).Wait(token);
+                                        period += delta;
+                                    }
+
+                                    return new SendMessageResponse(request.Message.Uid, "Timeout")
+                                    {
+                                        MessageSentStatus = MessageSentStatus.Fail
+                                    };
+                                },
+                                token);
 
         return waitTask.Result;
     }

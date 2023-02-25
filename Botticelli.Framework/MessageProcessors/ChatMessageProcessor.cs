@@ -1,8 +1,8 @@
-﻿using Botticelli.Framework.Commands.Processors;
+﻿using System.Text.RegularExpressions;
+using Botticelli.Framework.Commands.Processors;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
-using System.Text.RegularExpressions;
 
 namespace Botticelli.Framework.MessageProcessors;
 
@@ -14,7 +14,7 @@ public class ChatMessageProcessor : IClientMessageProcessor
     private readonly CommandProcessorFactory _cpFactory;
     private readonly ILogger<ChatMessageProcessor> _logger;
 
-    public ChatMessageProcessor(ILogger<ChatMessageProcessor> logger, 
+    public ChatMessageProcessor(ILogger<ChatMessageProcessor> logger,
                                 CommandProcessorFactory cpFactory)
     {
         _logger = logger;
@@ -34,10 +34,9 @@ public class ChatMessageProcessor : IClientMessageProcessor
             if (Regex.IsMatch(message.Body, SimpleCommandPattern))
             {
                 var match = Regex.Matches(message.Body, SimpleCommandPattern)
-                               .FirstOrDefault();
+                                 .FirstOrDefault();
 
-                if (match == default)
-                    return;
+                if (match == default) return;
 
                 command = match.Groups[1]
                                .Value;

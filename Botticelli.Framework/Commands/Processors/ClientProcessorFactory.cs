@@ -33,7 +33,7 @@ public static class ClientProcessorFactory
 
         if (proc != default) return;
 
-        proc = new ChatMessageProcessor(sp.GetRequiredService<ILogger<ChatMessageProcessor>>(), 
+        proc = new ChatMessageProcessor(sp.GetRequiredService<ILogger<ChatMessageProcessor>>(),
                                         sp.GetRequiredService<CommandProcessorFactory>());
         ClientProcessors.Add(proc);
     }

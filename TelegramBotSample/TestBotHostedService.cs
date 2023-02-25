@@ -1,14 +1,9 @@
-﻿using Botticelli.Framework.Commands.Processors;
-using Botticelli.Framework.Telegram;
-using Botticelli.Framework.Telegram.Handlers;
-using Botticelli.Framework.Telegram.MessageProcessors;
+﻿using Botticelli.Framework.Telegram;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
-using TelegramBotSample.Commands;
-using TelegramBotSample.MessageProcessors;
 
 namespace TelegramBotSample;
 

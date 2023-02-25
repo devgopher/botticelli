@@ -8,7 +8,7 @@ public class StartBotResponse : BaseResponse<StartBotResponse>
 
     public AdminCommandStatus Status { get; }
 
-    public static StartBotResponse GetInstance(AdminCommandStatus status, string techMessage) => new StartBotResponse(Utils.Uid.GenerateShortUid(), techMessage, status);
+    public static StartBotResponse GetInstance(AdminCommandStatus status, string techMessage) => new(Utils.Uid.GenerateShortUid(), techMessage, status);
 
-    public static StartBotResponse GetInstance(string uid, string techMessage, AdminCommandStatus status) => new StartBotResponse(uid, techMessage, status);
+    public static StartBotResponse GetInstance(string uid, string techMessage, AdminCommandStatus status) => new(uid, techMessage, status);
 }
