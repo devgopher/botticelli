@@ -39,23 +39,23 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
     /// <summary>
     ///     Sends a response
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="response"></param>
     /// <param name="token"></param>
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
-    public async Task SendResponse(SendMessageRequest request,
+    public async Task SendResponse(SendMessageResponse response,
                                    CancellationToken token,
                                    int timeoutMs = 10000)
     {
         try
         {
-            _logger.LogDebug($"{nameof(SendResponse)}({request.Uid}) start...");
+            _logger.LogDebug($"{nameof(SendResponse)}({response.Uid}) start...");
             var policy = Policy.Handle<RabbitMQClientException>()
                                .WaitAndRetryAsync(5, n => TimeSpan.FromSeconds(3 * Math.Exp(n)));
 
-            await policy.ExecuteAsync(() => InnerSend(request));
+            await policy.ExecuteAsync(() => InnerSend(response));
 
-            _logger.LogDebug($"{nameof(SendResponse)}({request.Uid}) finished");
+            _logger.LogDebug($"{nameof(SendResponse)}({response.Uid}) finished");
         }
         catch (Exception ex)
         {
@@ -95,7 +95,7 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
                              consumer);
     }
 
-    private async Task InnerSend(SendMessageRequest request)
+    private async Task InnerSend(SendMessageResponse response)
     {
         using var connection = _rabbitConnectionFactory.CreateConnection();
         using var channel = connection.CreateModel();
@@ -105,7 +105,7 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
 
         channel.QueueDeclare(queue);
         channel.QueueBind(queue, _settings.Exchange, rk);
-        channel.BasicPublish(_settings.Exchange, rk, body: JsonSerializer.SerializeToUtf8Bytes(request));
+        channel.BasicPublish(_settings.Exchange, rk, body: JsonSerializer.SerializeToUtf8Bytes(response));
     }
 
     private static string GetResponseQueueName() => $"{nameof(SendMessageRequest)}_{typeof(TBot).Name}_response";

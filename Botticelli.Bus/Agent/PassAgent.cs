@@ -23,14 +23,14 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     /// <summary>
     /// Sends a response
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="response"></param>
     /// <param name="token"></param>
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
-    public async Task SendResponse(SendMessageResponse request,
+    public async Task SendResponse(SendMessageResponse response,
                                    CancellationToken token,
                                    int timeoutMs = 10000) =>
-            NoneBus.SendMessageResponses.Enqueue(request);
+            NoneBus.SendMessageResponses.Enqueue(response);
 
     /// <summary>
     /// Subscription

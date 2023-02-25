@@ -1,11 +1,10 @@
 ﻿using Botticelli.Framework.Commands.Processors;
-using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 
-namespace Botticelli.Framework.Telegram.MessageProcessors;
+namespace Botticelli.Framework.MessageProcessors;
 
 public class ChatMessageProcessor : IClientMessageProcessor
 {
@@ -67,7 +66,7 @@ public class ChatMessageProcessor : IClientMessageProcessor
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error in {nameof(BotUpdateHandler)}: {ex.Message}");
+            _logger.LogError(ex, $"Error in {nameof(ChatMessageProcessor)}: {ex.Message}");
         }
     }
 

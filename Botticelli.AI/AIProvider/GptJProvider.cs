@@ -3,12 +3,11 @@ using Botticelli.AI.Message;
 using Botticelli.AI.Message.GptJ;
 using Botticelli.AI.Settings;
 using Botticelli.Bot.Interfaces.Agent;
+using Botticelli.Shared.API.Client.Responses;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
-using Botticelli.Shared.API.Client.Requests;
-using Botticelli.Shared.API.Client.Responses;
 
 namespace Botticelli.AI.AIProvider;
 

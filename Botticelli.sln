@@ -63,11 +63,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SecureStorage", "SecureStor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotDataSecureStorage", "BotDataSecureStorage\BotDataSecureStorage.csproj", "{54E9BED2-9760-4B78-966F-17500C29D323}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bus.None", "Botticelli.Bus\Botticelli.Bus.None.csproj", "{79DEC257-916B-402D-BBB9-BF4E6518FF8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bus.None", "Botticelli.Bus\Botticelli.Bus.None.csproj", "{79DEC257-916B-402D-BBB9-BF4E6518FF8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bot.Interfaces", "Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj", "{2851D399-D071-421A-B5B1-AB24883F82E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bot.Interfaces", "Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj", "{2851D399-D071-421A-B5B1-AB24883F82E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bus.Rabbit", "Botticelli.Bus.Rabbit\Botticelli.Bus.Rabbit.csproj", "{1EE16F3E-B208-4211-9C77-9A24037668AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bus.Rabbit", "Botticelli.Bus.Rabbit\Botticelli.Bus.Rabbit.csproj", "{1EE16F3E-B208-4211-9C77-9A24037668AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

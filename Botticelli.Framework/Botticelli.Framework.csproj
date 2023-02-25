@@ -21,7 +21,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="HostedService\" />
-		<Folder Include="MessageProcessors\" />
 	</ItemGroup>
 
 </Project>

@@ -1,25 +1,25 @@
-﻿using Botticelli.Framework.Commands.Processors;
-using Botticelli.Framework.Telegram.MessageProcessors;
+﻿using Botticelli.Framework.MessageProcessors;
 using Botticelli.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Botticelli.Framework.Telegram.Handlers;
+namespace Botticelli.Framework.Commands.Processors;
 
 public static class ClientProcessorFactory
 {
     private static readonly IList<IClientMessageProcessor> ClientProcessors
             = new List<IClientMessageProcessor>(10);
 
-    public static void AddProcessor<TProcessor>(IServiceProvider sp)
+    public static void AddProcessor<TProcessor, TBot>(IServiceProvider sp)
             where TProcessor : class, IClientMessageProcessor, new()
+            where TBot : IBot
     {
         var proc = ClientProcessors
                 .FirstOrDefault(x => x is TProcessor);
 
         if (proc != default) return;
 
-        var bot = sp.GetRequiredService<IBot<TelegramBot>>();
+        var bot = sp.GetRequiredService<TBot>();
         proc = new TProcessor();
         proc.SetBot(bot);
         proc.SetServiceProvider(sp);
