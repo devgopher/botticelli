@@ -5,6 +5,7 @@ using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Telegram;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
+using Botticelli.Shared.ValueObjects;
 using TelegramBotSample.Commands;
 
 namespace TelegramBotSample;
@@ -13,14 +14,14 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
 {
     private readonly IBotticelliBusClient _bus;
 
-    public AiCommandProcessor(IBot<TelegramBot> botClient,
+    public AiCommandProcessor(IBot<TelegramBot> bot,
                               ILogger<AiCommandProcessor> logger,
                               ICommandValidator<AiCommand> validator,
                               IBotticelliBusClient bus)
-            : base(botClient, logger, validator) =>
+            : base(bot, logger, validator) =>
             _bus = bus;
 
-    protected override async Task InnerProcess(long chatId, CancellationToken token, params string[] args)
+    protected override async Task InnerProcess(Message message, CancellationToken token)
     {
         var uid = string.Empty;
 
@@ -28,9 +29,9 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                               {
                                                   Message = new AiMessage(uid)
                                                   {
-                                                      ChatId = chatId.ToString(),
+                                                      ChatId = message.ChatId,
                                                       Subject = string.Empty,
-                                                      Body = string.Join(' ', args),
+                                                      Body = message.Body,
                                                       Attachments = null,
                                                       From = null,
                                                       ForwardFrom = null

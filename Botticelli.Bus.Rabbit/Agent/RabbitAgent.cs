@@ -6,6 +6,7 @@ using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polly;
 using RabbitMQ.Client;
@@ -27,12 +28,17 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
     private readonly IList<THandler> _handlers = new List<THandler>(5);
     private readonly ILogger<RabbitAgent<TBot, THandler>> _logger;
     private readonly IConnectionFactory _rabbitConnectionFactory;
+    private readonly IServiceProvider _sp;
     private readonly RabbitBusSettings _settings;
 
-    public RabbitAgent(TBot bot, IConnectionFactory rabbitConnectionFactory, RabbitBusSettings settings)
+    public RabbitAgent(TBot bot, 
+                       IConnectionFactory rabbitConnectionFactory,
+                       IServiceProvider sp,
+                       RabbitBusSettings settings)
     {
         _bot = bot;
         _rabbitConnectionFactory = rabbitConnectionFactory;
+        _sp = sp;
         _settings = settings;
     }
 
@@ -67,9 +73,10 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
     ///     Subscribes with a new handler
     /// </summary>
     /// <param name="handler"></param>
-    public async Task Subscribe(THandler handler, CancellationToken token)
+    public async Task Subscribe(CancellationToken token)
     {
         _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) start...");
+        var handler = _sp.GetRequiredService<THandler>();
         _handlers.Add(handler);
         using var connection = _rabbitConnectionFactory.CreateConnection();
         using var channel = connection.CreateModel();
@@ -111,4 +118,12 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
     private static string GetResponseQueueName() => $"{nameof(SendMessageRequest)}_{typeof(TBot).Name}_response";
     private static string GetRequestQueueName() => $"{nameof(SendMessageRequest)}_{typeof(TBot).Name}_request";
     private static string GetRkName() => $"{nameof(SendMessageRequest)}_{typeof(TBot).Name}_response_rk";
+
+    public void Dispose()
+    {
+    }
+
+    public Task StartAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
+
+    public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
 }

@@ -1,7 +1,10 @@
-﻿using Botticelli.Framework.Telegram;
+﻿using Botticelli.Bot.Interfaces.Handlers;
+using Botticelli.Bus.None.Agent;
+using Botticelli.Framework.Telegram;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
+using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
 
@@ -10,6 +13,7 @@ namespace TelegramBotSample;
 public class TestBotHostedService : IHostedService
 {
     private readonly IBot<TelegramBot> _telegramBot;
+    
 
     public TestBotHostedService(IBot<TelegramBot> telegramBot) => _telegramBot = telegramBot;
 

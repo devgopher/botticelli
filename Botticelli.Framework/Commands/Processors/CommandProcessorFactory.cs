@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Botticelli.Bot.Interfaces.Processors;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Framework.Commands.Processors;
 

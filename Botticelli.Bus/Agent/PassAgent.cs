@@ -14,11 +14,15 @@ namespace Botticelli.Bus.None.Agent;
 public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
         where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
-    private readonly IList<THandler> _handlers = new List<THandler>(5);
-    private readonly bool _isStarted = false;
+    //private readonly IList<THandler> _handlers = new List<THandler>(5);
+    private readonly IServiceProvider _sp;
+    private readonly IServiceScope _scope;
 
     public PassAgent(IServiceProvider sp)
-        => _handlers.Add(sp.GetService<THandler>());
+    {
+        _sp = sp;
+        _scope = _sp.CreateScope();
+    }
 
     /// <summary>
     ///     Sends a response
@@ -32,25 +36,20 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
                                    int timeoutMs = 10000) =>
             NoneBus.SendMessageResponses.Enqueue(response);
 
-    /// <summary>
-    ///     Subscription
-    /// </summary>
-    /// <param name="handler"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public async Task Subscribe(THandler handler, CancellationToken token)
-    {
-        _handlers.Add(handler);
-
-        if (!_isStarted) await InnerProcess(handler, token);
-    }
-
     private async Task InnerProcess(THandler handler, CancellationToken token)
     {
         while (!token.IsCancellationRequested)
         {
-            if (NoneBus.SendMessageRequests.TryDequeue(out var request)) await handler.Handle(request, token);
+            if (NoneBus.SendMessageRequests.TryDequeue(out var request)) NoneBus.SendMessageResponses.Enqueue(await handler.Handle(request, CancellationToken.None));
             Thread.Sleep(5);
         }
     }
+
+    public async Task StartAsync(CancellationToken token)
+    {
+        var handler = _scope.ServiceProvider.GetRequiredService<THandler>();
+        Task.Run(async () => await InnerProcess(handler, token));
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
 }

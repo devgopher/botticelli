@@ -5,6 +5,12 @@ namespace Botticelli.Bus.None.Bus;
 
 public static class NoneBus
 {
-    public static Queue<SendMessageRequest> SendMessageRequests => new();
-    public static Queue<SendMessageResponse> SendMessageResponses => new();
+    static NoneBus()
+    {
+        SendMessageResponses = new();
+        SendMessageRequests = new();
+    }
+
+    public static Queue<SendMessageRequest> SendMessageRequests { get; }
+    public static Queue<SendMessageResponse> SendMessageResponses { get; }
 }

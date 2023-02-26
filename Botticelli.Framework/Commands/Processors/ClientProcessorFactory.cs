@@ -11,7 +11,7 @@ public static class ClientProcessorFactory
             = new List<IClientMessageProcessor>(10);
 
     public static void AddProcessor<TProcessor, TBot>(IServiceProvider sp)
-            where TProcessor : class, IClientMessageProcessor, new()
+            where TProcessor : class, IClientMessageProcessor
             where TBot : IBot
     {
         var proc = ClientProcessors
@@ -20,7 +20,7 @@ public static class ClientProcessorFactory
         if (proc != default) return;
 
         var bot = sp.GetRequiredService<TBot>();
-        proc = new TProcessor();
+        proc = sp.GetRequiredService<TProcessor>();
         proc.SetBot(bot);
         proc.SetServiceProvider(sp);
         ClientProcessors.Add(proc);

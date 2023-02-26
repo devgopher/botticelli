@@ -16,6 +16,7 @@ using NLog.Extensions.Logging;
 using TelegramBotSample;
 using TelegramBotSample.Commands;
 using TelegramBotSample.Handlers;
+using Botticelli.Framework.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,13 +33,13 @@ builder.Services.UseBotticelli<IBot<TelegramBot>>(builder.Configuration);
 builder.Services.AddLogging(cfg => cfg.AddNLog());
 builder.Services.AddOpenTtsTalks(builder.Configuration);
 builder.Services.AddGptJProvider(builder.Configuration);
-builder.Services.AddScoped<IHandler<SendMessageRequest, SendMessageResponse>, AiHandler>();
-builder.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor>();
-builder.Services.RegisterBotCommand<AiCommand, AiCommandProcessor>();
+builder.Services.AddScoped<AiHandler>();
 builder.Services.AddScoped<ICommandValidator<SampleCommand>, PassValidator<SampleCommand>>();
 builder.Services.AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>();
 builder.Services.UsePassBusAgent<IBot<TelegramBot>, AiHandler>();
 builder.Services.UsePassBusClient<IBot<TelegramBot>>();
+builder.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor, PassValidator<SampleCommand>, IBot<TelegramBot>>();
+builder.Services.RegisterBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>, IBot<TelegramBot>>();
 builder.Services.AddHostedService<TestBotHostedService>();
 
 var app = builder.Build();

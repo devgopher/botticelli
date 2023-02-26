@@ -1,5 +1,7 @@
-﻿using Botticelli.Framework.Commands;
+﻿using Botticelli.Bot.Interfaces.Processors;
+using Botticelli.Framework.Commands;
 using Botticelli.Framework.Commands.Processors;
+using Botticelli.Framework.Commands.Validators;
 using Botticelli.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,16 +16,21 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection RegisterBotCommand<TCommand, TCommandProcessor, TBot>(this IServiceCollection services)
+    public static IServiceCollection RegisterBotCommand<TCommand, 
+                                                        TCommandProcessor,
+                                                        TCommandValidator,
+                                                        TBot>(this IServiceCollection services)
             where TCommand : class, ICommand
-            where TCommandProcessor : class, ICommandProcessor, IClientMessageProcessor, new()
+            where TCommandProcessor : class, ICommandProcessor
+            where TCommandValidator : class, ICommandValidator<TCommand>
             where TBot : IBot
     {
+        services.AddScoped<TCommand>()
+                .AddScoped<TCommandProcessor>()
+                .AddScoped<ICommandValidator<TCommand>, TCommandValidator>();
+
         var provider = services.BuildServiceProvider();
         var factory = provider.GetRequiredService<CommandProcessorFactory>();
-
-        services.AddScoped<TCommand>()
-                .AddScoped<TCommandProcessor>();
 
         factory?.AddCommandType(typeof(TCommand), typeof(TCommandProcessor));
 

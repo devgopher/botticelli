@@ -1,4 +1,5 @@
-﻿using Botticelli.Bot.Interfaces.Client;
+﻿using Botticelli.Bot.Interfaces.Agent;
+using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Bus.None.Bus;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
@@ -10,15 +11,12 @@ namespace Botticelli.Bus.None.Client;
 public class PassClient<TBot> : IBotticelliBusClient
         where TBot : IBot
 {
-    private readonly TBot _bot;
-
-    public PassClient(TBot bot) => _bot = bot;
 
     public async Task<SendMessageResponse> GetResponse(SendMessageRequest request,
                                                        CancellationToken token,
                                                        int timeoutMs = 10000)
     {
-        await _bot.SendMessageAsync(request, token);
+       NoneBus.SendMessageRequests.Enqueue(request);
 
         var waitTask = Task.Run(() =>
                                 {
@@ -47,4 +45,7 @@ public class PassClient<TBot> : IBotticelliBusClient
 
         return waitTask.Result;
     }
+
+    public async Task SendResponse(SendMessageResponse response, CancellationToken tokens) 
+        => NoneBus.SendMessageResponses.Enqueue(response);
 }

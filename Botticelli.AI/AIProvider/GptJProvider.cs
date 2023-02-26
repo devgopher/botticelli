@@ -4,8 +4,10 @@ using Botticelli.AI.Message;
 using Botticelli.AI.Message.GptJ;
 using Botticelli.AI.Settings;
 using Botticelli.Bot.Interfaces.Agent;
+using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Shared.API.Client.Responses;
 using Flurl;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -14,14 +16,13 @@ namespace Botticelli.AI.AIProvider;
 public class GptJProvider : GenericAiProvider
 {
     private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
-
     public GptJProvider(IOptionsMonitor<AiSettings> settings,
                         IHttpClientFactory factory,
                         ILogger<GptJProvider> logger,
-                        IBotticelliBusAgent bus) : base(settings,
-                                                        factory,
-                                                        logger,
-                                                        bus)
+                        IBotticelliBusClient bus) : base(settings,
+                                                         factory,
+                                                         logger,
+                                                         bus)
     {
     }
 
@@ -42,7 +43,7 @@ public class GptJProvider : GenericAiProvider
             var content = JsonContent.Create(new GptJMessage
             {
                 Text = message.Body,
-                GenerateTokensLimit = 50 + (int) (message.Body.Length * 1.5),
+                GenerateTokensLimit = 50 + (int) (message.Body.Length * 5),
                 TopP = 0.5,
                 TopK = 0,
                 Temperature = (_temperatureRandom.Next(0, 900) + 100) / 1000.0

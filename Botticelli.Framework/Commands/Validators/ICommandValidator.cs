@@ -7,7 +7,7 @@ public interface ICommandValidator<TCommand>
     ///     Main validation procedure
     /// </summary>
     /// <returns></returns>
-    public Task<bool> Validate(long chatId, params string[] args);
+    public Task<bool> Validate(string chatId, string args);
 
     /// <summary>
     ///     A help for a concrete command

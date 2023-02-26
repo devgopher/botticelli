@@ -1,4 +1,5 @@
-﻿using Botticelli.Framework.Commands.Validators;
+﻿using Botticelli.Bot.Interfaces.Processors;
+using Botticelli.Framework.Commands.Validators;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
@@ -9,35 +10,36 @@ namespace Botticelli.Framework.Commands.Processors;
 public abstract class CommandProcessor<TCommand> : ICommandProcessor
         where TCommand : class, ICommand
 {
-    private readonly IBot _botClient;
+    private IBot _bot;
     protected readonly ILogger Logger;
     protected readonly ICommandValidator<TCommand> Validator;
+    protected IServiceProvider _sp;
 
-    protected CommandProcessor(IBot botClient,
+    protected CommandProcessor(IBot bot,
                                ILogger logger,
                                ICommandValidator<TCommand> validator)
     {
-        _botClient = botClient;
-        _botClient = botClient;
+        SetBot(bot);
         Logger = logger;
         Validator = validator;
     }
 
-    public async Task ProcessAsync(long chatId, CancellationToken token, params string[] args)
+
+    public async Task ProcessAsync(Message message, CancellationToken token)
     {
         var request = SendMessageRequest.GetInstance();
         request.Message = new Message(Guid.NewGuid().ToString());
 
         try
         {
-            if (await Validator.Validate(chatId, args))
+            if (await Validator.Validate(message.ChatId, message.Body))
             {
-                await InnerProcess(chatId, token, args);
+                await InnerProcess(message, token);
             }
             else
             {
                 request.Message.Body = Validator.Help();
-                await _botClient.SendMessageAsync(request, token);
+                await _bot.SendMessageAsync(request, token);
             }
         }
         catch (Exception ex)
@@ -46,5 +48,11 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         }
     }
 
-    protected abstract Task InnerProcess(long chatId, CancellationToken token, params string[] args);
+    protected abstract Task InnerProcess(Message message, CancellationToken token);
+
+    public void SetBot(IBot bot)
+        => _bot = bot;
+
+    public void SetServiceProvider(IServiceProvider sp)
+        => _sp = sp;
 }

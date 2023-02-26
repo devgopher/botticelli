@@ -42,7 +42,7 @@ public class ChatMessageProcessor : IClientMessageProcessor
                                .Value;
 
                 await _cpFactory.Get(command)
-                                .ProcessAsync(Convert.ToInt64(message.ChatId), token, null);
+                                .ProcessAsync(message, token);
             }
             else if (Regex.IsMatch(message.Body, ArgsCommandPattern))
             {
@@ -58,7 +58,7 @@ public class ChatMessageProcessor : IClientMessageProcessor
                 if (!string.IsNullOrWhiteSpace(argsString)) args = argsString.Split(" ");
 
                 await _cpFactory.Get(command)
-                                .ProcessAsync(chatId, token, args);
+                                .ProcessAsync(message, token);
             }
 
             _logger.LogDebug($"{nameof(ProcessAsync)}({message.Uid}) finished...");
