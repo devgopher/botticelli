@@ -21,22 +21,27 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
             : base(bot, logger, validator) =>
             _bus = bus;
 
-    protected override async Task InnerProcess(Message message, CancellationToken token)
+    protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
-        var uid = string.Empty;
-
-        var response = await _bus.GetResponse(new SendMessageRequest(uid)
+        var response = await _bus.GetResponse(new SendMessageRequest(message.Uid)
                                               {
-                                                  Message = new AiMessage(uid)
+                                                  Message = new AiMessage(message.Uid)
                                                   {
                                                       ChatId = message.ChatId,
                                                       Subject = string.Empty,
-                                                      Body = message.Body,
+                                                      Body = args,
                                                       Attachments = null,
                                                       From = null,
                                                       ForwardFrom = null
                                                   }
                                               },
                                               token);
+
+        if (response != null)
+            await _bot.SendMessageAsync(new SendMessageRequest(response.Uid)
+                                        {
+                                            Message = response.Message
+                                        },
+                                        token);
     }
 }

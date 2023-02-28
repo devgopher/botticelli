@@ -13,6 +13,6 @@ public class SampleCommandProcessor : CommandProcessor<SampleCommand>
     {
     }
 
-    protected override async Task InnerProcess(Message message, CancellationToken token)
+    protected override async Task InnerProcess(Message message, string args, CancellationToken token)
         => Console.WriteLine("Command received!!");
 }

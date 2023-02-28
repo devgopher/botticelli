@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.MessageProcessors;
 
-public class ChatMessageProcessor : IClientMessageProcessor
+public sealed class ChatMessageProcessor : IClientMessageProcessor
 {
     private const string SimpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
     private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";

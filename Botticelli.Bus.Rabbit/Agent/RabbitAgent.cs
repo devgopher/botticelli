@@ -75,31 +75,31 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
     /// <param name="handler"></param>
     public async Task Subscribe(CancellationToken token)
     {
-        _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) start...");
-        var handler = _sp.GetRequiredService<THandler>();
-        _handlers.Add(handler);
-        using var connection = _rabbitConnectionFactory.CreateConnection();
-        using var channel = connection.CreateModel();
-        var queue = GetRequestQueueName();
-        var queueDeclareResult = channel.QueueDeclare(queue);
+        //_logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) start...");
+        //var handler = _sp.GetRequiredService<THandler>();
+        //_handlers.Add(handler);
+        //using var connection = _rabbitConnectionFactory.CreateConnection();
+        //using var channel = connection.CreateModel();
+        //var queue = GetRequestQueueName();
+        //var queueDeclareResult = channel.QueueDeclare(queue);
 
-        _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {queueDeclareResult.QueueName}");
+        //_logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {queueDeclareResult.QueueName}");
 
-        var consumer = new EventingBasicConsumer(channel);
-        consumer.Received += (model, ea) =>
-        {
-            _logger.LogDebug($"{nameof(Subscribe)}() message received");
+        //var consumer = new EventingBasicConsumer(channel);
+        //consumer.Received += (model, ea) =>
+        //{
+        //    _logger.LogDebug($"{nameof(Subscribe)}() message received");
 
-            var deserialized = JsonSerializer.Deserialize<SendMessageRequest>(ea.Body.ToArray());
-            var policy = Policy.HandleResult<MessageSentStatus>(result => result != MessageSentStatus.Ok)
-                               .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+        //    var deserialized = JsonSerializer.Deserialize<SendMessageRequest>(ea.Body.ToArray());
+        //    var policy = Policy.HandleResult<MessageSentStatus>(result => result != MessageSentStatus.Ok)
+        //                       .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
-            policy.Execute(() => handler.Handle(deserialized, token).Result.MessageSentStatus);
-        };
+        //    policy.Execute(() => handler.Handle(deserialized, token));
+        //};
 
-        channel.BasicConsume(queue,
-                             true,
-                             consumer);
+        //channel.BasicConsume(queue,
+        //                     true,
+        //                     consumer);
     }
 
     private async Task InnerSend(SendMessageResponse response)

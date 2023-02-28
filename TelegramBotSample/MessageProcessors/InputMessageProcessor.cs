@@ -15,8 +15,7 @@ public class InputMessageProcessor : IClientMessageProcessor
     {
         try
         {
-            var scope = _sp.CreateScope();
-            var speaker = scope.ServiceProvider.GetRequiredService<ISpeaker>();
+            var speaker = _sp.GetRequiredService<ISpeaker>();
             var result = await speaker.Speak(message.Body, token);
             var resultMessage = new SendMessageRequest(Guid.NewGuid().ToString())
             {

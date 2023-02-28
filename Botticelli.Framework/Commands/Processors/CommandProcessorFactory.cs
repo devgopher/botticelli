@@ -5,14 +5,12 @@ namespace Botticelli.Framework.Commands.Processors;
 
 public class CommandProcessorFactory
 {
-    private readonly IServiceScope _scope;
     private readonly IServiceProvider _serviceProvider;
     private readonly Dictionary<Type, Type> _types = new();
 
     public CommandProcessorFactory(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        _scope = _serviceProvider.CreateScope();
     }
 
     public void AddCommandType(Type commandType, Type procType)
@@ -28,6 +26,6 @@ public class CommandProcessorFactory
 
         var type = _types.First(k => k.Key.Name.Replace("Command", string.Empty) == canonized).Value;
 
-        return _scope.ServiceProvider.GetRequiredService(type) as ICommandProcessor;
+        return _serviceProvider.GetRequiredService(type) as ICommandProcessor;
     }
 }

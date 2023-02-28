@@ -14,15 +14,9 @@ namespace Botticelli.Bus.None.Agent;
 public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
         where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
-    //private readonly IList<THandler> _handlers = new List<THandler>(5);
-    private readonly IServiceProvider _sp;
-    private readonly IServiceScope _scope;
+    private readonly THandler _handler;
 
-    public PassAgent(IServiceProvider sp)
-    {
-        _sp = sp;
-        _scope = _sp.CreateScope();
-    }
+    public PassAgent(THandler handler) => _handler = handler;
 
     /// <summary>
     ///     Sends a response
@@ -40,15 +34,15 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     {
         while (!token.IsCancellationRequested)
         {
-            if (NoneBus.SendMessageRequests.TryDequeue(out var request)) NoneBus.SendMessageResponses.Enqueue(await handler.Handle(request, CancellationToken.None));
+            if (NoneBus.SendMessageRequests.TryDequeue(out var request)) 
+                await handler.Handle(request, token);
             Thread.Sleep(5);
         }
     }
 
     public async Task StartAsync(CancellationToken token)
     {
-        var handler = _scope.ServiceProvider.GetRequiredService<THandler>();
-        Task.Run(async () => await InnerProcess(handler, token));
+        Task.Run(async () => await InnerProcess(_handler, token));
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();

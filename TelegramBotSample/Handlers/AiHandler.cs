@@ -1,7 +1,6 @@
 ﻿using Botticelli.AI.AIProvider;
 using Botticelli.AI.Message;
 using Botticelli.Bot.Interfaces.Handlers;
-using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 
@@ -13,10 +12,8 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
 
     public AiHandler(IAiProvider provider) => _provider = provider;
 
-    public async Task<SendMessageResponse> Handle(SendMessageRequest input, CancellationToken token)
+    public async Task Handle(SendMessageRequest input, CancellationToken token)
     {
-        try
-        {
             await _provider.SendAsync(new AiMessage(input.Uid)
                                       {
                                           ChatId = input.Message.ChatId,
@@ -24,20 +21,5 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
                                           Subject = input.Message.Subject
                                       },
                                       token);
-
-            return new SendMessageResponse(input.Uid, string.Empty)
-            {
-                MessageUid = input.Uid,
-                MessageSentStatus = MessageSentStatus.Ok
-            };
-        }
-        catch (Exception ex)
-        {
-            return new SendMessageResponse(input.Uid, ex.Message)
-            {
-                MessageUid = input.Uid,
-                MessageSentStatus = MessageSentStatus.Fail
-            };
-        }
     }
 }

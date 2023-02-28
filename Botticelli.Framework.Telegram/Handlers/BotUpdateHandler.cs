@@ -13,8 +13,13 @@ namespace Botticelli.Framework.Telegram.Handlers;
 public class BotUpdateHandler : IUpdateHandler
 {
     private readonly ILogger<BotUpdateHandler> _logger;
+    private readonly ClientProcessorFactory _processorFactory;
 
-    public BotUpdateHandler(ILogger<BotUpdateHandler> logger) => _logger = logger;
+    public BotUpdateHandler(ILogger<BotUpdateHandler> logger, ClientProcessorFactory processorFactory)
+    {
+        _logger = logger;
+        _processorFactory = processorFactory;
+    }
 
     public async Task HandlePollingErrorAsync(ITelegramBotClient botClient,
                                               Exception exception,
@@ -80,7 +85,7 @@ public class BotUpdateHandler : IUpdateHandler
 
         if (token is {CanBeCanceled: true, IsCancellationRequested: true}) return;
 
-        var clientTasks = ClientProcessorFactory
+        var clientTasks = _processorFactory
                           .GetProcessors()
                           .Select(p => ProcessForProcessor(p, request, token));
 

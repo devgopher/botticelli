@@ -1,22 +1,19 @@
 using BotDataSecureStorage.Settings;
 using Botticelli.AI.Extensions;
-using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.BotBase.Extensions;
 using Botticelli.Bus.None.Extensions;
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
-using Botticelli.Shared.API.Client.Requests;
-using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Talks.Extensions;
 using NLog.Extensions.Logging;
 using TelegramBotSample;
 using TelegramBotSample.Commands;
 using TelegramBotSample.Handlers;
-using Botticelli.Framework.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,15 +30,18 @@ builder.Services.UseBotticelli<IBot<TelegramBot>>(builder.Configuration);
 builder.Services.AddLogging(cfg => cfg.AddNLog());
 builder.Services.AddOpenTtsTalks(builder.Configuration);
 builder.Services.AddGptJProvider(builder.Configuration);
-builder.Services.AddScoped<AiHandler>();
 builder.Services.AddScoped<ICommandValidator<SampleCommand>, PassValidator<SampleCommand>>();
 builder.Services.AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>();
+builder.Services.AddSingleton<AiHandler>();
 builder.Services.UsePassBusAgent<IBot<TelegramBot>, AiHandler>();
 builder.Services.UsePassBusClient<IBot<TelegramBot>>();
-builder.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor, PassValidator<SampleCommand>, IBot<TelegramBot>>();
-builder.Services.RegisterBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>, IBot<TelegramBot>>();
 builder.Services.AddHostedService<TestBotHostedService>();
+builder.Services.AddBotCommand<SampleCommand, SampleCommandProcessor, PassValidator<SampleCommand>>();
+builder.Services.AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>();
 
 var app = builder.Build();
+app.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor, IBot<TelegramBot>>()
+   .RegisterBotCommand<AiCommand, AiCommandProcessor, IBot<TelegramBot>>();
+
 
 app.Run();

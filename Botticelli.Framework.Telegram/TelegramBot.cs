@@ -168,7 +168,11 @@ public class TelegramBot : BaseBot<TelegramBot>
                 .Replace("(", @"\(")
                 .Replace(")", @"\)")
                 .Replace("-", @"\-")
-                .Replace("`", @"\`");
+                .Replace("`", @"\`")
+                .Replace("`", @"\{")
+                .Replace("`", @"\}")
+                .Replace("`", @"\[")
+                .Replace("`", @"\]");
 
     /// <summary>
     ///     Starts a bot

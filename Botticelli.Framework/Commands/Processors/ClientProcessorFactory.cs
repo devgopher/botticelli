@@ -1,20 +1,19 @@
 ﻿using Botticelli.Framework.MessageProcessors;
 using Botticelli.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Commands.Processors;
 
-public static class ClientProcessorFactory
+public class ClientProcessorFactory
 {
-    private static readonly IList<IClientMessageProcessor> ClientProcessors
+    private static readonly IList<IClientMessageProcessor> _clientProcessors
             = new List<IClientMessageProcessor>(10);
 
-    public static void AddProcessor<TProcessor, TBot>(IServiceProvider sp)
+    public void AddProcessor<TProcessor, TBot>(IServiceProvider sp)
             where TProcessor : class, IClientMessageProcessor
             where TBot : IBot
     {
-        var proc = ClientProcessors
+        var proc = _clientProcessors
                 .FirstOrDefault(x => x is TProcessor);
 
         if (proc != default) return;
@@ -23,21 +22,15 @@ public static class ClientProcessorFactory
         proc = sp.GetRequiredService<TProcessor>();
         proc.SetBot(bot);
         proc.SetServiceProvider(sp);
-        ClientProcessors.Add(proc);
+        _clientProcessors.Add(proc);
     }
 
-    public static void AddChatMessageProcessor(IBot bot, IServiceProvider sp)
+    public void AddChatMessageProcessor(IBot bot, IServiceProvider sp)
     {
-        var proc = ClientProcessors
-                .FirstOrDefault(x => x is ChatMessageProcessor);
-
-        if (proc != default) return;
-
-        proc = new ChatMessageProcessor(sp.GetRequiredService<ILogger<ChatMessageProcessor>>(),
-                                        sp.GetRequiredService<CommandProcessorFactory>());
-        ClientProcessors.Add(proc);
+        if (!_clientProcessors.Any(x => x is ChatMessageProcessor))
+            _clientProcessors.Add(sp.GetRequiredService<ChatMessageProcessor>());
     }
 
-    public static IEnumerable<IClientMessageProcessor> GetProcessors()
-        => ClientProcessors.AsEnumerable();
+    public IEnumerable<IClientMessageProcessor> GetProcessors()
+        => _clientProcessors.AsEnumerable();
 }

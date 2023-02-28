@@ -2,7 +2,7 @@
 
 namespace Botticelli.AI.Message.GptJ;
 
-public class GptJMessage
+public class GptJInputMessage
 {
     [JsonProperty("text")]
     public string Text { get; set; }

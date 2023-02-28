@@ -20,7 +20,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection UsePassBusClient<TBot>(this IServiceCollection services)
             where TBot : IBot =>
-            services.AddScoped<IBotticelliBusClient, PassClient<TBot>>();
+            services.AddSingleton<IBotticelliBusClient, PassClient>();
 
     /// <summary>
     ///     Uses a no-bus scheme
@@ -31,5 +31,5 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection UsePassBusAgent<TBot, THandler>(this IServiceCollection services)
             where TBot : IBot where THandler : IHandler<SendMessageRequest, SendMessageResponse> =>
-            services.AddHostedService<IBotticelliBusAgent>(sp => new PassAgent<THandler>(sp));
+            services.AddHostedService<PassAgent<THandler>>();
 }

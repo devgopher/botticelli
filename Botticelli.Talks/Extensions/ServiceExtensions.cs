@@ -12,7 +12,7 @@ public static class ServiceExtensions
     {
         services.Configure<TtsSettings>(config.GetSection(nameof(TtsSettings)));
         services.AddHttpClient<OpenTtsSpeaker>();
-        services.AddScoped<ISpeaker, OpenTtsSpeaker>();
+        services.AddSingleton<ISpeaker, OpenTtsSpeaker>();
 
         return services;
     }

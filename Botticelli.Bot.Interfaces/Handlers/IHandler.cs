@@ -2,5 +2,5 @@
 
 public interface IHandler<in TRequest, TResponse>
 {
-    public Task<TResponse> Handle(TRequest input, CancellationToken token);
+    public Task Handle(TRequest input, CancellationToken token);
 }

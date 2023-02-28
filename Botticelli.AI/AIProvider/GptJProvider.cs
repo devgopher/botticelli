@@ -40,7 +40,7 @@ public class GptJProvider : GenericAiProvider
 
             client.BaseAddress = new Uri(_settings.CurrentValue.Url);
 
-            var content = JsonContent.Create(new GptJMessage
+            var content = JsonContent.Create(new GptJInputMessage
             {
                 Text = message.Body,
                 GenerateTokensLimit = 50 + (int) (message.Body.Length * 5),
@@ -56,19 +56,23 @@ public class GptJProvider : GenericAiProvider
                                                   token);
 
             if (response.IsSuccessStatusCode)
-                await _bus.SendResponse(new SendMessageResponse(Guid.NewGuid().ToString())
+            {
+                var outMessage = await response.Content.ReadFromJsonAsync<GptJOutputMessage>();
+
+                await _bus.SendResponse(new SendMessageResponse(message.Uid)
                                         {
-                                            Message = new Shared.ValueObjects.Message(Guid.NewGuid().ToString())
+                                            Message = new Shared.ValueObjects.Message(message.Uid)
                                             {
                                                 ChatId = message.ChatId,
                                                 Subject = message.Subject,
-                                                Body = await response.Content.ReadAsStringAsync(token),
+                                                Body = outMessage?.Completion,
                                                 Attachments = null,
                                                 From = null,
                                                 ForwardFrom = null
                                             }
                                         },
                                         token);
+            }
             else
                 await _bus.SendResponse(new SendMessageResponse(Guid.NewGuid().ToString())
                                         {

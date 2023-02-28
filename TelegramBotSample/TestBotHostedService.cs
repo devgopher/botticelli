@@ -1,10 +1,7 @@
-﻿using Botticelli.Bot.Interfaces.Handlers;
-using Botticelli.Bus.None.Agent;
-using Botticelli.Framework.Telegram;
+﻿using Botticelli.Framework.Telegram;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
-using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
 
@@ -17,20 +14,20 @@ public class TestBotHostedService : IHostedService
 
     public TestBotHostedService(IBot<TelegramBot> telegramBot) => _telegramBot = telegramBot;
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        return Task.Factory.StartNew(async ()
-                                             =>
-                                     {
-                                         while (!cancellationToken.IsCancellationRequested)
-                                         {
-                                             Console.WriteLine("Start sending messages...");
-                                             await SendTestMessage();
+        //return Task.Factory.StartNew(async ()
+        //                                     =>
+        //                             {
+        //                                 while (!cancellationToken.IsCancellationRequested)
+        //                                 {
+        //                                     Console.WriteLine("Start sending messages...");
+        //                                     await SendTestMessage();
 
-                                             Thread.Sleep(30000);
-                                         }
-                                     },
-                                     cancellationToken);
+        //                                     Thread.Sleep(30000);
+        //                                 }
+        //                             },
+        //                             cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

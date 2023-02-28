@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
             s.AiName = aiSettings.AiName;
         });
 
-        services.AddScoped<IAiProvider, GptJProvider>();
+        services.AddSingleton<IAiProvider, GptJProvider>();
 
         return services;
     }

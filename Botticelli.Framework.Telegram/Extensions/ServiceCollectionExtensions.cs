@@ -10,7 +10,7 @@ using Telegram.Bot.Polling;
 
 namespace Botticelli.Framework.Telegram.Extensions;
 
-public static class ServiceExtensions
+public static class ServiceCollectionExtensions
 {
     /// <summary>
     ///     Adds a Telegram bot
@@ -31,6 +31,7 @@ public static class ServiceExtensions
         return services.AddSingleton<ITelegramBotClient, TelegramBotClient>(sp => new TelegramBotClient(token))
                        .AddSingleton(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
                        .AddSingleton<IBot<TelegramBot>, TelegramBot>(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
+                       .AddSingleton<IBot, TelegramBot>(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
                        .AddSingleton<IUpdateHandler, BotUpdateHandler>();
     }
 }
