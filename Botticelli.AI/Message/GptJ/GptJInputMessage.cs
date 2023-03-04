@@ -1,21 +1,21 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Botticelli.AI.Message.GptJ;
 
 public class GptJInputMessage
 {
-    [JsonProperty("text")]
+    [JsonPropertyName("text")]
     public string Text { get; set; }
 
-    [JsonProperty("generate_tokens_limit")]
+    [JsonPropertyName("generate_tokens_limit")]
     public int GenerateTokensLimit { get; set; }
 
-    [JsonProperty("top_p")]
+    [JsonPropertyName("top_p")]
     public double TopP { get; set; }
 
-    [JsonProperty("top_k")]
+    [JsonPropertyName("top_k")]
     public int TopK { get; set; }
 
-    [JsonProperty("temperature")]
+    [JsonPropertyName("temperature")]
     public double Temperature { get; set; }
 }

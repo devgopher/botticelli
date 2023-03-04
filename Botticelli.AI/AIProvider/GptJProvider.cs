@@ -8,6 +8,9 @@ using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Botticelli.AI.AIProvider;
 
