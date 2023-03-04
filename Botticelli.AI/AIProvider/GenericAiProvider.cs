@@ -1,6 +1,5 @@
 ﻿using Botticelli.AI.Message;
 using Botticelli.AI.Settings;
-using Botticelli.Bot.Interfaces.Agent;
 using Botticelli.Bot.Interfaces.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

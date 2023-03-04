@@ -1,4 +1,5 @@
 ﻿using Botticelli.Framework.Commands.Processors;
+using Botticelli.Framework.MessageProcessors;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -87,6 +88,7 @@ public class BotUpdateHandler : IUpdateHandler
 
         var clientTasks = _processorFactory
                           .GetProcessors()
+                          .Where(p => p.GetType() != typeof(ChatMessageProcessor))
                           .Select(p => ProcessForProcessor(p, request, token));
 
         Task.WhenAll(clientTasks);

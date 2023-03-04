@@ -31,11 +31,11 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                                       Subject = string.Empty,
                                                       Body = args,
                                                       Attachments = null,
-                                                      From = null,
-                                                      ForwardFrom = null
+                                                      From = message.From,
+                                                      ForwardFrom = message.ForwardFrom
                                                   }
                                               },
-                                              token);
+                                              token, 60000);
 
         if (response != null)
             await _bot.SendMessageAsync(new SendMessageRequest(response.Uid)

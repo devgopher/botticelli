@@ -21,6 +21,9 @@ public static class ServiceCollectionExtensions
         var settings = new AiBotSettings();
         config.Bind(nameof(AiBotSettings), settings);
 
+        var gptSettings = new AiGptSettings();
+        config.Bind(nameof(AiGptSettings), gptSettings);
+
         var aiSettings = settings.Settings.FirstOrDefault(ai => ai.AiName == "gptj");
 
         if (aiSettings == default) throw new AiException("No section for gptj!");
@@ -29,6 +32,14 @@ public static class ServiceCollectionExtensions
         {
             s.Url = aiSettings.Url;
             s.AiName = aiSettings.AiName;
+        });
+
+        services.Configure<AiGptSettings>(s =>
+        {
+            s.GenerateTokensLimit = gptSettings.GenerateTokensLimit;
+            s.Temperature = gptSettings.Temperature;
+            s.TopK = gptSettings.TopK;
+            s.TopP = gptSettings.TopP;
         });
 
         services.AddSingleton<IAiProvider, GptJProvider>();

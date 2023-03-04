@@ -27,7 +27,6 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         Validator = validator;
     }
 
-
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
         var request = SendMessageRequest.GetInstance();
@@ -35,10 +34,6 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
         try
         {
-            var chatId = Convert.ToInt64(message.ChatId);
-
-            string command;
-
             if (Regex.IsMatch(message.Body, SimpleCommandPattern))
             {
                 var match = Regex.Matches(message.Body, SimpleCommandPattern)
@@ -46,10 +41,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
                 if (match == default) return;
 
-                command = match.Groups[1]
-                               .Value;
-
-                await ValidateAndProcesss(message, string.Empty, token, request);
+                await ValidateAndProcess(message, string.Empty, token, request);
             }
             else if (Regex.IsMatch(message.Body, ArgsCommandPattern))
             {
@@ -57,7 +49,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                                  .FirstOrDefault();
                 var argsString = match.Groups[2].Value;
 
-                await ValidateAndProcesss(message, argsString, token, request);
+                await ValidateAndProcess(message, argsString, token, request);
             }
         }
         catch (Exception ex)
@@ -66,7 +58,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         }
     }
 
-    private async Task ValidateAndProcesss(Message message,
+    private async Task ValidateAndProcess(Message message,
                                            string args,
                                            CancellationToken token, 
                                            SendMessageRequest request)

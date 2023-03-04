@@ -1,30 +1,29 @@
-﻿using System.Net.Http.Json;
-using Botticelli.AI.Exceptions;
+﻿using Botticelli.AI.Exceptions;
 using Botticelli.AI.Message;
 using Botticelli.AI.Message.GptJ;
 using Botticelli.AI.Settings;
-using Botticelli.Bot.Interfaces.Agent;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Shared.API.Client.Responses;
 using Flurl;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Json;
 
 namespace Botticelli.AI.AIProvider;
 
 public class GptJProvider : GenericAiProvider
 {
+    private readonly IOptionsMonitor<AiGptSettings> _gptSettings;
     private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
     public GptJProvider(IOptionsMonitor<AiSettings> settings,
+                        IOptionsMonitor<AiGptSettings> gptSettings,
                         IHttpClientFactory factory,
                         ILogger<GptJProvider> logger,
                         IBotticelliBusClient bus) : base(settings,
                                                          factory,
                                                          logger,
-                                                         bus)
-    {
-    }
+                                                         bus) 
+        => _gptSettings = gptSettings;
 
     public override string AiName => "gptj";
 
@@ -43,10 +42,10 @@ public class GptJProvider : GenericAiProvider
             var content = JsonContent.Create(new GptJInputMessage
             {
                 Text = message.Body,
-                GenerateTokensLimit = 50 + (int) (message.Body.Length * 5),
-                TopP = 0.5,
-                TopK = 0,
-                Temperature = (_temperatureRandom.Next(0, 900) + 100) / 1000.0
+                GenerateTokensLimit = _gptSettings?.CurrentValue?.GenerateTokensLimit ?? 300,
+                TopP = _gptSettings?.CurrentValue?.TopP ?? 0.5,
+                TopK = _gptSettings?.CurrentValue?.TopK ?? 0,
+                Temperature = _gptSettings?.CurrentValue?.Temperature ?? (_temperatureRandom.Next(0, 900) + 100) / 1000.0
             });
 
             _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) content: {content.Value}");
