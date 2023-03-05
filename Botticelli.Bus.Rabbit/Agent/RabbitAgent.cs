@@ -1,17 +1,17 @@
-﻿using System.Text.Json;
-using Botticelli.Bot.Interfaces.Agent;
+﻿using Botticelli.Bot.Interfaces.Agent;
 using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Bus.Rabbit.Settings;
 using Botticelli.Interfaces;
-using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polly;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using System.Text.Json;
+using Botticelli.Shared.API;
+using Microsoft.Extensions.DependencyInjection;
+using RabbitMQ.Client.Events;
 
 namespace Botticelli.Bus.Rabbit.Agent;
 
@@ -20,7 +20,7 @@ namespace Botticelli.Bus.Rabbit.Agent;
 /// </summary>
 /// <typeparam name="TBot" />
 /// <typeparam name="THandler"></typeparam>
-public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
+public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusAgent<THandler>
         where TBot : IBot
         where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
@@ -56,6 +56,7 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
         try
         {
             _logger.LogDebug($"{nameof(SendResponse)}({response.Uid}) start...");
+
             var policy = Policy.Handle<RabbitMQClientException>()
                                .WaitAndRetryAsync(5, n => TimeSpan.FromSeconds(3 * Math.Exp(n)));
 
@@ -72,58 +73,71 @@ public class RabbitAgent<TBot, THandler> : IBotticelliBusAgent<THandler>
     /// <summary>
     ///     Subscribes with a new handler
     /// </summary>
-    /// <param name="handler"></param>
     public async Task Subscribe(CancellationToken token)
     {
-        //_logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) start...");
-        //var handler = _sp.GetRequiredService<THandler>();
-        //_handlers.Add(handler);
-        //using var connection = _rabbitConnectionFactory.CreateConnection();
-        //using var channel = connection.CreateModel();
-        //var queue = GetRequestQueueName();
-        //var queueDeclareResult = channel.QueueDeclare(queue);
+        _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) start...");
+        var handler = _sp.GetRequiredService<THandler>();
+        _handlers.Add(handler);
+        using var connection = _rabbitConnectionFactory.CreateConnection();
+        using var channel = connection.CreateModel();
+        var queue = GetRequestQueueName();
+        var declareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable) : channel.QueueDeclarePassive(queue);
 
-        //_logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {queueDeclareResult.QueueName}");
+        _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {declareResult.QueueName}");
 
-        //var consumer = new EventingBasicConsumer(channel);
-        //consumer.Received += (model, ea) =>
-        //{
-        //    _logger.LogDebug($"{nameof(Subscribe)}() message received");
+        var consumer = new EventingBasicConsumer(channel);
+        consumer.Received += (model, ea) =>
+        {
+            try
+            {
+                _logger.LogDebug($"{nameof(Subscribe)}() message received");
 
-        //    var deserialized = JsonSerializer.Deserialize<SendMessageRequest>(ea.Body.ToArray());
-        //    var policy = Policy.HandleResult<MessageSentStatus>(result => result != MessageSentStatus.Ok)
-        //                       .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+                var deserialized = JsonSerializer.Deserialize<SendMessageRequest>(ea.Body.ToArray());
+                var policy = Policy.Handle<Exception>()
+                                   .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
 
-        //    policy.Execute(() => handler.Handle(deserialized, token));
-        //};
+                policy.Execute(() => handler.Handle(deserialized, token));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+        };
 
-        //channel.BasicConsume(queue,
-        //                     true,
-        //                     consumer);
+        channel.BasicConsume(queue,
+                             true,
+                             consumer);
     }
 
     private async Task InnerSend(SendMessageResponse response)
     {
-        using var connection = _rabbitConnectionFactory.CreateConnection();
-        using var channel = connection.CreateModel();
+        try
+        {
+            using var connection = _rabbitConnectionFactory.CreateConnection();
+            using var channel = connection.CreateModel();
 
-        var rk = GetRkName();
-        var queue = GetResponseQueueName();
+            var rk = GetRkName();
+            var queue = GetResponseQueueName();
 
-        channel.QueueDeclare(queue);
-        channel.QueueBind(queue, _settings.Exchange, rk);
-        channel.BasicPublish(_settings.Exchange, rk, body: JsonSerializer.SerializeToUtf8Bytes(response));
+            _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?
+                    channel.QueueDeclare(queue, _settings.QueueSettings.Durable) :
+                    channel.QueueDeclarePassive(queue);
+            
+            channel.QueueBind(queue, _settings.Exchange, rk);
+            channel.BasicPublish(_settings.Exchange, rk, body: JsonSerializer.SerializeToUtf8Bytes(response));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+
+            throw;
+        }
     }
 
-    private static string GetResponseQueueName() => $"{nameof(SendMessageRequest)}_{typeof(TBot).Name}_response";
-    private static string GetRequestQueueName() => $"{nameof(SendMessageRequest)}_{typeof(TBot).Name}_request";
-    private static string GetRkName() => $"{nameof(SendMessageRequest)}_{typeof(TBot).Name}_response_rk";
-
-    public void Dispose()
+    public Task StartAsync(CancellationToken cancellationToken)
     {
+        
     }
-
-    public Task StartAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
 
     public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
 }

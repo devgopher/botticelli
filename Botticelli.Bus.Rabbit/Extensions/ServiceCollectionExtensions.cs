@@ -13,7 +13,7 @@ namespace Botticelli.Bus.Rabbit.Extensions;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    ///     Uses a no-bus scheme
+    ///     Uses a rabbit bus
     /// </summary>
     /// <typeparam name="TBot"></typeparam>
     /// <param name="services"></param>
@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
             services.AddScoped<IBotticelliBusClient, RabbitClient<TBot>>();
 
     /// <summary>
-    ///     Uses a no-bus scheme
+    ///     Uses a rabbit bus
     /// </summary>
     /// <typeparam name="TBot"></typeparam>
     /// <param name="services"></param>

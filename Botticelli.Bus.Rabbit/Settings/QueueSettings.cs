@@ -2,11 +2,10 @@
 
 public class QueueSettings
 {
-    public string Name { get; set; }
     public bool Durable { get; set; }
 
     /// <summary>
-    /// Tries to create a queue (if false - you should create a queue by yorself)
+    /// Tries to create a queue (if false - you should create a queue by yourself)
     /// </summary>
     public bool TryCreate { get; set; }
 
