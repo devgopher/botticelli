@@ -35,7 +35,8 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                                       ForwardFrom = message.ForwardFrom
                                                   }
                                               },
-                                              token, 60000);
+                                              token,
+                                              60000);
 
         if (response != null)
             await _bot.SendMessageAsync(new SendMessageRequest(response.Uid)

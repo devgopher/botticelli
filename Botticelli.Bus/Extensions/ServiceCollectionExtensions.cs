@@ -1,5 +1,4 @@
-﻿using Botticelli.Bot.Interfaces.Agent;
-using Botticelli.Bot.Interfaces.Client;
+﻿using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Bus.None.Agent;
 using Botticelli.Bus.None.Client;

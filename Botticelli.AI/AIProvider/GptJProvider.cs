@@ -1,4 +1,5 @@
-﻿using Botticelli.AI.Exceptions;
+﻿using System.Net.Http.Json;
+using Botticelli.AI.Exceptions;
 using Botticelli.AI.Message;
 using Botticelli.AI.Message.GptJ;
 using Botticelli.AI.Settings;
@@ -7,10 +8,6 @@ using Botticelli.Shared.API.Client.Responses;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Botticelli.AI.AIProvider;
 
@@ -18,6 +15,7 @@ public class GptJProvider : GenericAiProvider
 {
     private readonly IOptionsMonitor<AiGptSettings> _gptSettings;
     private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
+
     public GptJProvider(IOptionsMonitor<AiSettings> settings,
                         IOptionsMonitor<AiGptSettings> gptSettings,
                         IHttpClientFactory factory,
@@ -25,7 +23,7 @@ public class GptJProvider : GenericAiProvider
                         IBotticelliBusClient bus) : base(settings,
                                                          factory,
                                                          logger,
-                                                         bus) 
+                                                         bus)
         => _gptSettings = gptSettings;
 
     public override string AiName => "gptj";
@@ -76,6 +74,7 @@ public class GptJProvider : GenericAiProvider
                                         token);
             }
             else
+            {
                 await _bus.SendResponse(new SendMessageResponse(Guid.NewGuid().ToString())
                                         {
                                             Message = new Shared.ValueObjects.Message(Guid.NewGuid().ToString())
@@ -89,6 +88,7 @@ public class GptJProvider : GenericAiProvider
                                             }
                                         },
                                         token);
+            }
 
             _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) finished");
         }

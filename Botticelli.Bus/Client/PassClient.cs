@@ -12,7 +12,7 @@ public class PassClient : IBotticelliBusClient
                                                        CancellationToken token,
                                                        int timeoutMs = 10000)
     {
-       NoneBus.SendMessageRequests.Enqueue(request);
+        NoneBus.SendMessageRequests.Enqueue(request);
 
         var waitTask = Task.Run(() =>
                                 {
@@ -23,11 +23,9 @@ public class PassClient : IBotticelliBusClient
                                     {
                                         if (NoneBus.SendMessageResponses.TryDequeue(out var response))
                                         {
-                                            if (response == default)
-                                                continue;
+                                            if (response == default) continue;
 
-                                            if (response.Uid == request.Uid) 
-                                                return response;
+                                            if (response.Uid == request.Uid) return response;
                                         }
 
                                         Task.Delay(delta, token).Wait(token);
@@ -44,6 +42,6 @@ public class PassClient : IBotticelliBusClient
         return waitTask.Result;
     }
 
-    public async Task SendResponse(SendMessageResponse response, CancellationToken tokens) 
+    public async Task SendResponse(SendMessageResponse response, CancellationToken tokens)
         => NoneBus.SendMessageResponses.Enqueue(response);
 }

@@ -6,5 +6,4 @@ public class RabbitBusSettings
     public string Uri { get; set; }
     public string Exchange { get; set; }
     public QueueSettings QueueSettings { get; set; }
-
 }

@@ -1,17 +1,16 @@
-﻿using Botticelli.Bot.Interfaces.Agent;
+﻿using System.Text.Json;
+using Botticelli.Bot.Interfaces.Agent;
 using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Bus.Rabbit.Settings;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polly;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Exceptions;
-using System.Text.Json;
-using Botticelli.Shared.API;
-using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace Botticelli.Bus.Rabbit.Agent;
 
@@ -24,26 +23,25 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         where TBot : IBot
         where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
-    private readonly TBot _bot;
     private readonly IList<THandler> _handlers = new List<THandler>(5);
     private readonly ILogger<RabbitAgent<TBot, THandler>> _logger;
     private readonly IConnectionFactory _rabbitConnectionFactory;
-    private readonly IServiceProvider _sp;
     private readonly RabbitBusSettings _settings;
+    private readonly IServiceProvider _sp;
 
-    public RabbitAgent(TBot bot, 
-                       IConnectionFactory rabbitConnectionFactory,
+    public RabbitAgent(IConnectionFactory rabbitConnectionFactory,
                        IServiceProvider sp,
-                       RabbitBusSettings settings)
+                       RabbitBusSettings settings,
+                       ILogger<RabbitAgent<TBot, THandler>> logger)
     {
-        _bot = bot;
         _rabbitConnectionFactory = rabbitConnectionFactory;
         _sp = sp;
         _settings = settings;
+        _logger = logger;
     }
 
     /// <summary>
-    ///     Sends a response
+    /// Returns response to a bus
     /// </summary>
     /// <param name="response"></param>
     /// <param name="token"></param>
@@ -70,6 +68,11 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         }
     }
 
+    public async Task StartAsync(CancellationToken cancellationToken)
+        => await Subscribe(cancellationToken);
+
+    public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
+
     /// <summary>
     ///     Subscribes with a new handler
     /// </summary>
@@ -94,7 +97,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 
                 var deserialized = JsonSerializer.Deserialize<SendMessageRequest>(ea.Body.ToArray());
                 var policy = Policy.Handle<Exception>()
-                                   .WaitAndRetry(3, _ => TimeSpan.FromSeconds(1));
+                                   .WaitAndRetry(3, n => TimeSpan.FromSeconds(0.5*Math.Exp(n)));
 
                 policy.Execute(() => handler.Handle(deserialized, token));
             }
@@ -122,7 +125,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
             _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?
                     channel.QueueDeclare(queue, _settings.QueueSettings.Durable) :
                     channel.QueueDeclarePassive(queue);
-            
+
             channel.QueueBind(queue, _settings.Exchange, rk);
             channel.BasicPublish(_settings.Exchange, rk, body: JsonSerializer.SerializeToUtf8Bytes(response));
         }
@@ -133,11 +136,4 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
             throw;
         }
     }
-
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
 }

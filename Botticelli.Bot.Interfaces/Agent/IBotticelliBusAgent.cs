@@ -10,6 +10,13 @@ namespace Botticelli.Bot.Interfaces.Agent;
 /// </summary>
 public interface IBotticelliBusAgent : IHostedService
 {
+    /// <summary>
+    /// Returns response from a target system to a bus
+    /// </summary>
+    /// <param name="response"></param>
+    /// <param name="token"></param>
+    /// <param name="timeoutMs"></param>
+    /// <returns></returns>
     public Task SendResponse(SendMessageResponse response,
                              CancellationToken token,
                              int timeoutMs = 10000);

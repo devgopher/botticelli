@@ -1,4 +1,6 @@
-﻿using Botticelli.Bot.Interfaces.Client;
+﻿using System.Text.Json;
+using Botticelli.Bot.Interfaces.Client;
+using Botticelli.Bus.Rabbit.Exceptions;
 using Botticelli.Bus.Rabbit.Settings;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
@@ -6,9 +8,6 @@ using Botticelli.Shared.API.Client.Responses;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Botticelli.Bus.Rabbit.Exceptions;
 
 namespace Botticelli.Bus.Rabbit.Client;
 
@@ -17,8 +16,8 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
 {
     private readonly TBot _bot;
     private readonly ILogger<RabbitClient<TBot>> _logger;
-    private readonly Dictionary<string, SendMessageResponse> _responses = new(100);
     private readonly IConnectionFactory _rabbitConnectionFactory;
+    private readonly Dictionary<string, SendMessageResponse> _responses = new(100);
     private readonly RabbitBusSettings _settings;
     private readonly TimeSpan _timeout = TimeSpan.FromMinutes(1);
     private readonly int delta = 50;
@@ -36,27 +35,6 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         Init();
     }
 
-    private void Init()
-    {
-        using var connection = _rabbitConnectionFactory.CreateConnection();
-        using var channel = connection.CreateModel();
-
-        var consumer = new EventingBasicConsumer(channel);
-        channel.BasicConsume(GetResponseQueueName(), true, consumer);
-
-        consumer.Received += (sender, args) =>
-        {
-            if (args?.Body == null) 
-                return;
-
-            var response = JsonSerializer.Deserialize<SendMessageResponse>(args.Body.ToArray());
-            if (response == null)
-                return;
-            
-            _responses.Add(response?.Message.Uid, response);
-        };
-    }
-
     public async Task<SendMessageResponse> GetResponse(SendMessageRequest request, CancellationToken token, int timeoutMs = 10000)
     {
         try
@@ -67,22 +45,24 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
             Send(request, channel, GetRequestQueueName());
 
             var result = new Task<SendMessageResponse>(request =>
-            {
-                var req = request as SendMessageRequest;
-                var dt = DateTime.Now;
+                                                       {
+                                                           var req = request as SendMessageRequest;
+                                                           var dt = DateTime.Now;
 
-                if (!_responses.ContainsKey(req.Message.Uid))
-                {
-                    Thread.Sleep(delta);
+                                                           if (!_responses.ContainsKey(req.Message.Uid))
+                                                           {
+                                                               Thread.Sleep(delta);
 
-                    if (DateTime.Now - dt >= _timeout) 
-                        throw new TimeoutException($"Timeout");
-                }
-                else
-                     return _responses[req.Message.Uid];
+                                                               if (DateTime.Now - dt >= _timeout) throw new TimeoutException("Timeout");
+                                                           }
+                                                           else
+                                                           {
+                                                               return _responses[req.Message.Uid];
+                                                           }
 
-                return null;
-            }, request);
+                                                           return null;
+                                                       },
+                                                       request);
 
             if (result.IsFaulted)
                 throw new RabbitBusException($"Error getting a response: {result.Exception.Message}",
@@ -114,6 +94,26 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
 
             throw;
         }
+    }
+
+    private void Init()
+    {
+        using var connection = _rabbitConnectionFactory.CreateConnection();
+        using var channel = connection.CreateModel();
+
+        var consumer = new EventingBasicConsumer(channel);
+        channel.BasicConsume(GetResponseQueueName(), true, consumer);
+
+        consumer.Received += (sender, args) =>
+        {
+            if (args?.Body == null) return;
+
+            var response = JsonSerializer.Deserialize<SendMessageResponse>(args.Body.ToArray());
+
+            if (response == null) return;
+
+            _responses.Add(response?.Message.Uid, response);
+        };
     }
 
     private void Send(object input, IModel channel, string queue)

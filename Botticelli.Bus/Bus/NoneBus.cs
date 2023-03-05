@@ -7,8 +7,8 @@ public static class NoneBus
 {
     static NoneBus()
     {
-        SendMessageResponses = new();
-        SendMessageRequests = new();
+        SendMessageResponses = new Queue<SendMessageResponse>();
+        SendMessageRequests = new Queue<SendMessageRequest>();
     }
 
     public static Queue<SendMessageRequest> SendMessageRequests { get; }

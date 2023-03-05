@@ -3,7 +3,7 @@
 public interface IHandler<in TRequest, TResponse>
 {
     /// <summary>
-    /// Handle a request
+    ///     Handle a request
     /// </summary>
     /// <param name="input">Request</param>
     /// <param name="token">Cancellation token</param>

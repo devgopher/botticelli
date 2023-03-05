@@ -10,7 +10,7 @@ namespace TelegramBotSample;
 public class TestBotHostedService : IHostedService
 {
     private readonly IBot<TelegramBot> _telegramBot;
-    
+
 
     public TestBotHostedService(IBot<TelegramBot> telegramBot) => _telegramBot = telegramBot;
 

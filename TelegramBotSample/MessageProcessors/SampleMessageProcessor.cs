@@ -13,8 +13,7 @@ public class SampleMessageProcessor : IClientMessageProcessor
     {
         Console.WriteLine($"Message: \"{message.Body}\" processed!");
 
-        if (message.Body.ToLower().Contains("removeit")) 
-            await _bot.DeleteMessageAsync(new RemoveMessageRequest(message.Uid, message.ChatId), CancellationToken.None);
+        if (message.Body.ToLower().Contains("removeit")) await _bot.DeleteMessageAsync(new RemoveMessageRequest(message.Uid, message.ChatId), CancellationToken.None);
     }
 
     /// <summary>

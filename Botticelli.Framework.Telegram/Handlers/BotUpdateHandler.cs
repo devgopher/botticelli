@@ -91,7 +91,7 @@ public class BotUpdateHandler : IUpdateHandler
                           .Where(p => p.GetType() != typeof(ChatMessageProcessor))
                           .Select(p => ProcessForProcessor(p, request, token));
 
-        System.Threading.Tasks.Task.WaitAll(clientTasks.ToArray());
+        Task.WaitAll(clientTasks.ToArray());
 
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
     }

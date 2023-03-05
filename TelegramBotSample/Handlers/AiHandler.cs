@@ -8,8 +8,8 @@ namespace TelegramBotSample.Handlers;
 
 public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
-    private readonly IAiProvider _provider;
     private readonly ILogger<AiHandler> _logger;
+    private readonly IAiProvider _provider;
 
     public AiHandler(IAiProvider provider, ILogger<AiHandler> logger)
     {
@@ -17,7 +17,7 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
         _logger = logger;
     }
 
-    ///<inheritdoc/>
+    /// <inheritdoc />
     public async Task Handle(SendMessageRequest input, CancellationToken token)
     {
         try
@@ -33,6 +33,6 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
         catch (Exception ex)
         {
             _logger.LogError($"Error while handling a message from AI backend: {ex.Message}", ex);
-        } 
+        }
     }
 }

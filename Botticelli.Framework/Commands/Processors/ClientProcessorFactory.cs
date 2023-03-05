@@ -27,8 +27,7 @@ public class ClientProcessorFactory
 
     public void AddChatMessageProcessor(IBot bot, IServiceProvider sp)
     {
-        if (!_clientProcessors.Any(x => x is ChatMessageProcessor))
-            _clientProcessors.Add(sp.GetRequiredService<ChatMessageProcessor>());
+        if (!_clientProcessors.Any(x => x is ChatMessageProcessor)) _clientProcessors.Add(sp.GetRequiredService<ChatMessageProcessor>());
     }
 
     public IEnumerable<IClientMessageProcessor> GetProcessors()

@@ -3,7 +3,6 @@ using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Bus.None.Bus;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Bus.None.Agent;
 
@@ -30,20 +29,19 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
                                    int timeoutMs = 10000) =>
             NoneBus.SendMessageResponses.Enqueue(response);
 
-    private async Task InnerProcess(THandler handler, CancellationToken token)
-    {
-        while (!token.IsCancellationRequested)
-        {
-            if (NoneBus.SendMessageRequests.TryDequeue(out var request)) 
-                await handler.Handle(request, token);
-            Thread.Sleep(5);
-        }
-    }
-
     public async Task StartAsync(CancellationToken token)
     {
         await Task.Run(async () => await InnerProcess(_handler, token));
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
+
+    private async Task InnerProcess(THandler handler, CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
+        {
+            if (NoneBus.SendMessageRequests.TryDequeue(out var request)) await handler.Handle(request, token);
+            Thread.Sleep(5);
+        }
+    }
 }
