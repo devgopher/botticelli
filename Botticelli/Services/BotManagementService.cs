@@ -13,11 +13,15 @@ public class BotManagementService : IBotManagementService
 {
     private readonly BotInfoContext _context;
     private readonly SecureStorage _secureStorage;
+    private readonly ILogger<BotManagementService> _logger;
 
-    public BotManagementService(BotInfoContext context, SecureStorage secureStorage)
+    public BotManagementService(BotInfoContext context,
+                                SecureStorage secureStorage,
+                                ILogger<BotManagementService> logger)
     {
         _context = context;
         _secureStorage = secureStorage;
+        _logger = logger;
     }
 
     /// <summary>
@@ -29,6 +33,8 @@ public class BotManagementService : IBotManagementService
     /// <returns></returns>
     public async Task<bool> RegisterBot(string botId, string botKey, BotType botType)
     {
+        _logger.LogInformation($"{nameof(RegisterBot)}({botId}, {botKey}, {botType}) started...");
+        
         try
         {
             botKey ??= _secureStorage.GetBotKey(botId).Key;
@@ -41,13 +47,16 @@ public class BotManagementService : IBotManagementService
 
             _secureStorage.SetBotKey(botId, botKey);
 
-            //var tst = _secureStorage.GetBotKey(botId);
+            _logger.LogInformation($"{nameof(RegisterBot)} successful");
+
             return true;
         }
         catch (Exception ex)
         {
-            // todo: log
+            _logger.LogError(ex, ex.Message);
         }
+
+        _logger.LogInformation($"{nameof(RegisterBot)} failed");
 
         return false;
     }
@@ -60,6 +69,8 @@ public class BotManagementService : IBotManagementService
     /// <returns></returns>
     public async Task SetRequiredBotStatus(string botId, BotStatus status)
     {
+        _logger.LogInformation($"{nameof(SetRequiredBotStatus)} started");
+
         var botInfo = GetBotInfo(botId);
 
         if (botInfo != default)
@@ -78,6 +89,8 @@ public class BotManagementService : IBotManagementService
     /// <returns></returns>
     public async Task SetKeepAlive(string botId)
     {
+        _logger.LogInformation($"{nameof(SetKeepAlive)} started");
+
         var botInfo = GetBotInfo(botId);
 
         var keepAlive = DateTime.UtcNow;
@@ -115,6 +128,8 @@ public class BotManagementService : IBotManagementService
     {
         try
         {
+            _logger.LogInformation($"{nameof(AddNewBotInfo)} started");
+
             var botInfo = new BotInfo
             {
                 BotId = botId,
@@ -128,8 +143,10 @@ public class BotManagementService : IBotManagementService
         }
         catch (Exception ex)
         {
-            // todo:
+            _logger.LogError(ex, ex.Message);
         }
+
+        _logger.LogInformation($"{nameof(AddNewBotInfo)} finished");
     }
 
     /// <summary>

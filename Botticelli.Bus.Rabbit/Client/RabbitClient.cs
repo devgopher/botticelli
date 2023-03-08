@@ -14,7 +14,6 @@ namespace Botticelli.Bus.Rabbit.Client;
 public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         where TBot : IBot
 {
-    private readonly TBot _bot;
     private readonly ILogger<RabbitClient<TBot>> _logger;
     private readonly IConnectionFactory _rabbitConnectionFactory;
     private readonly Dictionary<string, SendMessageResponse> _responses = new(100);
@@ -27,7 +26,6 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
                         RabbitBusSettings settings,
                         ILogger<RabbitClient<TBot>> logger)
     {
-        _bot = bot;
         _rabbitConnectionFactory = rabbitConnectionFactory;
         _settings = settings;
         _logger = logger;
