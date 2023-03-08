@@ -100,9 +100,20 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
     {
         using var connection = _rabbitConnectionFactory.CreateConnection();
         using var channel = connection.CreateModel();
-
+        
         var consumer = new EventingBasicConsumer(channel);
-        channel.BasicConsume(GetResponseQueueName(), true, consumer);
+        var queue = GetRequestQueueName();
+        var exchange = _settings.Exchange;
+
+        if (_settings.QueueSettings.TryCreate)
+            channel.ExchangeDeclare(exchange, "direct");
+        else
+            channel.ExchangeDeclarePassive(exchange);
+
+        var queueDeclareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable) : channel.QueueDeclarePassive(queue);
+
+
+        channel.BasicConsume(queue, true, consumer);
 
         consumer.Received += (sender, args) =>
         {
@@ -121,7 +132,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         var rk = GetRkName();
 
         _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?
-                channel.QueueDeclare(queue, _settings.QueueSettings.Durable) :
+                channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive:false) :
                 channel.QueueDeclarePassive(queue);
 
         channel.QueueBind(queue, _settings.Exchange, rk);

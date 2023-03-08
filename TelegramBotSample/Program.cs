@@ -2,6 +2,7 @@ using BotDataSecureStorage.Settings;
 using Botticelli.AI.Extensions;
 using Botticelli.BotBase.Extensions;
 using Botticelli.Bus.None.Extensions;
+using Botticelli.Bus.Rabbit.Extensions;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
@@ -33,8 +34,12 @@ builder.Services.AddGptJProvider(builder.Configuration);
 builder.Services.AddScoped<ICommandValidator<SampleCommand>, PassValidator<SampleCommand>>();
 builder.Services.AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>();
 builder.Services.AddSingleton<AiHandler>();
-builder.Services.UsePassBusAgent<IBot<TelegramBot>, AiHandler>();
-builder.Services.UsePassBusClient<IBot<TelegramBot>>();
+builder.Services.UseRabbitBusAgent<IBot<TelegramBot>, AiHandler>(builder.Configuration);
+builder.Services.UseRabbitBusClient<IBot<TelegramBot>>(builder.Configuration);
+
+//builder.Services.UsePassBusAgent<IBot<TelegramBot>, AiHandler>();
+//builder.Services.UsePassBusClient<IBot<TelegramBot>>();
+
 builder.Services.AddHostedService<TestBotHostedService>();
 builder.Services.AddBotCommand<SampleCommand, SampleCommandProcessor, PassValidator<SampleCommand>>();
 builder.Services.AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>();
@@ -42,6 +47,5 @@ builder.Services.AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCo
 var app = builder.Build();
 app.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor, IBot<TelegramBot>>()
    .RegisterBotCommand<AiCommand, AiCommandProcessor, IBot<TelegramBot>>();
-
 
 app.Run();

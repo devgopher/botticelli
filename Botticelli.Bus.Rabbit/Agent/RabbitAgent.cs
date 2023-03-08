@@ -123,7 +123,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
             var queue = GetResponseQueueName();
 
             _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?
-                    channel.QueueDeclare(queue, _settings.QueueSettings.Durable) :
+                    channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive:false) :
                     channel.QueueDeclarePassive(queue);
 
             channel.QueueBind(queue, _settings.Exchange, rk);
