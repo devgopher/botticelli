@@ -41,7 +41,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     }
 
     /// <summary>
-    /// Returns response to a bus
+    ///     Returns response to a bus
     /// </summary>
     /// <param name="response"></param>
     /// <param name="token"></param>
@@ -97,7 +97,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 
                 var deserialized = JsonSerializer.Deserialize<SendMessageRequest>(ea.Body.ToArray());
                 var policy = Policy.Handle<Exception>()
-                                   .WaitAndRetry(3, n => TimeSpan.FromSeconds(0.5*Math.Exp(n)));
+                                   .WaitAndRetry(3, n => TimeSpan.FromSeconds(0.5 * Math.Exp(n)));
 
                 policy.Execute(() => handler.Handle(deserialized, token));
             }
@@ -123,7 +123,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
             var queue = GetResponseQueueName();
 
             _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?
-                    channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive:false) :
+                    channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
                     channel.QueueDeclarePassive(queue);
 
             channel.QueueBind(queue, _settings.Exchange, rk);

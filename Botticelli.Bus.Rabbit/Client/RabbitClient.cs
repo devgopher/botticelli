@@ -98,7 +98,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
     {
         using var connection = _rabbitConnectionFactory.CreateConnection();
         using var channel = connection.CreateModel();
-        
+
         var consumer = new EventingBasicConsumer(channel);
         var queue = GetRequestQueueName();
         var exchange = _settings.Exchange;
@@ -130,7 +130,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         var rk = GetRkName();
 
         _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?
-                channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive:false) :
+                channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
                 channel.QueueDeclarePassive(queue);
 
         channel.QueueBind(queue, _settings.Exchange, rk);

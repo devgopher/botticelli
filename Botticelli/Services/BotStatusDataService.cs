@@ -20,8 +20,6 @@ public class BotStatusDataService : IBotStatusDataService
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
-    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
-    {
-        return _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
-    }
+    public async Task<BotStatus?> GetRequiredBotStatus(string botId) 
+        => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
 }

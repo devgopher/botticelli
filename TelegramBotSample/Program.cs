@@ -1,7 +1,6 @@
 using BotDataSecureStorage.Settings;
 using Botticelli.AI.Extensions;
 using Botticelli.BotBase.Extensions;
-using Botticelli.Bus.None.Extensions;
 using Botticelli.Bus.Rabbit.Extensions;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;

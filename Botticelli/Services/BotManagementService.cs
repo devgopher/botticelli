@@ -12,8 +12,8 @@ namespace Botticelli.Server.Services;
 public class BotManagementService : IBotManagementService
 {
     private readonly BotInfoContext _context;
-    private readonly SecureStorage _secureStorage;
     private readonly ILogger<BotManagementService> _logger;
+    private readonly SecureStorage _secureStorage;
 
     public BotManagementService(BotInfoContext context,
                                 SecureStorage secureStorage,
@@ -34,7 +34,7 @@ public class BotManagementService : IBotManagementService
     public async Task<bool> RegisterBot(string botId, string botKey, BotType botType)
     {
         _logger.LogInformation($"{nameof(RegisterBot)}({botId}, {botKey}, {botType}) started...");
-        
+
         try
         {
             botKey ??= _secureStorage.GetBotKey(botId).Key;

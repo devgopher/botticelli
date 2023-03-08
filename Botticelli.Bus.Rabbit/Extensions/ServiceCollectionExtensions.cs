@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
                     .AddSingleton<IConnectionFactory>(sp => AddConnectionFactory(GetRabbitBusSettings(config)));
 
     private static ConnectionFactory AddConnectionFactory(RabbitBusSettings settings) =>
-            new ConnectionFactory
+            new()
             {
                 Uri = new Uri(settings.Uri),
                 VirtualHost = settings.VHost

@@ -11,7 +11,7 @@ namespace Botticelli.Bot.Interfaces.Agent;
 public interface IBotticelliBusAgent : IHostedService
 {
     /// <summary>
-    /// Returns response from a target system to a bus
+    ///     Returns response from a target system to a bus
     /// </summary>
     /// <param name="response"></param>
     /// <param name="token"></param>
