@@ -34,7 +34,7 @@ public class BotController
     }
 
     [HttpGet("admin/[action]")]
-    public async Task<ICollection<BotInfo>> GetBots() => await _botStatusDataService.GetBots();
+    public async Task<ICollection<BotInfo>> GetBots() => _botStatusDataService.GetBots();
 
     [HttpGet("admin/[action]")]
     public async Task ActivateBot([FromQuery] string botId) => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Active);

@@ -13,13 +13,13 @@ public class BotStatusDataService : IBotStatusDataService
 
     public BotStatusDataService(BotInfoContext context) => _context = context;
 
-    public async Task<ICollection<BotInfo>> GetBots() => _context.BotInfos.ToArray();
+    public ICollection<BotInfo> GetBots() => _context.BotInfos.ToArray();
 
     /// <summary>
     ///     Gets a bot required status for answering on a poll request from a bot
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
-    public async Task<BotStatus?> GetRequiredBotStatus(string botId) 
+    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
         => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
 }

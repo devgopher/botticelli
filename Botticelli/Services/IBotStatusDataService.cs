@@ -9,7 +9,7 @@ public interface IBotStatusDataService
     ///     Gets a collection of existing bots
     /// </summary>
     /// <returns></returns>
-    Task<ICollection<BotInfo>> GetBots();
+    ICollection<BotInfo> GetBots();
 
     /// <summary>
     ///     Gets a bot required status for answering on a poll request from a bot
