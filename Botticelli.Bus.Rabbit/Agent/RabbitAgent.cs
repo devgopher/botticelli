@@ -28,6 +28,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     private readonly IConnectionFactory _rabbitConnectionFactory;
     private readonly RabbitBusSettings _settings;
     private readonly IServiceProvider _sp;
+    private EventingBasicConsumer? _consumer;
     private bool _isActive = false;
 
     public RabbitAgent(IConnectionFactory rabbitConnectionFactory,
@@ -50,7 +51,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     /// <returns></returns>
     public async Task SendResponse(SendMessageResponse response,
                                    CancellationToken token,
-                                   int timeoutMs = 10000)
+                                   int timeoutMs = 60000)
     {
         try
         {
@@ -91,25 +92,28 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         _handlers.Add(handler);
         
         ProcessSubscription(token, handler);
-
-        await Task.Run(() =>
-        {
-            while (_isActive)
-                Thread.Sleep(1000);
-        });
     }
 
     private void ProcessSubscription(CancellationToken token, THandler handler)
     {
-        using var connection = _rabbitConnectionFactory.CreateConnection();
-        using var channel = connection.CreateModel();
-        var queue = GetRequestQueueName();
-        var declareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive: false) : channel.QueueDeclarePassive(queue);
+        if (_consumer == default)
+        {
+            var connection = _rabbitConnectionFactory.CreateConnection();
+            var channel = connection.CreateModel();
+            var queue = GetRequestQueueName();
+            var declareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive: false) : channel.QueueDeclarePassive(queue);
 
-        _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {declareResult.QueueName}");
+            _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {declareResult.QueueName}");
 
-        var consumer = new EventingBasicConsumer(channel);
-        consumer.Received += (model, ea) =>
+            _consumer = new EventingBasicConsumer(channel);
+
+
+            channel.BasicConsume(queue,
+                                 true,
+                                 _consumer);
+        }
+
+        _consumer.Received += (model, ea) =>
         {
             try
             {
@@ -127,9 +131,6 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
             }
         };
 
-        channel.BasicConsume(queue,
-                             true,
-                             consumer);
     }
 
     private async Task InnerSend(SendMessageResponse response)
@@ -139,7 +140,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
             using var connection = _rabbitConnectionFactory.CreateConnection();
             using var channel = connection.CreateModel();
 
-            var rk = GetRkName();
+            var rk = GetResponseQueueName();
             var queue = GetResponseQueueName();
 
             _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?

@@ -31,10 +31,7 @@ public static class ServiceCollectionExtensions
         if (!services.Any(s => s.ServiceType.IsAssignableFrom(typeof(IConnectionFactory))))
             services.AddSingleton<IConnectionFactory>(s => new ConnectionFactory()
             {
-                //Uri = new Uri(settings.Uri),
-                HostName = "localhost",
-                Port = 5672,
-
+                Uri = new Uri(settings.Uri),
                 VirtualHost = settings.VHost
             });
 

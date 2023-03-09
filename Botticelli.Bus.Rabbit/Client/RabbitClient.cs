@@ -20,6 +20,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
     private readonly RabbitBusSettings _settings;
     private readonly TimeSpan _timeout = TimeSpan.FromMinutes(1);
     private readonly int delta = 50;
+    private EventingBasicConsumer? _consumer = default;
 
     public RabbitClient(TBot bot,
                         IConnectionFactory rabbitConnectionFactory,
@@ -33,7 +34,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         Init();
     }
 
-    public async Task<SendMessageResponse> GetResponse(SendMessageRequest request, CancellationToken token, int timeoutMs = 10000)
+    public async Task<SendMessageResponse> GetResponse(SendMessageRequest request, CancellationToken token, int timeoutMs = 60000)
     {
         try
         {
@@ -94,10 +95,10 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
 
     private void Init()
     {
-        using var connection = _rabbitConnectionFactory.CreateConnection();
-        using var channel = connection.CreateModel();
+        var connection = _rabbitConnectionFactory.CreateConnection();
+        var channel = connection.CreateModel();
 
-        var consumer = new EventingBasicConsumer(channel);
+        _consumer ??= new EventingBasicConsumer(channel);
         var queue = GetResponseQueueName();
         var exchange = _settings.Exchange;
 
@@ -109,9 +110,9 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         var queueDeclareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive:false) : channel.QueueDeclarePassive(queue);
 
 
-        channel.BasicConsume(queue, true, consumer);
+        channel.BasicConsume(queue, true, _consumer);
 
-        consumer.Received += (sender, args) =>
+        _consumer.Received += (sender, args) =>
         {
             if (args?.Body == null) return;
 
@@ -125,7 +126,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
 
     private void Send(object input, IModel channel, string queue)
     {
-        var rk = GetRkName();
+        var rk = GetResponseQueueName();
 
         _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?
                 channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
