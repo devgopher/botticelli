@@ -47,26 +47,24 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
                                                            var req = request as SendMessageRequest;
                                                            var dt = DateTime.Now;
 
-                                                           if (!_responses.ContainsKey(req.Message.Uid))
+                                                           while (!_responses.ContainsKey(req.Message.Uid))
                                                            {
                                                                Thread.Sleep(delta);
 
                                                                if (DateTime.Now - dt >= _timeout) throw new TimeoutException("Timeout");
                                                            }
-                                                           else
-                                                           {
-                                                               return _responses[req.Message.Uid];
-                                                           }
 
-                                                           return null;
+                                                           return _responses[req.Message.Uid];
                                                        },
                                                        request);
+
+            result.Start();
 
             if (result.IsFaulted)
                 throw new RabbitBusException($"Error getting a response: {result.Exception.Message}",
                                              result.Exception?.InnerException);
 
-            return result.Result;
+            return await result;
         }
         catch (Exception ex)
         {
@@ -100,7 +98,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         using var channel = connection.CreateModel();
 
         var consumer = new EventingBasicConsumer(channel);
-        var queue = GetRequestQueueName();
+        var queue = GetResponseQueueName();
         var exchange = _settings.Exchange;
 
         if (_settings.QueueSettings.TryCreate)
@@ -108,7 +106,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         else
             channel.ExchangeDeclarePassive(exchange);
 
-        var queueDeclareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable) : channel.QueueDeclarePassive(queue);
+        var queueDeclareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive:false) : channel.QueueDeclarePassive(queue);
 
 
         channel.BasicConsume(queue, true, consumer);

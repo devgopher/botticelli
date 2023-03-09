@@ -1,5 +1,4 @@
-﻿using Botticelli.Bot.Interfaces.Agent;
-using Botticelli.Bot.Interfaces.Client;
+﻿using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Bus.Rabbit.Agent;
 using Botticelli.Bus.Rabbit.Client;
@@ -25,14 +24,22 @@ public static class ServiceCollectionExtensions
             where TBot : IBot =>
             services.AddSingleton<IBotticelliBusClient, RabbitClient<TBot>>()
                     .AddSingleton(GetRabbitBusSettings(config))
-                    .AddSingleton<IConnectionFactory>(sp => AddConnectionFactory(GetRabbitBusSettings(config)));
+                    .AddConnectionFactory(GetRabbitBusSettings(config));
 
-    private static ConnectionFactory AddConnectionFactory(RabbitBusSettings settings) =>
-            new()
+    private static IServiceCollection AddConnectionFactory(this IServiceCollection services, RabbitBusSettings settings)
+    {
+        if (!services.Any(s => s.ServiceType.IsAssignableFrom(typeof(IConnectionFactory))))
+            services.AddSingleton<IConnectionFactory>(s => new ConnectionFactory()
             {
-                Uri = new Uri(settings.Uri),
+                //Uri = new Uri(settings.Uri),
+                HostName = "localhost",
+                Port = 5672,
+
                 VirtualHost = settings.VHost
-            };
+            });
+
+        return services;
+    }
 
     private static RabbitBusSettings GetRabbitBusSettings(IConfiguration config)
     {
@@ -49,8 +56,9 @@ public static class ServiceCollectionExtensions
     /// <param name="services"></param>
     /// <returns></returns>
     public static IServiceCollection UseRabbitBusAgent<TBot, THandler>(this IServiceCollection services, IConfiguration config)
-            where TBot : IBot where THandler : IHandler<SendMessageRequest, SendMessageResponse> =>
-            services.AddSingleton<IBotticelliBusAgent<THandler>, RabbitAgent<TBot, THandler>>()
+            where TBot : IBot
+            where THandler : IHandler<SendMessageRequest, SendMessageResponse> =>
+            services.AddHostedService<RabbitAgent<TBot, THandler>>()
                     .AddSingleton(GetRabbitBusSettings(config))
-                    .AddSingleton<IConnectionFactory>(sp => AddConnectionFactory(GetRabbitBusSettings(config)));
+                    .AddConnectionFactory(GetRabbitBusSettings(config));
 }

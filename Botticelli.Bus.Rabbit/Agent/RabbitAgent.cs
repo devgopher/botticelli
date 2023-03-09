@@ -28,6 +28,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     private readonly IConnectionFactory _rabbitConnectionFactory;
     private readonly RabbitBusSettings _settings;
     private readonly IServiceProvider _sp;
+    private bool _isActive = false;
 
     public RabbitAgent(IConnectionFactory rabbitConnectionFactory,
                        IServiceProvider sp,
@@ -69,9 +70,16 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
-        => await Subscribe(cancellationToken);
+    {
+        _isActive = true;
+        await Subscribe(cancellationToken);
+    }
 
-    public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        _isActive = false;
+        Thread.Sleep(3000);
+    }
 
     /// <summary>
     ///     Subscribes with a new handler
@@ -81,10 +89,22 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) start...");
         var handler = _sp.GetRequiredService<THandler>();
         _handlers.Add(handler);
+        
+        ProcessSubscription(token, handler);
+
+        await Task.Run(() =>
+        {
+            while (_isActive)
+                Thread.Sleep(1000);
+        });
+    }
+
+    private void ProcessSubscription(CancellationToken token, THandler handler)
+    {
         using var connection = _rabbitConnectionFactory.CreateConnection();
         using var channel = connection.CreateModel();
         var queue = GetRequestQueueName();
-        var declareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable) : channel.QueueDeclarePassive(queue);
+        var declareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive: false) : channel.QueueDeclarePassive(queue);
 
         _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {declareResult.QueueName}");
 
