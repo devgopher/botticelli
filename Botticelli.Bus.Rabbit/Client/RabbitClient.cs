@@ -54,8 +54,11 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
 
                                                                if (DateTime.Now - dt >= _timeout) throw new TimeoutException("Timeout");
                                                            }
+                                                           
+                                                           var resp = _responses[req.Message.Uid];
+                                                           _responses.Remove(req.Message.Uid);
 
-                                                           return _responses[req.Message.Uid];
+                                                           return resp;
                                                        },
                                                        request);
 
@@ -126,13 +129,11 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
 
     private void Send(object input, IModel channel, string queue)
     {
-        var rk = GetResponseQueueName();
-
         _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?
                 channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
                 channel.QueueDeclarePassive(queue);
 
-        channel.QueueBind(queue, _settings.Exchange, rk);
-        channel.BasicPublish(_settings.Exchange, rk, body: JsonSerializer.SerializeToUtf8Bytes(input));
+        channel.QueueBind(queue, _settings.Exchange, queue);
+        channel.BasicPublish(_settings.Exchange, queue, body: JsonSerializer.SerializeToUtf8Bytes(input));
     }
 }
