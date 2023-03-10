@@ -22,11 +22,10 @@ public static class ServiceCollectionExtensions
                                                     BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
-        var token = "";
 
         var secureStorage = new SecureStorage(settings.SecureStorageSettings);
         var botKey = secureStorage.GetBotKey(BotDataUtils.GetBotId());
-        token = botKey.Key;
+        var token = botKey.Key;
 
         return services.AddSingleton<ITelegramBotClient, TelegramBotClient>(sp => new TelegramBotClient(token))
                        .AddSingleton(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
