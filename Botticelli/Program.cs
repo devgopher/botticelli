@@ -18,7 +18,7 @@ builder.Services.AddEndpointsApiExplorer()
        .AddDbContext<BotInfoContext>(c
                                              => c.UseSqlite(@"Data source=botInfo.Db"));
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-       .AddEntityFrameworkStores<ApplicationDbContext>();
+       .AddEntityFrameworkStores<BotInfoContext>();
 builder.Services.AddRazorPages();
 
 builder.Services.Configure<IdentityOptions>(options =>
