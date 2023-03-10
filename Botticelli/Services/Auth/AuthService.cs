@@ -156,7 +156,7 @@ namespace Botticelli.Server.Services.Auth
             return Mapper.Map<ApplicationUserGet>(user);
         }
 
-        public void Update(ApplicationUserPut model)
+        public async Task Update(ApplicationUserPut model)
         {
             var user = _userRepository.FirstOrDefault(u => u.Id == GetCurrentUserId());
             user.FarmId = model.FarmId;
@@ -164,7 +164,7 @@ namespace Botticelli.Server.Services.Auth
             user.UserRoles = _appUserRoleRepository.Get(ur => model.UserRoleIds.Contains(ur.RoleId)).ToList();
 
             _userRepository.Update(user);
-            _userRepository.Save();
+            await _context.SaveChangesAsync();
         }
 
         public string GetCurrentUserName()
