@@ -7,8 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var secureStorageSettings = new SecureStorageSettings();
-builder.Configuration.Bind(nameof(SecureStorageSettings), secureStorageSettings);
+var secureStorageSettings = builder.Configuration
+                                   .GetSection(nameof(SecureStorageSettings))
+                                   .Get<SecureStorageSettings>();
 
 builder.Services.AddEndpointsApiExplorer()
        .AddSwaggerGen()
@@ -28,7 +29,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 6;
+    options.Password.RequiredLength = 8;
     options.Password.RequiredUniqueChars = 1;
 
     // Lockout settings.
