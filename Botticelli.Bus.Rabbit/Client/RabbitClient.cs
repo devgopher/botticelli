@@ -34,13 +34,13 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         Init();
     }
 
-    public async Task<SendMessageResponse> GetResponse(SendMessageRequest request, CancellationToken token, int timeoutMs = 60000)
+    public async Task<SendMessageResponse> GetResponse(SendMessageRequest request, CancellationToken token)
     {
         try
         {
             using var connection = _rabbitConnectionFactory.CreateConnection();
             using var channel = connection.CreateModel();
-
+     
             Send(request, channel, GetRequestQueueName());
 
             var result = new Task<SendMessageResponse>(request =>

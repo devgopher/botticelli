@@ -9,8 +9,7 @@ namespace Botticelli.Bot.Interfaces.Client;
 public interface IBotticelliBusClient
 {
     public Task<SendMessageResponse> GetResponse(SendMessageRequest request,
-                                                 CancellationToken token,
-                                                 int timeoutMs = 10000);
+                                                 CancellationToken token);
 
     public Task SendResponse(SendMessageResponse response, CancellationToken token);
 }

@@ -8,9 +8,10 @@ namespace Botticelli.Bus.None.Client;
 
 public class PassClient : IBotticelliBusClient
 {
+    private TimeSpan Timeout => TimeSpan.FromMinutes(5);
+
     public async Task<SendMessageResponse> GetResponse(SendMessageRequest request,
-                                                       CancellationToken token,
-                                                       int timeoutMs = 10000)
+                                                       CancellationToken token)
     {
         NoneBus.SendMessageRequests.Enqueue(request);
 
@@ -19,7 +20,7 @@ public class PassClient : IBotticelliBusClient
                                     var period = 0;
                                     var delta = 50;
 
-                                    while (period < timeoutMs)
+                                    while (period < Timeout.Milliseconds)
                                     {
                                         if (NoneBus.SendMessageResponses.TryDequeue(out var response))
                                         {

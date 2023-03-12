@@ -1,6 +1,6 @@
 ﻿namespace Botticelli.Bus.Rabbit.Settings;
 
-public class RabbitBusSettings
+public class RabbitBusSettings : BaseBusSettings
 {
     public string VHost { get; set; }
     public string Uri { get; set; }
