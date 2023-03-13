@@ -47,19 +47,6 @@ internal class BotStatusService<TBot> : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        //var request = new RegisterBotRequest
-        //{
-        //    BotId = _botId,
-        //    Type = _bot.Type
-        //};
-
-        //var response =
-        //        await InnerSend<RegisterBotRequest, RegisterBotResponse>(request,
-        //                                                                 "/client/RegisterBot",
-        //                                                                 cancellationToken);
-
-        //if (!response.IsSuccess) throw new BotException("Error starting a bot!");
-
         KeepAlive(cancellationToken);
         GetRequiredStatus(cancellationToken);
     }
@@ -210,7 +197,7 @@ internal class BotStatusService<TBot> : IHostedService
                                                           })
                                        .ExecuteAndCaptureAsync(async () => await httpClient.PostAsync(funcName, content, cancellationToken));
 
-        if (policyResult.Result == null || !policyResult.Result.IsSuccessStatusCode) throw new BotException("Error sending request to a Botticelli server!");
+        if (policyResult.Result is not {IsSuccessStatusCode: true}) throw new BotException("Error sending request to a Botticelli server!");
 
         var responseJson = await policyResult.Result.Content.ReadAsStringAsync(cancellationToken);
 

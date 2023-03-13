@@ -6,6 +6,8 @@ using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Timeout;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -18,7 +20,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
     private readonly IConnectionFactory _rabbitConnectionFactory;
     private readonly Dictionary<string, SendMessageResponse> _responses = new(100);
     private readonly RabbitBusSettings _settings;
-    private readonly TimeSpan _timeout = TimeSpan.FromMinutes(1);
+    private readonly TimeSpan _timeout;
     private readonly int delta = 50;
     private EventingBasicConsumer? _consumer = default;
 
@@ -30,6 +32,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         _rabbitConnectionFactory = rabbitConnectionFactory;
         _settings = settings;
         _logger = logger;
+        _timeout = settings.Timeout;
 
         Init();
     }
@@ -43,32 +46,25 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
      
             Send(request, channel, GetRequestQueueName());
 
-            var result = new Task<SendMessageResponse>(request =>
-                                                       {
-                                                           var req = request as SendMessageRequest;
-                                                           var dt = DateTime.Now;
+            var timeoutPolicy = Policy.TimeoutAsync<SendMessageResponse>(_timeout, TimeoutStrategy.Pessimistic);
+            var resultPolicy = Policy.HandleResult<SendMessageResponse>(s => s == null)
+                                     .WaitAndRetryAsync(int.MaxValue, _ => TimeSpan.FromMilliseconds(50));
+            
+            var combined = Policy.WrapAsync(timeoutPolicy, resultPolicy);
 
-                                                           while (!_responses.ContainsKey(req.Message.Uid))
-                                                           {
-                                                               Thread.Sleep(delta);
+            var result = await combined.ExecuteAndCaptureAsync(async () =>
+            {
+                if (!_responses.ContainsKey(request.Message.Uid)) return default;
 
-                                                               if (DateTime.Now - dt >= _timeout) throw new TimeoutException("Timeout");
-                                                           }
-                                                           
-                                                           var resp = _responses[req.Message.Uid];
-                                                           _responses.Remove(req.Message.Uid);
+                return _responses[request.Message.Uid];
+            });
+      
 
-                                                           return resp;
-                                                       },
-                                                       request);
+            if (result.FinalHandledResult != default)
+                throw new RabbitBusException($"Error getting a response: {result.FinalException.Message}",
+                                             result.FinalException?.InnerException);
 
-            result.Start();
-
-            if (result.IsFaulted)
-                throw new RabbitBusException($"Error getting a response: {result.Exception.Message}",
-                                             result.Exception?.InnerException);
-
-            return await result;
+            return result?.Result;
         }
         catch (Exception ex)
         {

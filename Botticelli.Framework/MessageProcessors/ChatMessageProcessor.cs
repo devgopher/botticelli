@@ -27,8 +27,6 @@ public sealed class ChatMessageProcessor : IClientMessageProcessor
 
         try
         {
-            var chatId = Convert.ToInt64(message.ChatId);
-
             string command;
 
             if (Regex.IsMatch(message.Body, SimpleCommandPattern))

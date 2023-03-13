@@ -36,9 +36,6 @@ builder.Services.AddSingleton<AiHandler>();
 builder.Services.UseRabbitBusAgent<IBot<TelegramBot>, AiHandler>(builder.Configuration);
 builder.Services.UseRabbitBusClient<IBot<TelegramBot>>(builder.Configuration);
 
-//builder.Services.UsePassBusAgent<IBot<TelegramBot>, AiHandler>();
-//builder.Services.UsePassBusClient<IBot<TelegramBot>>();
-
 builder.Services.AddHostedService<TestBotHostedService>();
 builder.Services.AddBotCommand<SampleCommand, SampleCommandProcessor, PassValidator<SampleCommand>>();
 builder.Services.AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>();

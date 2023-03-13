@@ -25,9 +25,9 @@ public static class ServiceCollectionExtensions
             where TCommand : class, ICommand
             where TCommandProcessor : class, ICommandProcessor
             where TCommandValidator : class, ICommandValidator<TCommand>
-        => services.AddSingleton<TCommand>()
-                   .AddSingleton<TCommandProcessor>()
-                   .AddSingleton<ICommandValidator<TCommand>, TCommandValidator>();
+        => services.AddScoped<TCommand>()
+                   .AddScoped<TCommandProcessor>()
+                   .AddScoped<ICommandValidator<TCommand>, TCommandValidator>();
 
     public static IServiceProvider RegisterBotCommand<TCommand, TCommandProcessor, TBot>(this IServiceProvider sp)
             where TCommand : class, ICommand

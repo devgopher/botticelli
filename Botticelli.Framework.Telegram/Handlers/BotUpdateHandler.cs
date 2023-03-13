@@ -3,6 +3,8 @@ using Botticelli.Framework.MessageProcessors;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
+using Polly;
+using System.Diagnostics;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -65,7 +67,7 @@ public class BotUpdateHandler : IUpdateHandler
                 }
             };
 
-            Process(botticelliMessage, cancellationToken);
+            await Process(botticelliMessage, cancellationToken);
 
             _logger.LogDebug($"{nameof(HandleUpdateAsync)}() finished...");
         }
@@ -80,7 +82,7 @@ public class BotUpdateHandler : IUpdateHandler
     /// </summary>
     /// <param name="request"></param>
     /// <param name="token"></param>
-    protected void Process(Message request, CancellationToken token)
+    protected async Task Process(Message request, CancellationToken token)
     {
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) started...");
 
@@ -89,20 +91,11 @@ public class BotUpdateHandler : IUpdateHandler
         var clientTasks = _processorFactory
                           .GetProcessors()
                           .Where(p => p.GetType() != typeof(ChatMessageProcessor))
-                          .Select(p => ProcessForProcessor(p, request, token));
+                          .Select(p => p.ProcessAsync(request, token));
+
 
         Task.WaitAll(clientTasks.ToArray());
 
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
     }
-
-    /// <summary>
-    ///     Request processing for a particular processor
-    /// </summary>
-    /// <param name="processor"></param>
-    /// <param name="request"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    private Task ProcessForProcessor(IMessageProcessor processor, Message request, CancellationToken token) =>
-            Task.Run(() => processor.ProcessAsync(request, token), token);
 }
