@@ -17,5 +17,8 @@ namespace Botticelli.Framework.Viber.Messages
 
         [JsonPropertyName("message_token")]
         public long MessageToken { get; set; }
+
+        [JsonPropertyName("user_id")]
+        public string UserId { get; set; }
     }
 }

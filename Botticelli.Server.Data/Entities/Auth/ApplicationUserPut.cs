@@ -1,6 +1,5 @@
-namespace Botticelli.Server.Data.Entities.Auth
+namespace Botticelli.Server.Data.Entities.Auth;
+
+public class ApplicationUserPut : ApplicationUserPost
 {
-    public class ApplicationUserPut : ApplicationUserPost
-    {
-    }
 }
