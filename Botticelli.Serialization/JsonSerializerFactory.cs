@@ -8,7 +8,12 @@ public class JsonSerializerFactory : ISerializerFactory
 
     public ISerializer<T> GetSerializer<T>()
     {
-        if (_objects.Keys.All(t => t != typeof(T)))
-            new JsonSerializer<T>();
+        if (!_objects.Keys.All(t => t != typeof(T))) 
+            return (ISerializer<T>) _objects[typeof(T)];
+
+        var serializer = new JsonSerializer<T>();
+        _objects.TryAdd(typeof(T), serializer);
+
+        return (ISerializer<T>) _objects[typeof(T)];
     }
 }
