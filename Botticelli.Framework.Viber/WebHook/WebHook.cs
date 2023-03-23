@@ -11,17 +11,17 @@ namespace Botticelli.Framework.Viber.WebHook
 {
     public class WebHook
     {
-        private readonly ISerializer<WebHookMessage> _serializer;
+        private readonly ISerializerFactory _serializerFactory;
         private readonly ILogger<WebHook> _logger;
         private readonly ViberBotSettings _settings;
         private readonly HttpListener _listener;
 
 
-        public WebHook(ISerializer<WebHookMessage> serializer,
+        public WebHook(ISerializerFactory serializerFactory,
                        ILogger<WebHook> logger,
                        ViberBotSettings settings)
         {
-            _serializer = serializer;
+            _serializerFactory = serializerFactory;
             _logger = logger;
             _settings = settings;
             _listener = new HttpListener();
@@ -62,6 +62,9 @@ namespace Botticelli.Framework.Viber.WebHook
                         }
 
                         var json = StreamUtils.FromStream(context.Request.InputStream);
+
+                        var generic = _serializerFactory.GetSerializer<BasicCallback>()
+                                                        .Deserialize(json);
 
                     }
                     catch (Exception ex)
