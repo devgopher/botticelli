@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Serialization;
+﻿using System.Dynamic;
+
+namespace Botticelli.Serialization;
 
 /// <summary>
 ///     Serializer interface

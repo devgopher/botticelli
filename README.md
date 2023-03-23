@@ -29,7 +29,7 @@ On a bot side we can implement any business logic we want.
 2. Save your Bot Token
 
 ## Starting a sample project
-1. In Visual Studio you should enable multi-project starting: https://learn.microsoft.com/en-us/visualstudio/ide/how-to-set-multiple-startup-projects?view=vs-2022
+1. In Visual Studio you should enable multi-project startup: https://learn.microsoft.com/en-us/visualstudio/ide/how-to-set-multiple-startup-projects?view=vs-2022
 
 2. In our case, we need to run 2 project simultaneously: Botticelli.Server and Samples\TelegramBotSample
 3. After the first run of a bot-project(Samples\TelegramBotSample in pour case), you should find Data\botId file with a generanted botId

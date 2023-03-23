@@ -14,7 +14,7 @@ public class SecureStorage
     public SecureStorage(SecureStorageSettings settings)
         => _settings = settings;
 
-    public BotKey GetBotKey(string botId)
+    public BotKey? GetBotKey(string botId)
     {
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 
@@ -34,7 +34,7 @@ public class SecureStorage
                   });
     }
 
-    public BotData GetBotData(string botId)
+    public BotData? GetBotData(string botId)
     {
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 

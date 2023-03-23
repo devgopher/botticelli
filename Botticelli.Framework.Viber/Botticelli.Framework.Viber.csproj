@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
+    <ProjectReference Include="..\Botticelli.Serialization\Botticelli.Serialization.csproj" />
     <ProjectReference Include="..\Viber.Api\Viber.Api.csproj" />
   </ItemGroup>
 

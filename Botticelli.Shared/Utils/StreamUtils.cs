@@ -9,4 +9,11 @@ public static class StreamUtils
 
         return stream;
     }
+
+    public static string FromStream(this Stream input)
+    {
+        using var sr = new StreamReader(input);
+
+        return sr.ReadToEnd();
+    }
 }

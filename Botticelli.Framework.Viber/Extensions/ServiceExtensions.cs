@@ -1,6 +1,7 @@
 ﻿using Botticelli.Framework.Options;
 using Botticelli.Framework.Viber.Options;
 using Botticelli.Interfaces;
+using Botticelli.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Viber.Api;
 using Viber.Api.Settings;
@@ -21,7 +22,7 @@ public static class ServiceExtensions
         var settings = optionsBuilder.Build();
         services.AddSingleton(new ViberApiSettings
         {
-            HookUrl = "https://*:8081/",
+            HookUrl = "https://botticellibots.com//",
             RemoteUrl = "https://chatapi.viber.com/pa/",
             ViberToken = settings.ViberToken
         });
@@ -29,6 +30,7 @@ public static class ServiceExtensions
         services.AddHttpClient<ViberService>();
         services.AddSingleton<IViberService, ViberService>();
         services.AddSingleton<IBot<ViberBot>, ViberBot>();
+        services.AddTransient<ISerializerFactory, JsonSerializerFactory>();
 
         return services;
     }

@@ -9,4 +9,6 @@ public class ViberBotSettings : BotSettings
     ///     Viber API token
     /// </summary>
     public string ViberToken { get; set; } = "50bd0b7b48a7dd24-4888ec418a215884-e78bd4d0de287cac";
+
+    public int HttpListenerDelayMs { get; set; } = 50;
 }
