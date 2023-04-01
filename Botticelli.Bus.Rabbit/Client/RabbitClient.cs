@@ -22,7 +22,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
     private readonly RabbitBusSettings _settings;
     private readonly TimeSpan _timeout;
     private readonly int delta = 50;
-    private EventingBasicConsumer? _consumer = default;
+    private EventingBasicConsumer? _consumer;
 
     public RabbitClient(TBot bot,
                         IConnectionFactory rabbitConnectionFactory,
@@ -43,13 +43,13 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         {
             using var connection = _rabbitConnectionFactory.CreateConnection();
             using var channel = connection.CreateModel();
-     
+
             Send(request, channel, GetRequestQueueName());
 
             var timeoutPolicy = Policy.TimeoutAsync<SendMessageResponse>(_timeout, TimeoutStrategy.Pessimistic);
             var resultPolicy = Policy.HandleResult<SendMessageResponse>(s => s == null)
                                      .WaitAndRetryAsync(int.MaxValue, _ => TimeSpan.FromMilliseconds(50));
-            
+
             var combined = Policy.WrapAsync(timeoutPolicy, resultPolicy);
 
             var result = await combined.ExecuteAndCaptureAsync(async () =>
@@ -58,7 +58,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
 
                 return _responses[request.Message.Uid];
             });
-      
+
 
             if (result.FinalHandledResult != default)
                 throw new RabbitBusException($"Error getting a response: {result.FinalException.Message}",
@@ -106,7 +106,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
         else
             channel.ExchangeDeclarePassive(exchange);
 
-        var queueDeclareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive:false) : channel.QueueDeclarePassive(queue);
+        var queueDeclareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) : channel.QueueDeclarePassive(queue);
 
 
         channel.BasicConsume(queue, true, _consumer);

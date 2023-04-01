@@ -1,5 +1,4 @@
-﻿
-namespace Botticelli.Framework.Viber.Messages.Requests;
+﻿namespace Botticelli.Framework.Viber.Messages.Requests;
 
 public class SetWebHookRequest
 {

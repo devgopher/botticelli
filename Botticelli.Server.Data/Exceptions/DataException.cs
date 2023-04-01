@@ -2,5 +2,7 @@
 
 public class DataException : Exception
 {
-    public DataException(string message, Exception inner = null) : base(message, inner) { }
+    public DataException(string message, Exception inner = null) : base(message, inner)
+    {
+    }
 }

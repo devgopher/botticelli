@@ -29,9 +29,10 @@ public static class ServiceExtensions
         });
 
         services.AddHttpClient<ViberService>();
+
         return services.AddSingleton<IViberService, ViberService>()
-                .AddSingleton<IBot<ViberBot>, ViberBot>()
-                .AddTransient<ISerializerFactory, JsonSerializerFactory>()
-                .AddTransient<IMapper, Mapper>();
+                       .AddSingleton<IBot<ViberBot>, ViberBot>()
+                       .AddTransient<ISerializerFactory, JsonSerializerFactory>()
+                       .AddTransient<IMapper, Mapper>();
     }
 }

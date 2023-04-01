@@ -1,13 +1,13 @@
-﻿using Botticelli.Server.Data;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Data.Exceptions;
 using Botticelli.Shared.Utils;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Botticelli.Server.Services.Auth;
 

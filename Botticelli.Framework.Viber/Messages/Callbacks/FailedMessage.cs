@@ -6,5 +6,4 @@ public class FailedMessage : WebHookMessage
 {
     [JsonPropertyName("event")]
     public override string Event => EventTypes.Failed;
-
 }

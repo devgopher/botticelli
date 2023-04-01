@@ -29,7 +29,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     private readonly RabbitBusSettings _settings;
     private readonly IServiceProvider _sp;
     private EventingBasicConsumer? _consumer;
-    private bool _isActive = false;
+    private bool _isActive;
 
     public RabbitAgent(IConnectionFactory rabbitConnectionFactory,
                        IServiceProvider sp,
@@ -90,7 +90,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) start...");
         var handler = _sp.GetRequiredService<THandler>();
         _handlers.Add(handler);
-        
+
         ProcessSubscription(token, handler);
     }
 
@@ -101,7 +101,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
             var connection = _rabbitConnectionFactory.CreateConnection();
             var channel = connection.CreateModel();
             var queue = GetRequestQueueName();
-            var declareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, exclusive: false) : channel.QueueDeclarePassive(queue);
+            var declareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) : channel.QueueDeclarePassive(queue);
 
             _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {declareResult.QueueName}");
 
@@ -130,7 +130,6 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
                 _logger.LogError(ex, ex.Message);
             }
         };
-
     }
 
     private async Task InnerSend(SendMessageResponse response)

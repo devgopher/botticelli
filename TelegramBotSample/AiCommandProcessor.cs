@@ -35,15 +35,11 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                               token);
 
         if (response != null)
-        {
             foreach (var bot in _bots)
-            {
                 await bot.SendMessageAsync(new SendMessageRequest(response.Uid)
-                                             {
-                                                 Message = response.Message
-                                             },
-                                             token);
-            }
-        }
+                                           {
+                                               Message = response.Message
+                                           },
+                                           token);
     }
 }

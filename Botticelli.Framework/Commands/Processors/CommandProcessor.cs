@@ -81,8 +81,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         {
             request.Message.Body = Validator.Help();
 
-            foreach (var bot in _bots) 
-                await bot.SendMessageAsync(request, token);
+            foreach (var bot in _bots) await bot.SendMessageAsync(request, token);
         }
     }
 

@@ -3,9 +3,9 @@
 namespace Botticelli.Framework.Viber.Messages;
 
 /// <summary>
-/// Callback request (comes from Viber).
-/// Expected response only: 200 - OK.
-/// In other cases bot isn't available for Viber 
+///     Callback request (comes from Viber).
+///     Expected response only: 200 - OK.
+///     In other cases bot isn't available for Viber
 /// </summary>
 public class CallbackIncomingRequest
 {

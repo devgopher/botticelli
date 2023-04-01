@@ -6,5 +6,4 @@ public class SeenMessage : WebHookMessage
 {
     [JsonPropertyName("event")]
     public override string Event => EventTypes.Seen;
-
 }

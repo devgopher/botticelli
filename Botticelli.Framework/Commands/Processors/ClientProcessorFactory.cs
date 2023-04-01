@@ -9,7 +9,7 @@ public class ClientProcessorFactory
     private static readonly IList<IClientMessageProcessor> ClientProcessors
             = new List<IClientMessageProcessor>(10);
 
-    private Random rnd = new Random(DateTime.Now.Millisecond);
+    private readonly Random rnd = new(DateTime.Now.Millisecond);
 
     public void AddProcessor<TProcessor, TBot>(IServiceProvider sp)
             where TProcessor : class, IClientMessageProcessor
@@ -17,8 +17,7 @@ public class ClientProcessorFactory
     {
         var procCnt = ClientProcessors.Count(x => x is TProcessor);
 
-        if (procCnt > 10)
-            return;
+        if (procCnt > 10) return;
 
         var bot = sp.GetRequiredService<TBot>();
         var proc = sp.CreateScope().ServiceProvider.GetRequiredService<TProcessor>();
@@ -29,12 +28,11 @@ public class ClientProcessorFactory
 
     public void AddChatMessageProcessor(IBot bot, IServiceProvider sp)
     {
-        if (!ClientProcessors.Any(x => x is ChatMessageProcessor)) 
-            ClientProcessors.Add(sp.GetRequiredService<ChatMessageProcessor>());
+        if (!ClientProcessors.Any(x => x is ChatMessageProcessor)) ClientProcessors.Add(sp.GetRequiredService<ChatMessageProcessor>());
     }
 
     public IEnumerable<IClientMessageProcessor> GetProcessors()
         => ClientProcessors.AsEnumerable()
-                            .OrderBy(_ => rnd.Next() % ClientProcessors.Count)
-                            .DistinctBy(p => p.GetType());
+                           .OrderBy(_ => rnd.Next() % ClientProcessors.Count)
+                           .DistinctBy(p => p.GetType());
 }

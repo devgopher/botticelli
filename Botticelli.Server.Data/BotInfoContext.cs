@@ -21,7 +21,7 @@ public class BotInfoContext : DbContext
         modelBuilder.Entity<IdentityRole<string>>()
                     .HasKey(k => k.Id);
         modelBuilder.Entity<IdentityUserRole<string>>()
-                    .HasKey(k => new{ k.UserId, k.RoleId });
+                    .HasKey(k => new {k.UserId, k.RoleId});
         modelBuilder.Entity<IdentityUser<string>>()
                     .HasKey(k => k.Id);
     }

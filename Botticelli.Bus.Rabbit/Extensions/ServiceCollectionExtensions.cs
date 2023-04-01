@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddConnectionFactory(this IServiceCollection services, RabbitBusSettings settings)
     {
         if (!services.Any(s => s.ServiceType.IsAssignableFrom(typeof(IConnectionFactory))))
-            services.AddSingleton<IConnectionFactory>(s => new ConnectionFactory()
+            services.AddSingleton<IConnectionFactory>(s => new ConnectionFactory
             {
                 Uri = new Uri(settings.Uri),
                 VirtualHost = settings.VHost

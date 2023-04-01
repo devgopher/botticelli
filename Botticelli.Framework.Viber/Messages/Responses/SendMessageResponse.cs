@@ -3,7 +3,7 @@
 namespace Botticelli.Framework.Viber.Messages.Responses;
 
 /// <summary>
-/// Send response message
+///     Send response message
 /// </summary>
 public class SendMessageResponse
 {

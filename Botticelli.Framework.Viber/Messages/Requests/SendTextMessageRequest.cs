@@ -17,7 +17,7 @@ public class SendTextMessageRequest
     public string TrackingData { get; set; }
 
     [JsonPropertyName("type")]
-    public virtual string Type  => "text";
+    public virtual string Type => "text";
 
     [JsonPropertyName("text")]
     public string Text { get; set; }

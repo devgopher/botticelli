@@ -7,6 +7,7 @@ public class SubscribedMessage : WebHookMessage
 {
     [JsonPropertyName("event")]
     public override string Event => EventTypes.Subscribed;
+
     [JsonPropertyName("user")]
     public User User { get; set; }
 }

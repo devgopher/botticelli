@@ -90,11 +90,10 @@ public class WebHookHandler
 
                                                         var botticelliMessage = MakeBotticelliMessage(concreteTypeMessage);
 
-                                                        foreach (var processor in processors) await processor.ProcessAsync(botticelliMessage, token);
+                                                        foreach (var processor in processors) 
+                                                            await processor.ProcessAsync(botticelliMessage, token).ConfigureAwait(false);
 
                                                         break;
-
-
                                                     case EventTypes.ConversationStarted:
                                                     case EventTypes.Delivered:
                                                     case EventTypes.Failed:
@@ -104,18 +103,6 @@ public class WebHookHandler
                                                     default:
                                                         throw new NotImplementedException("Not implemented!");
                                                 }
-                                                //switch (webhookMessage?.Event?.ToLowerInvariant())
-                                                //{
-                                                //    case EventTypes.Delivered: 
-                                                //        break;
-                                                //    case EventTypes.ConversationStarted:
-                                                //        break;
-                                                //    case EventTypes.Failed: break;
-                                                //    case EventTypes.Seen: break;
-                                                //    case EventTypes.Subscribed: break;
-                                                //    case EventTypes.Unsubscribed: break;
-                                                //    default: throw new BotException($"Unrecognized type of event: {webhookMessage?.Event}");
-                                                //}
                                             }
                                             catch (Exception ex)
                                             {

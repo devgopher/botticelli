@@ -1,10 +1,7 @@
 ﻿using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.MessageProcessors;
-using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
-using Polly;
-using System.Diagnostics;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
