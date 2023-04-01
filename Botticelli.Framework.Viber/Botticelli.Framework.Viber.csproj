@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.4.0-pre06" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
@@ -14,6 +15,10 @@
     <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
     <ProjectReference Include="..\Botticelli.Serialization\Botticelli.Serialization.csproj" />
     <ProjectReference Include="..\Viber.Api\Viber.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Handlers\" />
   </ItemGroup>
 
 </Project>

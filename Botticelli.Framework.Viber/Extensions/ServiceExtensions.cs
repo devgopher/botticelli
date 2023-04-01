@@ -2,6 +2,7 @@
 using Botticelli.Framework.Viber.Options;
 using Botticelli.Interfaces;
 using Botticelli.Serialization;
+using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Viber.Api;
 using Viber.Api.Settings;
@@ -28,10 +29,9 @@ public static class ServiceExtensions
         });
 
         services.AddHttpClient<ViberService>();
-        services.AddSingleton<IViberService, ViberService>();
-        services.AddSingleton<IBot<ViberBot>, ViberBot>();
-        services.AddTransient<ISerializerFactory, JsonSerializerFactory>();
-
-        return services;
+        return services.AddSingleton<IViberService, ViberService>()
+                .AddSingleton<IBot<ViberBot>, ViberBot>()
+                .AddTransient<ISerializerFactory, JsonSerializerFactory>()
+                .AddTransient<IMapper, Mapper>();
     }
 }

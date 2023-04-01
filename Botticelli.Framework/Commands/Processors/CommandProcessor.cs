@@ -15,14 +15,12 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
     protected readonly ILogger Logger;
     protected readonly ICommandValidator<TCommand> Validator;
-    protected IBot _bot;
+    protected IList<IBot> _bots = new List<IBot>(10);
     protected IServiceProvider _sp;
 
-    protected CommandProcessor(IBot bot,
-                               ILogger logger,
+    protected CommandProcessor(ILogger logger,
                                ICommandValidator<TCommand> validator)
     {
-        SetBot(bot);
         Logger = logger;
         Validator = validator;
     }
@@ -64,8 +62,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         }
     }
 
-    public void SetBot(IBot bot)
-        => _bot = bot;
+    public void AddBot(IBot bot)
+        => _bots.Add(bot);
 
     public void SetServiceProvider(IServiceProvider sp)
         => _sp = sp;
@@ -82,7 +80,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         else
         {
             request.Message.Body = Validator.Help();
-            await _bot.SendMessageAsync(request, token);
+
+            foreach (var bot in _bots) 
+                await bot.SendMessageAsync(request, token);
         }
     }
 

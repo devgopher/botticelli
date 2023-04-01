@@ -2,7 +2,7 @@
 
 namespace Viber.Api.Entities
 {
-    public class Message
+    public class ViberMessage
     {
         [JsonProperty("type")]
         public string? Type { get; set; }

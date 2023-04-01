@@ -2,10 +2,11 @@
 
 public static class EventTypes
 {
-    public static string Delivered => "delivered";
-    public static string Seen => "seen";
-    public static string Failed => "failed";
-    public static string Subscribed => "subscribed";
-    public static string Unsubscribed => "unsubscribed";
-    public static string ConversationStarted => "conversation_started";
+    public const string Delivered = "delivered";
+    public const string Seen = "seen";
+    public const string Failed = "failed";
+    public const string Subscribed = "subscribed";
+    public const string Unsubscribed = "unsubscribed";
+    public const string ConversationStarted = "conversation_started";
+    public const string Message = "message";
 }

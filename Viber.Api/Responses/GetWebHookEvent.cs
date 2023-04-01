@@ -24,6 +24,6 @@ namespace Viber.Api.Responses
         public MessageSender? Sender { get; set; }
 
         [JsonPropertyName("message")]
-        public Message? Message { get; set; }
+        public ViberMessage? Message { get; set; }
     }
 }

@@ -66,9 +66,9 @@ public class ViberBot : BaseBot<ViberBot> //, IDisposable
             }
 
             // Only text... temporary
-            //if (request.Message.Attachments != null)
+            //if (request.ViberMessage.Attachments != null)
             //{
-            //    foreach (var attachment in request.Message.Attachments)
+            //    foreach (var attachment in request.ViberMessage.Attachments)
             //    {
             //        switch (attachment.MediaType)
             //        {
