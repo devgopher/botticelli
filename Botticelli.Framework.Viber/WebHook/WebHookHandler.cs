@@ -14,11 +14,11 @@ namespace Botticelli.Framework.Viber.WebHook;
 
 public class WebHookHandler
 {
-    private readonly ISerializerFactory _serializerFactory;
-    private readonly ILogger<WebHookHandler> _logger;
-    private readonly ViberBotSettings _settings;
     private readonly HttpListener _listener;
+    private readonly ILogger<WebHookHandler> _logger;
     private readonly ClientProcessorFactory _processorFactory;
+    private readonly ISerializerFactory _serializerFactory;
+    private readonly ViberBotSettings _settings;
 
     public WebHookHandler(ISerializerFactory serializerFactory,
                           ILogger<WebHookHandler> logger,
@@ -90,8 +90,7 @@ public class WebHookHandler
 
                                                         var botticelliMessage = MakeBotticelliMessage(concreteTypeMessage);
 
-                                                        foreach (var processor in processors) 
-                                                            await processor.ProcessAsync(botticelliMessage, token).ConfigureAwait(false);
+                                                        foreach (var processor in processors) await processor.ProcessAsync(botticelliMessage, token).ConfigureAwait(false);
 
                                                         break;
                                                     case EventTypes.ConversationStarted:
