@@ -30,6 +30,6 @@ public static class ServiceCollectionExtensions
         return services.AddScoped(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
                        .AddSingleton<IBot<TelegramBot>, TelegramBot>(sp => new TelegramBot(new TelegramBotClient(token), services))
                        .AddSingleton<IBot, TelegramBot>(sp => new TelegramBot(new TelegramBotClient(token), services))
-                       .AddTransient<IUpdateHandler, BotUpdateHandler>();
+                       .AddTransient<IBotUpdateHandler, BotUpdateHandler>();
     }
 }

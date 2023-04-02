@@ -18,17 +18,20 @@ public class WebHookHandler
     private readonly ILogger<WebHookHandler> _logger;
     private readonly ClientProcessorFactory _processorFactory;
     private readonly ISerializerFactory _serializerFactory;
+    private readonly INotificator<ViberBot> _notificator;
     private readonly ViberBotSettings _settings;
 
     public WebHookHandler(ISerializerFactory serializerFactory,
                           ILogger<WebHookHandler> logger,
                           ViberBotSettings settings,
-                          ClientProcessorFactory processorFactory)
+                          ClientProcessorFactory processorFactory,
+                          INotificator<ViberBot> notificator)
     {
         _serializerFactory = serializerFactory;
         _logger = logger;
         _settings = settings;
         _processorFactory = processorFactory;
+        _notificator = notificator;
         _listener = new HttpListener();
         _listener.Prefixes.Add("https://localhost:443");
     }
@@ -92,16 +95,23 @@ public class WebHookHandler
 
                                                         foreach (var processor in processors) await processor.ProcessAsync(botticelliMessage, token).ConfigureAwait(false);
 
+
+                                                        _notificator.NotifyReceived(this, botticelliMessage);
+
                                                         break;
                                                     case EventTypes.ConversationStarted:
-
                                                     case EventTypes.Delivered:
                                                     case EventTypes.Failed:
                                                     case EventTypes.Seen:
                                                     case EventTypes.Subscribed:
                                                     case EventTypes.Unsubscribed:
-                                                    default:
-                                                        throw new NotImplementedException("Not implemented!");
+                                                        _notificator.NotifyMessengerSpecific(this, webhookMessage.Event, 
+                                                                                             new List<string>()
+                                                                                             {
+                                                                                                 $"{nameof(webhookMessage.MessageToken)}={webhookMessage.MessageToken}" 
+                                                                                             });
+                                                        break;
+                                                    default: throw new NotImplementedException("Not implemented!");
                                                 }
                                             }
                                             catch (Exception ex)

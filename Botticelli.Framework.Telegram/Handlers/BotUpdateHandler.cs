@@ -1,4 +1,5 @@
 ﻿using Botticelli.Framework.Commands.Processors;
+using Botticelli.Framework.Events;
 using Botticelli.Framework.MessageProcessors;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,13 @@ using User = Botticelli.Shared.ValueObjects.User;
 
 namespace Botticelli.Framework.Telegram.Handlers;
 
-public class BotUpdateHandler : IUpdateHandler
+public interface IBotUpdateHandler : IUpdateHandler
+{
+    public delegate void MsgReceivedEventHandler(object sender, MessageReceivedBotEventArgs e);
+    public event MsgReceivedEventHandler MessageReceived;
+}
+
+public class BotUpdateHandler : IBotUpdateHandler
 {
     private readonly ILogger<BotUpdateHandler> _logger;
     private readonly ClientProcessorFactory _processorFactory;
@@ -95,4 +102,6 @@ public class BotUpdateHandler : IUpdateHandler
 
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
     }
+
+    public event IBotUpdateHandler.MsgReceivedEventHandler? MessageReceived;
 }

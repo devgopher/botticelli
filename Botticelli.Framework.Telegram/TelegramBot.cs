@@ -1,5 +1,7 @@
 ﻿using System.Text;
+using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
+using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
@@ -20,6 +22,10 @@ public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly ITelegramBotClient _client;
     private readonly IServiceProvider _sp;
+    public override event MsgSentEventHandler MessageSent;
+    public override event MsgReceivedEventHandler MessageReceived;
+    public override event MsgRemovedEventHandler MessageRemoved;
+    public override event MessengerSpecificEventHandler MessengerSpecificEvent;
 
     /// <summary>
     ///     ctor
@@ -60,6 +66,11 @@ public class TelegramBot : BaseBot<TelegramBot>
         }
 
         response.MessageUid = request.Uid;
+
+        MessageRemoved?.Invoke(this, new MessageRemovedBotEventArgs()
+        {
+            MessageUid = request.Uid
+        });
 
         return response;
     }
@@ -145,11 +156,17 @@ public class TelegramBot : BaseBot<TelegramBot>
 
                             break;
 
-                        default: throw new ArgumentOutOfRangeException();
+                        case MediaType.Unknown: break;
+                        default:                throw new ArgumentOutOfRangeException();
                     }
                 }
 
             response.MessageSentStatus = MessageSentStatus.Ok;
+
+            MessageSent?.Invoke(this, new MessageSentBotEventArgs()
+            {
+                Message = request.Message
+            });
         }
         catch (Exception ex)
         {
@@ -194,7 +211,14 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         if (response.Status != AdminCommandStatus.Ok || IsStarted) return response;
 
-        _client.StartReceiving(_sp.GetRequiredService<IUpdateHandler>(), cancellationToken: token);
+        var updateHandler = _sp.GetRequiredService<IBotUpdateHandler>();
+
+        // Rethrowing an event from BotUpdateHandler
+        updateHandler.MessageReceived += (sender, e) 
+                => MessageReceived?.Invoke(sender, e);
+
+        _client.StartReceiving(updateHandler, cancellationToken: token);
+        
         IsStarted = true;
 
         return response;

@@ -1,4 +1,6 @@
-﻿using Botticelli.Framework.Exceptions;
+﻿using Botticelli.Framework.Events;
+using Botticelli.Framework.Exceptions;
+using Botticelli.Framework.Viber.WebHook;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
@@ -14,6 +16,8 @@ namespace Botticelli.Framework.Viber;
 public class ViberBot : BaseBot<ViberBot> //, IDisposable
 {
     private readonly IViberService _viberService;
+
+    private readonly INotificator<ViberBot> _notificator;
     //private readonly ViberBotSettings _settings;
 
     /// <summary>
@@ -21,11 +25,15 @@ public class ViberBot : BaseBot<ViberBot> //, IDisposable
     /// </summary>
     /// <param name="viberService"></param>
     /// <param name="settings"></param>
-    public ViberBot(IViberService viberService /*, ViberBotSettings setting*/) => _viberService = viberService;
+    /// <param name="notificator"></param>
+    public ViberBot(IViberService viberService, INotificator<ViberBot> notificator /*, ViberBotSettings setting*/)
+    {
+        _viberService = viberService;
+        _notificator = notificator;
+    }
 
     public override BotType Type => BotType.Viber;
 
-    //_settings = settings;
     public override Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token) => throw new NotImplementedException();
 
     /// <summary>
@@ -63,32 +71,12 @@ public class ViberBot : BaseBot<ViberBot> //, IDisposable
                 };
 
                 await _viberService.SendMessage(messageRequest, token);
+
+                MessageSent?.Invoke(this, new MessageSentBotEventArgs
+                {
+                    Message = request?.Message
+                });
             }
-
-            // Only text... temporary
-            //if (request.ViberMessage.Attachments != null)
-            //{
-            //    foreach (var attachment in request.ViberMessage.Attachments)
-            //    {
-            //        switch (attachment.MediaType)
-            //        {
-            //            case MediaType.Audio:
-            //                // nothing to do
-            //                break;
-            //            case MediaType.Video:
-            //                break;
-            //            case MediaType.Image:
-
-            //                break;
-            //            case MediaType.Voice:
-            //                break;
-            //            case MediaType.Text:
-            //                break;
-            //            default:
-            //                throw new ArgumentOutOfRangeException();
-            //        }
-            //    }
-            //}
 
             response.MessageSentStatus = MessageSentStatus.Ok;
         }
@@ -98,6 +86,20 @@ public class ViberBot : BaseBot<ViberBot> //, IDisposable
         }
 
         return response;
+    }
+
+    public override event MsgSentEventHandler MessageSent;
+    public override event MsgReceivedEventHandler MessageReceived
+    {
+        add => _notificator.MessageReceived += value.Invoke;
+        remove => _notificator.MessageReceived -= value.Invoke;
+    }
+
+    public override event MsgRemovedEventHandler MessageRemoved;
+    public override event MessengerSpecificEventHandler MessengerSpecificEvent
+    {
+        add => _notificator.MessengerSpecificEvent += value.Invoke;
+        remove => _notificator.MessengerSpecificEvent -= value.Invoke;
     }
 
     public override async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)

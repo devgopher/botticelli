@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Botticelli.Framework.Viber.Messages.Callbacks.Models;
+using Viber.Api.Entities;
 
 namespace Botticelli.Framework.Viber.Messages.Callbacks;
 
