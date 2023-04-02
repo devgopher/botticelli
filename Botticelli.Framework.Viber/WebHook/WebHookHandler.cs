@@ -33,7 +33,7 @@ public class WebHookHandler
         _processorFactory = processorFactory;
         _notificator = notificator;
         _listener = new HttpListener();
-        _listener.Prefixes.Add("https://localhost:443");
+        _listener.Prefixes.Add(_settings.WebHookUrl);
     }
 
     public async Task Start(CancellationToken token)
