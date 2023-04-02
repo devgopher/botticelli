@@ -54,7 +54,7 @@ public abstract class BaseBot<T> : IBot<T>
             response = StartBotResponse.GetInstance(request.Uid, $"Error: {ex.Message}", AdminCommandStatus.Fail);
         }
 
-        Started?.Invoke(this, new StartedBotEventArgs() { DateTime = DateTime.Now });
+        Started?.Invoke(this, new StartedBotEventArgs());
 
         return response;
     }
@@ -74,7 +74,7 @@ public abstract class BaseBot<T> : IBot<T>
 
         IsStarted = false;
 
-        Stopped?.Invoke(this, new StoppedBotEventArgs() { DateTime = DateTime.Now });
+        Stopped?.Invoke(this, new StoppedBotEventArgs());
 
         return response;
     }
