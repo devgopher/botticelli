@@ -1,5 +1,6 @@
 ﻿using Botticelli.Framework.Options;
 using Botticelli.Framework.Viber.Options;
+using Botticelli.Framework.Viber.WebHook;
 using Botticelli.Interfaces;
 using Botticelli.Serialization;
 using MapsterMapper;
@@ -33,6 +34,9 @@ public static class ServiceExtensions
         return services.AddSingleton<IViberService, ViberService>()
                        .AddSingleton<IBot<ViberBot>, ViberBot>()
                        .AddTransient<ISerializerFactory, JsonSerializerFactory>()
-                       .AddTransient<IMapper, Mapper>();
+                       .AddTransient<INotificator<ViberBot>, Notificator<ViberBot>>()
+                       .AddTransient<IMapper, Mapper>()
+                       .AddTransient<WebHookHandler>()
+                       .AddSingleton(settings);
     }
 }

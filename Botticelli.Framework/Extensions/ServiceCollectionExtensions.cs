@@ -32,14 +32,14 @@ public static class ServiceCollectionExtensions
     public static IServiceProvider RegisterBotCommand<TCommand, TCommandProcessor, TBot>(this IServiceProvider sp)
             where TCommand : class, ICommand
             where TCommandProcessor : class, ICommandProcessor
-            where TBot : IBot
+            where TBot : IBot<TBot>
     {
         var commandProcessorFactory = sp.GetRequiredService<CommandProcessorFactory>();
         var clientProcessorFactory = sp.GetRequiredService<ClientProcessorFactory>();
 
         commandProcessorFactory.AddCommandType(typeof(TCommand), typeof(TCommandProcessor));
         clientProcessorFactory.AddProcessor<TCommandProcessor, TBot>(sp);
-        clientProcessorFactory.AddChatMessageProcessor(sp.GetRequiredService<IBot>(), sp);
+        clientProcessorFactory.AddChatMessageProcessor(sp.GetRequiredService<IBot<TBot>>(), sp);
 
         return sp;
     }

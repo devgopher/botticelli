@@ -13,13 +13,13 @@ public class ClientProcessorFactory
 
     public void AddProcessor<TProcessor, TBot>(IServiceProvider sp)
             where TProcessor : class, IClientMessageProcessor
-            where TBot : IBot
+            where TBot : IBot<TBot>
     {
         var procCnt = ClientProcessors.Count(x => x is TProcessor);
 
         if (procCnt > 10) return;
 
-        var bot = sp.GetRequiredService<TBot>();
+        var bot = sp.GetRequiredService<IBot<TBot>>();
         var proc = sp.CreateScope().ServiceProvider.GetRequiredService<TProcessor>();
         proc.AddBot(bot);
         proc.SetServiceProvider(sp);

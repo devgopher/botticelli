@@ -12,7 +12,6 @@
     <ProjectReference Include="..\Botticelli.Bus.Rabbit\Botticelli.Bus.Rabbit.csproj" />
     <ProjectReference Include="..\Botticelli.Bus\Botticelli.Bus.None.csproj" />
     <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
-    <ProjectReference Include="..\Botticelli.Framework.Viber\Botticelli.Framework.Viber.csproj" />
     <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
     <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
     <ProjectReference Include="..\Botticelli.Talks\Botticelli.Talks.csproj" />
