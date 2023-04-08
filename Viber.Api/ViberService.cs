@@ -27,7 +27,7 @@ namespace Viber.Api
             _httpListener = new HttpListener();
             _httpClientFactory = httpClientFactory;
             _settings = settings;
-            _httpListener.Prefixes.Add("https://localhost:8081/");
+            _httpListener.Prefixes.Add("http://127.0.0.1:5000/");
 
             Start();
         }
@@ -41,7 +41,7 @@ namespace Viber.Api
 
             SetWebHook(new SetWebHookRequest
             {
-                Url = "https://*:8081/",
+                Url = _settings.HookUrl,
                 AuthToken = _settings.ViberToken,
                 EventTypes = new List<string>
                 {
@@ -92,7 +92,7 @@ namespace Viber.Api
             while (!_stopReceiving.IsSet)
                 try
                 {
-                    if (cancellationToken.CanBeCanceled && cancellationToken.IsCancellationRequested)
+                    if (cancellationToken is {CanBeCanceled: true, IsCancellationRequested: true})
                     {
                         _stopReceiving.Set();
 
@@ -109,9 +109,10 @@ namespace Viber.Api
                         var content = await sr.ReadToEndAsync();
                         var deserialized = JsonConvert.DeserializeObject<GetWebHookEvent>(content);
 
-                        if (deserialized != default)
-                            if (GotMessage != default)
-                                GotMessage(deserialized);
+                        if (deserialized == default) continue;
+
+                        if (GotMessage != default)
+                            GotMessage(deserialized);
                     }
                     else
                     {
@@ -130,7 +131,7 @@ namespace Viber.Api
                                                          CancellationToken cancellationToken)
         {
             using var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_settings.RemoteUrl);
+            httpClient.BaseAddress = new Uri(/*_settings.RemoteUrl*/ _settings.HookUrl);
 
             var content = JsonContent.Create(request);
 

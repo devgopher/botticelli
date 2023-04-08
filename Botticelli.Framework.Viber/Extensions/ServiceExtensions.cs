@@ -1,10 +1,13 @@
-﻿using Botticelli.Framework.Options;
+﻿using System.Security.Cryptography.X509Certificates;
+using Botticelli.Framework.Options;
 using Botticelli.Framework.Viber.Options;
 using Botticelli.Framework.Viber.WebHook;
 using Botticelli.Interfaces;
 using Botticelli.Serialization;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Viber.Api;
 using Viber.Api.Settings;
 
@@ -37,6 +40,19 @@ public static class ServiceExtensions
                        .AddTransient<INotificator<ViberBot>, Notificator<ViberBot>>()
                        .AddTransient<IMapper, Mapper>()
                        .AddTransient<WebHookHandler>()
+                       .AddCertAuthentication(settings)
                        .AddSingleton(settings);
+    }
+    
+    public static IServiceCollection AddCertAuthentication(this IServiceCollection services, ViberBotSettings settings)
+    {
+        services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+                .AddCertificate(opt =>
+                {
+                    opt.AllowedCertificateTypes = CertificateTypes.All;
+                    opt.CustomTrustStore.Add(new X509Certificate2(settings.CertificatePath, settings.CertificatePassword));
+                });
+
+        return services;
     }
 }

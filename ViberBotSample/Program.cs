@@ -18,12 +18,12 @@ using ViberBotSample.Handlers;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddViberBot(new BotOptionsBuilder<ViberBotSettings>()
-                                .Set(s => s.WebHookUrl = "https://botticellibots.com/")
-                                .Set(s => s.SecureStorageSettings = new SecureStorageSettings
-                                {
-                                    ConnectionString = "Filename=../../../database.db;Password=123;ReadOnly=true"
-                                })
-                                .Set(s => s.Name = "test_bot"));
+                             .Set(s => s.WebHookUrl = "https://botticellibots.com/")
+                             .Set(s => s.SecureStorageSettings = new SecureStorageSettings
+                             {
+                                 ConnectionString = "Filename=../../../database.db;Password=123;ReadOnly=true"
+                             })
+                             .Set(s => s.Name = "test_bot"));
 
 builder.Services.UseBotticelli<IBot<ViberBot>>(builder.Configuration);
 builder.Services.AddLogging(cfg => cfg.AddNLog());
@@ -40,6 +40,8 @@ builder.Services.AddBotCommand<SampleCommand, SampleCommandProcessor, PassValida
 builder.Services.AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>();
 
 var app = builder.Build();
+app.UseAuthentication(); // Obvious
+
 app.Services.RegisterBotCommand<SampleCommand, SampleCommandProcessor, ViberBot>()
    .RegisterBotCommand<AiCommand, AiCommandProcessor, ViberBot>();
 app.Run();
