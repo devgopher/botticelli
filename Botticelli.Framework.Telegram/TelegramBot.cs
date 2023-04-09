@@ -46,7 +46,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         if (!IsStarted)
             return new RemoveMessageResponse(request.Uid, "Bot wasn't started!")
             {
-                MessageRemovedStatus = MessageRemovedStatus.Nonstarted
+                MessageRemovedStatus = MessageRemovedStatus.NotStarted
             };
 
         RemoveMessageResponse response = new(request.Uid, string.Empty);

@@ -4,5 +4,5 @@ public enum MessageRemovedStatus
 {
     Ok,
     Fail,
-    Nonstarted
+    NotStarted
 }

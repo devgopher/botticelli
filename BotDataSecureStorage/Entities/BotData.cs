@@ -11,10 +11,10 @@ public class BotData
     ///     botticelli bot id
     /// </summary>
     [BsonId]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
     ///     Bot data
     /// </summary>
-    public string[] Data { get; set; }
+    public string[]? Data { get; set; }
 }

@@ -64,7 +64,7 @@ else
         _bots = await Http.GetFromJsonAsync<BotInfo?[]>("http://localhost:5050/admin/GetBots");
     }
 
-    protected async Task SendStartStop(string botId, BotStatus? status)
+    protected async Task SendStartStop(string? botId, BotStatus? status)
     {
         if (status != BotStatus.Active) 
             await Http.GetAsync("http://localhost:5050/admin/ActivateBot?botId=" + botId);
