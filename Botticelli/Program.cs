@@ -2,7 +2,6 @@ using BotDataSecureStorage;
 using BotDataSecureStorage.Settings;
 using Botticelli.Server.Data;
 using Botticelli.Server.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
