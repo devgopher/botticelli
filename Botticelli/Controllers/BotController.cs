@@ -3,7 +3,6 @@ using Botticelli.Server.Services;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Controllers;
@@ -22,8 +21,9 @@ public class BotController
 
     #region Admin pane
 
+    
     [HttpPost("client/[action]")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<RegisterBotResponse> AddNewBot([FromBody] RegisterBotRequest request)
     {
         var success = await _botManagementService.RegisterBot(request.BotId, request.BotKey, request.Type);
@@ -36,15 +36,15 @@ public class BotController
     }
 
     [HttpGet("admin/[action]")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<ICollection<BotInfo>> GetBots() => _botStatusDataService.GetBots();
 
     [HttpGet("admin/[action]")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     public async Task ActivateBot([FromQuery] string botId) => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Active);
 
     [HttpGet("admin/[action]")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     public async Task DeactivateBot([FromQuery] string botId) => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.NonActive);
 
     #endregion

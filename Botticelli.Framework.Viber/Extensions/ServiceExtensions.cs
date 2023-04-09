@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Botticelli.Framework.Options;
+﻿using Botticelli.Framework.Options;
 using Botticelli.Framework.Viber.Options;
 using Botticelli.Framework.Viber.WebHook;
 using Botticelli.Interfaces;
@@ -7,7 +6,7 @@ using Botticelli.Serialization;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using System.Security.Cryptography.X509Certificates;
 using Viber.Api;
 using Viber.Api.Settings;
 
@@ -27,7 +26,7 @@ public static class ServiceExtensions
         var settings = optionsBuilder.Build();
         services.AddSingleton(new ViberApiSettings
         {
-            HookUrl = "https://botticellibots.com//",
+            HookUrl = settings.WebHookUrl,
             RemoteUrl = "https://chatapi.viber.com/pa/",
             ViberToken = settings.ViberToken
         });

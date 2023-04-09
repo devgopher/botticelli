@@ -1,0 +1,81 @@
+﻿@page "/fetchdata"
+@using Botticelli.Server.Data.Entities
+@using Botticelli.Shared.API.Admin.Responses
+@using System.Drawing
+@inject HttpClient Http
+
+<PageTitle>Your bots</PageTitle>
+
+<h1>Bot list</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (_bots == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Bot name</th>
+            <th>Bot id</th>
+            <th>Bot type</th>
+            <th>Bot status</th>
+            <th>Last KeepAlive</th>
+            <th>Is alive?</th>
+            <th>Start/stop</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var bot in _bots)
+        {
+                <tr id="tr_@bot.BotId" style="background-color: @GetColor(@bot)">
+                <td>@bot.BotName</td>
+                <td>@bot.BotId</td>
+                <td>@bot.Type.ToString()</td>
+                <td>@bot.Status</td>
+                <td>@bot.LastKeepAlive.ToString()</td>
+                <td>@GetIsAlive(@bot.LastKeepAlive)</td>
+                <td>
+                    <button @onclick="@(e => SendStartStop(bot.BotId, bot.Status))">Start/stop</button>
+                </td>
+
+@*                <td>
+                    <button @onclick="@(e => SendStartStop(bot.BotId, bot.Status))">Start/stop</button>
+                </td>*@
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private BotInfo[]? _bots;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _bots = await Http.GetFromJsonAsync<BotInfo?[]>("http://localhost:5050/admin/GetBots");
+    }
+
+    protected async Task SendStartStop(string botId, BotStatus? status)
+    {
+        if (status != BotStatus.Active) await Http.GetAsync("http://localhost:5050/admin/ActivateBot?botId=" + botId);
+        else await Http.GetAsync("http://localhost:5050/admin/DeactivateBot?botId=" + botId);
+
+        StateHasChanged();
+    }
+
+    private static string GetIsAlive(DateTime? lastKeepAlive)
+        => DateTime.UtcNow - lastKeepAlive <= TimeSpan.FromSeconds(30) ? "Yes" : "No";
+
+    private string GetColor(BotInfo bot) => bot.Status switch
+    {
+            BotStatus.Active    => "green",
+            BotStatus.NonActive => "red",
+            _                   => "gray"
+            };
+}

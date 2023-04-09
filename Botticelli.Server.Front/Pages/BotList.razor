@@ -1,6 +1,7 @@
 ﻿@page "/BotList"
+@inject HttpClient Http
+@using System.Text.Json
 @using Botticelli.Server.Data.Entities
-@inject IHttpClientFactory ClientFactory
 
 <PageTitle>Your bots</PageTitle>
 <Label>Your bots</Label>
@@ -12,18 +13,7 @@
     {
         try
         {
-            var request = new HttpRequestMessage(HttpMethod.Get,
-                                                 "http://localhost:5145/admin/GetBots");
-            var client = ClientFactory.CreateClient();
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                using var responseStream = await response.Content.ReadAsStreamAsync();
-
-                _botInfos = await JsonSerializer.DeserializeAsync<IEnumerable<BotInfo>>(responseStream);
-            }
+            var response = await Http.GetFromJsonAsync<BotInfo>("http://localhost:5145/admin/GetBots");
 
             await base.OnInitializedAsync();
         }

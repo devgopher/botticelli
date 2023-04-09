@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Botticelli.Server.Data.Entities\Botticelli.Server.Data.Entities.csproj" />
     <ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj" />
   </ItemGroup>
 

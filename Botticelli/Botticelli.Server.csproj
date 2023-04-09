@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
+    <ProjectReference Include="..\Botticelli.Server.Data.Entities\Botticelli.Server.Data.Entities.csproj" />
     <ProjectReference Include="..\Botticelli.Server.Data\Botticelli.Server.Data.csproj" />
   </ItemGroup>
 
