@@ -8,5 +8,7 @@ public enum MediaType
     Voice,
     Image,
     Sticker,
+    Contact,
+    Poll,
     Unknown
 }

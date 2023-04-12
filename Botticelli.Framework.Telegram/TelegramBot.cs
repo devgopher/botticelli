@@ -12,7 +12,6 @@ using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
-using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 
@@ -22,10 +21,6 @@ public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly ITelegramBotClient _client;
     private readonly IServiceProvider _sp;
-    public override event MsgSentEventHandler MessageSent;
-    public override event MsgReceivedEventHandler MessageReceived;
-    public override event MsgRemovedEventHandler MessageRemoved;
-    public override event MessengerSpecificEventHandler MessengerSpecificEvent;
 
     /// <summary>
     ///     ctor
@@ -40,6 +35,10 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     public override BotType Type => BotType.Telegram;
+    public override event MsgSentEventHandler MessageSent;
+    public override event MsgReceivedEventHandler MessageReceived;
+    public override event MsgRemovedEventHandler MessageRemoved;
+    public override event MessengerSpecificEventHandler MessengerSpecificEvent;
 
     public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token)
     {
@@ -67,10 +66,11 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         response.MessageUid = request.Uid;
 
-        MessageRemoved?.Invoke(this, new MessageRemovedBotEventArgs()
-        {
-            MessageUid = request.Uid
-        });
+        MessageRemoved?.Invoke(this,
+                               new MessageRemovedBotEventArgs
+                               {
+                                   MessageUid = request.Uid
+                               });
 
         return response;
     }
@@ -156,17 +156,49 @@ public class TelegramBot : BaseBot<TelegramBot>
 
                             break;
 
-                        case MediaType.Unknown: break;
-                        default:                throw new ArgumentOutOfRangeException();
+                        case MediaType.Contact:
+                            await _client.SendContactAsync(request.Message.ChatId,
+                                                           request.Message.Contact?.Phone,
+                                                           request.Message.Contact?.Name,
+                                                           request.Message.Contact?.Surname,
+                                                           cancellationToken: token);
+                            break;
+                        case MediaType.Poll:
+                            PollType type;
+
+                            switch (request.Message.Poll?.Type)
+                            {
+                                case Poll.PollType.Quiz:
+                                    type = PollType.Quiz;
+
+                                    break;
+                                case Poll.PollType.Regular:
+                                    type = PollType.Regular;
+
+                                    break;
+                                default: throw new ArgumentOutOfRangeException();
+                            }
+
+                            await _client.SendPollAsync(request.Message.ChatId,
+                                                        request.Message.Poll?.Question,
+                                                        request.Message.Poll?.Variants,
+                                                        request.Message.Poll?.IsAnonymous,
+                                                        type);
+
+                            break;
+                        case MediaType.Unknown:
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                 }
 
             response.MessageSentStatus = MessageSentStatus.Ok;
 
-            MessageSent?.Invoke(this, new MessageSentBotEventArgs()
-            {
-                Message = request.Message
-            });
+            MessageSent?.Invoke(this,
+                                new MessageSentBotEventArgs
+                                {
+                                    Message = request.Message
+                                });
         }
         catch (Exception ex)
         {
@@ -214,11 +246,11 @@ public class TelegramBot : BaseBot<TelegramBot>
         var updateHandler = _sp.GetRequiredService<IBotUpdateHandler>();
 
         // Rethrowing an event from BotUpdateHandler
-        updateHandler.MessageReceived += (sender, e) 
+        updateHandler.MessageReceived += (sender, e)
                 => MessageReceived?.Invoke(sender, e);
 
         _client.StartReceiving(updateHandler, cancellationToken: token);
-        
+
         IsStarted = true;
 
         return response;

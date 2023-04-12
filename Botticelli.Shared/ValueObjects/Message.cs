@@ -35,4 +35,14 @@ public class Message
     public User? From { get; set; }
 
     public User? ForwardFrom { get; set; }
+
+    /// <summary>
+    ///     Contacts
+    /// </summary>
+    public Contact? Contact { get; set; }
+
+    /// <summary>
+    ///     Poll
+    /// </summary>
+    public Poll? Poll { get; set; }
 }
