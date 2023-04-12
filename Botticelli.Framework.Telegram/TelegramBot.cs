@@ -107,6 +107,33 @@ public class TelegramBot : BaseBot<TelegramBot>
                                                    ParseMode.MarkdownV2,
                                                    cancellationToken: token);
 
+            if (request.Message?.Poll != default)
+            {
+                var type = request.Message.Poll?.Type switch
+                {
+                    Poll.PollType.Quiz    => PollType.Quiz,
+                    Poll.PollType.Regular => PollType.Regular,
+                    _                     => throw new ArgumentOutOfRangeException()
+                };
+
+                await _client.SendPollAsync(request.Message.ChatId,
+                                            request.Message.Poll?.Question,
+                                            request.Message.Poll?.Variants,
+                                            request.Message.Poll?.IsAnonymous,
+                                            type,
+                                            cancellationToken: token);
+
+            }
+            
+            if (request.Message?.Contact != default)
+            {
+                await _client.SendContactAsync(request.Message.ChatId,
+                                               request.Message.Contact?.Phone,
+                                               request.Message.Contact?.Name,
+                                               request.Message.Contact?.Surname,
+                                               cancellationToken: token);
+            }
+
             if (request.Message.Attachments != null)
                 foreach (var genAttach in request.Message.Attachments.Where(a => a is BinaryAttachment))
                 {
@@ -153,37 +180,6 @@ public class TelegramBot : BaseBot<TelegramBot>
                             await _client.SendStickerAsync(request.Message.ChatId,
                                                            sticker,
                                                            cancellationToken: token);
-
-                            break;
-
-                        case MediaType.Contact:
-                            await _client.SendContactAsync(request.Message.ChatId,
-                                                           request.Message.Contact?.Phone,
-                                                           request.Message.Contact?.Name,
-                                                           request.Message.Contact?.Surname,
-                                                           cancellationToken: token);
-                            break;
-                        case MediaType.Poll:
-                            PollType type;
-
-                            switch (request.Message.Poll?.Type)
-                            {
-                                case Poll.PollType.Quiz:
-                                    type = PollType.Quiz;
-
-                                    break;
-                                case Poll.PollType.Regular:
-                                    type = PollType.Regular;
-
-                                    break;
-                                default: throw new ArgumentOutOfRangeException();
-                            }
-
-                            await _client.SendPollAsync(request.Message.ChatId,
-                                                        request.Message.Poll?.Question,
-                                                        request.Message.Poll?.Variants,
-                                                        request.Message.Poll?.IsAnonymous,
-                                                        type);
 
                             break;
                         case MediaType.Unknown:
