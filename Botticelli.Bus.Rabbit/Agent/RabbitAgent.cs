@@ -49,20 +49,20 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     /// <param name="token"></param>
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
-    public async Task SendResponse(SendMessageResponse response,
+    public async Task SendResponseAsync(SendMessageResponse response,
                                    CancellationToken token,
                                    int timeoutMs = 60000)
     {
         try
         {
-            _logger.LogDebug($"{nameof(SendResponse)}({response.Uid}) start...");
+            _logger.LogDebug($"{nameof(SendResponseAsync)}({response.Uid}) start...");
 
             var policy = Policy.Handle<RabbitMQClientException>()
                                .WaitAndRetryAsync(5, n => TimeSpan.FromSeconds(3 * Math.Exp(n)));
 
             await policy.ExecuteAsync(() => InnerSend(response));
 
-            _logger.LogDebug($"{nameof(SendResponse)}({response.Uid}) finished");
+            _logger.LogDebug($"{nameof(SendResponseAsync)}({response.Uid}) finished");
         }
         catch (Exception ex)
         {

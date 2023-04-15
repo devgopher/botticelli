@@ -1,7 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Text;
-using System.Text.Json;
-using Botticelli.Bot.Interfaces.Agent;
+﻿using Botticelli.Bot.Interfaces.Agent;
 using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Bus.ZeroMQ.Settings;
 using Botticelli.Interfaces;
@@ -11,7 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NetMQ;
 using NetMQ.Sockets;
-using Polly;
+using System.Collections.Concurrent;
+using System.Text;
+using System.Text.Json;
 
 namespace Botticelli.Bus.ZeroMQ.Agent;
 
@@ -52,17 +51,17 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     /// <param name="token"></param>
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
-    public async Task SendResponse(SendMessageResponse response,
+    public async Task SendResponseAsync(SendMessageResponse response,
                                    CancellationToken token,
                                    int timeoutMs = 60000)
     {
         try
         {
-            _logger.LogDebug($"{nameof(SendResponse)}({response.Uid}) start...");
+            _logger.LogDebug($"{nameof(SendResponseAsync)}({response.Uid}) start...");
 
             await InnerSend(response);
 
-            _logger.LogDebug($"{nameof(SendResponse)}({response.Uid}) finished");
+            _logger.LogDebug($"{nameof(SendResponseAsync)}({response.Uid}) finished");
         }
         catch (Exception ex)
         {

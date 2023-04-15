@@ -17,7 +17,7 @@ public interface IBotticelliBusAgent : IHostedService
     /// <param name="token"></param>
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
-    public Task SendResponse(SendMessageResponse response,
+    public Task SendResponseAsync(SendMessageResponse response,
                              CancellationToken token,
                              int timeoutMs = 10000);
 }

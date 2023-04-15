@@ -24,7 +24,7 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     /// <param name="token"></param>
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
-    public async Task SendResponse(SendMessageResponse response,
+    public async Task SendResponseAsync(SendMessageResponse response,
                                    CancellationToken token,
                                    int timeoutMs = 10000) =>
             NoneBus.SendMessageResponses.Enqueue(response);
