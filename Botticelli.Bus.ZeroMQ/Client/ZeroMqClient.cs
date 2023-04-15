@@ -40,7 +40,6 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
     {
         try
         {
-           
             var timeoutPolicy = Policy.TimeoutAsync<SendMessageResponse>(_timeout, TimeoutStrategy.Pessimistic);
 
 
