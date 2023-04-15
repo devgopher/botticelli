@@ -2,5 +2,6 @@
 
 public class ZeroMqBusSettings : BaseBusSettings
 {
-    public string Uri { get; set; }
+    public string TargetUri { get; set; }
+    public string ListenUri { get; set; }
 }

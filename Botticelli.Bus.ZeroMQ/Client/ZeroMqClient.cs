@@ -82,10 +82,10 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
     {
         try
         {
-            var timeoutPolicy = Policy.TimeoutAsync<SendMessageResponse>(_timeout, TimeoutStrategy.Pessimistic);
+            var timeoutPolicy = Policy.TimeoutAsync<bool>(_timeout, TimeoutStrategy.Pessimistic);
 
 
-            var sendResultPolicy = Policy.HandleResult<bool>(s => s)
+            var sendResultPolicy = Policy.HandleResult<bool>(s => s == false)
                                          .WaitAndRetryAsync(5, _ => TimeSpan.FromMilliseconds(50));
 
             var sendResult = await Policy.WrapAsync(timeoutPolicy, sendResultPolicy)
@@ -105,8 +105,8 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
 
     private void Init()
     {
-        _responseSocket = new ResponseSocket(_settings.Uri);
-        _requestSocket = new RequestSocket(_settings.Uri);
+        _responseSocket = new ResponseSocket(_settings.ListenUri);
+        _requestSocket = new RequestSocket(_settings.TargetUri);
         
         _responseSocket.ReceiveReady += (sender, args) =>
         {

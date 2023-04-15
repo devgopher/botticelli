@@ -22,20 +22,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection UseZeroMqBusClient<TBot>(this IServiceCollection services, IConfiguration config)
             where TBot : IBot =>
             services.AddSingleton<IBotticelliBusClient, ZeroMqClient<TBot>>()
-                    .AddSingleton(GetZeroMqBusSettings(config))
-                    .AddConnectionFactory(GetZeroMqBusSettings(config));
-
-    private static IServiceCollection AddConnectionFactory(this IServiceCollection services, ZeroMqBusSettings settings)
-    {
-        if (!services.Any(s => s.ServiceType.IsAssignableFrom(typeof(IConnectionFactory))))
-            services.AddSingleton<IConnectionFactory>(s => new ConnectionFactory
-            {
-                Uri = new Uri(settings.Uri),
-                VirtualHost = settings.VHost
-            });
-
-        return services;
-    }
+                    .AddSingleton(GetZeroMqBusSettings(config));
 
     private static ZeroMqBusSettings GetZeroMqBusSettings(IConfiguration config)
     {
@@ -55,6 +42,5 @@ public static class ServiceCollectionExtensions
             where TBot : IBot
             where THandler : IHandler<SendMessageRequest, SendMessageResponse> =>
             services.AddHostedService<ZeroMqAgent<TBot, THandler>>()
-                    .AddSingleton(GetZeroMqBusSettings(config))
-                    .AddConnectionFactory(GetZeroMqBusSettings(config));
+                    .AddSingleton(GetZeroMqBusSettings(config));
 }

@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Concurrent;
+using System.Text;
+using System.Text.Json;
 using Botticelli.Bot.Interfaces.Agent;
 using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Bus.ZeroMQ.Settings;
@@ -7,6 +9,8 @@ using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NetMQ;
+using NetMQ.Sockets;
 using Polly;
 
 namespace Botticelli.Bus.ZeroMQ.Agent;
@@ -16,27 +20,29 @@ namespace Botticelli.Bus.ZeroMQ.Agent;
 /// </summary>
 /// <typeparam name="TBot" />
 /// <typeparam name="THandler"></typeparam>
-public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusAgent<THandler>
+public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusAgent<THandler>, IDisposable
         where TBot : IBot
         where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
     private readonly IList<THandler> _handlers = new List<THandler>(5);
     private readonly ILogger<ZeroMqAgent<TBot, THandler>> _logger;
-    private readonly IConnectionFactory _rabbitConnectionFactory;
     private readonly ZeroMqBusSettings _settings;
+    private RequestSocket _requestSocket;
+    private ResponseSocket _responseSocket;
     private readonly IServiceProvider _sp;
-    private EventingBasicConsumer? _consumer;
     private bool _isActive;
+    private readonly ConcurrentQueue<SendMessageRequest> _requests = new();
 
-    public ZeroMqAgent(IConnectionFactory rabbitConnectionFactory,
-                       IServiceProvider sp,
+    public ZeroMqAgent(IServiceProvider sp,
                        ZeroMqBusSettings settings,
                        ILogger<ZeroMqAgent<TBot, THandler>> logger)
     {
-        _rabbitConnectionFactory = rabbitConnectionFactory;
         _sp = sp;
         _settings = settings;
         _logger = logger;
+        _requestSocket = new RequestSocket(_settings.ListenUri);
+        _responseSocket = new ResponseSocket(_settings.TargetUri);
+        Init();
     }
 
     /// <summary>
@@ -54,10 +60,7 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         {
             _logger.LogDebug($"{nameof(SendResponse)}({response.Uid}) start...");
 
-            var policy = Policy.Handle<ZeroMqMQClientException>()
-                               .WaitAndRetryAsync(5, n => TimeSpan.FromSeconds(3 * Math.Exp(n)));
-
-            await policy.ExecuteAsync(() => InnerSend(response));
+            await InnerSend(response);
 
             _logger.LogDebug($"{nameof(SendResponse)}({response.Uid}) finished");
         }
@@ -70,6 +73,9 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _isActive = true;
+
+        Task.Run(() => ProcessSubscriptions(cancellationToken), cancellationToken);
+
         await Subscribe(cancellationToken);
     }
 
@@ -85,47 +91,38 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     public async Task Subscribe(CancellationToken token)
     {
         _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) start...");
+
         var handler = _sp.GetRequiredService<THandler>();
         _handlers.Add(handler);
-
-        ProcessSubscription(token, handler);
     }
 
-    private void ProcessSubscription(CancellationToken token, THandler handler)
+    private async Task ProcessSubscriptions(CancellationToken token)
     {
-        if (_consumer == default)
+        while (token.CanBeCanceled && token.IsCancellationRequested)
         {
-            var connection = _rabbitConnectionFactory.CreateConnection();
-            var channel = connection.CreateModel();
-            var queue = GetRequestQueueName();
-            var declareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) : channel.QueueDeclarePassive(queue);
+            if (!_requests.TryDequeue(out var message))
+                continue;
 
-            _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {declareResult.QueueName}");
+            if (!_handlers.Any())
+            {
+                Thread.Sleep(5);
 
-            _consumer = new EventingBasicConsumer(channel);
+                continue;
+            }
 
-
-            channel.BasicConsume(queue,
-                                 true,
-                                 _consumer);
+            foreach (var handler in _handlers)
+                await handler?.Handle(message, token);
         }
+    }
 
-        _consumer.Received += (model, ea) =>
+    private void Init()
+    {
+        _responseSocket.ReceiveReady += async (_, args) =>
         {
-            try
-            {
-                _logger.LogDebug($"{nameof(Subscribe)}() message received");
+            var frame = await args.Socket.ReceiveFrameStringAsync(Encoding.UTF8);
+            var request = JsonSerializer.Deserialize<SendMessageRequest>(frame.Item1);
 
-                var deserialized = JsonSerializer.Deserialize<SendMessageRequest>(ea.Body.ToArray());
-                var policy = Policy.Handle<Exception>()
-                                   .WaitAndRetry(3, n => TimeSpan.FromSeconds(0.5 * Math.Exp(n)));
-
-                policy.Execute(() => handler.Handle(deserialized, token));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-            }
+            _requests.Enqueue(request);
         };
     }
 
@@ -133,18 +130,7 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     {
         try
         {
-            using var connection = _rabbitConnectionFactory.CreateConnection();
-            using var channel = connection.CreateModel();
-
-            var rk = GetResponseQueueName();
-            var queue = GetResponseQueueName();
-
-            _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?
-                    channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
-                    channel.QueueDeclarePassive(queue);
-
-            channel.QueueBind(queue, _settings.Exchange, rk);
-            channel.BasicPublish(_settings.Exchange, rk, body: JsonSerializer.SerializeToUtf8Bytes(response));
+            _requestSocket.SendFrame(JsonSerializer.SerializeToUtf8Bytes(response));
         }
         catch (Exception ex)
         {
@@ -152,5 +138,11 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 
             throw;
         }
+    }
+
+    public void Dispose()
+    {
+        _requestSocket.Dispose();
+        _responseSocket.Dispose();
     }
 }
