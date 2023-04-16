@@ -23,10 +23,9 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
     private readonly TimeSpan _timeout;
     private ResponseSocket _responseSocket;
     private RequestSocket _requestSocket;
-    private readonly int delta = 50;
+    private readonly int _delta = 50;
 
-    public ZeroMqClient(TBot bot,
-                        ZeroMqBusSettings settings,
+    public ZeroMqClient(ZeroMqBusSettings settings,
                         ILogger<ZeroMqClient<TBot>> logger)
     {
         _settings = settings;
@@ -55,12 +54,7 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
 
             var combined = Policy.WrapAsync(timeoutPolicy, resultPolicy);
 
-            var result = await combined.ExecuteAndCaptureAsync(async () =>
-            {
-                if (!_responses.ContainsKey(request.Message.Uid)) return default;
-
-                return _responses[request.Message.Uid];
-            });
+            var result = await combined.ExecuteAndCaptureAsync(async () => !_responses.ContainsKey(request.Message.Uid) ? default : _responses[request.Message.Uid]);
 
 
             if (result.FinalHandledResult != default)

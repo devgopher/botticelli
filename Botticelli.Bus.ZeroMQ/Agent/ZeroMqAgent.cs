@@ -97,7 +97,7 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 
     private async Task ProcessSubscriptions(CancellationToken token)
     {
-        while (token.CanBeCanceled && token.IsCancellationRequested)
+        while (token is {CanBeCanceled: true, IsCancellationRequested: true})
         {
             if (!_requests.TryDequeue(out var message))
                 continue;
