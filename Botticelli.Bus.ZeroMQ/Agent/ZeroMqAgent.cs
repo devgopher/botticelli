@@ -39,8 +39,7 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         _sp = sp;
         _settings = settings;
         _logger = logger;
-        _requestSocket = new RequestSocket(_settings.ListenUri);
-        _responseSocket = new ResponseSocket(_settings.TargetUri);
+
         Init();
     }
 
@@ -116,6 +115,9 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 
     private void Init()
     {
+        _requestSocket = new RequestSocket(_settings.ListenUri);
+        _responseSocket = new ResponseSocket(_settings.TargetUri);
+
         _responseSocket.ReceiveReady += async (_, args) =>
         {
             var frame = await args.Socket.ReceiveFrameStringAsync(Encoding.UTF8);

@@ -42,12 +42,13 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
             var timeoutPolicy = Policy.TimeoutAsync<SendMessageResponse>(_timeout, TimeoutStrategy.Pessimistic);
 
 
-            var sendResult = await Policy.HandleResult<bool>(s => s)
-                                         .WaitAndRetryAsync(5, _ => TimeSpan.FromMilliseconds(50))
-                                         .ExecuteAsync(async s => _requestSocket.TrySendFrame(_settings.Timeout, JsonSerializer.SerializeToUtf8Bytes(request)), token);
+            //var sendResult = await Policy.HandleResult<bool>(s => s)
+            //                             .WaitAndRetryAsync(5, _ => TimeSpan.FromMilliseconds(50))
+            //                             .ExecuteAsync(async s => _requestSocket.TrySendFrame(_settings.Timeout, JsonSerializer.SerializeToUtf8Bytes(request)), token);
 
-            if (sendResult == false) return SendMessageResponse.GetInstance("Can't send a message through ZeroMQ!");
-
+            //if (sendResult == false) return SendMessageResponse.GetInstance("Can't send a message through ZeroMQ!");
+            
+            _requestSocket.SendFrame(JsonSerializer.SerializeToUtf8Bytes(request));
 
             var resultPolicy = Policy.HandleResult<SendMessageResponse>(s => s == null)
                                      .WaitAndRetryAsync(int.MaxValue, _ => TimeSpan.FromMilliseconds(50));
@@ -75,18 +76,22 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
     {
         try
         {
-            var timeoutPolicy = Policy.TimeoutAsync<bool>(_timeout, TimeoutStrategy.Pessimistic);
+            //var timeoutPolicy = Policy.TimeoutAsync<bool>(_timeout, TimeoutStrategy.Pessimistic);
+
+            //var sendResultPolicy = Policy.HandleResult<bool>(s => s == false)
+            //                             .WaitAndRetryAsync(5, _ => TimeSpan.FromMilliseconds(50));
 
 
-            var sendResultPolicy = Policy.HandleResult<bool>(s => s == false)
-                                         .WaitAndRetryAsync(5, _ => TimeSpan.FromMilliseconds(50));
+            //var sendResult = await Policy.WrapAsync(timeoutPolicy, sendResultPolicy)
+            //                     .ExecuteAsync(async s => _requestSocket.TrySendFrame(_settings.Timeout,
+            //                                                                           JsonSerializer.SerializeToUtf8Bytes(response),
+            //                                                                           true), token);
 
-            var sendResult = await Policy.WrapAsync(timeoutPolicy, sendResultPolicy)
-                                 .ExecuteAsync(async s => _responseSocket.TrySendFrame(_settings.Timeout, JsonSerializer.SerializeToUtf8Bytes(response)), token);
 
-            if (sendResult == false) 
-                throw new ZeroMqBusException("Can't send a response through ZeroMQ!");
+            //if (sendResult == false) 
+            //    throw new ZeroMqBusException("Can't send a response through ZeroMQ!");
 
+            _requestSocket.SendFrame(JsonSerializer.SerializeToUtf8Bytes(response));
         }
         catch (Exception ex)
         {
