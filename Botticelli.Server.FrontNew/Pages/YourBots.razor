@@ -33,7 +33,7 @@ else
         <tbody>
         @foreach (var bot in _bots)
         {
-                <tr id="tr_@bot.BotId" style="background-color: @GetColor(bot)">
+            <tr id="tr_@bot.BotId" style="background-color: @GetColor(bot)">
                 <td>@bot.BotName</td>
                 <td>@bot.BotId</td>
                 <td>@bot.Type.ToString()</td>
@@ -66,12 +66,10 @@ else
 
     protected async Task SendStartStop(string? botId, BotStatus? status)
     {
-        if (status != BotStatus.Active) 
-            await Http.GetAsync("http://localhost:5050/admin/ActivateBot?botId=" + botId);
-        else
-            await Http.GetAsync("http://localhost:5050/admin/DeactivateBot?botId=" + botId);
+        if (status != BotStatus.Active) await Http.GetAsync("http://localhost:5050/admin/ActivateBot?botId=" + botId);
+        else await Http.GetAsync("http://localhost:5050/admin/DeactivateBot?botId=" + botId);
 
-         uriHelper.NavigateTo($"/your_bots", true);
+        uriHelper.NavigateTo("/your_bots", true);
     }
 
     private static string GetIsAlive(DateTime? lastKeepAlive)
