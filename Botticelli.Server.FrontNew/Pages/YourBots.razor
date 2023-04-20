@@ -1,4 +1,4 @@
-﻿@page "/fetchdata"
+﻿@page "/your_bots"
 @using Botticelli.Server.Data.Entities
 @using Botticelli.Shared.API.Admin.Responses
 @inject HttpClient Http
@@ -71,7 +71,7 @@ else
         else
             await Http.GetAsync("http://localhost:5050/admin/DeactivateBot?botId=" + botId);
 
-         uriHelper.NavigateTo($"/{nameof(FetchData)}", true);
+         uriHelper.NavigateTo($"/your_bots", true);
     }
 
     private static string GetIsAlive(DateTime? lastKeepAlive)
