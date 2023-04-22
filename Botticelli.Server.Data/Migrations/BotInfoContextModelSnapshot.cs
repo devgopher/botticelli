@@ -22,7 +22,7 @@ namespace Botticelli.Server.Data.Migrations
                     b.Property<string>("BotId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("BotName")
+                    b.Property<string>("BotKey")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastKeepAlive")

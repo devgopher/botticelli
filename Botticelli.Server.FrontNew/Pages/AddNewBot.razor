@@ -1,0 +1,39 @@
+﻿@page "/add_bot"
+@using Botticelli.Shared.API.Admin.Responses
+@using Botticelli.Shared.API.Client.Requests
+@using Botticelli.Shared.Constants
+@using System.Net
+@using System.Net.Http.Headers
+@inject HttpClient Http
+@using Botticelli.Server.Data.Entities
+@inject NavigationManager uriHelper;
+
+
+@code
+{
+    public string botKey;
+}
+
+<PageTitle>Add a new bot</PageTitle>
+<h1>New Bot</h1>
+<form method="post" @onsubmit="HandleSubmit">
+    Bot Key:
+    <input type="text" id="botNameInput" @bind="botKey" /><br/>
+    <input type="submit">
+</form>
+
+
+@code {
+    private async Task HandleSubmit()
+    {
+        Console.WriteLine("WEEW");
+        var request = new RegisterBotRequest
+            {
+                BotId = Guid.NewGuid().ToString(),
+                BotKey = botKey,
+                Type = BotType.Telegram
+            };
+
+        var response = await Http.PostAsJsonAsync("http://localhost:5050/client/AddNewBot", JsonContent.Create(request));
+    }
+}

@@ -71,7 +71,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Server.Data.Enti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bus.ZeroMQ", "Botticelli.Bus.ZeroMQ\Botticelli.Bus.ZeroMQ.csproj", "{6A1AF29F-4F7B-4DCB-A98F-CF90BD3ACD7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bus.ZeroMQTests", "Botticelli.Bus.ZeroMQTests\Botticelli.Bus.ZeroMQTests.csproj", "{68B9BE15-0F55-4258-B4EE-664233D03A3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bus.ZeroMQTests", "Botticelli.Bus.ZeroMQTests\Botticelli.Bus.ZeroMQTests.csproj", "{68B9BE15-0F55-4258-B4EE-664233D03A3D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{B7B4B68F-7086-49F2-B401-C76B4EF0B320}"
 EndProject
