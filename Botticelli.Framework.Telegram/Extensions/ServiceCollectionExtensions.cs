@@ -2,6 +2,7 @@
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Handlers;
+using Botticelli.Framework.Telegram.HostedService;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +31,7 @@ public static class ServiceCollectionExtensions
         return services.AddScoped(sp => new TelegramBot(sp.GetRequiredService<ITelegramBotClient>(), services))
                        .AddSingleton<IBot<TelegramBot>, TelegramBot>(sp => new TelegramBot(new TelegramBotClient(token), services))
                        .AddSingleton<IBot, TelegramBot>(sp => new TelegramBot(new TelegramBotClient(token), services))
-                       .AddTransient<IBotUpdateHandler, BotUpdateHandler>();
+                       .AddTransient<IBotUpdateHandler, BotUpdateHandler>()
+                       .AddHostedService<TelegramBotHostedService>();
     }
 }
