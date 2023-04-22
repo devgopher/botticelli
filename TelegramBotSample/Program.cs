@@ -1,6 +1,5 @@
 using BotDataSecureStorage.Settings;
 using Botticelli.AI.Extensions;
-using Botticelli.BotBase.Extensions;
 using Botticelli.Bus.Rabbit.Extensions;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
@@ -18,15 +17,14 @@ using TelegramBotSample.Handlers;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddTelegramBot(new BotOptionsBuilder<TelegramBotSettings>()
-                                .Set(s => s.ChatPollingIntervalMs = 20000)
-                                .Set(s => s.SecureStorageSettings = new SecureStorageSettings
-                                {
-                                    ConnectionString = "Filename=../../../database.db;Password=123;ReadOnly=true"
-                                })
-                                .Set(s => s.Name = "test_bot"));
+builder.Services.AddTelegramBot(builder.Configuration,
+                                new BotOptionsBuilder<TelegramBotSettings>()
+                                        .Set(s => s.SecureStorageSettings = new SecureStorageSettings
+                                        {
+                                            ConnectionString = "Filename=../../../database.db;Password=123;ReadOnly=true"
+                                        })
+                                        .Set(s => s.Name = "test_bot"));
 
-builder.Services.UseBotticelli<IBot<TelegramBot>>(builder.Configuration);
 builder.Services.AddLogging(cfg => cfg.AddNLog());
 builder.Services.AddOpenTtsTalks(builder.Configuration);
 builder.Services.AddGptJProvider(builder.Configuration);
