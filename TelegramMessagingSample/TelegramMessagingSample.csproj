@@ -11,7 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
+	  <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.*" />
+	  <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.3" />
+	  <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
     <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
   </ItemGroup>
 

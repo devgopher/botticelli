@@ -4,33 +4,39 @@ using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
+using TelegramMessagingSample.Settings;
 
 namespace TelegramBotSample;
 
 public class TestBotHostedService : IHostedService
 {
     private readonly IBot<TelegramBot> _telegramBot;
+    private readonly SampleSettings _settings;
 
-    public TestBotHostedService(IBot<TelegramBot> telegramBot) => _telegramBot = telegramBot;
+    public TestBotHostedService(IBot<TelegramBot> telegramBot, SampleSettings settings)
+    {
+        _telegramBot = telegramBot;
+        _settings = settings;
+    }
 
     public async Task StartAsync(CancellationToken cancellationToken) =>
-            Task.Factory.StartNew(async ()
-                                          =>
-                                  {
-                                      while (!cancellationToken.IsCancellationRequested)
-                                      {
-                                          Console.WriteLine("Start sending messages...");
-                                          await SendTestMessage();
+            await Task.Factory.StartNew(async ()
+                                                =>
+                                        {
+                                            while (!cancellationToken.IsCancellationRequested)
+                                            {
+                                                Console.WriteLine("Start sending messages...");
+                                                await SendTestMessage();
 
-                                          Thread.Sleep(30000);
-                                      }
-                                  },
-                                  cancellationToken);
+                                                Thread.Sleep(30000);
+                                            }
+                                        },
+                                        cancellationToken);
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         Console.WriteLine("Stop sending messages...");
-
+        
         return Task.CompletedTask;
     }
 
@@ -40,7 +46,7 @@ public class TestBotHostedService : IHostedService
         {
             Body = "testmsg",
             Subject = "subj",
-            ChatId = "-844372214",
+            ChatId = _settings.ChatId,
             Attachments = new List<IAttachment>
             {
                 new BinaryAttachment(Guid.NewGuid().ToString(),
