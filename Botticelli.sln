@@ -77,7 +77,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telegram", "Telegram", "{2AD59714-541D-4794-9216-6EAB25F271DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramMessagingSample", "TelegramMessagingSample\TelegramMessagingSample.csproj", "{56D0C278-B29D-401E-ADA0-BBD8D5061DD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramMessagingSample", "TelegramMessagingSample\TelegramMessagingSample.csproj", "{56D0C278-B29D-401E-ADA0-BBD8D5061DD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Scheduler", "Botticelli.Schedule\Botticelli.Scheduler.csproj", "{FD291718-B989-4660-AE04-70F7A456B7BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -201,6 +203,10 @@ Global
 		{56D0C278-B29D-401E-ADA0-BBD8D5061DD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56D0C278-B29D-401E-ADA0-BBD8D5061DD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56D0C278-B29D-401E-ADA0-BBD8D5061DD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD291718-B989-4660-AE04-70F7A456B7BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD291718-B989-4660-AE04-70F7A456B7BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD291718-B989-4660-AE04-70F7A456B7BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD291718-B989-4660-AE04-70F7A456B7BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -236,6 +242,7 @@ Global
 		{B7B4B68F-7086-49F2-B401-C76B4EF0B320} = {346A18CA-EB1F-483B-8BC3-EDF250DA72E6}
 		{2AD59714-541D-4794-9216-6EAB25F271DA} = {35480478-646E-45F1-96A3-EE7AC498ACE3}
 		{56D0C278-B29D-401E-ADA0-BBD8D5061DD0} = {2AD59714-541D-4794-9216-6EAB25F271DA}
+		{FD291718-B989-4660-AE04-70F7A456B7BB} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
