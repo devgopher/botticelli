@@ -1,7 +1,10 @@
 using BotDataSecureStorage.Settings;
 using Botticelli.Framework.Options;
+using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
+using Botticelli.Interfaces;
+using Botticelli.Scheduler.Extensions;
 using NLog.Extensions.Logging;
 using TelegramBotSample;
 using TelegramMessagingSample.Settings;
@@ -17,7 +20,8 @@ builder.Services.AddTelegramBot(builder.Configuration,
                                         {
                                             ConnectionString = sampleSettings.SecureStorageConnectionString
                                         })
-                                        .Set(s => s.Name = "test_messaging_bot"));
+                                        .Set(s => s.Name = "test_messaging_bot")
+                                        .AddJob<IBot<TelegramBot>>());
 
 builder.Services
        .AddLogging(cfg => cfg.AddNLog())

@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
     <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
   </ItemGroup>
 
