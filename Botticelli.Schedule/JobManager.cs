@@ -1,10 +1,8 @@
 ﻿using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
-using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.ValueObjects;
 using Hangfire;
-using Polly;
 
 namespace Botticelli.Scheduler
 {
@@ -25,35 +23,52 @@ namespace Botticelli.Scheduler
             if (!reliability.IsEnabled)
             {
                 RecurringJob.AddOrUpdate(jobId,
-                                         () => bot.SendMessageAsync(request,
-                                                                    CancellationToken.None),
+                                         () => bot.SendMessageAsync(request, CancellationToken.None),
                                          schedule.Cron);
                 return jobId;
             }
 
-            var sendOkPolicy = Policy<SendMessageResponse>
-                            .HandleResult(resp => resp.MessageSentStatus != MessageSentStatus.Ok)
-                            .WaitAndRetryAsync(reliability.MaxTries,
-                                               n => reliability.IsExponential ?
-                                                       TimeSpan.FromSeconds(n * Math.Exp(reliability.Delay.TotalSeconds)) :
-                                                       reliability.Delay);
-            var sendExceptionPolicy = Policy<SendMessageResponse>
-                                   .Handle<Exception>()
-                                   .WaitAndRetryAsync(reliability.MaxTries,
-                                                      n => reliability.IsExponential ?
-                                                              TimeSpan.FromSeconds(n * Math.Exp(reliability.Delay.TotalSeconds)) :
-                                                              reliability.Delay);
-
-            var sendPolicy = sendExceptionPolicy.WrapAsync(sendOkPolicy);
-
             RecurringJob.AddOrUpdate(jobId,
-                                     () => sendPolicy.ExecuteAsync(() => bot.SendMessageAsync(request,
-                                                                CancellationToken.None)),
+                                     () => SendWithReliability(bot, request, reliability, CancellationToken.None),
                                      schedule.Cron);
 
             return jobId;
         }
 
         public static void RemoveJob(string jobId) => RecurringJob.RemoveIfExists(jobId);
+
+        public static async Task SendWithReliability<TBot>(IBot<TBot> bot,
+                                                      SendMessageRequest request,
+                                                      Reliability reliability,
+                                                      CancellationToken token)
+                where TBot : IBot<TBot>
+        {
+            throw new NotImplementedException();
+            //try
+            //{
+            //    int t = 0;
+
+            //    while (reliability.IsEnabled && t < reliability.MaxTries)
+            //    {
+            //        var response = await bot.SendMessageAsync(request, token);
+
+            //        if (response.MessageSentStatus == MessageSentStatus.Ok) return;
+
+            //        if (reliability.IsExponential)
+            //        {
+            //            Thread.Sleep((int) (t * Math.Exp(reliability.Delay.TotalMilliseconds)));
+            //            continue;
+            //        }
+
+            //        Thread.Sleep((int)reliability.Delay.TotalMilliseconds);
+            //        ++t;
+            //    }
+
+            //}
+            //catch (Exception ex)
+            //{
+
+            //}
+        }
     }
 }

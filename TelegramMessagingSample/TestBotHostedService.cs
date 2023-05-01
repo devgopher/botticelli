@@ -23,7 +23,7 @@ public class TestBotHostedService : IHostedService
         JobManager.AddJob(_telegramBot,
                           new Reliability
                           {
-                              IsEnabled = true,
+                              IsEnabled = false,
                               Delay = TimeSpan.FromSeconds(3),
                               IsExponential = true,
                               MaxTries = 5
