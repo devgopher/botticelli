@@ -1,6 +1,8 @@
-﻿using Botticelli.Scheduler.Settings;
+﻿using Botticelli.Interfaces;
+using Botticelli.Scheduler.Settings;
 using Hangfire;
 using Hangfire.LiteDB;
+using Hangfire.MemoryStorage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +16,8 @@ public static class ServiceCollectionExtensions
     /// <param name="services">Service collection</param>
     /// <param name="config">Configuration</param>
     /// <returns></returns>
-    public static IServiceCollection AddHangfireScheduler(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddHangfireScheduler<TBot>(this IServiceCollection services, IConfiguration config) 
+            where TBot : class, IBot<TBot>
     {
         var settings = new SchedulerSettings();
         config.GetSection(nameof(SchedulerSettings)).Bind(settings);
@@ -23,7 +26,9 @@ public static class ServiceCollectionExtensions
                                            .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                                            .UseSimpleAssemblyNameTypeSerializer()
                                            .UseRecommendedSerializerSettings()
-                                           .UseLiteDbStorage(settings.JobStorageConnectionString))
-                       .AddHangfireServer();
+                                           .UseActivator(new ContainerJobActivator(services))
+                                           .UseMemoryStorage())
+                       .AddHangfireServer()
+                       .AddSingleton(services);
     }
 }

@@ -14,18 +14,17 @@ var builder = WebApplication.CreateBuilder(args);
 var sampleSettings = new SampleSettings();
 builder.Configuration.GetSection(nameof(SampleSettings)).Bind(sampleSettings);
 
-builder.Services.AddTelegramBot(builder.Configuration,
-                                new BotOptionsBuilder<TelegramBotSettings>()
-                                        .Set(s => s.SecureStorageSettings = new SecureStorageSettings
-                                        {
-                                            ConnectionString = sampleSettings.SecureStorageConnectionString
-                                        })
-                                        .Set(s => s.Name = "test_messaging_bot")
-                                        .AddJob<IBot<TelegramBot>>());
-
 builder.Services
+       .AddTelegramBot(builder.Configuration,
+                       new BotOptionsBuilder<TelegramBotSettings>()
+                               .Set(s => s.SecureStorageSettings = new SecureStorageSettings
+                               {
+                                   ConnectionString = sampleSettings.SecureStorageConnectionString
+                               })
+                               .Set(s => s.Name = "test_messaging_bot"))
        .AddLogging(cfg => cfg.AddNLog())
        .AddSingleton(sampleSettings)
+       .AddHangfireScheduler<TelegramBot>(builder.Configuration)
        .AddHostedService<TestBotHostedService>();
 
 var app = builder.Build();

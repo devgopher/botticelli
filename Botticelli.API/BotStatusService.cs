@@ -18,7 +18,7 @@ namespace Botticelli.BotBase;
 ///     This service is intended for sending keepalive/hello messages
 ///     to Botticelli Admin server and receiving status messages from it
 /// </summary>
-internal class BotStatusService<TBot> : IHostedService
+public class BotStatusService<TBot> : IHostedService
         where TBot : IBot
 {
     private const short MaxRetryCount = 5;

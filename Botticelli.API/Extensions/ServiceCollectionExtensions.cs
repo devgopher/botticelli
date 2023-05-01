@@ -8,19 +8,12 @@ namespace Botticelli.BotBase.Extensions;
 
 public static class ServiceCollectionExtensions
 {
+    [Obsolete]
     public static IServiceCollection UseBotticelli<TBot>(this IServiceCollection services,
-                                                         IConfiguration config)
-            where TBot : IBot
+                                                         IConfiguration config,
+                                                         TBot bot)
+            where TBot : IBot<TBot>
     {
-        services.AddBotticelliFramework();
-        services.AddHttpClient<BotStatusService<TBot>>();
-
-        var serverConfig = new ServerSettings();
-        config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
-
-        return services
-               .AddSingleton(services)
-               .AddSingleton(serverConfig)
-               .AddHostedService<BotStatusService<TBot>>();
+        return services;
     }
 }

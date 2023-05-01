@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Botticelli.BotBase;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
 using Botticelli.Framework.Telegram.Handlers;
@@ -20,18 +21,18 @@ namespace Botticelli.Framework.Telegram;
 public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly ITelegramBotClient _client;
-    private readonly IServiceProvider _sp;
+    private readonly IBotUpdateHandler _handler;
 
     /// <summary>
     ///     ctor
     /// </summary>
     /// <param name="client"></param>
     /// <param name="services"></param>
-    public TelegramBot(ITelegramBotClient client, IServiceCollection services)
+    public TelegramBot(ITelegramBotClient client, IBotUpdateHandler handler)
     {
         IsStarted = false;
         _client = client;
-        _sp = services.BuildServiceProvider();
+        _handler = handler;
     }
 
     public override BotType Type => BotType.Telegram;
@@ -239,13 +240,11 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         if (response.Status != AdminCommandStatus.Ok || IsStarted) return response;
 
-        var updateHandler = _sp.GetRequiredService<IBotUpdateHandler>();
-
         // Rethrowing an event from BotUpdateHandler
-        updateHandler.MessageReceived += (sender, e)
+        _handler.MessageReceived += (sender, e)
                 => MessageReceived?.Invoke(sender, e);
 
-        _client.StartReceiving(updateHandler, cancellationToken: token);
+        _client.StartReceiving(_handler, cancellationToken: token);
 
         IsStarted = true;
 

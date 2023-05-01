@@ -2,8 +2,8 @@
 
 public class Reliability
 {
-    public bool IsEnabled { get; }
-    public int MaxTries { get;  }
-    public bool IsExponential { get; }
-    public TimeSpan Delay { get;  }
+    public bool IsEnabled { get; set;  }
+    public int MaxTries { get; set; }
+    public bool IsExponential { get; set; }
+    public TimeSpan Delay { get; set; }
 }
