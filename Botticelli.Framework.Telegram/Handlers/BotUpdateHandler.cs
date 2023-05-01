@@ -60,7 +60,7 @@ public class BotUpdateHandler : IBotUpdateHandler
                     IsBot = botMessage.From?.IsBot,
                     NickName = botMessage.From?.Username
                 },
-                ForwardFrom = new User
+                ForwardedFrom = new User
                 {
                     Id = botMessage.ForwardFrom?.Id.ToString(),
                     Name = botMessage.ForwardFrom?.FirstName,

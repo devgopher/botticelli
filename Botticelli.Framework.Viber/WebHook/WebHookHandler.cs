@@ -147,6 +147,6 @@ public class WebHookHandler
                     IsBot = null,
                     NickName = concreteTypeMessage.Sender.Name
                 },
-                ForwardFrom = null
+                ForwardedFrom = null
             };
 }

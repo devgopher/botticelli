@@ -68,7 +68,7 @@ public class GptJProvider : GenericAiProvider
                                                 Body = outMessage?.Completion,
                                                 Attachments = null,
                                                 From = null,
-                                                ForwardFrom = null
+                                                ForwardedFrom = null
                                             }
                                         },
                                         token);
@@ -84,7 +84,7 @@ public class GptJProvider : GenericAiProvider
                                                 Body = "Error getting a response from Gpt-J!",
                                                 Attachments = null,
                                                 From = null,
-                                                ForwardFrom = null
+                                                ForwardedFrom = null
                                             }
                                         },
                                         token);

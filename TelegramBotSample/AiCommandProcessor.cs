@@ -29,7 +29,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                                       Body = args,
                                                       Attachments = null,
                                                       From = message.From,
-                                                      ForwardFrom = message.ForwardFrom
+                                                      ForwardedFrom = message.ForwardedFrom
                                                   }
                                               },
                                               token);

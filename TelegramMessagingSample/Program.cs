@@ -3,7 +3,6 @@ using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
-using Botticelli.Interfaces;
 using Botticelli.Scheduler.Extensions;
 using NLog.Extensions.Logging;
 using TelegramBotSample;
@@ -11,22 +10,21 @@ using TelegramMessagingSample.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var sampleSettings = new SampleSettings();
-builder.Configuration.GetSection(nameof(SampleSettings)).Bind(sampleSettings);
+var settings = builder.Configuration
+                            .GetSection(nameof(SampleSettings))
+                            .Get<SampleSettings>();
 
 builder.Services
+       .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
        .AddTelegramBot(builder.Configuration,
                        new BotOptionsBuilder<TelegramBotSettings>()
                                .Set(s => s.SecureStorageSettings = new SecureStorageSettings
                                {
-                                   ConnectionString = sampleSettings.SecureStorageConnectionString
+                                   ConnectionString = settings.SecureStorageConnectionString
                                })
-                               .Set(s => s.Name = "test_messaging_bot"))
+                               .Set(s => s.Name = settings.BotName))
        .AddLogging(cfg => cfg.AddNLog())
-       .AddSingleton(sampleSettings)
        .AddHangfireScheduler<TelegramBot>(builder.Configuration)
        .AddHostedService<TestBotHostedService>();
 
-var app = builder.Build();
-
-app.Run();
+builder.Build().Run();

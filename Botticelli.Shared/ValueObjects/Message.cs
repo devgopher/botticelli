@@ -5,6 +5,8 @@
 /// </summary>
 public class Message
 {
+    public Message() => Uid = Guid.NewGuid().ToString();
+
     public Message(string uid) => Uid = uid;
 
     /// <summary>
@@ -32,9 +34,15 @@ public class Message
     /// </summary>
     public ICollection<IAttachment>? Attachments { get; set; }
 
+    /// <summary>
+    /// From user
+    /// </summary>
     public User? From { get; set; }
 
-    public User? ForwardFrom { get; set; }
+    /// <summary>
+    /// Forwarded from user
+    /// </summary>
+    public User? ForwardedFrom { get; set; }
 
     /// <summary>
     ///     Contacts

@@ -19,10 +19,6 @@ public class ContainerJobActivator : JobActivator
                                              .ToLowerInvariant()
                                              .Contains(type.Name.ToLowerInvariant()));
 
-        //var realType = _services.Where(x => x.ServiceType == type 
-        //                                    || x.ServiceType.GetInterfaces());
-
         return  _services.BuildServiceProvider().GetRequiredService(realTypeDescriptor.ServiceType);
-
     }
 }
