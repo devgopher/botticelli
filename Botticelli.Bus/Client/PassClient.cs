@@ -20,7 +20,7 @@ public class PassClient : IBotticelliBusClient
                                     var period = 0;
                                     var delta = 50;
 
-                                    while (period < Timeout.Milliseconds)
+                                    while (period < Timeout.TotalMilliseconds)
                                     {
                                         if (NoneBus.SendMessageResponses.TryDequeue(out var response))
                                         {
