@@ -21,7 +21,6 @@ namespace Botticelli.BotBase;
 public class BotStatusService<TBot> : IHostedService
         where TBot : IBot
 {
-    private const short MaxRetryCount = 5;
     private const short PausePeriod = 5000;
     private readonly string? _botId;
     private readonly ManualResetEventSlim _getRequiredStatusEvent = new(false);
@@ -124,10 +123,6 @@ public class BotStatusService<TBot> : IHostedService
 
                                    return result;
                                });
-
-        //if (_getRequiredStatusEventTask.IsFaulted)
-        //    throw new BotException($"{nameof(GetRequiredStatus)} exception: {_keepAliveTask.Exception?.Message}",
-        //                           _keepAliveTask.Exception);
     }
 
     private async Task<TResp> InnerSend<TReq, TResp>(TReq request,
