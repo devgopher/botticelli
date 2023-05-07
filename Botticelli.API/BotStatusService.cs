@@ -67,35 +67,16 @@ public class BotStatusService<TBot> : IHostedService
         if (_keepAliveTask != default) return;
 
         _keepAliveEvent.Set();
-        _keepAliveTask = Task.Factory.StartNew(async () =>
-                                               {
-                                                   var request = new KeepAliveNotificationRequest
-                                                   {
-                                                       BotId = _botId
-                                                   };
+        var request = new KeepAliveNotificationRequest
+        {
+            BotId = _botId
+        };
 
-                                                   short unsuccessCounter = 0;
-
-                                                   while (!cancellationToken.IsCancellationRequested || _keepAliveEvent.IsSet)
-                                                   {
-                                                       var response =
-                                                               await InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(request,
-                                                                                                                                            "/client/KeepAlive",
-                                                                                                                                            cancellationToken);
-
-                                                       if (!response.IsSuccess)
-                                                       {
-                                                           ++unsuccessCounter;
-
-                                                           if (unsuccessCounter == MaxRetryCount)
-                                                                   // TODO: log
-                                                               break;
-                                                       }
-
-                                                       Thread.Sleep(2 * PausePeriod);
-                                                   }
-                                               },
-                                               cancellationToken);
+        _keepAliveTask = Policy.HandleResult<KeepAliveNotificationResponse>(r => true)
+                               .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(PausePeriod))
+                               .ExecuteAndCaptureAsync(() => InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(request,
+                                                                                                                                    "/client/KeepAlive",
+                                                                                                                                    cancellationToken));
 
         if (_keepAliveTask.IsFaulted)
             throw new BotException($"{nameof(KeepAlive)} exception: {_keepAliveTask.Exception?.Message}",
@@ -112,95 +93,65 @@ public class BotStatusService<TBot> : IHostedService
         if (_getRequiredStatusEventTask != default) return;
 
         _getRequiredStatusEvent.Set();
-        _getRequiredStatusEventTask = Task.Factory.StartNew(async () =>
-                                                            {
-                                                                var request = new GetRequiredStatusFromServerRequest
-                                                                {
-                                                                    BotId = _botId
-                                                                };
+        var request = new GetRequiredStatusFromServerRequest
+        {
+            BotId = _botId
+        };
 
-                                                                short unsuccessCounter = 0;
 
-                                                                while (!cancellationToken.IsCancellationRequested || _getRequiredStatusEvent.IsSet)
-                                                                {
-                                                                    try
-                                                                    {
-                                                                        var response =
-                                                                                await InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
-                                                                                                                                                                         "/client/GetRequiredBotStatus",
-                                                                                                                                                                         cancellationToken);
+        _keepAliveTask = Policy.HandleResult<GetRequiredStatusFromServerResponse>(r => true)
+                               .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(5 * PausePeriod))
+                               .ExecuteAndCaptureAsync(() =>
+                               {
+                                   var result = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
+                                                                                                                                   "/client/GetRequiredBotStatus",
+                                                                                                                                   cancellationToken);
 
-                                                                        if (!response.IsSuccess)
-                                                                        {
-                                                                            ++unsuccessCounter;
+                                   switch (result.Result.Status)
+                                   {
+                                       case BotStatus.Active:
+                                           _bot.StartBotAsync(StartBotRequest.GetInstance(), cancellationToken);
 
-                                                                            if (unsuccessCounter == MaxRetryCount)
-                                                                                    // TODO: log
-                                                                                break;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            unsuccessCounter = 0;
+                                           break;
+                                       case BotStatus.NonActive:
+                                           _bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
 
-                                                                            switch (response.Status)
-                                                                            {
-                                                                                case BotStatus.Active:
-                                                                                    await _bot.StartBotAsync(StartBotRequest.GetInstance(), cancellationToken);
+                                           break;
+                                       case BotStatus.Unknown: break;
+                                       case null:              break;
+                                       default:                throw new ArgumentOutOfRangeException();
+                                   }
 
-                                                                                    break;
-                                                                                case BotStatus.NonActive:
-                                                                                    await _bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
+                                   return result;
+                               });
 
-                                                                                    break;
-                                                                                //default: log
-                                                                                //throw new ArgumentOutOfRangeException();
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                    catch (Exception ex)
-                                                                    {
-                                                                        ++unsuccessCounter;
-
-                                                                        // throw new BotException("Error receiving bot status!", ex);
-                                                                    }
-
-                                                                    Thread.Sleep(PausePeriod);
-                                                                }
-                                                            },
-                                                            cancellationToken);
-
-        if (_getRequiredStatusEventTask.IsFaulted)
-            throw new BotException($"{nameof(GetRequiredStatus)} exception: {_keepAliveTask.Exception?.Message}",
-                                   _keepAliveTask.Exception);
+        //if (_getRequiredStatusEventTask.IsFaulted)
+        //    throw new BotException($"{nameof(GetRequiredStatus)} exception: {_keepAliveTask.Exception?.Message}",
+        //                           _keepAliveTask.Exception);
     }
 
     private async Task<TResp> InnerSend<TReq, TResp>(TReq request,
                                                      string funcName,
                                                      CancellationToken cancellationToken)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
-        httpClient.BaseAddress = new Uri(_serverSettings.ServerUri);
+        try
+        {
+            using var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_serverSettings.ServerUri);
 
+            var content = JsonContent.Create(request);
 
-        var content = JsonContent.Create(request);
+            var response = await httpClient.PostAsync(funcName, content, cancellationToken);
 
-        var policyResult = await Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
-                                       .WaitAndRetryAsync(5,
-                                                          _ => TimeSpan.FromMilliseconds(3000),
-                                                          async (result,
-                                                                 timespan,
-                                                                 retryNo,
-                                                                 context) =>
-                                                          {
-                                                              // log
-                                                              Console.WriteLine("NONE");
-                                                          })
-                                       .ExecuteAndCaptureAsync(async () => await httpClient.PostAsync(funcName, content, cancellationToken));
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        if (policyResult.Result is not {IsSuccessStatusCode: true}) throw new BotException("Error sending request to a Botticelli server!");
+            return JsonConvert.DeserializeObject<TResp>(responseJson);
+        }
+        catch (Exception ex)
+        {
+            // todo: logging
+        }
 
-        var responseJson = await policyResult.Result.Content.ReadAsStringAsync(cancellationToken);
-
-        return JsonConvert.DeserializeObject<TResp>(responseJson);
+        return default;
     }
 }
