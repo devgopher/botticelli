@@ -38,6 +38,13 @@ public abstract class BaseTtsSpeaker : ISpeaker
                                        double speed,
                                        CancellationToken token);
 
+    /// <summary>
+    /// Output compression
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     protected async Task<byte[]> Compress(byte[] input, CancellationToken token)
     {
         try

@@ -5,6 +5,9 @@ using Microsoft.Extensions.Options;
 
 namespace Botticelli.Talks.OpenTts;
 
+/// <summary>
+/// OpenTTS engine speaker
+/// </summary>
 public class OpenTtsSpeaker : BaseTtsSpeaker
 {
     public OpenTtsSpeaker(IHttpClientFactory httpClientFactory,
@@ -14,9 +17,18 @@ public class OpenTtsSpeaker : BaseTtsSpeaker
     {
     }
 
+    /// <summary>
+    ///     Speak function
+    /// </summary>
+    /// <param name="markedText"></param>
+    /// <param name="voice"></param>
+    /// <param name="lang"></param>
+    /// <param name="speed"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public override async Task<byte[]> Speak(string markedText,
-                                             string voice,
-                                             string lang,
+                                             string? voice,
+                                             string? lang,
                                              double speed,
                                              CancellationToken token)
     {
@@ -41,6 +53,14 @@ public class OpenTtsSpeaker : BaseTtsSpeaker
         return byteResult;
     }
 
+    /// <summary>
+    ///     Speak function
+    /// </summary>
+    /// <param name="markedText"></param>
+    /// <param name="voice"></param>
+    /// <param name="lang"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public override Task<byte[]> Speak(string markedText,
                                        string voice,
                                        string lang,
@@ -51,10 +71,16 @@ public class OpenTtsSpeaker : BaseTtsSpeaker
                   1.0,
                   token);
 
+    /// <summary>
+    ///     Speak function
+    /// </summary>
+    /// <param name="markedText"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public override async Task<byte[]> Speak(string markedText, CancellationToken token)
         => await Speak(markedText,
                        Settings.CurrentValue.DefaultVoice,
                        Settings.CurrentValue.Language,
-                       1.0,
+                       Settings.CurrentValue.Speed,
                        token);
 }

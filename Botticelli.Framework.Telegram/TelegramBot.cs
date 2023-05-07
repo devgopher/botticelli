@@ -25,7 +25,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     ///     ctor
     /// </summary>
     /// <param name="client"></param>
-    /// <param name="services"></param>
+    /// <param name="handler"></param>
     public TelegramBot(ITelegramBotClient client, IBotUpdateHandler handler)
     {
         IsStarted = false;
@@ -39,6 +39,13 @@ public class TelegramBot : BaseBot<TelegramBot>
     public override event MsgRemovedEventHandler MessageRemoved;
     public override event MessengerSpecificEventHandler MessengerSpecificEvent;
 
+    /// <summary>
+    ///     Deletes a message
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    /// <exception cref="BotException"></exception>
     public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token)
     {
         if (!IsStarted)
@@ -78,6 +85,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     ///     Sends a message as a telegram bot
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
@@ -166,9 +174,6 @@ public class TelegramBot : BaseBot<TelegramBot>
                                                          cancellationToken: token);
 
                             break;
-                        case MediaType.Text:
-                            // nothing to do
-                            break;
                         case MediaType.Voice:
                             var voice = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
                             await _client.SendVoiceAsync(request.Message.ChatId,
@@ -191,8 +196,11 @@ public class TelegramBot : BaseBot<TelegramBot>
 
                             break;
                         case MediaType.Unknown:
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        case MediaType.Contact:
+                        case MediaType.Poll:
+                        case MediaType.Text:
+                            // nothing to do
+                            break;
                     }
                 }
 
@@ -212,6 +220,11 @@ public class TelegramBot : BaseBot<TelegramBot>
         return response;
     }
 
+    /// <summary>
+    /// Autoescape for special symbols
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
     private static StringBuilder Escape(StringBuilder text) =>
             text.Replace("!", @"\!")
                 .Replace("*", @"\*")
