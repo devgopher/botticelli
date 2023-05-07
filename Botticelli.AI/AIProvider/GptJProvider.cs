@@ -5,6 +5,7 @@ using Botticelli.AI.Message.GptJ;
 using Botticelli.AI.Settings;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.ValueObjects;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -68,23 +69,25 @@ public class GptJProvider : GenericAiProvider
                                                 Body = outMessage?.Completion,
                                                 Attachments = null,
                                                 From = null,
-                                                ForwardedFrom = null
+                                                ForwardedFrom = null,
+                                                ReplyToMessageUid = message.ReplyToMessageUid
                                             }
                                         },
                                         token);
             }
             else
             {
-                await _bus.SendResponse(new SendMessageResponse(Guid.NewGuid().ToString())
-                                        {
-                                            Message = new Shared.ValueObjects.Message(Guid.NewGuid().ToString())
+                await _bus.SendResponse(new SendMessageResponse(message.Uid)
+                {
+                                            Message = new Shared.ValueObjects.Message(message.Uid)
                                             {
                                                 ChatId = message.ChatId,
                                                 Subject = message.Subject,
                                                 Body = "Error getting a response from Gpt-J!",
                                                 Attachments = null,
                                                 From = null,
-                                                ForwardedFrom = null
+                                                ForwardedFrom = null,
+                                                ReplyToMessageUid = message.ReplyToMessageUid
                                             }
                                         },
                                         token);
@@ -95,6 +98,19 @@ public class GptJProvider : GenericAiProvider
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
+            await _bus.SendResponse(new SendMessageResponse(message.Uid)
+                                    {
+                                        Message = new Shared.ValueObjects.Message(message.Uid)
+                                        {
+                                            ChatId = message.ChatId,
+                                            Subject = message.Subject,
+                                            Body = "Error getting a response from Gpt-J!",
+                                            Attachments = null,
+                                            From = null,
+                                            ForwardedFrom = null
+                                        }
+                                    },
+                                    token);
         }
     }
 }

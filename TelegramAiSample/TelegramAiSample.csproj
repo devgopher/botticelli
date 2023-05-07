@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>

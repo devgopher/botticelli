@@ -26,7 +26,9 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                                   {
                                                       ChatId = message.ChatId,
                                                       Subject = string.Empty,
-                                                      Body = args,
+                                                      Body = message.Body
+                                                                    .Replace("/ai", string.Empty)
+                                                                    .Trim(),
                                                       Attachments = null,
                                                       From = message.From,
                                                       ForwardedFrom = message.ForwardedFrom

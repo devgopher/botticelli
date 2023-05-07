@@ -29,9 +29,9 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
                                    int timeoutMs = 10000) =>
             NoneBus.SendMessageResponses.Enqueue(response);
 
-    public async Task StartAsync(CancellationToken token)
+    public Task StartAsync(CancellationToken token)
     {
-        await Task.Run(async () => await InnerProcess(_handler, token));
+        return Task.Run(async () => await InnerProcess(_handler, token));
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
@@ -40,7 +40,8 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     {
         while (!token.IsCancellationRequested)
         {
-            if (NoneBus.SendMessageRequests.TryDequeue(out var request)) await handler.Handle(request, token);
+            if (NoneBus.SendMessageRequests.TryDequeue(out var request)) 
+                await handler.Handle(request, token);
             Thread.Sleep(5);
         }
     }

@@ -26,7 +26,8 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
                                       {
                                           ChatId = input.Message.ChatId,
                                           Body = input.Message.Body,
-                                          Subject = input.Message.Subject
+                                          Subject = input.Message.Subject,
+                                          ReplyToMessageUid = input.Uid
                                       },
                                       token);
         }

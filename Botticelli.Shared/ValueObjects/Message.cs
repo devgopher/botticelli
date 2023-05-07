@@ -30,7 +30,7 @@ public class Message
     public string? Body { get; set; }
 
     /// <summary>
-    ///     Message attachments
+    ///     Message attachmentsя 
     /// </summary>
     public ICollection<IAttachment>? Attachments { get; set; }
 
@@ -53,4 +53,9 @@ public class Message
     ///     Poll
     /// </summary>
     public Poll? Poll { get; set; }
+
+    /// <summary>
+    /// Reply to a message with uid
+    /// </summary>
+    public string? ReplyToMessageUid { get; set; }
 }
