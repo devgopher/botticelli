@@ -98,31 +98,31 @@ public class BotStatusService<TBot> : IHostedService
         };
 
 
-        _keepAliveTask = Policy.HandleResult<GetRequiredStatusFromServerResponse>(r => true)
-                               .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(5 * PausePeriod))
-                               .ExecuteAndCaptureAsync(() =>
-                               {
-                                   var result = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
-                                                                                                                                   "/client/GetRequiredBotStatus",
-                                                                                                                                   cancellationToken);
+        _getRequiredStatusEventTask = Policy.HandleResult<GetRequiredStatusFromServerResponse>(r => true)
+                                            .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(5 * PausePeriod))
+                                            .ExecuteAndCaptureAsync(() =>
+                                            {
+                                                var result = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
+                                                                                                                                                "/client/GetRequiredBotStatus",
+                                                                                                                                                cancellationToken);
 
-                                   switch (result.Result.Status)
-                                   {
-                                       case BotStatus.Active:
-                                           _bot.StartBotAsync(StartBotRequest.GetInstance(), cancellationToken);
+                                                switch (result.Result.Status)
+                                                {
+                                                    case BotStatus.Active:
+                                                        _bot.StartBotAsync(StartBotRequest.GetInstance(), cancellationToken);
 
-                                           break;
-                                       case BotStatus.NonActive:
-                                           _bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
+                                                        break;
+                                                    case BotStatus.NonActive:
+                                                        _bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
 
-                                           break;
-                                       case BotStatus.Unknown: break;
-                                       case null:              break;
-                                       default:                throw new ArgumentOutOfRangeException();
-                                   }
+                                                        break;
+                                                    case BotStatus.Unknown: break;
+                                                    case null:              break;
+                                                    default:                throw new ArgumentOutOfRangeException();
+                                                }
 
-                                   return result;
-                               });
+                                                return result;
+                                            });
     }
 
     private async Task<TResp> InnerSend<TReq, TResp>(TReq request,
