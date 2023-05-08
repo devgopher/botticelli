@@ -5,7 +5,7 @@ using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Scheduler.Extensions;
 using NLog.Extensions.Logging;
-using TelegramBotSample;
+using TelegramMessagingSample;
 using TelegramMessagingSample.Settings;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -6,7 +6,7 @@ using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Options;
 using TelegramMessagingSample.Settings;
 
-namespace TelegramBotSample;
+namespace TelegramMessagingSample;
 
 /// <summary>
 /// This hosted service intended for sending messages according to a schedule
