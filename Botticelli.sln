@@ -71,7 +71,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telegram", "Telegram", "{2A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramMessagingSample", "TelegramMessagingSample\TelegramMessagingSample.csproj", "{56D0C278-B29D-401E-ADA0-BBD8D5061DD0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Scheduler", "Botticelli.Schedule\Botticelli.Scheduler.csproj", "{FD291718-B989-4660-AE04-70F7A456B7BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Scheduler", "Botticelli.Scheduler\Botticelli.Scheduler.csproj", "{FD291718-B989-4660-AE04-70F7A456B7BB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiSample", "TelegramAiSample\TelegramAiSample.csproj", "{7BB6D2E8-3A73-4E30-ADD4-069D105ABC37}"
 EndProject

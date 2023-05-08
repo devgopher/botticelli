@@ -21,6 +21,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
 		<ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
 		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
+		<ProjectReference Include="..\Botticelli.Scheduler\Botticelli.Scheduler.csproj" />
 		<ProjectReference Include="..\Botticelli.Schedule\Botticelli.Scheduler.csproj" />
 	</ItemGroup>
 
