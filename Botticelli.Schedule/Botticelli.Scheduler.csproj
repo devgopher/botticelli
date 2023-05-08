@@ -1,23 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Version>0.1-beta</Version>
+		<Company>Botticelli</Company>
+		<Copyright>Igor Evdokimov</Copyright>
+		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
+		<PackageIcon>logo.jpg</PackageIcon>
+		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Hangfire" Version="1.8.0" />
-    <PackageReference Include="Hangfire.LiteDB" Version="0.4.1" />
-    <PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0" />
-    <PackageReference Include="NLog" Version="5.1.4" />
-    <PackageReference Include="Polly" Version="7.2.*" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Hangfire" Version="1.8.0" />
+		<PackageReference Include="Hangfire.LiteDB" Version="0.4.1" />
+		<PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0" />
+		<PackageReference Include="NLog" Version="5.1.4" />
+		<PackageReference Include="Polly" Version="7.2.*" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
-    <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
-    <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
+		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
+		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
+	</ItemGroup>
 
 </Project>

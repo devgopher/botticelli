@@ -1,25 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Version>0.1-beta</Version>
+		<Company>Botticelli</Company>
+		<Copyright>Igor Evdokimov</Copyright>
+		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
+		<PackageIcon>logo.jpg</PackageIcon>
+		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Mapster" Version="7.4.0-pre06" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="6.0.15" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Mapster" Version="7.4.0-pre06" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="6.0.15" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
-    <ProjectReference Include="..\Botticelli.Serialization\Botticelli.Serialization.csproj" />
-    <ProjectReference Include="..\Viber.Api\Viber.Api.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
+		<ProjectReference Include="..\Botticelli.Serialization\Botticelli.Serialization.csproj" />
+		<ProjectReference Include="..\Viber.Api\Viber.Api.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Handlers\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Handlers\" />
+	</ItemGroup>
 
 </Project>
