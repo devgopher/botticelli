@@ -8,7 +8,7 @@ namespace Botticelli.Bus.None.Client;
 
 public class PassClient : IBotticelliBusClient
 {
-    private TimeSpan Timeout => TimeSpan.FromMinutes(5);
+    private static TimeSpan Timeout => TimeSpan.FromMinutes(5);
 
     public async Task<SendMessageResponse> GetResponse(SendMessageRequest request,
                                                        CancellationToken token)
