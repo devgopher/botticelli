@@ -19,11 +19,10 @@ public class GptJProvider : GenericAiProvider
     private readonly IOptionsMonitor<AiGptSettings> _gptSettings;
     private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
 
-    public GptJProvider(IOptionsMonitor<AiSettings> settings,
-                        IOptionsMonitor<AiGptSettings> gptSettings,
+    public GptJProvider(IOptionsMonitor<AiGptSettings> gptSettings,
                         IHttpClientFactory factory,
                         ILogger<GptJProvider> logger,
-                        IBotticelliBusClient bus) : base(settings,
+                        IBotticelliBusClient bus) : base(gptSettings,
                                                          factory,
                                                          logger,
                                                          bus)

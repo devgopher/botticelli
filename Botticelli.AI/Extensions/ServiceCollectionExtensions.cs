@@ -27,6 +27,9 @@ public static class ServiceCollectionExtensions
             s.Temperature = aiGptSettings.Temperature;
             s.TopK = aiGptSettings.TopK;
             s.TopP = aiGptSettings.TopP;
+            s.AiName = aiGptSettings.AiName;
+            s.ApiKey = aiGptSettings.ApiKey;
+            s.Url = aiGptSettings.Url;
         });
 
         services.AddSingleton<IAiProvider, GptJProvider>();
@@ -52,6 +55,8 @@ public static class ServiceCollectionExtensions
             s.Model = chatGptSettings.Model;
             s.Temperature = chatGptSettings.Temperature;
             s.ApiKey = chatGptSettings.ApiKey;
+            s.Url = chatGptSettings.Url;
+            s.AiName = chatGptSettings.AiName;
         });
 
         services.AddSingleton<IAiProvider, ChatGptProvider>();
