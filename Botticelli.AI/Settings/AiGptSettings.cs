@@ -1,7 +1,8 @@
 ﻿namespace Botticelli.AI.Settings;
 
-public class AiGptSettings
+public class AiGptSettings : AiSettings
 {
+    public string ApiKey { get; set; }
     public int GenerateTokensLimit { get; set; }
     public double TopP { get; set; }
     public int TopK { get; set; }

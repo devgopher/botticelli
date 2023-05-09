@@ -18,31 +18,43 @@ public static class ServiceCollectionExtensions
     /// <exception cref="AiException"></exception>
     public static IServiceCollection AddGptJProvider(this IServiceCollection services, IConfiguration config)
     {
-        var settings = new AiBotSettings();
-        config.Bind(nameof(AiBotSettings), settings);
-
-        var gptSettings = new AiGptSettings();
-        config.Bind(nameof(AiGptSettings), gptSettings);
-
-        var aiSettings = settings.Settings.FirstOrDefault(ai => ai.AiName == "gptj");
-
-        if (aiSettings == default) throw new AiException("No section for gptj!");
-
-        services.Configure<AiSettings>(s =>
-        {
-            s.Url = aiSettings.Url;
-            s.AiName = aiSettings.AiName;
-        });
+        var aiGptSettings = new AiGptSettings();
+        config.Bind(nameof(AiGptSettings), aiGptSettings);
 
         services.Configure<AiGptSettings>(s =>
         {
-            s.GenerateTokensLimit = gptSettings.GenerateTokensLimit;
-            s.Temperature = gptSettings.Temperature;
-            s.TopK = gptSettings.TopK;
-            s.TopP = gptSettings.TopP;
+            s.GenerateTokensLimit = aiGptSettings.GenerateTokensLimit;
+            s.Temperature = aiGptSettings.Temperature;
+            s.TopK = aiGptSettings.TopK;
+            s.TopP = aiGptSettings.TopP;
         });
 
         services.AddSingleton<IAiProvider, GptJProvider>();
+
+        return services;
+    }
+
+
+    /// <summary>
+    ///     Adds a provider for ChatGpt-based solution
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="config"></param>
+    /// <returns></returns>
+    /// <exception cref="AiException"></exception>
+    public static IServiceCollection AddChatGptProvider(this IServiceCollection services, IConfiguration config)
+    {
+        var chatGptSettings = new ChatGptSettings();
+        config.Bind(nameof(ChatGptSettings), chatGptSettings);
+
+        services.Configure<ChatGptSettings>(s =>
+        {
+            s.Model = chatGptSettings.Model;
+            s.Temperature = chatGptSettings.Temperature;
+            s.ApiKey = chatGptSettings.ApiKey;
+        });
+
+        services.AddSingleton<IAiProvider, ChatGptProvider>();
 
         return services;
     }

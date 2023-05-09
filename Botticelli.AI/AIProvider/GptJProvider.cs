@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using Botticelli.AI.Exceptions;
 using Botticelli.AI.Message;
 using Botticelli.AI.Message.GptJ;
@@ -41,6 +43,9 @@ public class GptJProvider : GenericAiProvider
 
             client.BaseAddress = new Uri(_settings.CurrentValue.Url);
 
+            if (!string.IsNullOrWhiteSpace(_gptSettings.CurrentValue.ApiKey))
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
+            
             var content = JsonContent.Create(new GptJInputMessage
             {
                 Text = message.Body,
