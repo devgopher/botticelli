@@ -103,11 +103,12 @@ public class BotStatusService<TBot> : IHostedService
                                             .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(5 * PausePeriod))
                                             .ExecuteAndCaptureAsync(ct =>
                                                                     {
-                                                                        var result = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
+                                                                        var task = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
                                                                                                                                                                         "/client/GetRequiredBotStatus",
                                                                                                                                                                         ct);
 
-                                                                        switch (result.Result.Status)
+                                                                        task.Wait();
+                                                                        switch (task.Result?.Status)
                                                                         {
                                                                             case BotStatus.Active:
                                                                                 _bot.StartBotAsync(StartBotRequest.GetInstance(), ct);
@@ -122,7 +123,7 @@ public class BotStatusService<TBot> : IHostedService
                                                                             default:                throw new ArgumentOutOfRangeException();
                                                                         }
 
-                                                                        return result;
+                                                                        return task;
                                                                     },
                                                                     cancellationToken);
     }

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using Botticelli.AI.Exceptions;
 using Botticelli.AI.Message;
 using Botticelli.AI.Message.ChatGpt;
@@ -60,7 +61,7 @@ public class ChatGptProvider : GenericAiProvider
 
             _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) content: {content.Value}");
 
-            var response = await client.PostAsync(Url.Combine($"{_settings.CurrentValue.Url}", "generate"),
+            var response = await client.PostAsync(Url.Combine($"{_settings.CurrentValue.Url}", "completions"),
                                                   content,
                                                   token);
 
@@ -68,15 +69,18 @@ public class ChatGptProvider : GenericAiProvider
             {
                 var outMessage = await response.Content.ReadFromJsonAsync<ChatGptOutputMessage>();
 
+                var text = new StringBuilder();
+                text.AppendJoin(' ', outMessage?
+                                        .Choices?
+                                        .Select(c => c.Message.Content));
+
                 await _bus.SendResponse(new SendMessageResponse(message.Uid)
                 {
                     Message = new Shared.ValueObjects.Message(message.Uid)
                     {
                         ChatId = message.ChatId,
                         Subject = message.Subject,
-                        Body = string.Join(' ', outMessage?.Choices != default ? outMessage?
-                                                   .Choices?
-                                                   .Select(c => c.Message.Content) : string.Empty),
+                        Body = text.ToString(),
                         Attachments = null,
                         From = null,
                         ForwardedFrom = null,
