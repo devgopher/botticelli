@@ -8,8 +8,8 @@
 		<Company>Botticelli</Company>
 		<Copyright>Igor Evdokimov</Copyright>
 		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
-		<PackageIcon>logo.jpg</PackageIcon>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

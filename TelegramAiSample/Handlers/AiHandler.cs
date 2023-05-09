@@ -4,7 +4,7 @@ using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 
-namespace TelegramAiSample.Handlers;
+namespace TelegramAiGptJSample.Handlers;
 
 public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
 {

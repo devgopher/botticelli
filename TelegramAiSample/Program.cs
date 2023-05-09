@@ -9,10 +9,10 @@ using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
 using NLog.Extensions.Logging;
-using TelegramAiSample;
-using TelegramAiSample.Commands;
-using TelegramAiSample.Handlers;
-using TelegramAiSample.Settings;
+using TelegramAiGptJSample;
+using TelegramAiGptJSample.Commands;
+using TelegramAiGptJSample.Handlers;
+using TelegramAiGptJSample.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
