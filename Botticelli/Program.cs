@@ -1,17 +1,15 @@
-using System.Text;
 using BotDataSecureStorage;
 using BotDataSecureStorage.Settings;
 using Botticelli.Server.Data;
 using Botticelli.Server.Services;
 using Botticelli.Server.Services.Auth;
-using Botticelli.Shared.ValueObjects;
-using Microsoft.AspNetCore.Identity;
-using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,8 +66,7 @@ builder.Services
        .AddSingleton(new SecureStorage(secureStorageSettings))
        .AddScoped<AuthService>()
        .AddSingleton<IMapper, Mapper>()
-       .AddDbContext<BotInfoContext>(c
-                                             => c.UseSqlite(@"Data source=botInfo.Db"));
+       .AddDbContext<BotInfoContext>(c => c.UseSqlite(@"Data source=botInfo.Db"));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>  options
                                                               .SignIn

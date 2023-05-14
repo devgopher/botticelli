@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Controllers;
 
+/// <summary>
+/// Admin controller getting/adding/removing bots
+/// </summary>
 [ApiController]
 [Authorize(AuthenticationSchemes = "Bearer")]
 public class AdminController

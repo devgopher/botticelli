@@ -41,7 +41,6 @@ public class BotManagementService : IBotManagementService
 
             if (GetBotInfo(botId) == default)
                 AddNewBotInfo(botId,
-                              botKey,
                               BotStatus.Unknown,
                               botType);
 
@@ -116,12 +115,10 @@ public class BotManagementService : IBotManagementService
     ///     Add a new bot info to a DB
     /// </summary>
     /// <param name="botId"></param>
-    /// <param name="botKey"></param>
     /// <param name="status"></param>
     /// <param name="botType"></param>
     /// <param name="lastKeepAliveUtc"></param>
     private void AddNewBotInfo(string botId,
-                               string botKey,
                                BotStatus status,
                                BotType botType,
                                DateTime? lastKeepAliveUtc = null)

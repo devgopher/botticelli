@@ -12,6 +12,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Botticelli.Server.Services.Auth;
 
+/// <summary>
+/// Authentication service
+/// </summary>
 public class AuthService
 {
     private readonly IConfiguration _config;
@@ -33,6 +36,12 @@ public class AuthService
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Register an admin user
+    /// </summary>
+    /// <param name="userRegister"></param>
+    /// <returns></returns>
+    /// <exception cref="DataException"></exception>
     public async Task RegisterAsync(UserRegisterPost userRegister)
     {
         try
@@ -73,6 +82,12 @@ public class AuthService
         }
     }
 
+    /// <summary>
+    /// Generates auth token
+    /// </summary>
+    /// <param name="login"></param>
+    /// <param name="timeInMinutes"></param>
+    /// <returns></returns>
     public string GenerateToken(UserLoginPost login, int timeInMinutes = 10 * 12 * 60)
     {
         if (!CheckAccess(login)) return "Wrong login/password!";
@@ -115,6 +130,12 @@ public class AuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+
+    /// <summary>
+    /// Checks auth token
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public bool CheckToken(string token)
     {
         var sign = _config["Authorization:Key"];
@@ -139,6 +160,11 @@ public class AuthService
         return true;
     }
 
+    /// <summary>
+    /// Checks access
+    /// </summary>
+    /// <param name="login"></param>
+    /// <returns></returns>
     public bool CheckAccess(UserLoginPost login)
     {
         var hashedPassword = HashUtils.GetHash(login.Password, _config["Authorization:Salt"]);
@@ -148,50 +174,11 @@ public class AuthService
                                                      u.NormalizedEmail == normalizedEmail && u.PasswordHash == hashedPassword);
     }
 
-    public ApplicationUserGet Get()
-    {
-        var userId = GetCurrentUserId();
-        var user = _context.ApplicationUsers
-                           .AsQueryable()
-                           .FirstOrDefault(u => u.Id == userId);
-
-        return _mapper.Map<ApplicationUserGet>(user);
-    }
-
-    public async Task Update(ApplicationUserPut model)
-    {
-        var user = _context.ApplicationUsers.FirstOrDefault(u => u.Id == GetCurrentUserId());
-
-        if (user == default) throw new AuthenticationException($"Can't find user '{model.UserName}'");
-
-        user.UserName = model.UserName;
-
-        _context.ApplicationUsers.Update(user);
-        await _context.SaveChangesAsync();
-    }
-
-    public string GetCurrentUserName()
-        => _httpContextAccessor.HttpContext
-                               .User
-                               .Claims
-                               .FirstOrDefault(c => c.Type == "applicationUserName")?.Value;
-
     public string? GetCurrentUserId()
         => _httpContextAccessor.HttpContext
                                .User
                                .Claims
                                .FirstOrDefault(c => c.Type == "applicationUserId")?.Value;
-
-    public string GetCurrentUserRoleName()
-        => _httpContextAccessor.HttpContext
-                               .User.Claims
-                               .FirstOrDefault(c => c.Type == "role")?.Value;
-
-    public bool IsAdmin()
-        => _httpContextAccessor.HttpContext
-                               .User
-                               .Claims
-                               .FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value.ToUpper() == "ADMIN";
 
     private static string GetNormalized(string input)
         => input.ToUpper();

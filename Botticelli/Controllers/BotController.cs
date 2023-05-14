@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Controllers;
 
+/// <summary>
+/// Bot status controller
+/// </summary>
 [ApiController]
-//[Authorize(AuthenticationSchemes = "Bearer")]
 [AllowAnonymous]
 public class BotController
 {
@@ -23,6 +25,11 @@ public class BotController
     
     #region Client pane
 
+    /// <summary>
+    /// Gets a required bot status (active/non-active)
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [AllowAnonymous]
     [HttpPost("client/[action]")]
     public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus([FromBody] GetRequiredStatusFromServerResponse request) =>
@@ -33,6 +40,11 @@ public class BotController
                 Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId)
             };
 
+    /// <summary>
+    /// Keep alive function
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [AllowAnonymous]
     [HttpPost("client/[action]")]
     public async Task<KeepAliveNotificationResponse> KeepAlive([FromBody] KeepAliveNotificationRequest request)
