@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
 using Botticelli.Server.Data;
@@ -32,15 +33,15 @@ public class AuthService
         _mapper = mapper;
     }
 
-    public async Task Register(UserRegisterPost userRegister)
+    public async Task RegisterAsync(UserRegisterPost userRegister)
     {
         try
         {
-            _logger.LogInformation($"{nameof(Register)}({userRegister.UserName}) started...");
+            _logger.LogInformation($"{nameof(RegisterAsync)}({userRegister.UserName}) started...");
 
             if (_context.ApplicationUsers.AsQueryable()
                         .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email)))
-                throw new DataException($"User with email {userRegister.Email} already exists!");
+                throw new DataException($"User with Email {userRegister.Email} already exists!");
 
             var user = new IdentityUser
             {
@@ -59,15 +60,16 @@ public class AuthService
                 RoleId = _context.ApplicationRoles.FirstOrDefault()?.Id ?? "-1"
             };
 
+            await _context.ApplicationUsers.AddAsync(user);
             await _context.ApplicationUserRoles.AddAsync(appRole);
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation($"{nameof(Register)}({userRegister.UserName}) finished...");
+            _logger.LogInformation($"{nameof(RegisterAsync)}({userRegister.UserName}) finished...");
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(Register)}({userRegister.UserName}) error: {ex.Message}", ex);
+            _logger.LogError($"{nameof(RegisterAsync)}({userRegister.UserName}) error: {ex.Message}", ex);
         }
     }
 
@@ -98,14 +100,14 @@ public class AuthService
         {
             new Claim("applicationUserId", user.Id),
             new Claim("applicationUserName", user.UserName),
-            new Claim("role", roleName)
+            new Claim("role", roleName ?? "no_role")
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Authorization:Key"]));
         var signCreds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(_config["Authorization:Issuer"],
-                                         _config["Authorization:Issuer"],
+                                         _config["Authorization:Audience"],
                                          claims,
                                          expires: DateTime.Now.AddMinutes(timeInMinutes),
                                          signingCredentials: signCreds);
@@ -159,6 +161,9 @@ public class AuthService
     public async Task Update(ApplicationUserPut model)
     {
         var user = _context.ApplicationUsers.FirstOrDefault(u => u.Id == GetCurrentUserId());
+
+        if (user == default) throw new AuthenticationException($"Can't find user '{model.UserName}'");
+
         user.UserName = model.UserName;
 
         _context.ApplicationUsers.Update(user);
@@ -166,16 +171,27 @@ public class AuthService
     }
 
     public string GetCurrentUserName()
-        => _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "applicationUserName")?.Value;
+        => _httpContextAccessor.HttpContext
+                               .User
+                               .Claims
+                               .FirstOrDefault(c => c.Type == "applicationUserName")?.Value;
 
     public string? GetCurrentUserId()
-        => _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "applicationUserId")?.Value;
+        => _httpContextAccessor.HttpContext
+                               .User
+                               .Claims
+                               .FirstOrDefault(c => c.Type == "applicationUserId")?.Value;
 
     public string GetCurrentUserRoleName()
-        => _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+        => _httpContextAccessor.HttpContext
+                               .User.Claims
+                               .FirstOrDefault(c => c.Type == "role")?.Value;
 
     public bool IsAdmin()
-        => _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value.ToUpper() == "ADMIN";
+        => _httpContextAccessor.HttpContext
+                               .User
+                               .Claims
+                               .FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value.ToUpper() == "ADMIN";
 
     private static string GetNormalized(string input)
         => input.ToUpper();

@@ -1,4 +1,5 @@
 ﻿using Botticelli.Shared.Constants;
+using System.Xml.Linq;
 
 namespace Botticelli.Shared.API.Client.Requests;
 
