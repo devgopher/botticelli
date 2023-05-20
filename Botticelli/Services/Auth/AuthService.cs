@@ -5,9 +5,10 @@ using System.Text;
 using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Data.Exceptions;
+using Botticelli.Server.Settings;
 using Botticelli.Shared.Utils;
-using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Botticelli.Server.Services.Auth;
@@ -21,19 +22,19 @@ public class AuthService
     private readonly BotInfoContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<AuthService> _logger;
-    private readonly IMapper _mapper;
+    private readonly IOptionsMonitor<ServerSettings> _settings;
 
     public AuthService(IConfiguration config,
                        IHttpContextAccessor httpContextAccessor,
                        BotInfoContext context,
                        ILogger<AuthService> logger,
-                       IMapper mapper)
+                       IOptionsMonitor<ServerSettings> settings)
     {
         _config = config;
         _httpContextAccessor = httpContextAccessor;
         _context = context;
         _logger = logger;
-        _mapper = mapper;
+        _settings = settings;
     }
 
     /// <summary>
@@ -86,9 +87,8 @@ public class AuthService
     /// Generates auth token
     /// </summary>
     /// <param name="login"></param>
-    /// <param name="timeInMinutes"></param>
     /// <returns></returns>
-    public string GenerateToken(UserLoginPost login, int timeInMinutes = 10 * 12 * 60)
+    public string GenerateToken(UserLoginPost login)
     {
         if (!CheckAccess(login)) return "Wrong login/password!";
 
@@ -124,7 +124,7 @@ public class AuthService
         var token = new JwtSecurityToken(_config["Authorization:Issuer"],
                                          _config["Authorization:Audience"],
                                          claims,
-                                         expires: DateTime.Now.AddMinutes(timeInMinutes),
+                                         expires: DateTime.Now.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
                                          signingCredentials: signCreds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
@@ -181,5 +181,5 @@ public class AuthService
                                .FirstOrDefault(c => c.Type == "applicationUserId")?.Value;
 
     private static string GetNormalized(string input)
-        => input.ToUpper();
+        => input?.ToUpper();
 }

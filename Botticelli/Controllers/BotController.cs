@@ -11,6 +11,7 @@ namespace Botticelli.Server.Controllers;
 /// </summary>
 [ApiController]
 [AllowAnonymous]
+[Route("bot")]
 public class BotController
 {
     private readonly IBotManagementService _botManagementService;
@@ -32,7 +33,7 @@ public class BotController
     /// <returns></returns>
     [AllowAnonymous]
     [HttpPost("client/[action]")]
-    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus([FromBody] GetRequiredStatusFromServerResponse request) =>
+    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus([FromBody] GetRequiredStatusFromServerRequest request) =>
             new()
             {
                 BotId = request.BotId,

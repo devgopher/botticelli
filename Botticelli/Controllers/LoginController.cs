@@ -10,6 +10,7 @@ namespace Botticelli.Server.Controllers;
 /// </summary>
 [ApiController]
 [AllowAnonymous]
+[Route("login")]
 public class LoginController 
 {
     private readonly AuthService _authService;

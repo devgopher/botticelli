@@ -1,0 +1,26 @@
+﻿@page "/login"
+@using Botticelli.Shared.API.Admin.Responses
+@using Botticelli.Server.FrontNew.Clients
+@inject SessionClient sessionClient;
+
+
+@code
+{
+    public string userLogin,
+                  password;
+}
+
+<PageTitle>Login</PageTitle>
+<form method="post" @onsubmit="HandleSubmit">
+    Login: <input type="text" id="login" @bind="userLogin" /><br/>
+    Password: <input type="password" id="password" @bind="password" /><br/>
+    <input type="submit">
+</form>
+
+
+@code {
+    private async Task HandleSubmit()
+    {
+        var response = await sessionClient.CreateSession(userLogin, password);
+    }
+}

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Botticelli.Server.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,8 @@ builder.Services.AddEndpointsApiExplorer()
                }
            });
        });
+
+builder.Services.Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration);
 
 builder.Services
        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -126,7 +129,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.UseCors(options => options.AllowAnyOrigin());
+app.UseCors(options => options.AllowAnyOrigin()
+                              .AllowAnyHeader()
+                              .AllowAnyMethod());
 
 
 app.Run();
