@@ -27,8 +27,7 @@ namespace Botticelli.Server.FrontNew.Clients
             };
 
             var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                                                                         "/login/GetToken"), 
-                                                             JsonContent.Create(request));
+                                                                         "/login/GetToken"), request);
             
             var token =  await response.Content.ReadAsStringAsync();
             var session = new Session

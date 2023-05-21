@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
-//builder.Configuration.AddJsonFile("appsettings.json");
 builder.Services.AddHttpClient<SessionClient>();
 builder.Services.AddScoped<SessionClient>();
 builder.Services.Configure<BackSettings>(builder.Configuration.GetSection(nameof(BackSettings)));
 builder.Services.AddScoped(_ => new HttpClient
 {
-    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
+    
 });
 
 
