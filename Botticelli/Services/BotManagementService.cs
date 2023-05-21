@@ -33,10 +33,10 @@ public class BotManagementService : IBotManagementService
     /// <returns></returns>
     public async Task<bool> RegisterBot(string botId, string botKey, BotType botType)
     {
-        _logger.LogInformation($"{nameof(RegisterBot)}({botId}, {botKey}, {botType}) started...");
-
         try
         {
+            _logger.LogInformation($"{nameof(RegisterBot)}({botId}, {botKey}, {botType}) started...");
+
             botKey ??= _secureStorage.GetBotKey(botId).Key;
 
             if (GetBotInfo(botId) == default)

@@ -16,12 +16,15 @@ public class BotController
 {
     private readonly IBotManagementService _botManagementService;
     private readonly IBotStatusDataService _botStatusDataService;
+    private readonly ILogger<BotController> _logger;
 
     public BotController(IBotManagementService botManagementService,
-                         IBotStatusDataService botStatusDataService)
+                         IBotStatusDataService botStatusDataService,
+                         ILogger<BotController> logger)
     {
         _botManagementService = botManagementService;
         _botStatusDataService = botStatusDataService;
+        _logger = logger;
     }
     
     #region Client pane
@@ -52,6 +55,7 @@ public class BotController
     {
         try
         {
+            _logger.LogTrace($"{nameof(KeepAlive)}({request.BotId})...");
             await _botManagementService.SetKeepAlive(request.BotId);
 
             return new KeepAliveNotificationResponse
@@ -62,7 +66,7 @@ public class BotController
         }
         catch (Exception ex)
         {
-            //log
+            _logger.LogError(ex,$"{nameof(KeepAlive)}({request.BotId}) error: {ex.Message}");
 
             return new KeepAliveNotificationResponse
             {
