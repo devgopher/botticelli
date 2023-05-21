@@ -67,7 +67,7 @@ builder.Services
        .AddScoped<IBotManagementService, BotManagementService>()
        .AddScoped<IBotStatusDataService, BotStatusDataService>()
        .AddSingleton(new SecureStorage(secureStorageSettings))
-       .AddScoped<AuthService>()
+       .AddScoped<AdminAuthService>()
        .AddSingleton<IMapper, Mapper>()
        .AddDbContext<BotInfoContext>(c => c.UseSqlite(@"Data source=botInfo.Db"));
 

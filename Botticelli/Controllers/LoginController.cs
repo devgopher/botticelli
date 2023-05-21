@@ -13,17 +13,17 @@ namespace Botticelli.Server.Controllers;
 [Route("login")]
 public class LoginController 
 {
-    private readonly AuthService _authService;
+    private readonly AdminAuthService _adminAuthService;
 
-    public LoginController(AuthService authService) => _authService = authService;
+    public LoginController(AdminAuthService adminAuthService) => _adminAuthService = adminAuthService;
 
     [AllowAnonymous]
     [HttpPost("[action]")]
     public IActionResult GetToken(UserLoginPost request)
-        => new OkObjectResult(_authService.GenerateToken(request));
+        => new OkObjectResult(_adminAuthService.GenerateToken(request));
 
     [AllowAnonymous]
     [HttpPost("[action]")]
     public async Task Register(UserRegisterPost request)
-        => await _authService.RegisterAsync(request);
+        => await _adminAuthService.RegisterAsync(request);
 }

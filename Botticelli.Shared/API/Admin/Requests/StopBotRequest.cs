@@ -6,5 +6,5 @@ public class StopBotRequest : BaseRequest<StopBotRequest>
     {
     }
 
-    public static StopBotRequest GetInstance() => new(Utils.Uid.GenerateShortUid());
+    public static StopBotRequest GetInstance() => new(Utils.BotIdUtils.GenerateShortBotId());
 }

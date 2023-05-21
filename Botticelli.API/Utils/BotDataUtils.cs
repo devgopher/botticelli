@@ -15,7 +15,7 @@ public static class BotDataUtils
         if (!File.Exists(GetPath()))
         {
             Directory.CreateDirectory(SubDir);
-            uid = Uid.GenerateShortUid();
+            uid = BotIdUtils.GenerateShortBotId();
             File.WriteAllText(GetPath()!, uid);
         }
         else

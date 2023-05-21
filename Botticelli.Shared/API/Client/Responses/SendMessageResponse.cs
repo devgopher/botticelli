@@ -14,7 +14,7 @@ public class SendMessageResponse : BaseResponse<SendMessageResponse>
 
     public Message Message { get; set; }
 
-    public static SendMessageResponse GetInstance(string? techMessage) => new(Utils.Uid.GenerateShortUid(), techMessage);
+    public static SendMessageResponse GetInstance(string? techMessage) => new(Utils.BotIdUtils.GenerateShortBotId(), techMessage);
 
     public static SendMessageResponse GetInstance(string uid, string? techMessage) => new(uid, techMessage);
 }

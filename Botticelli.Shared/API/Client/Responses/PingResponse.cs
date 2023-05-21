@@ -6,7 +6,7 @@ public class PingResponse : BaseResponse<PingResponse>
     {
     }
 
-    public static PingResponse GetInstance() => new(Utils.Uid.GenerateShortUid());
+    public static PingResponse GetInstance() => new(Utils.BotIdUtils.GenerateShortBotId());
 
     public static PingResponse GetInstance(string uid) => new(uid);
 }
