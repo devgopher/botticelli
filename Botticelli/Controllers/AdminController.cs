@@ -45,13 +45,16 @@ public class AdminController
     }
 
     [HttpGet("[action]")]
-    public async Task<ICollection<BotInfo>> GetBots() => _botStatusDataService.GetBots();
+    public async Task<ICollection<BotInfo>> GetBots() 
+        => _botStatusDataService.GetBots();
 
     [HttpGet("[action]")]
-    public async Task ActivateBot([FromQuery] string botId) => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Active);
+    public async Task ActivateBot([FromQuery] string botId) 
+        => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Active);
 
     [HttpGet("[action]")]
-    public async Task DeactivateBot([FromQuery] string botId) => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.NonActive);
+    public async Task DeactivateBot([FromQuery] string botId) 
+        => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.NonActive);
 
 
 }

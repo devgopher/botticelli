@@ -1,16 +1,16 @@
 using Botticelli.Server.FrontNew;
 using Botticelli.Server.FrontNew.Clients;
-using Botticelli.Server.FrontNew.Handler;
+using Botticelli.Server.FrontNew.Settings;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+//builder.Configuration.AddJsonFile("appsettings.json");
 builder.Services.AddHttpClient<SessionClient>();
-       //.AddHttpMessageHandler<AuthDelegatingHandler>();
 builder.Services.AddScoped<SessionClient>();
+builder.Services.Configure<BackSettings>(builder.Configuration.GetSection(nameof(BackSettings)));
 builder.Services.AddScoped(_ => new HttpClient
 {
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)

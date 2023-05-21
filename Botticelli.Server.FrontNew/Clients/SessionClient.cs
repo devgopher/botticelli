@@ -1,14 +1,22 @@
 ﻿using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.FrontNew.Models;
 using System.Net.Http.Json;
+using Botticelli.Server.FrontNew.Settings;
+using Flurl;
+using Microsoft.Extensions.Options;
 
 namespace Botticelli.Server.FrontNew.Clients
 {
     public class SessionClient
     {
-        private readonly List<Session> _sessions = new(100);
+        private readonly IList<Session> _sessions = new List<Session>(100);
+        private readonly IOptionsMonitor<BackSettings> _backSettings;
         private readonly HttpClient _httpClient;
-        public SessionClient(HttpClient httpClient) => _httpClient = httpClient;
+        public SessionClient(HttpClient httpClient, IOptionsMonitor<BackSettings> backSettings)
+        {
+            _httpClient = httpClient;
+            _backSettings = backSettings;
+        }
 
         public async Task<Session> CreateSession(string login, string password)
         {
@@ -18,7 +26,8 @@ namespace Botticelli.Server.FrontNew.Clients
                 Password = password
             };
 
-            var response = await _httpClient.PostAsJsonAsync("http://localhost:5050/login/GetToken", 
+            var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
+                                                                         "/login/GetToken"), 
                                                              JsonContent.Create(request));
             
             var token =  await response.Content.ReadAsStringAsync();

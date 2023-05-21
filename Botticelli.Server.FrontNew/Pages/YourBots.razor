@@ -1,8 +1,13 @@
 ﻿@page "/your_bots"
 @using Botticelli.Server.Data.Entities
+@using Botticelli.Server.FrontNew.Settings
 @using Botticelli.Shared.API.Admin.Responses
+@using Flurl
+@using Microsoft.Extensions.Options
 @inject HttpClient Http
 @inject NavigationManager uriHelper;
+@inject IOptionsMonitor<BackSettings> backSettings;
+
 
 <PageTitle>Your bots</PageTitle>
 
@@ -57,13 +62,15 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _bots = await Http.GetFromJsonAsync<BotInfo?[]>("http://localhost:5050/admin/GetBots");
+        _bots = await Http.GetFromJsonAsync<BotInfo?[]>(Url.Combine(backSettings.CurrentValue.BackUrl, "/admin/GetBots"));
     }
 
     protected async Task SendStartStop(string? botId, BotStatus? status)
     {
-        if (status != BotStatus.Active) await Http.GetAsync("http://localhost:5050/admin/ActivateBot?botId=" + botId);
-        else await Http.GetAsync("http://localhost:5050/admin/DeactivateBot?botId=" + botId);
+        if (status != BotStatus.Active)
+            await Http.GetAsync(Url.Combine(backSettings.CurrentValue.BackUrl, "/admin/ActivateBot?botId=", botId));
+        else 
+            await Http.GetAsync(Url.Combine(backSettings.CurrentValue.BackUrl, "/admin/DeactivateBot?botId=", botId));
 
         uriHelper.NavigateTo("/your_bots", true);
     }

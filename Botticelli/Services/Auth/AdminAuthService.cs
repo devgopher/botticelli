@@ -50,7 +50,7 @@ public class AdminAuthService
 
             if (_context.ApplicationUsers.AsQueryable()
                         .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email)))
-                throw new DataException($"User with Email {userRegister.Email} already exists!");
+                throw new DataException($"User with email {userRegister.Email} already exists!");
 
             var user = new IdentityUser
             {

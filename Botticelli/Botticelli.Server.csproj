@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\logo.jpg">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -36,6 +40,10 @@
     <ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
     <ProjectReference Include="..\Botticelli.Server.Data.Entities\Botticelli.Server.Data.Entities.csproj" />
     <ProjectReference Include="..\Botticelli.Server.Data\Botticelli.Server.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="appsettings.json" />
   </ItemGroup>
 
 </Project>

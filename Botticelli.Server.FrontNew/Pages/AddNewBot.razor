@@ -6,7 +6,11 @@
 @using System.Net.Http.Headers
 @inject HttpClient Http
 @using Botticelli.Server.Data.Entities
+@using Botticelli.Server.FrontNew.Settings
+@using Flurl
+@using Microsoft.Extensions.Options
 @inject NavigationManager uriHelper;
+@inject IOptionsMonitor<BackSettings> backSettings;
 
 
 @code
@@ -33,6 +37,7 @@
                 Type = BotType.Telegram
             };
 
-        var response = await Http.PostAsJsonAsync("http://localhost:5050/client/AddNewBot", JsonContent.Create(request));
+        var response = await Http.PostAsJsonAsync( Url.Combine(backSettings.CurrentValue.BackUrl, "/client/AddNewBot"),
+                                                   JsonContent.Create(request));
     }
 }
