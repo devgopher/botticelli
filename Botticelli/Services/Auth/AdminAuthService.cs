@@ -1,8 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Authentication;
-using System.Security.Claims;
-using System.Text;
-using Botticelli.Server.Data;
+﻿using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Data.Exceptions;
 using Botticelli.Server.Settings;
@@ -10,24 +6,27 @@ using Botticelli.Shared.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Botticelli.Server.Services.Auth;
 
 /// <summary>
 /// Authentication service
 /// </summary>
-public class AuthService
+public class AdminAuthService
 {
     private readonly IConfiguration _config;
     private readonly BotInfoContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogger<AuthService> _logger;
+    private readonly ILogger<AdminAuthService> _logger;
     private readonly IOptionsMonitor<ServerSettings> _settings;
 
-    public AuthService(IConfiguration config,
+    public AdminAuthService(IConfiguration config,
                        IHttpContextAccessor httpContextAccessor,
                        BotInfoContext context,
-                       ILogger<AuthService> logger,
+                       ILogger<AdminAuthService> logger,
                        IOptionsMonitor<ServerSettings> settings)
     {
         _config = config;
@@ -63,7 +62,7 @@ public class AuthService
                 PasswordHash = HashUtils.GetHash(userRegister.Password, _config["Authorization:Salt"])
             };
 
-            // Temporary - because now we assume, that we've only a single role - "farm director"! 
+            // Temporary - because now we assume, that we've only a single role - "admin"! 
             var appRole = new IdentityUserRole<string>
             {
                 UserId = user.Id,
@@ -90,44 +89,60 @@ public class AuthService
     /// <returns></returns>
     public string GenerateToken(UserLoginPost login)
     {
-        if (!CheckAccess(login)) return "Wrong login/password!";
-
-        var user = _context.ApplicationUsers
-                           .AsQueryable()
-                           .FirstOrDefault(u => u.NormalizedEmail == GetNormalized(login.Email));
-
-        var userRole = _context.ApplicationUserRoles
-                               .AsQueryable()
-                               .FirstOrDefault(ur => ur.UserId == user.Id);
-
-        var roleName = string.Empty;
-
-        if (userRole != null)
+        try
         {
-            var role = _context.ApplicationRoles
-                               .AsQueryable()
-                               .FirstOrDefault(r => r.Id == userRole.RoleId);
+            _logger.LogInformation($"{nameof(GenerateToken)}({login.Email}) started...");
 
-            roleName = role?.Name;
+            if (!CheckAccess(login))
+            {
+                _logger.LogInformation($"{nameof(GenerateToken)}({login.Email}) access denied...");
+
+                return "Wrong login/password!";
+            }
+
+            var user = _context.ApplicationUsers
+                               .AsQueryable()
+                               .FirstOrDefault(u => u.NormalizedEmail == GetNormalized(login.Email));
+
+            var userRole = _context.ApplicationUserRoles
+                                   .AsQueryable()
+                                   .FirstOrDefault(ur => ur.UserId == user.Id);
+
+            var roleName = string.Empty;
+
+            if (userRole != null)
+            {
+                var role = _context.ApplicationRoles
+                                   .AsQueryable()
+                                   .FirstOrDefault(r => r.Id == userRole.RoleId);
+
+                roleName = role?.Name;
+            }
+
+            var claims = new[]
+            {
+                new Claim("applicationUserId", user.Id),
+                new Claim("applicationUserName", user.UserName),
+                new Claim("role", roleName ?? "no_role")
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Authorization:Key"]));
+            var signCreds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(_config["Authorization:Issuer"],
+                                             _config["Authorization:Audience"],
+                                             claims,
+                                             expires: DateTime.Now.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
+                                             signingCredentials: signCreds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"{nameof(GenerateToken)}({login.Email}) error {ex.Message}!");
         }
 
-        var claims = new[]
-        {
-            new Claim("applicationUserId", user.Id),
-            new Claim("applicationUserName", user.UserName),
-            new Claim("role", roleName ?? "no_role")
-        };
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Authorization:Key"]));
-        var signCreds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(_config["Authorization:Issuer"],
-                                         _config["Authorization:Audience"],
-                                         claims,
-                                         expires: DateTime.Now.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
-                                         signingCredentials: signCreds);
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return default;
     }
 
 
@@ -138,10 +153,11 @@ public class AuthService
     /// <returns></returns>
     public bool CheckToken(string token)
     {
-        var sign = _config["Authorization:Key"];
-
         try
         {
+            _logger.LogInformation($"{nameof(CheckToken)}() started...");
+
+            var sign = _config["Authorization:Key"];
             var handler = new JwtSecurityTokenHandler();
             handler.ValidateToken(token,
                                   new TokenValidationParameters
@@ -150,14 +166,17 @@ public class AuthService
                                       ValidIssuer = _config["Authorization:Issuer"],
                                       ValidateAudience = false
                                   },
-                                  out _);
+                                  out var validatedToken);
+
+
+            _logger.LogInformation($"{nameof(CheckToken)}() validate token: {validatedToken != default}");
+            return validatedToken != default;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
+            _logger.LogError($"{nameof(CheckToken)}() error: {ex.Message}");
             return false;
         }
-
-        return true;
     }
 
     /// <summary>
@@ -170,8 +189,8 @@ public class AuthService
         var hashedPassword = HashUtils.GetHash(login.Password, _config["Authorization:Salt"]);
         var normalizedEmail = GetNormalized(login.Email);
 
-        return _context.ApplicationUsers.Any(u =>
-                                                     u.NormalizedEmail == normalizedEmail && u.PasswordHash == hashedPassword);
+        return _context.ApplicationUsers.Any(u => u.NormalizedEmail == normalizedEmail &&
+                                                  u.PasswordHash == hashedPassword);
     }
 
     public string? GetCurrentUserId()

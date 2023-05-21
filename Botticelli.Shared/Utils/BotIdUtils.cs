@@ -2,7 +2,7 @@
 
 namespace Botticelli.Shared.Utils;
 
-public static class Uid
+public static class BotIdUtils
 {
     private static Random _rand = new(DateTime.Now.Nanosecond);
 
@@ -29,7 +29,7 @@ public static class Uid
         return longest;
     }
 
-    public static string GenerateShortUid()
+    public static string GenerateShortBotId()
         => Regex.Replace(Convert.ToBase64String(BitWiseSum(Guid.NewGuid().ToByteArray(), 
                                                            GenerateSalt(32))),
                          "[/+=]", 

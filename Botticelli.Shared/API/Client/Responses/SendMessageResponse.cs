@@ -1,4 +1,5 @@
-﻿using Botticelli.Shared.ValueObjects;
+﻿using Botticelli.Shared.Utils;
+using Botticelli.Shared.ValueObjects;
 
 namespace Botticelli.Shared.API.Client.Responses;
 
@@ -14,7 +15,7 @@ public class SendMessageResponse : BaseResponse<SendMessageResponse>
 
     public Message Message { get; set; }
 
-    public static SendMessageResponse GetInstance(string? techMessage) => new(Utils.BotIdUtils.GenerateShortBotId(), techMessage);
+    public static SendMessageResponse GetInstance(string? techMessage) => new(BotIdUtils.GenerateShortBotId(), techMessage);
 
     public static SendMessageResponse GetInstance(string uid, string? techMessage) => new(uid, techMessage);
 }
