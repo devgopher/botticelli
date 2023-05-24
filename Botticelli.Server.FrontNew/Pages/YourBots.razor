@@ -1,12 +1,14 @@
 ﻿@page "/your_bots"
 @using Botticelli.Server.Data.Entities
+@using Botticelli.Server.FrontNew.Clients
+@using Botticelli.Server.FrontNew.Handler
 @using Botticelli.Server.FrontNew.Settings
 @using Botticelli.Shared.API.Admin.Responses
 @using Flurl
 @using Microsoft.Extensions.Options
-@inject HttpClient Http
 @inject NavigationManager uriHelper;
 @inject IOptionsMonitor<BackSettings> backSettings;
+@inject SessionClient _client;
 
 
 <PageTitle>Your bots</PageTitle>
@@ -57,11 +59,14 @@ else
 @code {
 
     private BotInfo[]? _bots;
+    HttpClient Http;
 
     protected override bool ShouldRender() => true;
 
     protected override async Task OnInitializedAsync()
     {
+        Http = HttpClientFactory.Create(new AuthDelegatingHandler(_client));
+
         _bots = await Http.GetFromJsonAsync<BotInfo?[]>(Url.Combine(backSettings.CurrentValue.BackUrl, "/admin/GetBots"));
     }
 
