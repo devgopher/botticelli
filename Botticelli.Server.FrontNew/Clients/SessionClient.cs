@@ -3,7 +3,6 @@ using Botticelli.Server.FrontNew.Models;
 using Botticelli.Server.FrontNew.Settings;
 using Flurl;
 using Microsoft.Extensions.Options;
-using System.Net.Http.Json;
 
 namespace Botticelli.Server.FrontNew.Clients
 {
@@ -20,7 +19,6 @@ namespace Botticelli.Server.FrontNew.Clients
 
         public async Task<Session> CreateSession(string login, string password)
         {
-            Console.WriteLine($"SS: {login} {password}" );
             var request = new UserLoginPost
             {
                 Email = login,

@@ -11,4 +11,4 @@ popd
 
 pushd botticelli/deploy/linux/server
 docker build -f Dockerfile .
-docker push
+docker push hub.docker.com botticelli_server:0.1

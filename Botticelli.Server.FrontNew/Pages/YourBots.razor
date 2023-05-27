@@ -6,8 +6,11 @@
 @using Botticelli.Shared.API.Admin.Responses
 @using Flurl
 @using Microsoft.Extensions.Options
+@using System.Net
+@using System.Net.Http.Headers
 @inject NavigationManager uriHelper;
 @inject IOptionsMonitor<BackSettings> backSettings;
+@inject SessionClient _sessionClient;
 @inject SessionClient _client;
 
 
@@ -65,17 +68,19 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        Http = HttpClientFactory.Create(new AuthDelegatingHandler(_client));
-
-        _bots = await Http.GetFromJsonAsync<BotInfo?[]>(Url.Combine(backSettings.CurrentValue.BackUrl, "/admin/GetBots"));
+        var session = _sessionClient.GetSession();
+        Http = HttpClientFactory.Create();
+        Http.BaseAddress = new Uri(backSettings.CurrentValue.BackUrl);
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  session?.Token);
+        _bots = await Http.GetFromJsonAsync<BotInfo?[]>("/admin/GetBots");
     }
 
     protected async Task SendStartStop(string? botId, BotStatus? status)
     {
         if (status != BotStatus.Active)
-            await Http.GetAsync(Url.Combine(backSettings.CurrentValue.BackUrl, "/admin/ActivateBot?botId=", botId));
+            await Http.GetAsync(Url.Combine("/admin/ActivateBot?botId=", botId));
         else 
-            await Http.GetAsync(Url.Combine(backSettings.CurrentValue.BackUrl, "/admin/DeactivateBot?botId=", botId));
+            await Http.GetAsync(Url.Combine("/admin/DeactivateBot?botId=", botId));
 
         uriHelper.NavigateTo("/your_bots", true);
     }
@@ -88,6 +93,5 @@ else
             BotStatus.Active    => GetIsAlive(bot.LastKeepAlive) == "Yes" ? "green" : "gainsboro",
             BotStatus.NonActive => GetIsAlive(bot.LastKeepAlive) == "No" ? "red" : "gainsboro",
             _                   => "gray"
-            };
-
+    };
 }

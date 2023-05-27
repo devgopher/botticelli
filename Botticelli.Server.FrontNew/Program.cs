@@ -12,7 +12,11 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<SessionClient>();
 builder.Services.Configure<BackSettings>(builder.Configuration.GetSection(nameof(BackSettings)));
 builder.Services.AddScoped<AuthDelegatingHandler>();
-builder.Services.AddHttpClient<YourBots>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+builder.Services.AddHttpClient<YourBots>(c =>
+       {
+           c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+           c.DefaultRequestHeaders.Clear();
+       })
        .AddHttpMessageHandler<AuthDelegatingHandler>();
 
 var app = builder.Build();
