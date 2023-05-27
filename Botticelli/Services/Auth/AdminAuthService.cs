@@ -132,7 +132,7 @@ public class AdminAuthService
             var token = new JwtSecurityToken(_config["Authorization:Issuer"],
                                              _config["Authorization:Audience"],
                                              claims,
-                                             expires: DateTime.Now.AddHours(24),
+                                             expires: DateTime.Now.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
                                              signingCredentials: signCreds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

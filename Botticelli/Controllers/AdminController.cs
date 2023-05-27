@@ -1,11 +1,9 @@
 ﻿using Botticelli.Server.Data.Entities;
 using Botticelli.Server.Services;
-using Botticelli.Server.Services.Auth;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Controllers;
@@ -54,8 +52,6 @@ public class AdminController
         => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Active);
 
     [HttpGet("[action]")]
-    public async Task DeactivateBot([FromQuery] string botId) 
+    public async Task DeactivateBot([FromQuery] string botId)
         => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.NonActive);
-
-
 }

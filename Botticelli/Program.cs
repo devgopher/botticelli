@@ -109,9 +109,8 @@ builder.Services.Configure<IdentityOptions>(options =>
         options.AccessDeniedPath = "/Identity/Account/AccessDenied";
         options.SlidingExpiration = true;
     });
-}
-
 #endif
+
 
 builder.Services.AddControllers();
 

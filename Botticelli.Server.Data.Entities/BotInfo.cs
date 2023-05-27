@@ -10,7 +10,6 @@ public class BotInfo
 {
     [Key]
     public string? BotId { get; set; }
-
     public string? BotName { get; set; }
     public DateTime? LastKeepAlive { get; set; }
     public BotStatus? Status { get; set; }
