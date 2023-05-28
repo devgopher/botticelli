@@ -17,11 +17,18 @@ public class CommandProcessorFactory
     {
         if (string.IsNullOrEmpty(command)) throw new ArgumentNullException(nameof(command), "Can't be null or empty!");
 
-        var canonized = command.Length == 1 ? command.ToUpperInvariant() : $"{command[..1].ToUpperInvariant()}{command[1..].ToLowerInvariant()}";
+        var canonized = command.Length == 1 ?
+                command.ToUpperInvariant() :
+                $"{command[..1].ToUpperInvariant()}{command[1..].ToLowerInvariant()}";
 
-        if (_types.Keys.All(t => t.Name.Replace("Command", string.Empty) != canonized)) return _serviceProvider.GetRequiredService<CommandProcessor<Unknown>>();
+        if (_types.Keys.All(t => t.Name.Replace("Command", string.Empty) != canonized)) 
+            return _serviceProvider.GetRequiredService<CommandProcessor<Unknown>>();
 
-        var type = _types.First(k => k.Key.Name.Replace("Command", string.Empty) == canonized).Value;
+        var type = _types.First(k => k.Key
+                                      .Name
+                                      .Replace("Command", string.Empty) ==
+                                     canonized)
+                         .Value;
 
         return _serviceProvider.GetRequiredService(type) as ICommandProcessor;
     }

@@ -9,6 +9,7 @@ using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Polly;
 
@@ -28,17 +29,20 @@ public class BotStatusService<TBot> : IHostedService
     private readonly ManualResetEventSlim _keepAliveEvent = new(false);
     private readonly ServerSettings _serverSettings;
     private readonly BotType _type;
+    private readonly ILogger<BotStatusService<TBot>> _logger;
     private TBot _bot;
     private Task _getRequiredStatusEventTask;
     private Task _keepAliveTask;
 
     public BotStatusService(IHttpClientFactory httpClientFactory,
                             ServerSettings serverSettings,
-                            TBot bot)
+                            TBot bot,
+                            ILogger<BotStatusService<TBot>> logger)
     {
         _httpClientFactory = httpClientFactory;
         _serverSettings = serverSettings;
         _bot = bot;
+        _logger = logger;
         _keepAliveEvent.Reset();
         _getRequiredStatusEvent.Reset();
         _botId = BotDataUtils.GetBotId();
@@ -78,15 +82,22 @@ public class BotStatusService<TBot> : IHostedService
                                                                                                                                     ct),
                                                        cancellationToken);
 
-        if (_keepAliveTask.IsFaulted)
-            throw new BotException($"{nameof(KeepAlive)} exception: {_keepAliveTask.Exception?.Message}",
-                                   _keepAliveTask.Exception);
+        if (!_keepAliveTask.IsFaulted)
+        {
+            _logger.LogTrace($"{nameof(KeepAlive)} sent for bot: {_botId}");
+            return;
+        }
+
+        _logger.LogError($"KeepAlive error: {_keepAliveTask.Exception?.Message}");
+        throw new BotException($"{nameof(KeepAlive)} exception: {_keepAliveTask.Exception?.Message}",
+                               _keepAliveTask.Exception);
     }
 
     /// <summary>
     ///     Get required status for a bot from server
     /// </summary>
     /// <param name="cancellationToken"></param>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     /// <exception cref="BotException"></exception>
     private void GetRequiredStatus(CancellationToken cancellationToken)
     {
@@ -107,7 +118,7 @@ public class BotStatusService<TBot> : IHostedService
                                                                                                                                                                         "/bot/client/GetRequiredBotStatus",
                                                                                                                                                                         ct);
 
-                                                                        task.Wait();
+                                                                        task.Wait(cancellationToken);
                                                                         switch (task.Result?.Status)
                                                                         {
                                                                             case BotStatus.Active:
@@ -128,6 +139,15 @@ public class BotStatusService<TBot> : IHostedService
                                                                     cancellationToken);
     }
 
+    /// <summary>
+    /// Inner send
+    /// </summary>
+    /// <typeparam name="TReq">Request</typeparam>
+    /// <typeparam name="TResp">Response</typeparam>
+    /// <param name="request">Request</param>
+    /// <param name="funcName">Response</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns></returns>
     private async Task<TResp> InnerSend<TReq, TResp>(TReq request,
                                                      string funcName,
                                                      CancellationToken cancellationToken)
@@ -147,7 +167,7 @@ public class BotStatusService<TBot> : IHostedService
         }
         catch (Exception ex)
         {
-            // todo: logging
+            _logger.LogError(ex, ex.Message);
         }
 
         return default;

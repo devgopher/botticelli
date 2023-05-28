@@ -1,0 +1,16 @@
+Botticelli framework
+Build your bots easily!
+
+
+Botticelli is an open-source .NET Core framework for building your own universal bots integrated with databases, queue brokers, speech engines and AI engines (such as Gpt-j and ChatGPT).
+
+There's several reasons for choosing Botticelli:
+- cross-platform
+- reliable
+- easy to use 
+- easy to deploy(docker support)
+- easy to integrate with databases
+- easy to integrate with AI solutions (Botticelli.AI)
+- easy to integrate with speech synthesizers (Botticelli.Talks)
+- easy to integrate with queue brokers for highload systems (Botticelli.Bus)
+- easy to schedule (Botticelli.Scheduler)

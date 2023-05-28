@@ -1,0 +1,36 @@
+Overview
+Quick Start
+Annotation (тут будут краткие аннотации для каждого компонента)
+Documentation
+- General introduction
+- Botticelli.Framework
+-- Creating a simple bot
+-- Registering a new bot
+-- Dependency injection (DI)
+-- Commands
+-- Command processors
+-- Handlers
+-- Events
+-- Message processors
+
+- Telegram bots
+-- Botticelli.Telegram
+-- Bot example
+
+- Botticelli.Talks
+-- Introduction
+-- OpenTts integration
+
+
+- Botticelli.AI
+-- Introduction
+-- ChatGPT integration
+-- GPT-j integration
+
+- Botticelli.Bus
+-- Introduction
+-- Rabbit integration
+
+- Botticelli.Scheduler
+-- Introduction
+-- Creating a scheduled action
