@@ -74,7 +74,7 @@ public class BotStatusService<TBot> : IHostedService
         _keepAliveTask = Policy.HandleResult<KeepAliveNotificationResponse>(r => true)
                                .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(PausePeriod))
                                .ExecuteAndCaptureAsync(ct => InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(request,
-                                                                                                                                    "/client/KeepAlive",
+                                                                                                                                    "/bot/client/KeepAlive",
                                                                                                                                     ct),
                                                        cancellationToken);
 
@@ -104,7 +104,7 @@ public class BotStatusService<TBot> : IHostedService
                                             .ExecuteAndCaptureAsync(ct =>
                                                                     {
                                                                         var task = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
-                                                                                                                                                                        "/client/GetRequiredBotStatus",
+                                                                                                                                                                        "/bot/client/GetRequiredBotStatus",
                                                                                                                                                                         ct);
 
                                                                         task.Wait();

@@ -88,7 +88,7 @@ public class ViberBot : BaseBot<ViberBot> //, IDisposable
         return response;
     }
 
-    public override event MsgSentEventHandler MessageSent;
+    public virtual event MsgSentEventHandler MessageSent;
     public override event MsgReceivedEventHandler MessageReceived
     {
         add => _notificator.MessageReceived += value.Invoke;

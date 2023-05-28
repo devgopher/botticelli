@@ -32,7 +32,6 @@ public abstract class BaseBot<T> : IBot<T>
 
     public event StartedEventHandler Started;
     public event StoppedEventHandler Stopped;
-    public abstract event MsgSentEventHandler MessageSent;
     public abstract event MsgReceivedEventHandler MessageReceived;
     public abstract event MsgRemovedEventHandler MessageRemoved;
     public abstract event MessengerSpecificEventHandler MessengerSpecificEvent;

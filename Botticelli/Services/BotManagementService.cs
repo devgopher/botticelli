@@ -88,19 +88,28 @@ public class BotManagementService : IBotManagementService
     /// <returns></returns>
     public async Task SetKeepAlive(string botId)
     {
-        _logger.LogInformation($"{nameof(SetKeepAlive)} started");
-
-        var botInfo = GetBotInfo(botId);
-
-        var keepAlive = DateTime.UtcNow;
-
-        if (botInfo != default)
+        try
         {
-            botInfo.LastKeepAlive = keepAlive;
-            _context.BotInfos.Update(botInfo);
-        }
+            _logger.LogInformation($"{nameof(SetKeepAlive)} started");
 
-        await _context.SaveChangesAsync();
+            var botInfo = GetBotInfo(botId);
+
+            var keepAlive = DateTime.UtcNow;
+
+            if (botInfo != default)
+            {
+                botInfo.LastKeepAlive = keepAlive;
+                _context.BotInfos.Update(botInfo);
+            }
+
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"{nameof(SetKeepAlive)} finished");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+        }
     }
 
     /// <summary>

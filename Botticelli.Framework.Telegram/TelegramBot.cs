@@ -34,7 +34,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     public override BotType Type => BotType.Telegram;
-    public override event MsgSentEventHandler MessageSent;
+    public virtual event MsgSentEventHandler MessageSent;
     public override event MsgReceivedEventHandler MessageReceived;
     public override event MsgRemovedEventHandler MessageRemoved;
     public override event MessengerSpecificEventHandler MessengerSpecificEvent;
