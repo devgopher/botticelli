@@ -4,9 +4,9 @@ using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
-using TelegramAiGptJSample.Commands;
+using TelegramAiChatGptSample.Commands;
 
-namespace TelegramAiGptJSample;
+namespace TelegramAiChatGptSample;
 
 public class AiCommandProcessor : CommandProcessor<AiCommand>
 {

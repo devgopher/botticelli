@@ -1,6 +1,6 @@
 ﻿using Botticelli.Framework.Commands;
 
-namespace TelegramAiGptJSample.Commands;
+namespace TelegramAiChatGptSample.Commands;
 
 public class AiCommand : ICommand
 {

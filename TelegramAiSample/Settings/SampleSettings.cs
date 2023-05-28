@@ -1,4 +1,4 @@
-﻿namespace TelegramAiGptJSample.Settings
+﻿namespace TelegramAiChatGptSample.Settings
 {
     /// <summary>
     /// Settings for a messaging sample
