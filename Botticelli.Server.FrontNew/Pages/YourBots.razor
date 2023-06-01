@@ -26,19 +26,7 @@
 else
 {
     <table class="table">
-        @*        <thead>
-        <tr>
-            <th>Bot name</th>
-            <th>Bot id</th>
-            <th>Bot type</th>
-            <th>Bot status</th>
-            <th>Last KeepAlive</th>
-            <th>Is alive?</th>
-            <th>Start/stop</th>
-        </tr>
-        </thead>*@
         <tbody>
-
         @foreach (var botGroup in _bots.Chunk(3))
         {
             <tr>

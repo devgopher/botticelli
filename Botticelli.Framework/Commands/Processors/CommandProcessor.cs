@@ -17,13 +17,17 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     protected readonly ICommandValidator<TCommand> Validator;
     protected IList<IBot> _bots = new List<IBot>(10);
     protected IServiceProvider _sp;
-
+    private string _commandName;
     protected CommandProcessor(ILogger logger,
                                ICommandValidator<TCommand> validator)
     {
         Logger = logger;
         Validator = validator;
+        _commandName = GetCommandName(typeof(TCommand).Name);
     }
+
+    public string GetCommandName(string fullCommand)
+        => fullCommand.ToLowerInvariant().Replace("command", "");
 
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
@@ -37,8 +41,12 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 var match = Regex.Matches(message.Body, SimpleCommandPattern)
                                  .FirstOrDefault();
 
-                if (match == default) return;
+                var commandName = GetCommandName(match.Groups[1].Value);
 
+                if (commandName != _commandName) return;
+
+                if (match == default) return;
+                
                 await ValidateAndProcess(message,
                                          string.Empty,
                                          token,
@@ -49,6 +57,10 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 var match = Regex.Matches(message.Body, ArgsCommandPattern)
                                  .FirstOrDefault();
                 var argsString = match.Groups[2].Value;
+
+                var commandName = GetCommandName(match.Groups[1].Value);
+
+                if (commandName != _commandName) return;
 
                 await ValidateAndProcess(message,
                                          argsString,
