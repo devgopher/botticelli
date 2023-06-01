@@ -6,6 +6,7 @@
 @using Flurl
 @using Microsoft.Extensions.Options
 @using System.Net.Http.Headers
+@using Botticelli.Shared.Constants
 @inject NavigationManager uriHelper;
 @inject IOptionsMonitor<BackSettings> backSettings;
 @inject SessionClient _sessionClient;
@@ -25,7 +26,7 @@
 else
 {
     <table class="table">
-        <thead>
+        @*        <thead>
         <tr>
             <th>Bot name</th>
             <th>Bot id</th>
@@ -35,26 +36,27 @@ else
             <th>Is alive?</th>
             <th>Start/stop</th>
         </tr>
-        </thead>
+        </thead>*@
         <tbody>
-        @foreach (var bot in _bots)
+
+        @foreach (var botGroup in _bots.Chunk(3))
         {
-            <tr id="tr_@bot.BotId" style="background-color: @GetColor(bot)">
-                <td>@bot.BotName</td>
-                <td>@bot.BotId</td>
-                <td>@bot.Type.ToString()</td>
-                <td>@bot.Status</td>
-                <td>@bot.LastKeepAlive.ToString()</td>
-                <td>@GetIsAlive(bot.LastKeepAlive)</td>
-                <td>
-                    <button @onclick="@(e => SendStartStop(bot.BotId, bot.Status))">Start/stop</button>
-                </td>
+            <tr>
+                @foreach (var bot in botGroup)
+                {
+                    <td id="tr_@bot.BotId" style="background-color: @GetColor(bot); border-width: 1px">
+                        @bot.BotName <br>
+                        <img src="@GetLogo(bot.Type)" height="32px" width="32px"/><br/>
+                        @GetIsAlive(bot.LastKeepAlive)<br/>
+                        <button @onclick="@(e => SendStartStop(bot.BotId, bot.Status))">Start/stop</button>
+                    </td>
+                }
             </tr>
         }
         </tbody>
     </table>
 
-    <button @onclick="@(e =>  uriHelper.NavigateTo("/add_bot", true))">New Bot</button>
+    <button @onclick="@(e => uriHelper.NavigateTo("/add_bot", true))">New Bot</button>
 }
 
 @code {
@@ -69,16 +71,14 @@ else
         var session = _sessionClient.GetSession();
         Http = HttpClientFactory.Create();
         Http.BaseAddress = new Uri(backSettings.CurrentValue.BackUrl);
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  session?.Token);
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session?.Token);
         _bots = await Http.GetFromJsonAsync<BotInfo?[]>("/admin/GetBots");
     }
 
     protected async Task SendStartStop(string botId, BotStatus? status)
     {
-        if (status != BotStatus.Active)
-            await Http.GetAsync($"/admin/ActivateBot?botId={botId}");
-        else 
-            await Http.GetAsync($"/admin/DeactivateBot?botId={botId}");
+        if (status != BotStatus.Active) await Http.GetAsync($"/admin/ActivateBot?botId={botId}");
+        else await Http.GetAsync($"/admin/DeactivateBot?botId={botId}");
 
         uriHelper.NavigateTo("/your_bots", true);
     }
@@ -86,10 +86,24 @@ else
     private static string GetIsAlive(DateTime? lastKeepAlive)
             => DateTime.UtcNow - lastKeepAlive <= TimeSpan.FromSeconds(30) ? "Yes" : "No";
 
+
+    private string GetLogo(BotType? type) => type switch
+    {
+            BotType.Telegram => "Logos/Telegram.png",
+            BotType.WhatsApp => "Logos/Whatsapp.png",
+            BotType.Viber => "Logos/Viber.png",
+            BotType.RocketChat => "Logos/RocketChat.png",
+            BotType.Signal => "Logos/Signal.png",
+            BotType.Unknown => "Logos/Unknown.png",
+            _ => "Logos/Unknown.png"
+            };
+
+
     private string GetColor(BotInfo bot) => bot.Status switch
     {
             BotStatus.Active    => GetIsAlive(bot.LastKeepAlive) == "Yes" ? "green" : "gainsboro",
             BotStatus.NonActive => GetIsAlive(bot.LastKeepAlive) == "No" ? "red" : "gainsboro",
             _                   => "gray"
-    };
+            };
+
 }
