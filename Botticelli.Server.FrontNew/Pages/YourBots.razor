@@ -25,26 +25,30 @@
 }
 else
 {
-    <table class="table">
-        <tbody>
-        @foreach (var botGroup in _bots.Chunk(3))
+    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" Gap="20px">
+
+        @foreach (var botGroup in _bots.Chunk(5))
         {
-            <tr>
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="40px">
                 @foreach (var bot in botGroup)
                 {
-                    <td id="tr_@bot.BotId" style="background-color: @GetColor(bot); border-width: 1px">
-                        @bot.BotName <br>
-                        <img src="@GetLogo(bot.Type)" height="32px" width="32px"/><br/>
-                        @GetIsAlive(bot.LastKeepAlive)<br/>
-                        <button @onclick="@(e => SendStartStop(bot.BotId, bot.Status))">Start/stop</button>
-                    </td>
+                    <RadzenCard Style="width: 200px">
+                        <RadzenStack Gap="0" JustifyContent="JustifyContent.Center">
+                            <RadzenImage Path="@GetLogo(bot.Type)" Style="width: 100px; height: 100px; align-content: center"/>
+                        </RadzenStack>
+                        <RadzenStack Gap="0">
+                            <RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotName"/>
+                            <RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotId"/>
+                            <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsAlive(bot.LastKeepAlive)"/>
+                            <RadzenButton Click="@(e => SendStartStop(bot.BotId, bot.Status))" Text="Start/Stop"/>
+                        </RadzenStack>
+                    </RadzenCard>
                 }
-            </tr>
+            </RadzenStack>
         }
-        </tbody>
-    </table>
+    </RadzenStack>
 
-    <button @onclick="@(e => uriHelper.NavigateTo("/add_bot", true))">New Bot</button>
+    <RadzenButton Click="@(e => uriHelper.NavigateTo("/add_bot", true))" Text="Add bot"/>
 }
 
 @code {
