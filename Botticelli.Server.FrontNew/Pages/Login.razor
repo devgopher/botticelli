@@ -2,24 +2,13 @@
 @using Botticelli.Server.FrontNew.Clients
 @inject SessionClient sessionClient;
 
-
-@code
-{
-    public string userLogin,
-                  password;
-}
-
 <PageTitle>Login</PageTitle>
-<form method="post" @onsubmit="HandleSubmit">
-    Login: <input type="text" id="login" @bind="userLogin" /><br/>
-    Password: <input type="password" id="password" @bind="password" /><br/>
-    <input type="submit">
-</form>
 
-
-@code {
-    private async Task HandleSubmit()
-    {
-        var response = await sessionClient.CreateSession(userLogin, password);
-    }
-}
+<RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
+    <RadzenTemplateForm Data=@("SimpleLogin") Action="/your_bots">
+        <RadzenLogin Login="e => sessionClient.CreateSession(e.Username, e.Password)"
+                     AllowRegister="false"
+                     AllowResetPassword="false"
+                     />
+    </RadzenTemplateForm>
+</RadzenCard>

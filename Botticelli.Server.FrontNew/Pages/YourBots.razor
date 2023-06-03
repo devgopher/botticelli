@@ -48,29 +48,32 @@ else
         }
     </RadzenStack>
 
-    <RadzenButton Click="@(e => uriHelper.NavigateTo("/add_bot", true))" Text="Add bot"/>
+    <RadzenButton Click="@(e => uriHelper.NavigateTo("/add_bot", true))" 
+                  ButtonStyle="ButtonStyle.Primary"
+                  Style="width: 100%"
+                  Text="Add bot"/>
 }
 
 @code {
 
     private BotInfo[]? _bots;
-    HttpClient Http;
+    HttpClient _http;
 
     protected override bool ShouldRender() => true;
 
     protected override async Task OnInitializedAsync()
     {
         var session = _sessionClient.GetSession();
-        Http = HttpClientFactory.Create();
-        Http.BaseAddress = new Uri(backSettings.CurrentValue.BackUrl);
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session?.Token);
-        _bots = await Http.GetFromJsonAsync<BotInfo?[]>("/admin/GetBots");
+        _http = HttpClientFactory.Create();
+        _http.BaseAddress = new Uri(backSettings.CurrentValue.BackUrl);
+        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session?.Token);
+        _bots = await _http.GetFromJsonAsync<BotInfo?[]>("/admin/GetBots");
     }
 
     protected async Task SendStartStop(string botId, BotStatus? status)
     {
-        if (status != BotStatus.Active) await Http.GetAsync($"/admin/ActivateBot?botId={botId}");
-        else await Http.GetAsync($"/admin/DeactivateBot?botId={botId}");
+        if (status != BotStatus.Active) await _http.GetAsync($"/admin/ActivateBot?botId={botId}");
+        else await _http.GetAsync($"/admin/DeactivateBot?botId={botId}");
 
         uriHelper.NavigateTo("/your_bots", true);
     }
