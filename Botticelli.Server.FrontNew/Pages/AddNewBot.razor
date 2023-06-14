@@ -5,35 +5,44 @@
 @using Botticelli.Server.FrontNew.Settings
 @using Flurl
 @using Microsoft.Extensions.Options
-@inject NavigationManager uriHelper;
-@inject IOptionsMonitor<BackSettings> backSettings;
+@using System.Net.Http.Headers
+@inject NavigationManager UriHelper;
+@inject IOptionsMonitor<BackSettings> BackSettings;
+@inject CookieStorageAccessor Cookies;
 
-
-@code
-{
-    public string botKey;
-}
-
-<PageTitle>Add a new bot</PageTitle>
-<h1>New Bot</h1>
-<form method="post" @onsubmit="HandleSubmit">
-    Bot Key:
-    <input type="text" id="botNameInput" @bind="botKey" /><br/>
-    <input type="submit">
-</form>
-
+<RadzenTemplateForm TItem="BotModel" Data=@_model Submit=@OnSubmit>
+    <RadzenStack Orientation="Orientation.Horizontal">
+        <RadzenText Text ="Bot key:"/>
+        <RadzenTextBox Name="LastName" @bind-Value=@_model.BotKey/>
+    </RadzenStack>
+    <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
+</RadzenTemplateForm>
 
 @code {
-    private async Task HandleSubmit()
+    class BotModel
+    {
+        public string BotKey { get; set; }
+    }
+
+    readonly BotModel _model = new();
+    
+    private async Task OnSubmit(BotModel model)
     {
         var request = new RegisterBotRequest
             {
                 BotId = Guid.NewGuid().ToString(),
-                BotKey = botKey,
+                BotKey = model.BotKey,
                 Type = BotType.Telegram
             };
 
-        var response = await Http.PostAsJsonAsync( Url.Combine(backSettings.CurrentValue.BackUrl, "/client/AddNewBot"),
-                                                   JsonContent.Create(request));
+        var sessionToken = await Cookies.GetValueAsync("SessionToken");
+
+        if (string.IsNullOrWhiteSpace(sessionToken)) return;
+
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
+        await Http.PostAsJsonAsync( Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/AddNewBot"),
+                                    JsonContent.Create(request));
+
+        UriHelper.NavigateTo("/your_bots", true);
     }
 }

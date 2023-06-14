@@ -1,8 +1,5 @@
 ﻿@page "/logoff"
 @using Botticelli.Server.FrontNew.Clients
-@using Botticelli.Server.FrontNew.Models
-@using System.Data
-@using System.Reflection.Metadata.Ecma335
 @inject SessionClient SessionClient;
 @inject NavigationManager UriHelper;
 @inject CookieStorageAccessor Cookies;
@@ -12,14 +9,12 @@
     private string _message = string.Empty;
 }
 
-
 <PageTitle>Logoff</PageTitle>
 
 <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
     <RadzenStack Orientation="Orientation.Vertical">
         <RadzenLabel @bind-text="@_message" Style="color: green; font-weight: bold"/>
         <RadzenButton Text="Logoff" Click="async e => await DoLogoff(e)"/>
-
         @code
         {
             public async Task DoLogoff(MouseEventArgs args)
@@ -28,24 +23,5 @@
                 UriHelper.NavigateTo("/");
             }
         }
-
     </RadzenStack>
 </RadzenCard>
-
-@*@code
-{
-    public async Task Init()
-    {
-        var sessionToken = await Cookies.GetValueAsync("SessionToken");
-
-        if (string.IsNullOrWhiteSpace(sessionToken))
-        {
-            var result = SessionClient.GetSession();
-
-            if (result != default)
-            {
-                _message = $"You can log off, {result.Login}!";
-            }
-        }
-    }
-}*@
