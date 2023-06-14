@@ -1,14 +1,62 @@
-﻿@page "/login"
+﻿@page "/"
 @using Botticelli.Server.FrontNew.Clients
-@inject SessionClient sessionClient;
+@using Botticelli.Server.FrontNew.Models
+@inject SessionClient SessionClient;
+@inject NavigationManager UriHelper;
+@inject CookieStorageAccessor Cookies;
+
+@code
+{
+    private readonly Error _error = new()
+    {
+        UserMessage = string.Empty
+    };
+}
+
 
 <PageTitle>Login</PageTitle>
 
 <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
-    <RadzenTemplateForm Data=@("SimpleLogin") Action="/your_bots">
-        <RadzenLogin Login="e => sessionClient.CreateSession(e.Username, e.Password)"
-                     AllowRegister="false"
-                     AllowResetPassword="false"
-                     />
-    </RadzenTemplateForm>
+    <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenTemplateForm Data=@("SimpleLogin")>
+            <RadzenLogin Login="async e => await DoLogin(e)"
+                         AllowRegister="false"
+                         AllowResetPassword="false"/>
+        </RadzenTemplateForm>
+        <RadzenLabel @bind-text="@_error.UserMessage" Style="color: red; font-weight: bold"/>
+
+        @code
+        {
+            public async Task DoLogin(LoginArgs args)
+            {
+                await Cookies.SetValueAsync("SessionToken", string.Empty);
+                var sessionToken = await Cookies.GetValueAsync("SessionToken");
+                if (string.IsNullOrWhiteSpace(sessionToken))
+                {
+                    var result = await SessionClient.CreateSession(args.Username, args.Password);
+                    if (result.error != default && result.error.UserMessage.ToLowerInvariant() != "success")
+                    {
+                        await Cookies.SetValueAsync("SessionToken", string.Empty);
+                        _error.UserMessage = result.error.UserMessage;
+                    }
+                    else
+                    {
+                        sessionToken = result.session.Token;
+                        await Cookies.SetValueAsync("SessionToken", sessionToken);
+                        UriHelper.NavigateTo("/your_bots", true);
+#if DEBUG
+                        _error.UserMessage = await Cookies.GetValueAsync("SessionToken");
+#endif
+                    }
+                }
+                else
+                {
+                    await Cookies.SetValueAsync("SessionToken", sessionToken);
+                    _error.UserMessage = sessionToken;
+                    UriHelper.NavigateTo("/logoff", true);
+                }
+            }
+        }
+
+    </RadzenStack>
 </RadzenCard>

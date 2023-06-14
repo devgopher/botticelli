@@ -120,6 +120,19 @@ public class BotManagementService : IBotManagementService
     public async Task<BotStatus?> GetRequiredBotStatus(string botId)
         => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
 
+    public async Task RemoveBot(string botId)
+    {
+        await SetRequiredBotStatus(botId, BotStatus.NonActive);
+
+        var bot = _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
+
+        if (bot != default)
+        {
+            _context.BotInfos.Remove(bot);
+            await _context.SaveChangesAsync();
+        }
+    }
+
     /// <summary>
     ///     Add a new bot info to a DB
     /// </summary>

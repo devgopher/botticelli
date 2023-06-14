@@ -28,10 +28,14 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Botticelli.Server.Data.Entities\Botticelli.Server.Data.Entities.csproj" />
+		<ProjectReference Include="..\Botticelli.Server.Models\Botticelli.Server.Models.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Update="wwwroot\appsettings.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\js\CookieStorageAccessor.js">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Update="wwwroot\Logos\RocketChat.png">

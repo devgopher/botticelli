@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Botticelli.Server.Models.Responses;
 
 namespace Botticelli.Server.Services.Auth;
 
@@ -87,7 +88,7 @@ public class AdminAuthService
     /// </summary>
     /// <param name="login"></param>
     /// <returns></returns>
-    public string GenerateToken(UserLoginPost login)
+    public GetTokenResponse GenerateToken(UserLoginPost login)
     {
         try
         {
@@ -97,7 +98,11 @@ public class AdminAuthService
             {
                 _logger.LogInformation($"{nameof(GenerateToken)}({login.Email}) access denied...");
 
-                return "Wrong login/password!";
+                return new()
+                {
+                    IsSuccess = false,
+                    Token = null
+                };
             }
 
             var user = _context.ApplicationUsers
@@ -136,7 +141,11 @@ public class AdminAuthService
                                              //.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
                                              signingCredentials: signCreds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new()
+            {
+                IsSuccess = true,
+                Token = new JwtSecurityTokenHandler().WriteToken(token)
+        };
         }
         catch (Exception ex)
         {

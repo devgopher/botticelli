@@ -3,15 +3,17 @@
 @using Botticelli.Server.FrontNew.Clients
 @using Botticelli.Server.FrontNew.Settings
 @using Botticelli.Shared.API.Admin.Responses
-@using Flurl
 @using Microsoft.Extensions.Options
 @using System.Net.Http.Headers
 @using Botticelli.Shared.Constants
-@inject NavigationManager uriHelper;
-@inject IOptionsMonitor<BackSettings> backSettings;
-@inject SessionClient _sessionClient;
-@inject SessionClient _client;
+@inject NavigationManager UriHelper;
+@inject IOptionsMonitor<BackSettings> BackSettings;
+@inject CookieStorageAccessor Cookies;
+@inject IJSRuntime JSRuntime;
 
+@code {
+    private string _error= string.Empty;
+}
 
 <PageTitle>Your bots</PageTitle>
 
@@ -41,6 +43,8 @@ else
                             <RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotId"/>
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsAlive(bot.LastKeepAlive)"/>
                             <RadzenButton Click="@(e => SendStartStop(bot.BotId, bot.Status))" Text="Start/Stop"/>
+                            <br/>
+                            <RadzenButton Click="@(e => RemoveBot(bot.BotId))" Text="Remove"/>
                         </RadzenStack>
                     </RadzenCard>
                 }
@@ -48,7 +52,9 @@ else
         }
     </RadzenStack>
 
-    <RadzenButton Click="@(e => uriHelper.NavigateTo("/add_bot", true))" 
+   @*<RadzenLabel @bind-text="@_error" Style="color: red; font-weight: bold" />*@
+    
+    <RadzenButton Click="@(e => UriHelper.NavigateTo("/add_bot", true))" 
                   ButtonStyle="ButtonStyle.Primary"
                   Style="width: 100%"
                   Text="Add bot"/>
@@ -63,11 +69,29 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var session = _sessionClient.GetSession();
-        _http = HttpClientFactory.Create();
-        _http.BaseAddress = new Uri(backSettings.CurrentValue.BackUrl);
-        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session?.Token);
-        _bots = await _http.GetFromJsonAsync<BotInfo?[]>("/admin/GetBots");
+        var sessionToken = await Cookies.GetValueAsync("SessionToken");
+
+        _error = $"token:{sessionToken}";
+
+        try
+        {
+            _http = HttpClientFactory.Create();
+            _http.BaseAddress = new Uri(BackSettings.CurrentValue.BackUrl);
+            _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
+            _bots = await _http.GetFromJsonAsync<BotInfo?[]>("/admin/GetBots");
+        }
+        catch (Exception ex)
+        {
+            _error = $"token:{sessionToken} ex:{ex.Message}";
+        }
+    }
+
+    private async Task RemoveBot(string botId)
+    {
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", new object[] {"Are you sure?"})) return;
+
+        await _http.GetAsync($"/admin/RemoveBot?botId={botId}");
+        UriHelper.NavigateTo("/your_bots", true);
     }
 
     protected async Task SendStartStop(string botId, BotStatus? status)
@@ -75,11 +99,11 @@ else
         if (status != BotStatus.Active) await _http.GetAsync($"/admin/ActivateBot?botId={botId}");
         else await _http.GetAsync($"/admin/DeactivateBot?botId={botId}");
 
-        uriHelper.NavigateTo("/your_bots", true);
+        UriHelper.NavigateTo("/your_bots", true);
     }
 
     private static string GetIsAlive(DateTime? lastKeepAlive)
-            => DateTime.UtcNow - lastKeepAlive <= TimeSpan.FromSeconds(30) ? "Yes" : "No";
+            => DateTime.UtcNow - lastKeepAlive <= TimeSpan.FromSeconds(30) ? "Alive" : "Dead";
 
 
     private string GetLogo(BotType? type) => type switch
@@ -96,8 +120,8 @@ else
 
     private string GetColor(BotInfo bot) => bot.Status switch
     {
-            BotStatus.Active    => GetIsAlive(bot.LastKeepAlive) == "Yes" ? "green" : "gainsboro",
-            BotStatus.NonActive => GetIsAlive(bot.LastKeepAlive) == "No" ? "red" : "gainsboro",
+            BotStatus.Active    => GetIsAlive(bot.LastKeepAlive) == "Alive" ? "green" : "gainsboro",
+            BotStatus.NonActive => GetIsAlive(bot.LastKeepAlive) == "Dead" ? "red" : "gainsboro",
             _                   => "gray"
             };
 

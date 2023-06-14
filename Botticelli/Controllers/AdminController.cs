@@ -54,4 +54,9 @@ public class AdminController
     [HttpGet("[action]")]
     public async Task DeactivateBot([FromQuery] string botId)
         => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.NonActive);
+
+
+    [HttpGet("[action]")]
+    public async Task RemoveBot([FromQuery] string botId)
+        => await _botManagementService.RemoveBot(botId);
 }
