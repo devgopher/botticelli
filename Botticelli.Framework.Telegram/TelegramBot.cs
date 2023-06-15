@@ -10,6 +10,7 @@ using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
@@ -20,17 +21,20 @@ public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly ITelegramBotClient _client;
     private readonly IBotUpdateHandler _handler;
+    private readonly ILogger<TelegramBot> _logger;
 
     /// <summary>
     ///     ctor
     /// </summary>
     /// <param name="client"></param>
     /// <param name="handler"></param>
-    public TelegramBot(ITelegramBotClient client, IBotUpdateHandler handler)
+    /// <param name="logger"></param>
+    public TelegramBot(ITelegramBotClient client, IBotUpdateHandler handler, ILogger<TelegramBot> logger) : base(logger)
     {
         IsStarted = false;
         _client = client;
         _handler = handler;
+        _logger = logger;
     }
 
     public override BotType Type => BotType.Telegram;
@@ -49,10 +53,14 @@ public class TelegramBot : BaseBot<TelegramBot>
     public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token)
     {
         if (!IsStarted)
+        {
+            _logger.LogInformation("Bot wasn't started!");
+
             return new RemoveMessageResponse(request.Uid, "Bot wasn't started!")
             {
                 MessageRemovedStatus = MessageRemovedStatus.NotStarted
             };
+        }
 
         RemoveMessageResponse response = new(request.Uid, string.Empty);
 
@@ -92,10 +100,14 @@ public class TelegramBot : BaseBot<TelegramBot>
     public override async Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token)
     {
         if (!IsStarted)
+        {
+            _logger.LogInformation("Bot wasn't started!");
+
             return new SendMessageResponse(request.Uid, "Bot wasn't started!")
             {
                 MessageSentStatus = MessageSentStatus.Nonstarted
             };
+        }
 
         SendMessageResponse response = new(request.Uid, string.Empty);
 
@@ -136,8 +148,8 @@ public class TelegramBot : BaseBot<TelegramBot>
             if (request.Message?.Contact != default)
                 await _client.SendContactAsync(request.Message.ChatId,
                                                request.Message.Contact?.Phone,
-                                               firstName: request.Message.Contact?.Name,
-                                               lastName: request.Message.Contact?.Surname,
+                                               request.Message.Contact?.Name,
+                                               request.Message.Contact?.Surname,
                                                replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
                                                cancellationToken: token);
 
@@ -215,13 +227,14 @@ public class TelegramBot : BaseBot<TelegramBot>
         catch (Exception ex)
         {
             response.MessageSentStatus = MessageSentStatus.Fail;
+            _logger.LogError(ex, ex.Message);
         }
 
         return response;
     }
 
     /// <summary>
-    /// Autoescape for special symbols
+    ///     Autoescape for special symbols
     /// </summary>
     /// <param name="text"></param>
     /// <returns></returns>
@@ -254,21 +267,37 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <returns></returns>
     public override async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
     {
-        var response = await base.StartBotAsync(request, token);
+        try
+        {
+            _logger.LogInformation($"{nameof(StartBotAsync)}...");
+            var response = await base.StartBotAsync(request, token);
 
-        if (IsStarted) return response;
+            if (IsStarted)
+            {
+                _logger.LogInformation($"{nameof(StartBotAsync)}: already started");
 
-        if (response.Status != AdminCommandStatus.Ok || IsStarted) return response;
+                return response;
+            }
 
-        // Rethrowing an event from BotUpdateHandler
-        _handler.MessageReceived += (sender, e)
-                => MessageReceived?.Invoke(sender, e);
+            if (response.Status != AdminCommandStatus.Ok || IsStarted) return response;
 
-        _client.StartReceiving(_handler, cancellationToken: token);
+            // Rethrowing an event from BotUpdateHandler
+            _handler.MessageReceived += (sender, e)
+                    => MessageReceived?.Invoke(sender, e);
 
-        IsStarted = true;
+            _client.StartReceiving(_handler, cancellationToken: token);
 
-        return response;
+            IsStarted = true;
+            _logger.LogInformation($"{nameof(StartBotAsync)}: started");
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+        }
+
+        return StartBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
     }
 
     /// <summary>
@@ -279,14 +308,25 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <returns></returns>
     public override async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
     {
-        var response = await base.StopBotAsync(request, token);
+        try
+        {
+            _logger.LogInformation($"{nameof(StopBotAsync)}...");
+            var response = await base.StopBotAsync(request, token);
 
-        if (response.Status != AdminCommandStatus.Ok || !IsStarted) return response;
+            if (response.Status != AdminCommandStatus.Ok || !IsStarted) return response;
 
-        await _client.CloseAsync(token);
+            await _client.CloseAsync(token);
 
-        IsStarted = false;
+            IsStarted = false;
+            _logger.LogInformation($"{nameof(StopBotAsync)}: stopped");
 
-        return response;
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+        }
+
+        return StopBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
     }
 }

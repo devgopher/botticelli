@@ -13,6 +13,7 @@ using Botticelli.Shared.ValueObjects;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Botticelli.AI.AIProvider;
 
@@ -34,7 +35,26 @@ public class ChatGptProvider : GenericAiProvider
 
     public override async Task SendAsync(AiMessage message, CancellationToken token)
     {
-        if (string.IsNullOrWhiteSpace(message.Body)) throw new AiException($"{nameof(SendAsync)}() body is null or empty!");
+        if (string.IsNullOrWhiteSpace(message.Body?.Trim()))
+        {
+            _logger.LogError($"{nameof(SendAsync)}() body is null or empty!");
+
+            await _bus.SendResponse(new SendMessageResponse(message.Uid)
+            {
+                Message = new Shared.ValueObjects.Message(message.Uid)
+                {
+                    ChatId = message.ChatId,
+                    Subject = message.Subject,
+                    Body = "Body is null or empty!",
+                    Attachments = null,
+                    From = null,
+                    ForwardedFrom = null,
+                    ReplyToMessageUid = message.ReplyToMessageUid
+                }
+            }, token);
+
+            return;
+        }
 
         try
         {

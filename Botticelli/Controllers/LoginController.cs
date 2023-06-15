@@ -26,6 +26,4 @@ public class LoginController
     [HttpPost("[action]")]
     public async Task Register(UserRegisterPost request)
         => await _adminAuthService.RegisterAsync(request);
-
-
 }

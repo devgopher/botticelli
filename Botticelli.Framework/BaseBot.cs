@@ -6,6 +6,7 @@ using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
+using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework;
 
@@ -16,7 +17,11 @@ namespace Botticelli.Framework;
 public abstract class BaseBot<T> : IBot<T>
         where T : BaseBot<T>
 {
-    public BaseBot() => IsStarted = false;
+    public BaseBot(ILogger logger)
+    {
+        _logger = logger;
+        IsStarted = false;
+    }
 
     public delegate void StartedEventHandler(object sender, StartedBotEventArgs e);
 
@@ -35,6 +40,7 @@ public abstract class BaseBot<T> : IBot<T>
     public abstract event MsgReceivedEventHandler MessageReceived;
     public abstract event MsgRemovedEventHandler MessageRemoved;
     public abstract event MessengerSpecificEventHandler MessengerSpecificEvent;
+    protected readonly ILogger _logger;
 
     protected bool IsStarted { get; set; }
 

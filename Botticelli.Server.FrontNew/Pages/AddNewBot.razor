@@ -6,6 +6,7 @@
 @using Flurl
 @using Microsoft.Extensions.Options
 @using System.Net.Http.Headers
+@using Botticelli.Shared.API.Client.Responses
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
 @inject CookieStorageAccessor Cookies;
@@ -40,8 +41,10 @@
         if (string.IsNullOrWhiteSpace(sessionToken)) return;
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
-        await Http.PostAsJsonAsync( Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/AddNewBot"),
-                                    JsonContent.Create(request));
+        var response = await Http.PostAsJsonAsync( Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/AddNewBot"),
+                                    request);
+
+        var addBotResponse = await response.Content.ReadFromJsonAsync<RegisterBotResponse>();
 
         UriHelper.NavigateTo("/your_bots", true);
     }

@@ -30,7 +30,7 @@ public class AdminController
     }
 
     [HttpPost("[action]")]
-    public async Task<RegisterBotResponse> AddNewBot([FromBody] RegisterBotRequest request)
+    public async Task<RegisterBotResponse> AddNewBot([FromBody]RegisterBotRequest request)
     {
         _logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) started...");
         var success = await _botManagementService.RegisterBot(request.BotId, request.BotKey, request.Type);

@@ -11,6 +11,7 @@ using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 
 namespace Botticelli.Framework.Telegram.Extensions;
@@ -42,9 +43,11 @@ public static class ServiceCollectionExtensions
                 .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
                 .AddBotticelliFramework();
 
+        var sp = services.BuildServiceProvider();
+
         var bot = new TelegramBot(new TelegramBotClient(token),
-                                  services.BuildServiceProvider()
-                                          .GetRequiredService<IBotUpdateHandler>());
+                                  sp.GetRequiredService<IBotUpdateHandler>(),
+                                  sp.GetRequiredService<ILogger<TelegramBot>>());
 
         return services.AddSingleton<IBot<TelegramBot>>(bot)
                        .AddHostedService<BotStatusService<IBot<TelegramBot>>>()
