@@ -1,19 +1,14 @@
-﻿using System.Net;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text;
-using Botticelli.AI.Exceptions;
-using Botticelli.AI.Message;
+﻿using Botticelli.AI.Message;
 using Botticelli.AI.Message.ChatGpt;
-using Botticelli.AI.Message.GptJ;
 using Botticelli.AI.Settings;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Shared.API.Client.Responses;
-using Botticelli.Shared.ValueObjects;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using static System.Net.Mime.MediaTypeNames;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
 
 namespace Botticelli.AI.AIProvider;
 

@@ -4,6 +4,7 @@ using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
+using Telegram.Bot.Types.ReplyMarkups;
 using TelegramAiChatGptSample.Commands;
 
 namespace TelegramAiChatGptSample;
@@ -35,7 +36,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                                   }
                                               },
                                               token);
-
+        
         if (response != null)
             foreach (var bot in _bots)
                 await bot.SendMessageAsync(new SendMessageRequest(response.Uid)

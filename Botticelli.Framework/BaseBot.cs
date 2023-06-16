@@ -1,4 +1,5 @@
 ﻿using Botticelli.Framework.Events;
+using Botticelli.Framework.SendOptions;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
@@ -89,7 +90,20 @@ public abstract class BaseBot<T> : IBot<T>
     /// </summary>
     /// <param name="request">Request</param>
     /// <returns></returns>
-    public abstract Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token);
+    public Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token)
+            => SendMessageAsync<object>(request, null, token);
+
+
+    /// <summary>
+    ///     Sends a message
+    /// </summary>
+    /// <param name="request">Request</param>
+    /// <param name="optionsBuilder"></param>
+    /// <returns></returns>
+    public abstract Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
+                                                                             SendOptionsBuilder<TSendOptions> optionsBuilder,
+                                                                             CancellationToken token) 
+            where TSendOptions : class;
 
     public abstract Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token);
 
