@@ -160,16 +160,10 @@ public class TelegramBot : BaseBot<TelegramBot>
                                             cancellationToken: token);
             }
 
-            if (request.Message?.Contact != default)
-                await _client.SendContactAsync(request.Message.ChatId,
-                                               request.Message.Contact?.Phone,
-                                               request.Message.Contact?.Name,
-                                               request.Message.Contact?.Surname,
-                                               replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
-                                               replyMarkup: replyMarkup,
-                                               cancellationToken: token);
+            if (request.Message?.Contact != default) 
+                await SendContact<TSendOptions>(request, token, replyMarkup);
 
-            if (request.Message.Attachments != null)
+            if (request.Message?.Attachments != null)
                 foreach (var genAttach in request.Message.Attachments.Where(a => a is BinaryAttachment))
                 {
                     var attachment = (BinaryAttachment) genAttach;
@@ -228,10 +222,14 @@ public class TelegramBot : BaseBot<TelegramBot>
                                                            cancellationToken: token);
 
                             break;
-                        case MediaType.Unknown:
                         case MediaType.Contact:
+                            await SendContact<TSendOptions>(request, token, replyMarkup);
+
+                            break;
+                        case MediaType.Unknown:
                         case MediaType.Poll:
                         case MediaType.Text:
+                        default:
                             // nothing to do
                             break;
                     }
@@ -253,6 +251,15 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         return response;
     }
+
+    private async Task SendContact<TSendOptions>(SendMessageRequest request, CancellationToken token, IReplyMarkup replyMarkup) 
+        => await _client.SendContactAsync(request.Message?.ChatId,
+                                          request.Message.Contact?.Phone,
+                                          request.Message?.Contact?.Name,
+                                          request.Message?.Contact?.Surname,
+                                          replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                          replyMarkup: replyMarkup,
+                                          cancellationToken: token);
 
     /// <summary>
     ///     Autoescape for special symbols
