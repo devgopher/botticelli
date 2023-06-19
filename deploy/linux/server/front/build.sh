@@ -9,6 +9,6 @@ dotnet publish -c Release -r linux-x64 --output ../publish Botticelli.Server.Fro
 popd
 popd
 
-pushd botticelli/deploy/linux/server
+pushd botticelli/deploy/linux/server/front
 docker build -f Dockerfile .
 docker push hub.docker.com botticelli_server_front:0.1
