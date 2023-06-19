@@ -82,17 +82,25 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "linux", "linux", "{A4F5B449-60D4-4959-9E0B-5EECFD2A317B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{9B590747-74F6-41C8-8733-B5B77A8FCAC1}"
-	ProjectSection(SolutionItems) = preProject
-		deploy\linux\server\build.sh = deploy\linux\server\build.sh
-		deploy\linux\server\Dockerfile = deploy\linux\server\Dockerfile
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{32305B1F-3B44-4BCF-AABC-E33C00DC91B0}"
 	ProjectSection(SolutionItems) = preProject
 		deploy\windows\server\build.cmd = deploy\windows\server\build.cmd
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Server.Models", "Botticelli.Server.Models\Botticelli.Server.Models.csproj", "{2423A645-22D1-4736-946F-10A99353581C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Server.Models", "Botticelli.Server.Models\Botticelli.Server.Models.csproj", "{2423A645-22D1-4736-946F-10A99353581C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "back", "back", "{05922003-7445-47CF-8496-7224F44E7768}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\linux\server\back\build.sh = deploy\linux\server\back\build.sh
+		deploy\linux\server\back\Dockerfile = deploy\linux\server\back\Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{7FF17C87-CC2B-4CD6-B667-18B7BED78850}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\linux\server\front\build.sh = deploy\linux\server\front\build.sh
+		deploy\linux\server\front\Dockerfile = deploy\linux\server\front\Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -252,6 +260,8 @@ Global
 		{9B590747-74F6-41C8-8733-B5B77A8FCAC1} = {A4F5B449-60D4-4959-9E0B-5EECFD2A317B}
 		{32305B1F-3B44-4BCF-AABC-E33C00DC91B0} = {B5CD1142-F9ED-4006-B99A-AFAF5F9AF4F9}
 		{2423A645-22D1-4736-946F-10A99353581C} = {A05D5A20-E0D3-4844-8311-C98E8B67DA7F}
+		{05922003-7445-47CF-8496-7224F44E7768} = {9B590747-74F6-41C8-8733-B5B77A8FCAC1}
+		{7FF17C87-CC2B-4CD6-B667-18B7BED78850} = {9B590747-74F6-41C8-8733-B5B77A8FCAC1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

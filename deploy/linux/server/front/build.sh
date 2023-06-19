@@ -5,10 +5,10 @@ git pull
 
 pushd Botticelli
 
-dotnet publish -c Release -r linux-x64 --output ../publish Botticelli.Server.csproj
+dotnet publish -c Release -r linux-x64 --output ../publish Botticelli.Server.FrontNew.csproj
 popd
 popd
 
 pushd botticelli/deploy/linux/server
 docker build -f Dockerfile .
-docker push hub.docker.com botticelli_server:0.1
+docker push hub.docker.com botticelli_server_front:0.1
