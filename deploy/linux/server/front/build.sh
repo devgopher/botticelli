@@ -3,7 +3,7 @@ pushd botticelli/
 git checkout mvp/0.1
 git pull
 
-pushd Botticelli
+pushd Botticelli.Server.FrontNew
 
 dotnet publish -c Release -r linux-x64 --output ../publish Botticelli.Server.FrontNew.csproj
 popd

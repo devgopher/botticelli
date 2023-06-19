@@ -4,6 +4,6 @@ pushd botticelli/
 git checkout mvp/0.1
 git pull
 
-pushd Botticelli
+pushd Botticelli.Server.FrontNew
 
 dotnet run Botticelli.Server.FrontNew.csproj
