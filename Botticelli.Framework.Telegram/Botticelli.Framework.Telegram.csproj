@@ -10,6 +10,7 @@
 		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
 		<PackageIcon>logo.jpg</PackageIcon>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -23,5 +24,10 @@
 	<ItemGroup>
 		<Folder Include="MessageProcessors\" />
 	</ItemGroup>
-
+	<ItemGroup>
+		<None Include="..\logo.jpg">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 </Project>

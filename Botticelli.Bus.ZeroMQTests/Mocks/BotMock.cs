@@ -27,6 +27,10 @@ namespace Botticelli.Bus.ZeroMQTests.Mocks
         public async Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token) 
             => SendMessageResponse.GetInstance(request.Uid);
 
+        public async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request, ISendOptionsBuilder<TSendOptions> optionsBuilder, CancellationToken token) 
+                where TSendOptions : class
+            => SendMessageResponse.GetInstance(request.Uid);
+
         public async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token)
             => RemoveMessageResponse.GetInstance(request.Uid);
 
