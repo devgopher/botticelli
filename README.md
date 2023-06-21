@@ -30,7 +30,7 @@ On a bot side we can implement any business logic we want.
 
 ## Starting a sample project
 1. Go to a folder and edit appsettings.json this way:
-`
+```
 {
   "Logging": {
     "LogLevel": {
@@ -47,7 +47,7 @@ On a bot side we can implement any business logic we want.
   "AllowedHosts": "*"
 }
 
-`
+```
 2. Start a sample bot project at Samples\TelegramMessagingSample. Run run_standalone.sh.
 3. After the first run of a bot-project(Samples\TelegramMessagingSample in pour case), you should find Data\botId file with a generated botId
 4. Copy a generated *botId* into a clipboard
