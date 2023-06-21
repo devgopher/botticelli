@@ -1,4 +1,5 @@
 ﻿using Botticelli.Framework.Exceptions;
+using Botticelli.Interfaces;
 
 namespace Botticelli.Framework.SendOptions
 {
@@ -7,18 +8,19 @@ namespace Botticelli.Framework.SendOptions
     /// (for example you can use InlineKeyboardMarkup  as T)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SendOptionsBuilder<T>
-        where T : class
+    public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
     {
-        private T innerObject = default;
+        private T _innerObject = default;
 
         protected SendOptionsBuilder()
         {
         }
 
-        public T Create(params object[] args)
+        protected SendOptionsBuilder(T innerObject) => this._innerObject = innerObject;
+
+        public ISendOptionsBuilder<T> Create(params object[] args)
         {
-            if (innerObject != default) 
+            if (_innerObject != default) 
                 throw new BotException($"You shouldn't use {nameof(Create)}() method twice!");
 
             var constructors = typeof(T)
@@ -28,9 +30,9 @@ namespace Botticelli.Framework.SendOptions
             // no params? ok => let's seek a parameterless constructor!
             if ((args == null || !args.Any()) && constructors.Any(c => !c.GetParameters().Any()))
             {
-                innerObject = Activator.CreateInstance<T>();
+                _innerObject = Activator.CreateInstance<T>();
 
-                return innerObject;
+                return this;
             }
 
             // Let's see if we can process parameter set and put it to a constructor|initializer
@@ -41,19 +43,21 @@ namespace Botticelli.Framework.SendOptions
 
 
 
-            return innerObject;
+            return this;
         }
 
-        public T Set(Func<T> func)
+        public ISendOptionsBuilder<T> Set(Func<T,T> func)
         {
-            func?.Invoke();
+            func?.Invoke(_innerObject);
 
-            return innerObject;
+            return this;
         }
 
         public T Build()
-            => innerObject;
+            => _innerObject;
 
         public static SendOptionsBuilder<T> CreateBuilder() => new();
+
+        public static SendOptionsBuilder<T> CreateBuilder(T input) => new(input);
     }
 }

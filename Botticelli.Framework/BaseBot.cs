@@ -101,7 +101,7 @@ public abstract class BaseBot<T> : IBot<T>
     /// <param name="optionsBuilder"></param>
     /// <returns></returns>
     public abstract Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
-                                                                             SendOptionsBuilder<TSendOptions> optionsBuilder,
+                                                                             ISendOptionsBuilder<TSendOptions> optionsBuilder,
                                                                              CancellationToken token) 
             where TSendOptions : class;
 

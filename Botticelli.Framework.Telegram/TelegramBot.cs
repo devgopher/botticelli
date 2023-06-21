@@ -3,6 +3,7 @@ using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Framework.Telegram.Handlers;
+using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
@@ -100,7 +101,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <exception cref="BotException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
-                                                                                   SendOptionsBuilder<TSendOptions> optionsBuilder,
+                                                                                   ISendOptionsBuilder<TSendOptions> optionsBuilder,
                                                                                    CancellationToken token)
     {
         if (!IsStarted)
@@ -132,7 +133,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             text = Escape(text);
             var retText = text.ToString();
-
+            
             if (!string.IsNullOrWhiteSpace(retText))
                 await _client.SendTextMessageAsync(request.Message.ChatId,
                                                    retText,

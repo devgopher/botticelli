@@ -36,6 +36,13 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
         try
         {
+            if (string.IsNullOrWhiteSpace(message.Body))
+            {
+                Logger.LogWarning("Message {msgId} has an empty body! Skipping...", message.Uid);
+
+                return;
+            }
+
             if (Regex.IsMatch(message.Body, SimpleCommandPattern))
             {
                 var match = Regex.Matches(message.Body, SimpleCommandPattern)

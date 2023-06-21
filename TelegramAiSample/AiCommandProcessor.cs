@@ -2,6 +2,7 @@
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.SendOptions;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -42,7 +43,14 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                 await bot.SendMessageAsync(new SendMessageRequest(response.Uid)
                                            {
                                                Message = response.Message
-                                           },
+                                           }, 
+                                           SendOptionsBuilder<ReplyKeyboardMarkup>.CreateBuilder(new(new[]
+                                                                                                 {
+                                                                                                     new KeyboardButton[] { "/ai Thank you!", "/ai Good bye!" },
+                                                                                                 })
+                                                                                                 {
+                                                                                                     ResizeKeyboard = true
+                                                                                                 }),
                                            token);
     }
 }

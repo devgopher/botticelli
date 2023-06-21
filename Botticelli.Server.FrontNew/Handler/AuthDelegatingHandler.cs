@@ -24,7 +24,7 @@ namespace Botticelli.Server.FrontNew.Handler
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", session.Token);
 
             var response = await base.SendAsync(request, cancellationToken);
-            Console.WriteLine($"Resp: {await response.Content.ReadAsStringAsync()}");
+
             return response;
         }
     }
