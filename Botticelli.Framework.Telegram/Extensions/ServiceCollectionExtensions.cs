@@ -30,8 +30,16 @@ public static class ServiceCollectionExtensions
     {
         var settings = optionsBuilder.Build();
         var secureStorage = new SecureStorage(settings.SecureStorageSettings);
-        var botKey = secureStorage.GetBotKey(BotDataUtils.GetBotId());
-        var token = botKey.Key;
+        var botId = BotDataUtils.GetBotId();
+        var botKey = secureStorage.GetBotKey(botId);
+
+        if (string.IsNullOrWhiteSpace(botKey?.Id))
+        {
+            secureStorage.SetBotKey(botId, string.Empty);
+            botKey = secureStorage.GetBotKey(botId);
+        }
+
+        var token = botKey.Key ?? string.Empty;
 
         services.AddHttpClient<BotStatusService<TelegramBot>>();
 
