@@ -102,6 +102,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{7FF17C87
 		deploy\linux\server\front\run_standalone.sh = deploy\linux\server\front\run_standalone.sh
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bundle", "Botticelli.Bundle\Botticelli.Bundle.csproj", "{F400F638-EC58-49A2-B730-BD2688FCD4E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -216,6 +218,10 @@ Global
 		{2423A645-22D1-4736-946F-10A99353581C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2423A645-22D1-4736-946F-10A99353581C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2423A645-22D1-4736-946F-10A99353581C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,8 +13,12 @@
 
 <RadzenTemplateForm TItem="BotModel" Data=@_model Submit=@OnSubmit>
     <RadzenStack Orientation="Orientation.Horizontal">
-        <RadzenText Text ="Bot key:"/>
-        <RadzenTextBox Name="LastName" @bind-Value=@_model.BotKey/>
+        <RadzenText Text ="Bot id:"/>
+        <RadzenTextBox Name="BotId" @bind-Value=@_model.BotId/>
+    </RadzenStack>
+    <RadzenStack Orientation="Orientation.Horizontal">
+        <RadzenText Text ="Bot token/key:"/>
+        <RadzenTextBox Name="Token" @bind-Value=@_model.BotKey/>
     </RadzenStack>
     <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
 </RadzenTemplateForm>
@@ -22,6 +26,7 @@
 @code {
     class BotModel
     {
+        public string BotId { get; set; }
         public string BotKey { get; set; }
     }
 
@@ -31,7 +36,7 @@
     {
         var request = new RegisterBotRequest
             {
-                BotId = Guid.NewGuid().ToString(),
+                BotId = model.BotId,
                 BotKey = model.BotKey,
                 Type = BotType.Telegram
             };

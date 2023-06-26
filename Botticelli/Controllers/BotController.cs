@@ -41,7 +41,8 @@ public class BotController
             {
                 BotId = request.BotId,
                 IsSuccess = true,
-                Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId)
+                Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId),
+                BotKey =  await _botStatusDataService.GetRequiredBotKey(request.BotId)
             };
 
     /// <summary>

@@ -119,6 +119,9 @@ public class BotStatusService<TBot> : IHostedService
                                                                                                                                                                         ct);
 
                                                                         task.Wait(cancellationToken);
+
+                                                                        _bot.SetBotKey(task.Result?.BotKey, ct);
+
                                                                         switch (task.Result?.Status)
                                                                         {
                                                                             case BotStatus.Active:

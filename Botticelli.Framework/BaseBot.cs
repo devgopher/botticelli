@@ -85,6 +85,8 @@ public abstract class BaseBot<T> : IBot<T>
         return response;
     }
 
+    public abstract Task SetBotKey(string key, CancellationToken token);
+
     /// <summary>
     ///     Sends a message
     /// </summary>

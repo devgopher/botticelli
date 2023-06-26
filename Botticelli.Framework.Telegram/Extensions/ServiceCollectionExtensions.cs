@@ -1,6 +1,5 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase;
-using Botticelli.BotBase.Extensions;
 using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Extensions;
@@ -47,7 +46,8 @@ public static class ServiceCollectionExtensions
 
         var bot = new TelegramBot(new TelegramBotClient(token),
                                   sp.GetRequiredService<IBotUpdateHandler>(),
-                                  sp.GetRequiredService<ILogger<TelegramBot>>());
+                                  sp.GetRequiredService<ILogger<TelegramBot>>(),
+                                  secureStorage);
 
         return services.AddSingleton<IBot<TelegramBot>>(bot)
                        .AddHostedService<BotStatusService<IBot<TelegramBot>>>()
