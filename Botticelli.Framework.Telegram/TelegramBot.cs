@@ -377,6 +377,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             var startRequest = StartBotRequest.GetInstance();
 
             await StopBotAsync(stopRequest, token);
+            
             _secureStorage.SetBotKey(currentKey.Id, key);
             _client = new TelegramBotClient(key);
 

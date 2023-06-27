@@ -20,6 +20,10 @@
         <RadzenText Text ="Bot token/key:"/>
         <RadzenTextBox Name="Token" @bind-Value=@_model.BotKey/>
     </RadzenStack>
+    <RadzenStack Orientation="Orientation.Horizontal">
+        <RadzenText Text ="Bot name:"/>
+        <RadzenTextBox Name="BotName" @bind-Value=@_model.BotName/>
+    </RadzenStack>
     <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
 </RadzenTemplateForm>
 
@@ -28,6 +32,7 @@
     {
         public string BotId { get; set; }
         public string BotKey { get; set; }
+        public string BotName { get; set; }
     }
 
     readonly BotModel _model = new();
@@ -38,6 +43,7 @@
             {
                 BotId = model.BotId,
                 BotKey = model.BotKey,
+                BotName = model.BotName,
                 Type = BotType.Telegram
             };
 

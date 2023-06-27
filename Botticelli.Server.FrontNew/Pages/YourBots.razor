@@ -40,8 +40,9 @@ else
                         </RadzenStack>
                         <RadzenStack Gap="0">
                             <RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotName"/>
-                            <RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotId"/>
+                            @*<RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotId"/>*@
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsAlive(bot.LastKeepAlive)"/>
+                            <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsActive(bot.Status)"/>
                             <RadzenButton Click="@(e => SendStartStop(bot.BotId, bot.Status))" Text="Start/Stop"/>
                             <br/>
                             <RadzenButton Click="@(e => RemoveBot(bot.BotId))" Text="Remove"/>
@@ -101,6 +102,13 @@ else
 
         UriHelper.NavigateTo("/your_bots", true);
     }
+
+    private static string GetIsActive(BotStatus? status) => status switch
+    {
+            BotStatus.Active    => "Active",
+            BotStatus.NonActive => "Not active",
+            _                   => "Unknown"
+            };
 
     private static string GetIsAlive(DateTime? lastKeepAlive)
             => DateTime.UtcNow - lastKeepAlive <= TimeSpan.FromSeconds(30) ? "Alive" : "Dead";
