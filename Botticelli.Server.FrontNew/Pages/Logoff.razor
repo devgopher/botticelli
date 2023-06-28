@@ -12,7 +12,7 @@
 <PageTitle>Logoff</PageTitle>
 
 <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
-    <RadzenStack Orientation="Orientation.Vertical">
+    <RadzenStack Orientation="Orientation.Vertical" Gap="5px">
         <RadzenLabel @bind-text="@_message" Style="color: green; font-weight: bold"/>
         <RadzenButton Text="Logoff" Click="async e => await DoLogoff(e)"/>
         @code

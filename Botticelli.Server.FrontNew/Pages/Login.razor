@@ -16,7 +16,7 @@
 <PageTitle>Login</PageTitle>
 
 <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
-    <RadzenStack Orientation="Orientation.Vertical">
+    <RadzenStack Orientation="Orientation.Vertical" Gap="5px">
         <RadzenTemplateForm Data=@("SimpleLogin")>
             <RadzenLogin Login="async e => await DoLogin(e)"
                          AllowRegister="false"

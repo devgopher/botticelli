@@ -12,15 +12,15 @@
 @inject CookieStorageAccessor Cookies;
 
 <RadzenTemplateForm TItem="BotModel" Data=@_model Submit=@OnSubmit>
-    <RadzenStack Orientation="Orientation.Horizontal">
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
         <RadzenText Text ="Bot id:"/>
         <RadzenTextBox Name="BotId" @bind-Value=@_model.BotId/>
     </RadzenStack>
-    <RadzenStack Orientation="Orientation.Horizontal">
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
         <RadzenText Text ="Bot token/key:"/>
         <RadzenTextBox Name="Token" @bind-Value=@_model.BotKey/>
     </RadzenStack>
-    <RadzenStack Orientation="Orientation.Horizontal">
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
         <RadzenText Text ="Bot name:"/>
         <RadzenTextBox Name="BotName" @bind-Value=@_model.BotName/>
     </RadzenStack>
