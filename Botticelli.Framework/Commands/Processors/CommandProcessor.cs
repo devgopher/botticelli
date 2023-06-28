@@ -36,12 +36,17 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
         try
         {
-            if (string.IsNullOrWhiteSpace(message.Body))
+            if (string.IsNullOrWhiteSpace(message.Body) && (message.Attachments == default &&
+                                                            message.Location == default &&
+                                                            message.Contact == default &&
+                                                            message.Poll == default))
             {
-                Logger.LogWarning("Message {msgId} has an empty body! Skipping...", message.Uid);
+                Logger.LogWarning("Message {msgId} is empty! Skipping...", message.Uid);
 
                 return;
             }
+
+            message.Body ??= string.Empty;
 
             if (Regex.IsMatch(message.Body, SimpleCommandPattern))
             {
@@ -74,6 +79,10 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                                          token,
                                          request);
             }
+
+            if (message.Location != default) await InnerProcessLocation(message, string.Empty, token);
+            if (message.Poll != default) await InnerProcessPoll(message, string.Empty, token);
+            if (message.Contact != default) await InnerProcessContact(message, string.Empty, token);
         }
         catch (Exception ex)
         {
@@ -103,6 +112,10 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             foreach (var bot in _bots) await bot.SendMessageAsync(request, token);
         }
     }
+
+    protected abstract Task InnerProcessContact(Message message, string args, CancellationToken token);
+    protected abstract Task InnerProcessPoll(Message message, string args, CancellationToken token);
+    protected abstract Task InnerProcessLocation(Message message, string args, CancellationToken token);
 
     protected abstract Task InnerProcess(Message message, string args, CancellationToken token);
 }

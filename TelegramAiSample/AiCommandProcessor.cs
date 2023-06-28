@@ -20,6 +20,24 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
             : base(logger, validator) =>
             _bus = bus;
 
+    protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
+    {
+        return;
+    }
+
+    protected override async Task InnerProcessPoll(Message message, string argsString, CancellationToken token)
+    {
+        return;
+
+    }
+
+    protected override async Task InnerProcessLocation(Message message, string argsString, CancellationToken token)
+    {
+        message.Body = $"Coordinates {message.Location.Latitude:##.#####}, {message.Location.Longitude:##.#####}";
+        await InnerProcess(message, argsString, token);
+    }
+
+
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
         var response = await _bus.GetResponse(new SendMessageRequest(message.Uid)
@@ -44,13 +62,20 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                            {
                                                Message = response.Message
                                            }, 
-                                           SendOptionsBuilder<ReplyKeyboardMarkup>.CreateBuilder(new(new[]
-                                                                                                 {
-                                                                                                     new KeyboardButton[] { "/ai Thank you!", "/ai Good bye!" },
-                                                                                                 })
-                                                                                                 {
-                                                                                                     ResizeKeyboard = true
-                                                                                                 }),
+                                           SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(new ReplyKeyboardMarkup(new[]
+                                                                                              {
+                                                                                                  new KeyboardButton[] { "/ai Thank you!", 
+                                                                                                      "/ai Good bye!", 
+                                                                                                      new KeyboardButton("/ai Where am I?")
+                                                                                                      {
+                                                                                                          RequestLocation = true
+                                                                                                      },
+                                                                                                      "/ai Tell me smth interesting"
+                                                                                                  }
+                                                                                              })
+                                                                                              {
+                                                                                                  ResizeKeyboard = true
+                                                                                              }),
                                            token);
     }
 }

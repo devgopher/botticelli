@@ -24,6 +24,8 @@ namespace Botticelli.Bus.ZeroMQTests.Mocks
         public async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
             => StopBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
 
+        public async Task SetBotKey(string key, CancellationToken token) => throw new NotImplementedException();
+
         public async Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token) 
             => SendMessageResponse.GetInstance(request.Uid);
 

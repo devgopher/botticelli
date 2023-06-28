@@ -58,4 +58,9 @@ public class Message
     /// Reply to a message with uid
     /// </summary>
     public string? ReplyToMessageUid { get; set; }
+
+    /// <summary>
+    /// GeoLocation
+    /// </summary>
+    public GeoLocation Location { get; set; }
 }

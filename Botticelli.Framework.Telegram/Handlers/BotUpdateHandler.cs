@@ -68,7 +68,12 @@ public class BotUpdateHandler : IBotUpdateHandler
                     Info = string.Empty,
                     IsBot = botMessage.ForwardFrom?.IsBot,
                     NickName = botMessage.ForwardFrom?.Username
-                }
+                },
+                Location = botMessage.Location != null ? new GeoLocation
+                {
+                    Latitude = (decimal) botMessage.Location?.Latitude,
+                    Longitude =(decimal) botMessage.Location?.Longitude
+                } : null
             };
 
             await Process(botticelliMessage, cancellationToken);
