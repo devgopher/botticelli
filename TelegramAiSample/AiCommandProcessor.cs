@@ -33,7 +33,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
 
     protected override async Task InnerProcessLocation(Message message, string argsString, CancellationToken token)
     {
-        message.Body = $"Coordinates {message.Location.Latitude:##.#####}, {message.Location.Longitude:##.#####}";
+        message.Body = $"{$"Coordinates {message.Location.Latitude:##.#####}".Replace(",", ".")},{$"{message.Location.Longitude:##.#####}".Replace(",", ".")}";
         await InnerProcess(message, argsString, token);
     }
 
@@ -66,10 +66,10 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                                                                               {
                                                                                                   new KeyboardButton[] { "/ai Thank you!", 
                                                                                                       "/ai Good bye!", 
-                                                                                                      new KeyboardButton("/ai Where am I?")
-                                                                                                      {
-                                                                                                          RequestLocation = true
-                                                                                                      },
+                                                                                                      //new("/ai Where am I?")
+                                                                                                      //{
+                                                                                                      //    RequestLocation = true
+                                                                                                      //},
                                                                                                       "/ai Tell me smth interesting"
                                                                                                   }
                                                                                               })
