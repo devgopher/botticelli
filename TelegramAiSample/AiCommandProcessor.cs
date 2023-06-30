@@ -22,13 +22,10 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
 
     protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
     {
-        return;
     }
 
     protected override async Task InnerProcessPoll(Message message, string argsString, CancellationToken token)
     {
-        return;
-
     }
 
     protected override async Task InnerProcessLocation(Message message, string argsString, CancellationToken token)
@@ -55,27 +52,29 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                                   }
                                               },
                                               token);
-        
+
         if (response != null)
             foreach (var bot in _bots)
                 await bot.SendMessageAsync(new SendMessageRequest(response.Uid)
                                            {
                                                Message = response.Message
-                                           }, 
+                                           },
                                            SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(new ReplyKeyboardMarkup(new[]
-                                                                                              {
-                                                                                                  new KeyboardButton[] { "/ai Thank you!", 
-                                                                                                      "/ai Good bye!", 
-                                                                                                      //new("/ai Where am I?")
-                                                                                                      //{
-                                                                                                      //    RequestLocation = true
-                                                                                                      //},
-                                                                                                      "/ai Tell me smth interesting"
-                                                                                                  }
-                                                                                              })
-                                                                                              {
-                                                                                                  ResizeKeyboard = true
-                                                                                              }),
+                                                                                             {
+                                                                                                 new KeyboardButton[]
+                                                                                                 {
+                                                                                                     "/ai Thank you!",
+                                                                                                     "/ai Good bye!",
+                                                                                                     //new("/ai Where am I?")
+                                                                                                     //{
+                                                                                                     //    RequestLocation = true
+                                                                                                     //},
+                                                                                                     "/ai Tell me smth interesting"
+                                                                                                 }
+                                                                                             })
+                                                                                             {
+                                                                                                 ResizeKeyboard = true
+                                                                                             }),
                                            token);
     }
 }

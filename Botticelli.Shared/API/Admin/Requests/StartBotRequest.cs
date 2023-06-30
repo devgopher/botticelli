@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Shared.API.Admin.Requests;
+﻿using Botticelli.Shared.Utils;
+
+namespace Botticelli.Shared.API.Admin.Requests;
 
 public class StartBotRequest : BaseRequest<StartBotRequest>
 {
@@ -6,5 +8,5 @@ public class StartBotRequest : BaseRequest<StartBotRequest>
     {
     }
 
-    public static StartBotRequest GetInstance() => new(Utils.BotIdUtils.GenerateShortBotId());
+    public static StartBotRequest GetInstance() => new(BotIdUtils.GenerateShortBotId());
 }

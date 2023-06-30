@@ -1,8 +1,7 @@
-﻿namespace Botticelli.Shared.ValueObjects
+﻿namespace Botticelli.Shared.ValueObjects;
+
+public class GeoLocation
 {
-    public class GeoLocation
-    {
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
-    }
+    public decimal Latitude { get; set; }
+    public decimal Longitude { get; set; }
 }

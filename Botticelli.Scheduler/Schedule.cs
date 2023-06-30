@@ -1,7 +1,6 @@
-﻿namespace Botticelli.Scheduler
+﻿namespace Botticelli.Scheduler;
+
+public class Schedule
 {
-    public class Schedule
-    {
-        public string Cron { get; set; }
-    }
+    public string Cron { get; set; }
 }

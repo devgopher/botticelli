@@ -27,9 +27,9 @@ public class BotStatusService<TBot> : IHostedService
     private readonly ManualResetEventSlim _getRequiredStatusEvent = new(false);
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ManualResetEventSlim _keepAliveEvent = new(false);
+    private readonly ILogger<BotStatusService<TBot>> _logger;
     private readonly ServerSettings _serverSettings;
     private readonly BotType _type;
-    private readonly ILogger<BotStatusService<TBot>> _logger;
     private TBot _bot;
     private Task _getRequiredStatusEventTask;
     private Task _keepAliveTask;
@@ -85,10 +85,12 @@ public class BotStatusService<TBot> : IHostedService
         if (!_keepAliveTask.IsFaulted)
         {
             _logger.LogTrace($"{nameof(KeepAlive)} sent for bot: {_botId}");
+
             return;
         }
 
         _logger.LogError($"KeepAlive error: {_keepAliveTask.Exception?.Message}");
+
         throw new BotException($"{nameof(KeepAlive)} exception: {_keepAliveTask.Exception?.Message}",
                                _keepAliveTask.Exception);
     }
@@ -115,8 +117,8 @@ public class BotStatusService<TBot> : IHostedService
                                             .ExecuteAndCaptureAsync(ct =>
                                                                     {
                                                                         var task = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
-                                                                                                                                                                        "/bot/client/GetRequiredBotStatus",
-                                                                                                                                                                        ct);
+                                                                                                                                                                      "/bot/client/GetRequiredBotStatus",
+                                                                                                                                                                      ct);
 
                                                                         task.Wait(cancellationToken);
 
@@ -143,7 +145,7 @@ public class BotStatusService<TBot> : IHostedService
     }
 
     /// <summary>
-    /// Inner send
+    ///     Inner send
     /// </summary>
     /// <typeparam name="TReq">Request</typeparam>
     /// <typeparam name="TResp">Response</typeparam>

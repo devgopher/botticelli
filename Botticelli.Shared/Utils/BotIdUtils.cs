@@ -4,14 +4,13 @@ namespace Botticelli.Shared.Utils;
 
 public static class BotIdUtils
 {
-    private static Random _rand = new(DateTime.Now.Nanosecond);
+    private static readonly Random _rand = new(DateTime.Now.Nanosecond);
 
     private static byte[] GenerateSalt(int size)
     {
         var salt = new byte[size];
 
-        for (int i = 0; i < size; i++) 
-            salt[i] = (byte) (_rand.Next() % (byte.MaxValue + 1));
+        for (var i = 0; i < size; i++) salt[i] = (byte) (_rand.Next() % (byte.MaxValue + 1));
 
         return salt;
     }
@@ -22,18 +21,15 @@ public static class BotIdUtils
         var shortest = a1.Length < a2.Length ? a1 : a2;
         var longest = a1.Length > a2.Length ? a1 : a2;
 
-        for (int i = 0; i < min; ++i) 
-            longest[i] |= shortest[i];
+        for (var i = 0; i < min; ++i) longest[i] |= shortest[i];
 
 
         return longest;
     }
 
     public static string GenerateShortBotId()
-        => Regex.Replace(Convert.ToBase64String(BitWiseSum(Guid.NewGuid().ToByteArray(), 
+        => Regex.Replace(Convert.ToBase64String(BitWiseSum(Guid.NewGuid().ToByteArray(),
                                                            GenerateSalt(32))),
-                         "[/+=]", 
+                         "[/+=]",
                          string.Empty);
-
-
 }

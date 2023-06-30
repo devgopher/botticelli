@@ -21,8 +21,7 @@ public class CommandProcessorFactory
                 command.ToUpperInvariant() :
                 $"{command[..1].ToUpperInvariant()}{command[1..].ToLowerInvariant()}";
 
-        if (_types.Keys.All(t => t.Name.Replace("Command", string.Empty) != canonized)) 
-            return _serviceProvider.GetRequiredService<CommandProcessor<Unknown>>();
+        if (_types.Keys.All(t => t.Name.Replace("Command", string.Empty) != canonized)) return _serviceProvider.GetRequiredService<CommandProcessor<Unknown>>();
 
         var type = _types.First(k => k.Key
                                       .Name

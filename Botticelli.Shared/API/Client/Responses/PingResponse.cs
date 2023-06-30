@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Shared.API.Client.Responses;
+﻿using Botticelli.Shared.Utils;
+
+namespace Botticelli.Shared.API.Client.Responses;
 
 public class PingResponse : BaseResponse<PingResponse>
 {
@@ -6,7 +8,7 @@ public class PingResponse : BaseResponse<PingResponse>
     {
     }
 
-    public static PingResponse GetInstance() => new(Utils.BotIdUtils.GenerateShortBotId());
+    public static PingResponse GetInstance() => new(BotIdUtils.GenerateShortBotId());
 
     public static PingResponse GetInstance(string uid) => new(uid);
 }

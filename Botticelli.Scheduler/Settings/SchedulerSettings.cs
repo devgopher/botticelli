@@ -1,10 +1,9 @@
-﻿namespace Botticelli.Scheduler.Settings
+﻿namespace Botticelli.Scheduler.Settings;
+
+public class SchedulerSettings
 {
-    public class SchedulerSettings
-    {
-        /// <summary>
-        /// Job storage DB connection string
-        /// </summary>
-        public string JobStorageConnectionString { get; set; }
-    }
+    /// <summary>
+    ///     Job storage DB connection string
+    /// </summary>
+    public string JobStorageConnectionString { get; set; }
 }

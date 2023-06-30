@@ -1,7 +1,6 @@
-﻿namespace Botticelli.Server.FrontNew.Models
+﻿namespace Botticelli.Server.FrontNew.Models;
+
+public class Error
 {
-    public class Error
-    {
-        public string UserMessage { get; set; }
-    }
+    public string UserMessage { get; set; }
 }

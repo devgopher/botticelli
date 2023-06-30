@@ -6,53 +6,53 @@ using Botticelli.Server.Models.Responses;
 using Flurl;
 using Microsoft.Extensions.Options;
 
-namespace Botticelli.Server.FrontNew.Clients
+namespace Botticelli.Server.FrontNew.Clients;
+
+public class SessionClient
 {
-    public class SessionClient
+    private readonly IOptionsMonitor<BackSettings> _backSettings;
+    private readonly HttpClient _httpClient;
+    private Session _session;
+
+    public SessionClient(IOptionsMonitor<BackSettings> backSettings)
     {
-        private Session _session;
-        private readonly IOptionsMonitor<BackSettings> _backSettings;
-        private readonly HttpClient _httpClient;
-
-        public SessionClient(IOptionsMonitor<BackSettings> backSettings)
-        {
-            _httpClient = new HttpClient();
-            _backSettings = backSettings;
-        }
-
-        public async Task<(Session session, Error error)> CreateSession(string login, string password)
-        {
-            var request = new UserLoginPost
-            {
-                Email = login,
-                Password = password
-            };
-
-            var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                                                                         "/login/GetToken"), request);
-
-            var tokenResponse = await response.Content.ReadFromJsonAsync<GetTokenResponse>();
-
-            if (!tokenResponse.IsSuccess)
-                return new ValueTuple<Session, Error>(default,
-                                                      new Error
-                                                      {
-                                                          UserMessage = "Login error!"
-                                                      });
-
-            _session = new Session
-            {
-                SessionId = Convert.ToBase64String(Guid.NewGuid().ToByteArray()),
-                Token = tokenResponse.Token,
-                Login = login
-            };
-
-            return (_session, new Error
-            {
-                UserMessage = "Success"
-            });
-        }
-
-        public Session GetSession() => _session;
+        _httpClient = new HttpClient();
+        _backSettings = backSettings;
     }
+
+    public async Task<(Session session, Error error)> CreateSession(string login, string password)
+    {
+        var request = new UserLoginPost
+        {
+            Email = login,
+            Password = password
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
+                                                                     "/login/GetToken"),
+                                                         request);
+
+        var tokenResponse = await response.Content.ReadFromJsonAsync<GetTokenResponse>();
+
+        if (!tokenResponse.IsSuccess)
+            return new ValueTuple<Session, Error>(default,
+                                                  new Error
+                                                  {
+                                                      UserMessage = "Login error!"
+                                                  });
+
+        _session = new Session
+        {
+            SessionId = Convert.ToBase64String(Guid.NewGuid().ToByteArray()),
+            Token = tokenResponse.Token,
+            Login = login
+        };
+
+        return (_session, new Error
+        {
+            UserMessage = "Success"
+        });
+    }
+
+    public Session GetSession() => _session;
 }

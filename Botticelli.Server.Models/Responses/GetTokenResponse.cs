@@ -1,8 +1,7 @@
-﻿namespace Botticelli.Server.Models.Responses
+﻿namespace Botticelli.Server.Models.Responses;
+
+public class GetTokenResponse
 {
-    public class GetTokenResponse
-    {
-        public bool IsSuccess { get; set; }
-        public string Token { get; set; }
-    }
+    public bool IsSuccess { get; set; }
+    public string Token { get; set; }
 }

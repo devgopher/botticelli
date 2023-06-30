@@ -5,7 +5,6 @@ using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.MessageProcessors;
 using Botticelli.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace Botticelli.Framework.Extensions;
 

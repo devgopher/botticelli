@@ -32,7 +32,10 @@ public class BotManagementService : IBotManagementService
     /// <param name="botName"></param>
     /// <param name="botType"></param>
     /// <returns></returns>
-    public async Task<bool> RegisterBot(string botId, string botKey, string botName, BotType botType)
+    public async Task<bool> RegisterBot(string botId,
+                                        string botKey,
+                                        string botName,
+                                        BotType botType)
     {
         try
         {
@@ -114,14 +117,6 @@ public class BotManagementService : IBotManagementService
         }
     }
 
-    /// <summary>
-    ///     Gets a bot required status for answering on a poll request from a bot
-    /// </summary>
-    /// <param name="botId"></param>
-    /// <returns></returns>
-    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
-        => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
-
     public async Task RemoveBot(string botId)
     {
         await SetRequiredBotStatus(botId, BotStatus.NonActive);
@@ -134,6 +129,14 @@ public class BotManagementService : IBotManagementService
             await _context.SaveChangesAsync();
         }
     }
+
+    /// <summary>
+    ///     Gets a bot required status for answering on a poll request from a bot
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <returns></returns>
+    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
+        => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
 
     /// <summary>
     ///     Add a new bot info to a DB

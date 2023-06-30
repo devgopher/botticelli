@@ -1,16 +1,16 @@
+using System.Text;
 using BotDataSecureStorage;
 using BotDataSecureStorage.Settings;
 using Botticelli.Server.Data;
 using Botticelli.Server.Services;
 using Botticelli.Server.Services.Auth;
+using Botticelli.Server.Settings;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
-using Botticelli.Server.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +21,8 @@ var secureStorageSettings = builder.Configuration
 builder.Services.AddEndpointsApiExplorer()
        .AddSwaggerGen(options =>
        {
-           options.AddSecurityDefinition(name: "Bearer",
-                                         securityScheme: new OpenApiSecurityScheme
+           options.AddSecurityDefinition("Bearer",
+                                         new OpenApiSecurityScheme
                                          {
                                              Name = "Authorization",
                                              Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
@@ -51,7 +51,7 @@ builder.Services.Configure<ServerSettings>(nameof(ServerSettings), builder.Confi
 
 builder.Services
        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-       .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters()
+       .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
        {
            ClockSkew = TimeSpan.Zero,
            ValidateIssuer = true,
@@ -71,9 +71,9 @@ builder.Services
        .AddSingleton<IMapper, Mapper>()
        .AddDbContext<BotInfoContext>(c => c.UseSqlite(@"Data source=botInfo.Db"));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>  options
-                                                              .SignIn
-                                                              .RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options
+                                                             .SignIn
+                                                             .RequireConfirmedAccount = true)
        .AddEntityFrameworkStores<BotInfoContext>();
 builder.Services.AddRazorPages();
 

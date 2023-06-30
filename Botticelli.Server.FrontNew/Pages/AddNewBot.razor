@@ -1,33 +1,34 @@
 ﻿@page "/add_bot"
-@using Botticelli.Shared.API.Client.Requests
-@using Botticelli.Shared.Constants
-@inject HttpClient Http
 @using Botticelli.Server.FrontNew.Settings
-@using Flurl
 @using Microsoft.Extensions.Options
-@using System.Net.Http.Headers
+@using Botticelli.Shared.API.Client.Requests
 @using Botticelli.Shared.API.Client.Responses
+@using Botticelli.Shared.Constants
+@using Flurl
+@using System.Net.Http.Headers
+@inject HttpClient Http
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
 @inject CookieStorageAccessor Cookies;
 
-<RadzenTemplateForm TItem="BotModel" Data=@_model Submit=@OnSubmit>
+<RadzenTemplateForm TItem="BotModel" Data="@_model" Submit="@OnSubmit">
     <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
-        <RadzenText Text ="Bot id:"/>
-        <RadzenTextBox Name="BotId" @bind-Value=@_model.BotId/>
+        <RadzenText Text="Bot id:"/>
+        <RadzenTextBox Name="BotId" @bind-Value="@_model.BotId"/>
     </RadzenStack>
     <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
-        <RadzenText Text ="Bot token/key:"/>
-        <RadzenTextBox Name="Token" @bind-Value=@_model.BotKey/>
+        <RadzenText Text="Bot token/key:"/>
+        <RadzenTextBox Name="Token" @bind-Value="@_model.BotKey"/>
     </RadzenStack>
     <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
-        <RadzenText Text ="Bot name:"/>
-        <RadzenTextBox Name="BotName" @bind-Value=@_model.BotName/>
+        <RadzenText Text="Bot name:"/>
+        <RadzenTextBox Name="BotName" @bind-Value="@_model.BotName"/>
     </RadzenStack>
-    <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
+    <RadzenButton ButtonType="ButtonType.Submit" Text="Save"/>
 </RadzenTemplateForm>
 
 @code {
+
     class BotModel
     {
         public string BotId { get; set; }
@@ -36,27 +37,29 @@
     }
 
     readonly BotModel _model = new();
-    
+
     private async Task OnSubmit(BotModel model)
     {
         var request = new RegisterBotRequest
-            {
-                BotId = model.BotId,
-                BotKey = model.BotKey,
-                BotName = model.BotName,
-                Type = BotType.Telegram
-            };
+        {
+            BotId = model.BotId,
+            BotKey = model.BotKey,
+            BotName = model.BotName,
+            Type = BotType.Telegram
+        };
 
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
 
-        if (string.IsNullOrWhiteSpace(sessionToken)) return;
+        if (string.IsNullOrWhiteSpace(sessionToken))
+            return;
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
-        var response = await Http.PostAsJsonAsync( Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/AddNewBot"),
-                                    request);
+        var response = await Http.PostAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/AddNewBot"),
+                                                  request);
 
         var addBotResponse = await response.Content.ReadFromJsonAsync<RegisterBotResponse>();
 
         UriHelper.NavigateTo("/your_bots", true);
     }
+
 }

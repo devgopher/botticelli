@@ -50,8 +50,8 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
     public async Task SendResponseAsync(SendMessageResponse response,
-                                   CancellationToken token,
-                                   int timeoutMs = 60000)
+                                        CancellationToken token,
+                                        int timeoutMs = 60000)
     {
         try
         {

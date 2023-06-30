@@ -13,6 +13,7 @@
     <RadzenStack Orientation="Orientation.Vertical" Gap="5px">
         <RadzenLabel @bind-text="@_message" Style="color: green; font-weight: bold"/>
         <RadzenButton Text="Logoff" Click="async e => await DoLogoff(e)"/>
+
         @code
         {
             public async Task DoLogoff(MouseEventArgs args)
@@ -21,5 +22,6 @@
                 UriHelper.NavigateTo("/");
             }
         }
+
     </RadzenStack>
 </RadzenCard>

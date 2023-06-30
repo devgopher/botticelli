@@ -1,5 +1,4 @@
 ﻿using Botticelli.Framework.Events;
-using Botticelli.Framework.SendOptions;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
@@ -18,30 +17,25 @@ namespace Botticelli.Framework;
 public abstract class BaseBot<T> : IBot<T>
         where T : BaseBot<T>
 {
-    public BaseBot(ILogger logger)
-    {
-        _logger = logger;
-        IsStarted = false;
-    }
-
-    public delegate void StartedEventHandler(object sender, StartedBotEventArgs e);
-
-    public delegate void StoppedEventHandler(object sender, StoppedBotEventArgs e);
-
-    public delegate void MsgSentEventHandler(object sender, MessageSentBotEventArgs e);
+    public delegate void MessengerSpecificEventHandler(object sender, MessengerSpecificBotEventArgs<T> e);
 
     public delegate void MsgReceivedEventHandler(object sender, MessageReceivedBotEventArgs e);
 
     public delegate void MsgRemovedEventHandler(object sender, MessageRemovedBotEventArgs e);
 
-    public delegate void MessengerSpecificEventHandler(object sender, MessengerSpecificBotEventArgs<T> e);
+    public delegate void MsgSentEventHandler(object sender, MessageSentBotEventArgs e);
 
-    public event StartedEventHandler Started;
-    public event StoppedEventHandler Stopped;
-    public abstract event MsgReceivedEventHandler MessageReceived;
-    public abstract event MsgRemovedEventHandler MessageRemoved;
-    public abstract event MessengerSpecificEventHandler MessengerSpecificEvent;
+    public delegate void StartedEventHandler(object sender, StartedBotEventArgs e);
+
+    public delegate void StoppedEventHandler(object sender, StoppedBotEventArgs e);
+
     protected readonly ILogger _logger;
+
+    public BaseBot(ILogger logger)
+    {
+        _logger = logger;
+        IsStarted = false;
+    }
 
     protected bool IsStarted { get; set; }
 
@@ -93,7 +87,7 @@ public abstract class BaseBot<T> : IBot<T>
     /// <param name="request">Request</param>
     /// <returns></returns>
     public Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token)
-            => SendMessageAsync<object>(request, null, token);
+        => SendMessageAsync<object>(request, null, token);
 
 
     /// <summary>
@@ -104,10 +98,16 @@ public abstract class BaseBot<T> : IBot<T>
     /// <returns></returns>
     public abstract Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
                                                                              ISendOptionsBuilder<TSendOptions> optionsBuilder,
-                                                                             CancellationToken token) 
+                                                                             CancellationToken token)
             where TSendOptions : class;
 
     public abstract Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token);
 
     public abstract BotType Type { get; }
+
+    public event StartedEventHandler Started;
+    public event StoppedEventHandler Stopped;
+    public abstract event MsgReceivedEventHandler MessageReceived;
+    public abstract event MsgRemovedEventHandler MessageRemoved;
+    public abstract event MessengerSpecificEventHandler MessengerSpecificEvent;
 }

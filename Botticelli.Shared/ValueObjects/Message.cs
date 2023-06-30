@@ -30,17 +30,17 @@ public class Message
     public string? Body { get; set; }
 
     /// <summary>
-    ///     Message attachmentsя 
+    ///     Message attachmentsя
     /// </summary>
     public ICollection<IAttachment>? Attachments { get; set; }
 
     /// <summary>
-    /// From user
+    ///     From user
     /// </summary>
     public User? From { get; set; }
 
     /// <summary>
-    /// Forwarded from user
+    ///     Forwarded from user
     /// </summary>
     public User? ForwardedFrom { get; set; }
 
@@ -55,12 +55,12 @@ public class Message
     public Poll? Poll { get; set; }
 
     /// <summary>
-    /// Reply to a message with uid
+    ///     Reply to a message with uid
     /// </summary>
     public string? ReplyToMessageUid { get; set; }
 
     /// <summary>
-    /// GeoLocation
+    ///     GeoLocation
     /// </summary>
     public GeoLocation Location { get; set; }
 }

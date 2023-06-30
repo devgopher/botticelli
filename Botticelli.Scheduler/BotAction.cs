@@ -14,32 +14,11 @@ namespace Botticelli.Scheduler;
 ///     with some reliability parameters
 /// </summary>
 public class BotAction<TBot> : IJob
-where  TBot : IBot
+        where TBot : IBot
 {
     private AsyncRetryPolicy<SendMessageResponse> _sendExceptionPolicy;
     private AsyncRetryPolicy<SendMessageResponse> _sendOkPolicy;
     private AsyncPolicyWrap<SendMessageResponse> _sendPolicy;
-    //private readonly ILogger _logger;
-
-    private void AcceptParams()
-    {
-        if (!Reliability.IsEnabled) return;
-
-        _sendOkPolicy = Policy<SendMessageResponse>
-                        .HandleResult(resp => resp.MessageSentStatus != MessageSentStatus.Ok)
-                        .WaitAndRetryAsync(Reliability.MaxTries,
-                                           n => Reliability.IsExponential ?
-                                                   TimeSpan.FromSeconds(n * Math.Exp(Reliability.Delay.TotalSeconds)) :
-                                                   Reliability.Delay);
-        _sendExceptionPolicy = Policy<SendMessageResponse>
-                               .Handle<Exception>()
-                               .WaitAndRetryAsync(Reliability.MaxTries,
-                                                  n => Reliability.IsExponential ?
-                                                          TimeSpan.FromSeconds(n * Math.Exp(Reliability.Delay.TotalSeconds)) :
-                                                          Reliability.Delay);
-
-        _sendPolicy = _sendExceptionPolicy.WrapAsync(_sendOkPolicy);
-    }
 
     public Message Message { get; set; }
     public IBot Bot { get; set; }
@@ -75,5 +54,26 @@ where  TBot : IBot
         {
             //_logger.LogError(ex, $"{nameof(RunAsync)}() error: {ex.Message}!");
         }
+    }
+    //private readonly ILogger _logger;
+
+    private void AcceptParams()
+    {
+        if (!Reliability.IsEnabled) return;
+
+        _sendOkPolicy = Policy<SendMessageResponse>
+                        .HandleResult(resp => resp.MessageSentStatus != MessageSentStatus.Ok)
+                        .WaitAndRetryAsync(Reliability.MaxTries,
+                                           n => Reliability.IsExponential ?
+                                                   TimeSpan.FromSeconds(n * Math.Exp(Reliability.Delay.TotalSeconds)) :
+                                                   Reliability.Delay);
+        _sendExceptionPolicy = Policy<SendMessageResponse>
+                               .Handle<Exception>()
+                               .WaitAndRetryAsync(Reliability.MaxTries,
+                                                  n => Reliability.IsExponential ?
+                                                          TimeSpan.FromSeconds(n * Math.Exp(Reliability.Delay.TotalSeconds)) :
+                                                          Reliability.Delay);
+
+        _sendPolicy = _sendExceptionPolicy.WrapAsync(_sendOkPolicy);
     }
 }

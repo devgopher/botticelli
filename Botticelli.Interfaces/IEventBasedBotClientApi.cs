@@ -6,7 +6,7 @@ namespace Botticelli.Interfaces;
 public interface IEventBasedBotClientApi
 {
     /// <summary>
-    /// Sends a message
+    ///     Sends a message
     /// </summary>
     /// <param name="request">Message request</param>
     /// <param name="token">Cancellation token</param>
@@ -14,7 +14,7 @@ public interface IEventBasedBotClientApi
     public Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token);
 
     /// <summary>
-    /// Sends a message
+    ///     Sends a message
     /// </summary>
     /// <param name="request">Message request</param>
     /// <param name="optionsBuilder">Specific options for a particular messenger (for example, ReplyMarkup for Telegram)</param>

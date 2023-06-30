@@ -10,10 +10,10 @@
     private void ToggleNavMenu() => _collapseNavMenu = !_collapseNavMenu;
 
     /// <summary>
-    /// Method invoked when the component is ready to start, having received its
-    /// initial parameters from its parent in the render tree.
-    /// Override this method if you will perform an asynchronous operation and
-    /// want the component to refresh when that operation is completed.
+    ///     Method invoked when the component is ready to start, having received its
+    ///     initial parameters from its parent in the render tree.
+    ///     Override this method if you will perform an asynchronous operation and
+    ///     want the component to refresh when that operation is completed.
     /// </summary>
     /// <returns>A <see cref="T:System.Threading.Tasks.Task" /> representing any asynchronous operation.</returns>
     protected override async Task OnInitializedAsync()
@@ -59,6 +59,6 @@
             </NavLink>
         </div>
     </nav>
-    
+
     @*<RadzenLabel @bind-text="@_error" Style="color: red; font-weight: bold" />*@
 </div>

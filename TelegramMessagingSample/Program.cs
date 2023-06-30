@@ -11,8 +11,8 @@ using TelegramMessagingSample.Settings;
 var builder = WebApplication.CreateBuilder(args);
 
 var settings = builder.Configuration
-                            .GetSection(nameof(SampleSettings))
-                            .Get<SampleSettings>();
+                      .GetSection(nameof(SampleSettings))
+                      .Get<SampleSettings>();
 
 builder.Services
        .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))

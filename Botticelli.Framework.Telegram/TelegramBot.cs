@@ -1,4 +1,5 @@
-﻿using BotDataSecureStorage;
+﻿using System.Text;
+using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
@@ -13,7 +14,6 @@ using Botticelli.Shared.Constants;
 using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
-using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
@@ -23,10 +23,9 @@ namespace Botticelli.Framework.Telegram;
 
 public class TelegramBot : BaseBot<TelegramBot>
 {
-    private ITelegramBotClient _client;
     private readonly IBotUpdateHandler _handler;
-    private readonly ILogger<TelegramBot> _logger;
     private readonly SecureStorage _secureStorage;
+    private ITelegramBotClient _client;
 
     /// <summary>
     ///     ctor
@@ -35,14 +34,14 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="handler"></param>
     /// <param name="logger"></param>
     /// <param name="secureStorage"></param>
-    /// <param name="services"></param>
-    public TelegramBot(ITelegramBotClient client, IBotUpdateHandler handler, ILogger<TelegramBot> logger,
+    public TelegramBot(ITelegramBotClient client,
+                       IBotUpdateHandler handler,
+                       ILogger<TelegramBot> logger,
                        SecureStorage secureStorage) : base(logger)
     {
         IsStarted = false;
         _client = client;
         _handler = handler;
-        _logger = logger;
         _secureStorage = secureStorage;
     }
 
@@ -139,7 +138,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             text = Escape(text);
             var retText = text.ToString();
-            
+
             if (!string.IsNullOrWhiteSpace(retText))
                 await _client.SendTextMessageAsync(request.Message.ChatId,
                                                    retText,
@@ -167,8 +166,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                             cancellationToken: token);
             }
 
-            if (request.Message?.Contact != default) 
-                await SendContact<TSendOptions>(request, token, replyMarkup);
+            if (request.Message?.Contact != default) await SendContact<TSendOptions>(request, token, replyMarkup);
 
             if (request.Message?.Attachments != null)
                 foreach (var genAttach in request.Message.Attachments.Where(a => a is BinaryAttachment))
@@ -259,7 +257,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         return response;
     }
 
-    private async Task SendContact<TSendOptions>(SendMessageRequest request, CancellationToken token, IReplyMarkup replyMarkup) 
+    private async Task SendContact<TSendOptions>(SendMessageRequest request, CancellationToken token, IReplyMarkup replyMarkup)
         => await _client.SendContactAsync(request.Message?.ChatId,
                                           request.Message.Contact?.Phone,
                                           request.Message?.Contact?.Name,
@@ -376,7 +374,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             var startRequest = StartBotRequest.GetInstance();
 
             await StopBotAsync(stopRequest, token);
-            
+
             _secureStorage.SetBotKey(currentKey.Id, key);
             _client = new TelegramBotClient(key);
 

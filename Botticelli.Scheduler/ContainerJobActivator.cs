@@ -12,13 +12,13 @@ public class ContainerJobActivator : JobActivator
     public override object ActivateJob(Type type)
     {
         var realTypeDescriptor = _services
-                       .AsEnumerable()
-                       .FirstOrDefault(s => s.ServiceType.IsInterface && 
-                                            s.ServiceType
-                                             .FullName
-                                             .ToLowerInvariant()
-                                             .Contains(type.Name.ToLowerInvariant()));
+                                 .AsEnumerable()
+                                 .FirstOrDefault(s => s.ServiceType.IsInterface &&
+                                                      s.ServiceType
+                                                       .FullName
+                                                       .ToLowerInvariant()
+                                                       .Contains(type.Name.ToLowerInvariant()));
 
-        return  _services.BuildServiceProvider().GetRequiredService(realTypeDescriptor.ServiceType);
+        return _services.BuildServiceProvider().GetRequiredService(realTypeDescriptor.ServiceType);
     }
 }

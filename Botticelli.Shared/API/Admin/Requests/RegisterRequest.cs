@@ -8,6 +8,4 @@ public class RegisterRequest
 
     [DataType(DataType.Password)]
     public string Password { get; set; }
-
-
 }

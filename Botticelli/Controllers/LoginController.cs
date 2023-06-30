@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Botticelli.Server.Controllers;
 
 /// <summary>
-/// Login controller for login/logoff/registration and access checking functions
+///     Login controller for login/logoff/registration and access checking functions
 /// </summary>
 [ApiController]
 [AllowAnonymous]
 [Route("login")]
-public class LoginController 
+public class LoginController
 {
     private readonly AdminAuthService _adminAuthService;
 

@@ -111,8 +111,7 @@ namespace Viber.Api
 
                         if (deserialized == default) continue;
 
-                        if (GotMessage != default)
-                            GotMessage(deserialized);
+                        if (GotMessage != default) GotMessage(deserialized);
                     }
                     else
                     {
@@ -131,7 +130,7 @@ namespace Viber.Api
                                                          CancellationToken cancellationToken)
         {
             using var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(/*_settings.RemoteUrl*/ _settings.HookUrl);
+            httpClient.BaseAddress = new Uri( /*_settings.RemoteUrl*/ _settings.HookUrl);
 
             var content = JsonContent.Create(request);
 

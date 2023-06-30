@@ -1,18 +1,17 @@
 ﻿@page "/your_bots"
 @using Botticelli.Server.Data.Entities
-@using Botticelli.Server.FrontNew.Clients
-@using Botticelli.Server.FrontNew.Settings
 @using Botticelli.Shared.API.Admin.Responses
-@using Microsoft.Extensions.Options
-@using System.Net.Http.Headers
 @using Botticelli.Shared.Constants
+@using Microsoft.Extensions.Options
+@using Botticelli.Server.FrontNew.Settings
+@using System.Net.Http.Headers
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
 @inject CookieStorageAccessor Cookies;
 @inject IJSRuntime JSRuntime;
 
 @code {
-    private string _error= string.Empty;
+    private string _error = string.Empty;
 }
 
 <PageTitle>Your bots</PageTitle>
@@ -36,7 +35,7 @@ else
                 {
                     <RadzenCard Style="@(GetStyle(bot))">
                         <RadzenStack Gap="5px" JustifyContent="JustifyContent.Center">
-                            <RadzenImage Path="@GetLogo(bot.Type)" Style="width: 100px; height: 100px; align-content: center"/>
+                            <RadzenImage Path="@GetLogo(bot.Type)" Style="align-content: center; height: 100px; width: 100px;"/>
                         </RadzenStack>
                         <RadzenStack Gap="10px">
                             <RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotName"/>
@@ -53,8 +52,8 @@ else
     </RadzenStack>
 
    @*<RadzenLabel @bind-text="@_error" Style="color: red; font-weight: bold" />*@
-    
-    <RadzenButton Click="@(e => UriHelper.NavigateTo("/add_bot", true))" 
+
+    <RadzenButton Click="@(e => UriHelper.NavigateTo("/add_bot", true))"
                   ButtonStyle="ButtonStyle.Primary"
                   Style="width: 100%"
                   Text="Add bot"/>
@@ -88,7 +87,8 @@ else
 
     private async Task RemoveBot(string botId)
     {
-        if (!await JSRuntime.InvokeAsync<bool>("confirm", new object[] {"Are you sure?"})) return;
+        if (!await JSRuntime.InvokeAsync<bool>("confirm", new object[] {"Are you sure?"}))
+            return;
 
         await _http.GetAsync($"/admin/RemoveBot?botId={botId}");
         UriHelper.NavigateTo("/your_bots", true);
@@ -127,9 +127,9 @@ else
 
     private string GetStyle(BotInfo bot) => bot.Status switch
     {
-        BotStatus.Active => $"width: 200px; background-color: {(GetIsAlive(bot.LastKeepAlive) == "Alive" ? "greenyellow" : "gainsboro")}",
-        BotStatus.NonActive => $"width: 200px; background-color: red",
-        _ => "width: 200px; background-color: gray"
+            BotStatus.Active => $"width: 200px; background-color: {(GetIsAlive(bot.LastKeepAlive) == "Alive" ? "greenyellow" : "gainsboro")}",
+            BotStatus.NonActive => "width: 200px; background-color: red",
+            _ => "width: 200px; background-color: gray"
             };
 
 }
