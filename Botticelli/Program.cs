@@ -116,6 +116,11 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
+app.UseCors(options => options.AllowAnyOrigin()
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials());
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -123,10 +128,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-app.UseCors(options => options.AllowAnyOrigin()
-                              .AllowAnyHeader()
-                              .AllowAnyMethod());
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

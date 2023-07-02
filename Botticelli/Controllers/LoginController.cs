@@ -1,6 +1,7 @@
 ﻿using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Controllers;
@@ -10,6 +11,7 @@ namespace Botticelli.Server.Controllers;
 /// </summary>
 [ApiController]
 [AllowAnonymous]
+[EnableCors]
 [Route("login")]
 public class LoginController
 {
