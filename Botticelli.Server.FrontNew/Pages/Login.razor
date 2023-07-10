@@ -7,10 +7,26 @@
 
 @code
 {
+    private bool _hasAnyUsers = false;
     private readonly Error _error = new()
     {
         UserMessage = string.Empty
     };
+
+    /// <summary>
+    ///     Method invoked when the component is ready to start, having received its
+    ///     initial parameters from its parent in the render tree.
+    ///     Override this method if you will perform an asynchronous operation and
+    ///     want the component to refresh when that operation is completed.
+    /// </summary>
+    /// <returns>A <see cref="T:System.Threading.Tasks.Task" /> representing any asynchronous operation.</returns>
+    protected override async Task OnInitializedAsync()
+    {
+        _hasAnyUsers = await SessionClient.HasUsersAsync();
+
+        if (!_hasAnyUsers)
+            UriHelper.NavigateTo("/register", true);
+    }
 }
 
 <PageTitle>Login</PageTitle>

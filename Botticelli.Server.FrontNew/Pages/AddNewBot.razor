@@ -12,19 +12,39 @@
 @inject CookieStorageAccessor Cookies;
 
 <RadzenTemplateForm TItem="BotModel" Data="@_model" Submit="@OnSubmit">
-    <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
-        <RadzenText Text="Bot id:"/>
-        <RadzenTextBox Name="BotId" @bind-Value="@_model.BotId"/>
-    </RadzenStack>
-    <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
-        <RadzenText Text="Bot token/key:"/>
-        <RadzenTextBox Name="Token" @bind-Value="@_model.BotKey"/>
-    </RadzenStack>
-    <RadzenStack Orientation="Orientation.Horizontal" Gap="5px">
-        <RadzenText Text="Bot name:"/>
-        <RadzenTextBox Name="BotName" @bind-Value="@_model.BotName"/>
-    </RadzenStack>
-    <RadzenButton ButtonType="ButtonType.Submit" Text="Save"/>
+    <ChildContent>
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Bot id:" Component="BotId" style="width: 100%;"/>
+            </div>
+            <div class="col-md-9">
+                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotId" Name="BotId" />
+                <RadzenRequiredValidator Component="BotId" Text="Bot id shouldn't be empty!" style="position: absolute;"/>
+            </div>
+        </div>
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Bot key:" Component="BotKey" style="width: 100%;"/>
+            </div>
+            <div class="col-md-9">
+                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotKey" Name="BotKey" />
+                <RadzenRequiredValidator Component="BotKey" Text="Bot key shouldn't be empty!" style="position: absolute;" />
+            </div>
+        </div>
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Bot name:" Component="BotName" style="width: 100%;">
+                </RadzenLabel>
+            </div>
+            <div class="col-md-9">
+                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotName" Name="BotName" />
+                <RadzenRequiredValidator Component="BotName" Text="Bot name shouldn't be empty!" style="position: absolute;" />
+            </div>
+        </div>
+        <div style="margin-bottom: 1rem;" class="row">
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
+        </div>
+    </ChildContent>
 </RadzenTemplateForm>
 
 @code {
