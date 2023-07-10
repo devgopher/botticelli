@@ -12,12 +12,12 @@ namespace Botticelli.Server.Controllers;
 [ApiController]
 [AllowAnonymous]
 [EnableCors]
-[Route("login")]
-public class LoginController
+[Route("auth")]
+public class AuthController
 {
     private readonly AdminAuthService _adminAuthService;
 
-    public LoginController(AdminAuthService adminAuthService) => _adminAuthService = adminAuthService;
+    public AuthController(AdminAuthService adminAuthService) => _adminAuthService = adminAuthService;
 
     [AllowAnonymous]
     [HttpPost("[action]")]
@@ -28,4 +28,9 @@ public class LoginController
     [HttpPost("[action]")]
     public async Task Register(UserRegisterPost request)
         => await _adminAuthService.RegisterAsync(request);
+
+    [AllowAnonymous]
+    [HttpGet("[action]")]
+    public async Task<bool> HasUsersAsync()
+        => await _adminAuthService.HasUsersAsync();
 }

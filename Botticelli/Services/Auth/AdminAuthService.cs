@@ -8,6 +8,7 @@ using Botticelli.Server.Models.Responses;
 using Botticelli.Server.Settings;
 using Botticelli.Shared.Utils;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -39,6 +40,17 @@ public class AdminAuthService
 
     /// <summary>
     ///     Register an admin user
+    /// </summary>
+    /// <param name="userRegister"></param>
+    /// <returns></returns>
+    /// <exception cref="DataException"></exception>
+    public async Task<bool> HasUsersAsync() 
+        => await _context
+                 .ApplicationUsers
+                 .AnyAsync();
+
+    /// <summary>
+    ///     Registers an admin user
     /// </summary>
     /// <param name="userRegister"></param>
     /// <returns></returns>

@@ -20,6 +20,45 @@ public class SessionClient
         _backSettings = backSettings;
     }
 
+    public async Task<Error> RegisterUser(string email, string password)
+    {
+        var request = new UserRegisterPost()
+        {
+            Email = email,
+            UserName = email,
+            Password = password
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
+                                                                     "/auth/Register"),
+                                                         request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return new Error
+            {
+                Code = 1,
+                UserMessage = $"Error registering user: {response.ReasonPhrase}!"
+            };
+        }
+
+        return new Error
+        {
+            Code = 0, 
+            UserMessage = string.Empty
+        };
+
+    }
+
+    public async Task<bool> HasUsersAsync()
+    {
+        var response = await _httpClient.GetFromJsonAsync<bool>(Url.Combine(_backSettings.CurrentValue.BackUrl,
+                                                                            "/auth/HasUsers"));
+
+
+        return response;
+    }
+    
     public async Task<(Session session, Error error)> CreateSession(string login, string password)
     {
         var request = new UserLoginPost
@@ -29,7 +68,7 @@ public class SessionClient
         };
 
         var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                                                                     "/login/GetToken"),
+                                                                     "/auth/GetToken"),
                                                          request);
 
         var tokenResponse = await response.Content.ReadFromJsonAsync<GetTokenResponse>();
@@ -38,7 +77,8 @@ public class SessionClient
             return new ValueTuple<Session, Error>(default,
                                                   new Error
                                                   {
-                                                      UserMessage = "Login error!"
+                                                      Code = 1,
+                                                      UserMessage = $"Login error!"
                                                   });
 
         _session = new Session
@@ -50,6 +90,7 @@ public class SessionClient
 
         return (_session, new Error
         {
+            Code = 0,
             UserMessage = "Success"
         });
     }
