@@ -11,7 +11,7 @@ namespace Botticelli.Server.Controllers;
 /// </summary>
 [ApiController]
 [AllowAnonymous]
-[EnableCors]
+[DisableCors]
 [Route("auth")]
 public class AuthController
 {

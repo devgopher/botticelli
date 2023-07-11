@@ -14,7 +14,7 @@ namespace Botticelli.Server.Controllers;
 /// </summary>
 [ApiController]
 [Authorize(AuthenticationSchemes = "Bearer")]
-[EnableCors]
+[DisableCors]
 [Route("admin")]
 public class AdminController
 {
