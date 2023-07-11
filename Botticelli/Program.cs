@@ -119,10 +119,7 @@ builder.ApplyMigrations<BotInfoContext>();
 
 var app = builder.Build();
 
-app.UseCors(options => options.WithOrigins("http://localhost:5042/")
-                              .WithOrigins("https://localhost:7247/")
-                              .SetIsOriginAllowed(_ => true)
-                              .AllowAnyOrigin()
+app.UseCors(options => options.AllowAnyOrigin()
                               .AllowAnyHeader()
                               .AllowAnyMethod());
 
@@ -137,6 +134,5 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseCors();
 
 app.Run();
