@@ -85,8 +85,9 @@ builder.Services.AddCors(options =>
     corsBuilder.AllowAnyHeader();
     corsBuilder.AllowAnyMethod();
     corsBuilder.AllowAnyOrigin(); // For anyone access.
-    //corsBuilder.WithOrigins("http://localhost:56573"); // for a specific url. Don't add a forward slash on the end!
-    corsBuilder.AllowCredentials();
+    //corsBuilder.WithOrigins("http://localhost:5042")
+    //           .WithOrigins("https://localhost:7247"); // for a specific url. Don't add a forward slash on the end!
+    //corsBuilder.AllowCredentials();
     var policy = corsBuilder.Build();
 
     options.AddPolicy("AllowCorsPolicy", policy);
