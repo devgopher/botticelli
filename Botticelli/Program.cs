@@ -8,6 +8,7 @@ using Botticelli.Server.Services.Auth;
 using Botticelli.Server.Settings;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -78,6 +79,19 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options
                                                              .RequireConfirmedAccount = true)
        .AddEntityFrameworkStores<BotInfoContext>();
 builder.Services.AddRazorPages();
+builder.Services.AddCors(options =>
+{
+    var corsBuilder = new CorsPolicyBuilder();
+    corsBuilder.AllowAnyHeader();
+    corsBuilder.AllowAnyMethod();
+    corsBuilder.AllowAnyOrigin(); // For anyone access.
+    //corsBuilder.WithOrigins("http://localhost:56573"); // for a specific url. Don't add a forward slash on the end!
+    corsBuilder.AllowCredentials();
+    var policy = corsBuilder.Build();
+
+    options.AddPolicy("AllowCorsPolicy", policy);
+});
+
 
 #if !DEBUG
 builder.Services.Configure<IdentityOptions>(options =>
@@ -119,9 +133,7 @@ builder.ApplyMigrations<BotInfoContext>();
 
 var app = builder.Build();
 
-app.UseCors(options => options.AllowAnyOrigin()
-                              .AllowAnyHeader()
-                              .AllowAnyMethod());
+app.UseCors("AllowCorsPolicy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
