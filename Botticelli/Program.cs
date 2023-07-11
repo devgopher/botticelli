@@ -79,19 +79,6 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options
                                                              .RequireConfirmedAccount = true)
        .AddEntityFrameworkStores<BotInfoContext>();
 builder.Services.AddRazorPages();
-builder.Services.AddCors(options =>
-{
-    var corsBuilder = new CorsPolicyBuilder();
-    corsBuilder.AllowAnyHeader();
-    corsBuilder.AllowAnyMethod();
-    corsBuilder.AllowAnyOrigin(); // For anyone access.
-    //corsBuilder.WithOrigins("http://localhost:5042")
-    //           .WithOrigins("https://localhost:7247"); // for a specific url. Don't add a forward slash on the end!
-    //corsBuilder.AllowCredentials();
-    var policy = corsBuilder.Build();
-
-    options.AddPolicy("AllowCorsPolicy", policy);
-});
 
 
 #if !DEBUG
@@ -148,4 +135,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+app.UseCors(builder => builder.AllowAnyMethod()
+                              .AllowAnyOrigin()
+                              .AllowAnyHeader());
 app.Run();
