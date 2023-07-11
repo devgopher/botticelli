@@ -1,6 +1,7 @@
 using System.Text;
 using BotDataSecureStorage;
 using BotDataSecureStorage.Settings;
+using Botticelli.Server;
 using Botticelli.Server.Data;
 using Botticelli.Server.Services;
 using Botticelli.Server.Services.Auth;
@@ -9,8 +10,10 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,9 +50,8 @@ builder.Services.AddEndpointsApiExplorer()
            });
        });
 
-builder.Services.Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration);
-
 builder.Services
+       .Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration)
        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
        .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
        {
@@ -111,8 +113,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     });
 #endif
 
-
 builder.Services.AddControllers();
+
+builder.ApplyMigrations<BotInfoContext>();
 
 var app = builder.Build();
 
@@ -126,7 +129,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
