@@ -1,22 +1,18 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:63552",
-      "sslPort": 44378
-    }
-  },
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "Botticelli.Server.FrontNew": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://0.0.0.0:7247;http://0.0.0.0:5042",
+      "launchUrl": "http://0.0.0.0:5042",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "dotnetRunMessages": true,
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "applicationUrl": "https://0.0.0.0:7247;http://0.0.0.0:5042",
+      "nativeDebugging": true,
+      "sqlDebugging": true
     }
   }
 }

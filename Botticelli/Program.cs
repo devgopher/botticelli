@@ -1,4 +1,3 @@
-using System.Text;
 using BotDataSecureStorage;
 using BotDataSecureStorage.Settings;
 using Botticelli.Server;
@@ -8,15 +7,18 @@ using Botticelli.Server.Services.Auth;
 using Botticelli.Server.Settings;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+       .AddJsonFile("appsettings.json")
+       .AddEnvironmentVariables();
 
 var secureStorageSettings = builder.Configuration
                                    .GetSection(nameof(SecureStorageSettings))
@@ -50,6 +52,8 @@ builder.Services.AddEndpointsApiExplorer()
                }
            });
        });
+
+
 
 builder.Services
        .Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration)

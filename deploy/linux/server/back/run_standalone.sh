@@ -6,4 +6,4 @@ git pull
 
 pushd Botticelli
 
-dotnet run Botticelli.Server.csproj
+dotnet run Botticelli.Server.csproj &

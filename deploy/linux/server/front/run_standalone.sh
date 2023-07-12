@@ -6,4 +6,9 @@ git pull
 
 pushd Botticelli.Server.FrontNew
 
-dotnet run Botticelli.Server.FrontNew.csproj
+# Let's propose, that server back is on the same server
+my_ip=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[1]}')
+
+sed -i 's/localhost/'$my_ip'/g' wwwroot/appsettings.json
+
+dotnet run Botticelli.Server.FrontNew.csproj &
