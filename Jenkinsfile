@@ -4,7 +4,8 @@ pipeline {
     stage('back_publish_dev') {
       steps {
         dotnetClean(showSdkInfo: true, workDirectory: 'Botticelli', charset: 'Utf8', framework: 'net7.0', nologo: true)
-        dotnetPublish(charset: 'utf8', framework: 'net7.0', options: '-r linux-x64 --self-contained false', outputDirectory: 'publish', force: true, workDirectory: 'Botticelli')
+        sh ''' dotnet publish Botticelli -o publish -r linux-x64 --self-contained false
+'''
       }
     }
 
