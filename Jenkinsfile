@@ -19,8 +19,8 @@ pipeline {
 
     stage('publish_to_node1') {
       steps {
-        sh '''sshpass -p \'12345678\' scp  -C -rp publish agent@45.126.125.65:/deploy/server_back
-'''
+       ''' sshPut remote: remote, from: 'publish', into: '/deploy/server_back'
+       '''
       }
     }
 
