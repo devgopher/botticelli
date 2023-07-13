@@ -1,11 +1,9 @@
 pipeline {
   agent any
   stages {
-    stage('') {
+    stage('error') {
       steps {
-        sh '''pushd Botticelli
-
-'''
+        dotnetClean()
       }
     }
 
