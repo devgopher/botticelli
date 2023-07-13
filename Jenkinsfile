@@ -1,12 +1,12 @@
+def remote = [:]
+    remote.name = 'test_node1'
+    remote.host = '45.126.125.65'
+    remote.user = 'agent'
+    remote.password = '12345678'
+    remote.allowAnyHosts = true
+
 pipeline {
   agent any
-
-  def remote = [:]
-  remote.name = 'test_01'
-  remote.host = '45.126.125.65'
-  remote.user = 'agent'
-  remote.password = '12345678'
-  remote.allowAnyHosts = true
 
   stages {
     stage('back_publish_dev') {
