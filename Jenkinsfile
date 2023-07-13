@@ -1,11 +1,3 @@
-def remote = [:]
-    remote.name = 'test_node1'
-    remote.host = '45.126.125.65'
-    remote.user = 'agent'
-    remote.password = '12345678'
-    remote.allowAnyHosts = true
-
-
 pipeline {
   agent any
   stages {
@@ -19,13 +11,13 @@ pipeline {
 
     stage('publish_to_node1') {
       steps {
-       sshPut remote: remote, from: 'publish', into: '/deploy/server_back'       
+        sshPut(remote: remote, from: 'publish', into: '/deploy/server_back')
       }
     }
 
     stage('run on node 1') {
       steps {
-        sshCommand(command: 'pkill -f Botticelli.Server', remote: remote)
+        sshCommand(command: 'pkill -f Botticelli.Server | exit 0', remote: remote)
         sshCommand(command: ' cd /deploy/server_back/publish | dotnet run', remote: remote)
       }
     }
