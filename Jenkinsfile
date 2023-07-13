@@ -16,10 +16,17 @@ pipeline {
       }
     }
 
+def remote = [:]
+    remote.name = 'test_node1'
+    remote.host = '45.126.125.65'
+    remote.user = 'agent'
+    remote.password = '12345678'
+    remote.allowAnyHosts = true
+
     stage('run on node 1') {
       steps {
-        sshCommand(command: 'pkill -f Botticelli.Server', remote: 'agent@45.126.125.65')
-        sshCommand(command: ' cd /deploy/server_back/ | dotnet run', remote: 'agent@45.126.125.65')
+        sshCommand(command: 'pkill -f Botticelli.Server', remote: remote)
+        sshCommand(command: ' cd /deploy/server_back/ | dotnet run', remote: remote)
       }
     }
 
