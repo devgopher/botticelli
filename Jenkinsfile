@@ -17,8 +17,7 @@ pipeline {
 
     stage('run on node 1') {
       steps {
-        sh '''sshpass -p \'12345678\' scp  -C -rp publish agent@45.126.125.65:/deploy/server_back
-'''
+        sh 'cd Botticelli && dotnet run'
       }
     }
 
