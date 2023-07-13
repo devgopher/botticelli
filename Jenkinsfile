@@ -19,8 +19,7 @@ pipeline {
 
     stage('publish_to_node1') {
       steps {
-       ''' sshPut remote: remote, from: 'publish', into: '/deploy/server_back'
-       '''
+       sshPut remote: remote, from: 'publish', into: '/deploy/server_back'       
       }
     }
 
