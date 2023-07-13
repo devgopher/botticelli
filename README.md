@@ -29,16 +29,32 @@ On a bot side we can implement any business logic we want.
 2. Save your Bot Token
 
 ## Starting a sample project
-1. In Visual Studio you should enable multi-project startup: https://learn.microsoft.com/en-us/visualstudio/ide/how-to-set-multiple-startup-projects?view=vs-2022
+1. Go to a folder and edit appsettings.json this way:
+```
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "SampleSettings": {
+    "SecureStorageConnectionString": "Filename=../../../database.db;Password=123;ReadOnly=true" // path to a secure storage db, you may you own
+  },
+  "ServerSettings": {
+    "ServerUri": "http://localhost:5050" // path to an admin server, your may configure it (don't forget to check your server settings)
+  },
+  "AllowedHosts": "*"
+}
 
-2. In our case, we need to run 2 project simultaneously: Botticelli.Server and Samples\TelegramBotSample
-3. After the first run of a bot-project(Samples\TelegramBotSample in pour case), you should find Data\botId file with a generanted botId
-4. Copy a generated botId into a clipboard
-5. In your browser run http://localhost:5050/swagger (Admin panel functions)
-6. Find an AddNewBot([FromBody] RegisterBotRequest request) method with parameters:
-	- botId (put your botId here)
-	- botKey (put your Telegram Bot key from a BotFather)
-	- botType (0 - Telegram)
-7. Execute AddNewBot with your parameters
-8. Create some new chat/group with your bot (Notice! In order to read messages from a group, your bot account needs admin priveleges!)
-9. Enjoy!
+```
+2. Start a sample bot project at Samples\TelegramMessagingSample. Run run_standalone.sh.
+3. After the first run of a bot-project(Samples\TelegramMessagingSample in pour case), you should find Data\botId file with a generated botId
+4. Copy a generated *botId* into a clipboard
+5. In your browser run https://localhost:7247 (Admin panel).
+6. Login with creds: login admin1@botticellibots.com and password 12345678
+7. Go to "Your bots" page
+8. Click "Add Bot" button, put in your *botId* and click "Save"
+9. Create some new chat/group with your bot (Notice! In order to read messages from a group, your bot account needs admin priveleges!)
+10. On "Your bots" page click "start/stop" button in order to activate your bot. Here you can track it's status (alive/dead).
+11. Enjoy!

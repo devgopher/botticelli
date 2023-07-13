@@ -1,10 +1,9 @@
-﻿namespace Botticelli.Server.FrontNew.Settings
+﻿namespace Botticelli.Server.FrontNew.Settings;
+
+public class BackSettings
 {
-    public class BackSettings
-    {
-        /// <summary>
-        /// Backend URL
-        /// </summary>
-        public string BackUrl { get; set; }
-    }
+    /// <summary>
+    ///     Backend URL
+    /// </summary>
+    public string BackUrl { get; set; }
 }

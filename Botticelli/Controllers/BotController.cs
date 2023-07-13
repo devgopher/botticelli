@@ -2,12 +2,13 @@ using Botticelli.Server.Services;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Controllers;
 
 /// <summary>
-/// Bot status controller
+///     Bot status controller
 /// </summary>
 [ApiController]
 [AllowAnonymous]
@@ -26,11 +27,11 @@ public class BotController
         _botStatusDataService = botStatusDataService;
         _logger = logger;
     }
-    
+
     #region Client pane
 
     /// <summary>
-    /// Gets a required bot status (active/non-active)
+    ///     Gets a required bot status (active/non-active)
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
@@ -41,11 +42,12 @@ public class BotController
             {
                 BotId = request.BotId,
                 IsSuccess = true,
-                Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId)
+                Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId),
+                BotKey = await _botStatusDataService.GetRequiredBotKey(request.BotId)
             };
 
     /// <summary>
-    /// Keep alive function
+    ///     Keep alive function
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
@@ -66,7 +68,7 @@ public class BotController
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex,$"{nameof(KeepAlive)}({request.BotId}) error: {ex.Message}");
+            _logger.LogError(ex, $"{nameof(KeepAlive)}({request.BotId}) error: {ex.Message}");
 
             return new KeepAliveNotificationResponse
             {

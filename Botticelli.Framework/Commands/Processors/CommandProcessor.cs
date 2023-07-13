@@ -16,8 +16,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     protected readonly ILogger Logger;
     protected readonly ICommandValidator<TCommand> Validator;
     protected IList<IBot> _bots = new List<IBot>(10);
+    private readonly string _commandName;
     protected IServiceProvider _sp;
-    private string _commandName;
+
     protected CommandProcessor(ILogger logger,
                                ICommandValidator<TCommand> validator)
     {
@@ -26,9 +27,6 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         _commandName = GetCommandName(typeof(TCommand).Name);
     }
 
-    public string GetCommandName(string fullCommand)
-        => fullCommand.ToLowerInvariant().Replace("command", "");
-
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
         var request = SendMessageRequest.GetInstance();
@@ -36,6 +34,19 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
         try
         {
+            if (string.IsNullOrWhiteSpace(message.Body) &&
+                message.Attachments == default &&
+                message.Location == default &&
+                message.Contact == default &&
+                message.Poll == default)
+            {
+                Logger.LogWarning("Message {msgId} is empty! Skipping...", message.Uid);
+
+                return;
+            }
+
+            message.Body ??= string.Empty;
+
             if (Regex.IsMatch(message.Body, SimpleCommandPattern))
             {
                 var match = Regex.Matches(message.Body, SimpleCommandPattern)
@@ -46,7 +57,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 if (commandName != _commandName) return;
 
                 if (match == default) return;
-                
+
                 await ValidateAndProcess(message,
                                          string.Empty,
                                          token,
@@ -67,6 +78,10 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                                          token,
                                          request);
             }
+
+            if (message.Location != default) await InnerProcessLocation(message, string.Empty, token);
+            if (message.Poll != default) await InnerProcessPoll(message, string.Empty, token);
+            if (message.Contact != default) await InnerProcessContact(message, string.Empty, token);
         }
         catch (Exception ex)
         {
@@ -79,6 +94,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
     public void SetServiceProvider(IServiceProvider sp)
         => _sp = sp;
+
+    public string GetCommandName(string fullCommand)
+        => fullCommand.ToLowerInvariant().Replace("command", "");
 
     private async Task ValidateAndProcess(Message message,
                                           string args,
@@ -96,6 +114,10 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             foreach (var bot in _bots) await bot.SendMessageAsync(request, token);
         }
     }
+
+    protected abstract Task InnerProcessContact(Message message, string args, CancellationToken token);
+    protected abstract Task InnerProcessPoll(Message message, string args, CancellationToken token);
+    protected abstract Task InnerProcessLocation(Message message, string args, CancellationToken token);
 
     protected abstract Task InnerProcess(Message message, string args, CancellationToken token);
 }

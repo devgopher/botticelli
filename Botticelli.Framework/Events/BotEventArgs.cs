@@ -1,8 +1,7 @@
-﻿namespace Botticelli.Framework.Events
+﻿namespace Botticelli.Framework.Events;
+
+public class BotEventArgs : EventArgs
 {
-    public class BotEventArgs : EventArgs
-    {
-        public BotEventArgs() => DateTime = DateTime.Now;
-        public DateTime DateTime { get; }
-    }
+    public BotEventArgs() => DateTime = DateTime.Now;
+    public DateTime DateTime { get; }
 }

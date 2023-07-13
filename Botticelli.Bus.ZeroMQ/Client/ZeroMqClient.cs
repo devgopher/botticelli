@@ -17,13 +17,13 @@ namespace Botticelli.Bus.ZeroMQ.Client;
 public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, IDisposable
         where TBot : IBot
 {
+    private readonly int _delta = 50;
     private readonly ILogger<ZeroMqClient<TBot>> _logger;
     private readonly Dictionary<string, SendMessageResponse> _responses = new(100);
     private readonly ZeroMqBusSettings _settings;
     private readonly TimeSpan _timeout;
-    private ResponseSocket _responseSocket;
     private RequestSocket _requestSocket;
-    private readonly int _delta = 50;
+    private ResponseSocket _responseSocket;
 
     public ZeroMqClient(ZeroMqBusSettings settings,
                         ILogger<ZeroMqClient<TBot>> logger)
@@ -47,7 +47,7 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
             //                             .ExecuteAsync(async s => _requestSocket.TrySendFrame(_settings.Timeout, JsonSerializer.SerializeToUtf8Bytes(request)), token);
 
             //if (sendResult == false) return SendMessageResponse.GetInstance("Can't send a message through ZeroMQ!");
-            
+
             _requestSocket.SendFrame(JsonSerializer.SerializeToUtf8Bytes(request));
 
             var resultPolicy = Policy.HandleResult<SendMessageResponse>(s => s == null)
@@ -101,11 +101,13 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
         }
     }
 
+    public void Dispose() => _responseSocket?.Dispose();
+
     private void Init()
     {
         _responseSocket = new ResponseSocket(_settings.ListenUri);
         _requestSocket = new RequestSocket(_settings.TargetUri);
-        
+
         _responseSocket.ReceiveReady += (sender, args) =>
         {
             var frame = args.Socket.ReceiveFrameString(Encoding.UTF8);
@@ -114,6 +116,4 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
             if (message != default) _responses[message.MessageUid] = message;
         };
     }
-
-    public void Dispose() => _responseSocket?.Dispose();
 }

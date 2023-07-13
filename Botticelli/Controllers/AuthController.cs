@@ -1,21 +1,22 @@
 ﻿using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Controllers;
 
 /// <summary>
-/// Login controller for login/logoff/registration and access checking functions
+///     Login controller for login/logoff/registration and access checking functions
 /// </summary>
 [ApiController]
 [AllowAnonymous]
-[Route("login")]
-public class LoginController 
+[Route("auth")]
+public class AuthController
 {
     private readonly AdminAuthService _adminAuthService;
 
-    public LoginController(AdminAuthService adminAuthService) => _adminAuthService = adminAuthService;
+    public AuthController(AdminAuthService adminAuthService) => _adminAuthService = adminAuthService;
 
     [AllowAnonymous]
     [HttpPost("[action]")]
@@ -26,4 +27,9 @@ public class LoginController
     [HttpPost("[action]")]
     public async Task Register(UserRegisterPost request)
         => await _adminAuthService.RegisterAsync(request);
+
+    [AllowAnonymous]
+    [HttpGet("[action]")]
+    public async Task<bool> HasUsersAsync()
+        => await _adminAuthService.HasUsersAsync();
 }

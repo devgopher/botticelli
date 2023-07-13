@@ -6,8 +6,8 @@ namespace Botticelli.Pay;
 public class PayClient : IBotticelliBusAgent
 {
     public async Task SendResponseAsync(SendMessageResponse response,
-                                   CancellationToken token,
-                                   int timeoutMs = 10000) => throw new NotImplementedException();
+                                        CancellationToken token,
+                                        int timeoutMs = 10000) => throw new NotImplementedException();
 
     public Task StartAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
 

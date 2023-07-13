@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Botticelli.AI.Exceptions;
 using Botticelli.AI.Message;
@@ -7,7 +6,6 @@ using Botticelli.AI.Message.GptJ;
 using Botticelli.AI.Settings;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Shared.API.Client.Responses;
-using Botticelli.Shared.ValueObjects;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -42,9 +40,8 @@ public class GptJProvider : GenericAiProvider
 
             client.BaseAddress = new Uri(_settings.CurrentValue.Url);
 
-            if (!string.IsNullOrWhiteSpace(_gptSettings.CurrentValue.ApiKey))
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
-            
+            if (!string.IsNullOrWhiteSpace(_gptSettings.CurrentValue.ApiKey)) client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
+
             var content = JsonContent.Create(new GptJInputMessage
             {
                 Text = message.Body,
@@ -82,7 +79,7 @@ public class GptJProvider : GenericAiProvider
             else
             {
                 await _bus.SendResponse(new SendMessageResponse(message.Uid)
-                {
+                                        {
                                             Message = new Shared.ValueObjects.Message(message.Uid)
                                             {
                                                 ChatId = message.ChatId,

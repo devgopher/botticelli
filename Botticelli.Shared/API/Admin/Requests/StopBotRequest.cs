@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Shared.API.Admin.Requests;
+﻿using Botticelli.Shared.Utils;
+
+namespace Botticelli.Shared.API.Admin.Requests;
 
 public class StopBotRequest : BaseRequest<StopBotRequest>
 {
@@ -6,5 +8,5 @@ public class StopBotRequest : BaseRequest<StopBotRequest>
     {
     }
 
-    public static StopBotRequest GetInstance() => new(Utils.BotIdUtils.GenerateShortBotId());
+    public static StopBotRequest GetInstance() => new(BotIdUtils.GenerateShortBotId());
 }

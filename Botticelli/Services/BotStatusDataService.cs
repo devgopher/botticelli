@@ -1,4 +1,5 @@
-﻿using Botticelli.Server.Data;
+﻿using BotDataSecureStorage;
+using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities;
 using Botticelli.Shared.API.Admin.Responses;
 
@@ -10,8 +11,13 @@ namespace Botticelli.Server.Services;
 public class BotStatusDataService : IBotStatusDataService
 {
     private readonly BotInfoContext _context;
+    private readonly SecureStorage _secureStorage;
 
-    public BotStatusDataService(BotInfoContext context) => _context = context;
+    public BotStatusDataService(BotInfoContext context, SecureStorage secureStorage)
+    {
+        _context = context;
+        _secureStorage = secureStorage;
+    }
 
     public ICollection<BotInfo> GetBots() => _context.BotInfos.ToArray();
 
@@ -22,4 +28,6 @@ public class BotStatusDataService : IBotStatusDataService
     /// <returns></returns>
     public async Task<BotStatus?> GetRequiredBotStatus(string botId)
         => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
+
+    public async Task<string> GetRequiredBotKey(string botId) => _secureStorage.GetBotKey(botId)?.Key;
 }

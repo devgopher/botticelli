@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Shared.API.Admin.Responses;
+﻿using Botticelli.Shared.Utils;
+
+namespace Botticelli.Shared.API.Admin.Responses;
 
 public class StartBotResponse : BaseResponse<StartBotResponse>
 {
@@ -8,7 +10,7 @@ public class StartBotResponse : BaseResponse<StartBotResponse>
 
     public AdminCommandStatus Status { get; }
 
-    public static StartBotResponse GetInstance(AdminCommandStatus status, string techMessage) => new(Utils.BotIdUtils.GenerateShortBotId(), techMessage, status);
+    public static StartBotResponse GetInstance(AdminCommandStatus status, string techMessage) => new(BotIdUtils.GenerateShortBotId(), techMessage, status);
 
     public static StartBotResponse GetInstance(string uid, string techMessage, AdminCommandStatus status) => new(uid, techMessage, status);
 }

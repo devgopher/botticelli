@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<Title>Botticelli bundle</Title>
+		<Version>0.1-beta</Version>
+		<Company>Botticelli</Company>
+		<Copyright>Igor Evdokimov</Copyright>
+		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
+		<PackageIcon>logo.jpg</PackageIcon>
+		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+		<Description>
+			Botticelli bots bundle:
+			- Telegram support
+			- AI integration support
+			- Speech engines support
+			- RabbitMQ support
+		</Description>
+		<RepositoryType>git</RepositoryType>
+	</PropertyGroup>
+	<ItemGroup>
+	  <None Include="..\logo.jpg" Link="logo.jpg">
+	    <PackagePath>\</PackagePath>
+	    <Pack>True</Pack>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
+		<ProjectReference Include="..\Botticelli.AI\Botticelli.AI.csproj" />
+		<ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj" />
+		<ProjectReference Include="..\Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj" />
+		<ProjectReference Include="..\Botticelli.Bus.Rabbit\Botticelli.Bus.Rabbit.csproj" />
+		<ProjectReference Include="..\Botticelli.Bus\Botticelli.Bus.None.csproj" />
+		<ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
+		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
+		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
+		<ProjectReference Include="..\Botticelli.Scheduler.Interfaces\Botticelli.Scheduler.Interfaces.csproj" />
+		<ProjectReference Include="..\Botticelli.Scheduler\Botticelli.Scheduler.csproj" />
+		<ProjectReference Include="..\Botticelli.Serialization\Botticelli.Serialization.csproj" />
+		<ProjectReference Include="..\Botticelli.Server.Models\Botticelli.Server.Models.csproj" />
+		<ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj" />
+		<ProjectReference Include="..\Botticelli.Talks.Tests\Botticelli.Talks.Tests.csproj" />
+		<ProjectReference Include="..\Botticelli.Talks\Botticelli.Talks.csproj" />
+	</ItemGroup>
+
+</Project>

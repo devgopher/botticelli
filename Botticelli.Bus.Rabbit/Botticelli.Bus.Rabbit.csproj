@@ -10,8 +10,14 @@
 		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
 		<PackageIcon>logo.jpg</PackageIcon>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
-
+	<ItemGroup>
+		<None Include="..\logo.jpg">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.3" />

@@ -1,51 +1,85 @@
 ﻿@page "/add_bot"
-@using Botticelli.Shared.API.Client.Requests
-@using Botticelli.Shared.Constants
-@inject HttpClient Http
 @using Botticelli.Server.FrontNew.Settings
-@using Flurl
 @using Microsoft.Extensions.Options
-@using System.Net.Http.Headers
+@using Botticelli.Shared.API.Client.Requests
 @using Botticelli.Shared.API.Client.Responses
+@using Botticelli.Shared.Constants
+@using Flurl
+@using System.Net.Http.Headers
+@inject HttpClient Http
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
 @inject CookieStorageAccessor Cookies;
 
-<RadzenTemplateForm TItem="BotModel" Data=@_model Submit=@OnSubmit>
-    <RadzenStack Orientation="Orientation.Horizontal">
-        <RadzenText Text ="Bot key:"/>
-        <RadzenTextBox Name="LastName" @bind-Value=@_model.BotKey/>
-    </RadzenStack>
-    <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
+<RadzenTemplateForm TItem="BotModel" Data="@_model" Submit="@OnSubmit">
+    <ChildContent>
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Bot id:" Component="BotId" style="width: 100%;"/>
+            </div>
+            <div class="col-md-9">
+                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotId" Name="BotId" />
+                <RadzenRequiredValidator Component="BotId" Text="Bot id shouldn't be empty!" style="position: absolute;"/>
+            </div>
+        </div>
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Bot key:" Component="BotKey" style="width: 100%;"/>
+            </div>
+            <div class="col-md-9">
+                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotKey" Name="BotKey" />
+                <RadzenRequiredValidator Component="BotKey" Text="Bot key shouldn't be empty!" style="position: absolute;" />
+            </div>
+        </div>
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Bot name:" Component="BotName" style="width: 100%;">
+                </RadzenLabel>
+            </div>
+            <div class="col-md-9">
+                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotName" Name="BotName" />
+                <RadzenRequiredValidator Component="BotName" Text="Bot name shouldn't be empty!" style="position: absolute;" />
+            </div>
+        </div>
+        <div style="margin-bottom: 1rem;" class="row">
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
+        </div>
+    </ChildContent>
 </RadzenTemplateForm>
 
 @code {
+
     class BotModel
     {
+        public string BotId { get; set; }
         public string BotKey { get; set; }
+        public string BotName { get; set; }
     }
 
     readonly BotModel _model = new();
-    
+
     private async Task OnSubmit(BotModel model)
     {
         var request = new RegisterBotRequest
-            {
-                BotId = Guid.NewGuid().ToString(),
-                BotKey = model.BotKey,
-                Type = BotType.Telegram
-            };
+        {
+            BotId = model.BotId,
+            BotKey = model.BotKey,
+            BotName = model.BotName,
+            Type = BotType.Telegram
+        };
 
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
 
-        if (string.IsNullOrWhiteSpace(sessionToken)) return;
+        if (string.IsNullOrWhiteSpace(sessionToken))
+            return;
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
-        var response = await Http.PostAsJsonAsync( Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/AddNewBot"),
-                                    request);
+        var response = await Http.PostAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/AddNewBot"),
+                                                  request);
 
         var addBotResponse = await response.Content.ReadFromJsonAsync<RegisterBotResponse>();
 
         UriHelper.NavigateTo("/your_bots", true);
     }
+
 }

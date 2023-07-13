@@ -39,7 +39,7 @@ public abstract class BaseTtsSpeaker : ISpeaker
                                        CancellationToken token);
 
     /// <summary>
-    /// Output compression
+    ///     Output compression
     /// </summary>
     /// <param name="input"></param>
     /// <param name="token"></param>

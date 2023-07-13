@@ -1,10 +1,9 @@
-﻿namespace Botticelli.Server.Settings
+﻿namespace Botticelli.Server.Settings;
+
+public class ServerSettings
 {
-    public class ServerSettings
-    {
-        /// <summary>
-        /// Token lifetime minutes
-        /// </summary>
-        public int TokenLifetimeMin { get; set; }
-    }
+    /// <summary>
+    ///     Token lifetime minutes
+    /// </summary>
+    public int TokenLifetimeMin { get; set; }
 }

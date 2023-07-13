@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Shared.API.Client.Requests;
+﻿using Botticelli.Shared.Utils;
+
+namespace Botticelli.Shared.API.Client.Requests;
 
 public class PingRequest : BaseRequest<PingRequest>
 {
@@ -6,5 +8,5 @@ public class PingRequest : BaseRequest<PingRequest>
     {
     }
 
-    public static PingRequest GetInstance() => new(Utils.BotIdUtils.GenerateShortBotId());
+    public static PingRequest GetInstance() => new(BotIdUtils.GenerateShortBotId());
 }

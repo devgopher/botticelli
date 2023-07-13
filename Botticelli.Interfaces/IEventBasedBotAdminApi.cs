@@ -36,4 +36,11 @@ public interface IEventBasedBotAdminApi
     /// <param name="request">Request</param>
     /// <returns></returns>
     public Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token);
+
+    /// <summary>
+    ///     Sets bot key|key for a messenger
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public Task SetBotKey(string key, CancellationToken token);
 }

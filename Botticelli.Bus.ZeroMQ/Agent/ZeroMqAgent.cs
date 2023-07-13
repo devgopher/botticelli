@@ -1,4 +1,7 @@
-﻿using Botticelli.Bot.Interfaces.Agent;
+﻿using System.Collections.Concurrent;
+using System.Text;
+using System.Text.Json;
+using Botticelli.Bot.Interfaces.Agent;
 using Botticelli.Bot.Interfaces.Handlers;
 using Botticelli.Bus.ZeroMQ.Settings;
 using Botticelli.Interfaces;
@@ -8,9 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NetMQ;
 using NetMQ.Sockets;
-using System.Collections.Concurrent;
-using System.Text;
-using System.Text.Json;
 
 namespace Botticelli.Bus.ZeroMQ.Agent;
 
@@ -25,12 +25,12 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 {
     private readonly IList<THandler> _handlers = new List<THandler>(5);
     private readonly ILogger<ZeroMqAgent<TBot, THandler>> _logger;
+    private readonly ConcurrentQueue<SendMessageRequest> _requests = new();
     private readonly ZeroMqBusSettings _settings;
-    private RequestSocket _requestSocket;
-    private ResponseSocket _responseSocket;
     private readonly IServiceProvider _sp;
     private bool _isActive;
-    private readonly ConcurrentQueue<SendMessageRequest> _requests = new();
+    private RequestSocket _requestSocket;
+    private ResponseSocket _responseSocket;
 
     public ZeroMqAgent(IServiceProvider sp,
                        ZeroMqBusSettings settings,
@@ -51,8 +51,8 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
     public async Task SendResponseAsync(SendMessageResponse response,
-                                   CancellationToken token,
-                                   int timeoutMs = 60000)
+                                        CancellationToken token,
+                                        int timeoutMs = 60000)
     {
         try
         {
@@ -83,6 +83,12 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         Thread.Sleep(3000);
     }
 
+    public void Dispose()
+    {
+        _requestSocket.Dispose();
+        _responseSocket.Dispose();
+    }
+
     /// <summary>
     ///     Subscribes with a new handler
     /// </summary>
@@ -98,8 +104,7 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     {
         while (token is {CanBeCanceled: true, IsCancellationRequested: true})
         {
-            if (!_requests.TryDequeue(out var message))
-                continue;
+            if (!_requests.TryDequeue(out var message)) continue;
 
             if (!_handlers.Any())
             {
@@ -108,8 +113,7 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
                 continue;
             }
 
-            foreach (var handler in _handlers)
-                await handler?.Handle(message, token);
+            foreach (var handler in _handlers) await handler?.Handle(message, token);
         }
     }
 
@@ -139,11 +143,5 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 
             throw;
         }
-    }
-
-    public void Dispose()
-    {
-        _requestSocket.Dispose();
-        _responseSocket.Dispose();
     }
 }

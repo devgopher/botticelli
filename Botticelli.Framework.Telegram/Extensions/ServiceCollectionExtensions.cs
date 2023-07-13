@@ -1,6 +1,5 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase;
-using Botticelli.BotBase.Extensions;
 using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Extensions;
@@ -31,8 +30,16 @@ public static class ServiceCollectionExtensions
     {
         var settings = optionsBuilder.Build();
         var secureStorage = new SecureStorage(settings.SecureStorageSettings);
-        var botKey = secureStorage.GetBotKey(BotDataUtils.GetBotId());
-        var token = botKey.Key;
+        var botId = BotDataUtils.GetBotId();
+        var botKey = secureStorage.GetBotKey(botId);
+
+        if (string.IsNullOrWhiteSpace(botKey?.Id))
+        {
+            secureStorage.SetBotKey(botId, string.Empty);
+            botKey = secureStorage.GetBotKey(botId);
+        }
+
+        var token = botKey.Key ?? string.Empty;
 
         services.AddHttpClient<BotStatusService<TelegramBot>>();
 
@@ -47,7 +54,8 @@ public static class ServiceCollectionExtensions
 
         var bot = new TelegramBot(new TelegramBotClient(token),
                                   sp.GetRequiredService<IBotUpdateHandler>(),
-                                  sp.GetRequiredService<ILogger<TelegramBot>>());
+                                  sp.GetRequiredService<ILogger<TelegramBot>>(),
+                                  secureStorage);
 
         return services.AddSingleton<IBot<TelegramBot>>(bot)
                        .AddHostedService<BotStatusService<IBot<TelegramBot>>>()

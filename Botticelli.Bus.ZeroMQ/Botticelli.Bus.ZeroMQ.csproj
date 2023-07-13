@@ -10,6 +10,7 @@
 		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
 		<PackageIcon>logo.jpg</PackageIcon>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,7 +21,12 @@
 		<PackageReference Include="NetMQ" Version="4.0.1.11" />
 		<PackageReference Include="Polly" Version="7.2.3" />
 	</ItemGroup>
-
+	<ItemGroup>
+		<None Include="..\logo.jpg">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj" />
 	</ItemGroup>

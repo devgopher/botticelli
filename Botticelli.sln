@@ -25,11 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{3548
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{346A18CA-EB1F-483B-8BC3-EDF250DA72E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mocks", "Mocks\Mocks.csproj", "{C5066659-9F71-4488-95B1-C8D10842AFB9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Telegram", "Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj", "{71008870-2212-4A74-8777-B5B268C27911}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Viber", "Botticelli.Framework.Viber\Botticelli.Framework.Viber.csproj", "{FE6FFA3D-820C-4E24-949E-DD28F09FA824}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Viber.Api", "Viber.Api\Viber.Api.csproj", "{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}"
 EndProject
@@ -82,17 +78,29 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "linux", "linux", "{A4F5B449-60D4-4959-9E0B-5EECFD2A317B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{9B590747-74F6-41C8-8733-B5B77A8FCAC1}"
-	ProjectSection(SolutionItems) = preProject
-		deploy\linux\server\build.sh = deploy\linux\server\build.sh
-		deploy\linux\server\Dockerfile = deploy\linux\server\Dockerfile
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{32305B1F-3B44-4BCF-AABC-E33C00DC91B0}"
 	ProjectSection(SolutionItems) = preProject
 		deploy\windows\server\build.cmd = deploy\windows\server\build.cmd
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Server.Models", "Botticelli.Server.Models\Botticelli.Server.Models.csproj", "{2423A645-22D1-4736-946F-10A99353581C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Server.Models", "Botticelli.Server.Models\Botticelli.Server.Models.csproj", "{2423A645-22D1-4736-946F-10A99353581C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "back", "back", "{05922003-7445-47CF-8496-7224F44E7768}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\linux\server\back\build.sh = deploy\linux\server\back\build.sh
+		deploy\linux\server\back\Dockerfile = deploy\linux\server\back\Dockerfile
+		deploy\linux\server\back\run_standalone.sh = deploy\linux\server\back\run_standalone.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{7FF17C87-CC2B-4CD6-B667-18B7BED78850}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\linux\server\front\build.sh = deploy\linux\server\front\build.sh
+		deploy\linux\server\front\Dockerfile = deploy\linux\server\front\Dockerfile
+		deploy\linux\server\front\run_standalone.sh = deploy\linux\server\front\run_standalone.sh
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bundle", "Botticelli.Bundle\Botticelli.Bundle.csproj", "{F400F638-EC58-49A2-B730-BD2688FCD4E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,18 +132,10 @@ Global
 		{FAD007A0-8A2C-4871-A030-CE2442711243}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAD007A0-8A2C-4871-A030-CE2442711243}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAD007A0-8A2C-4871-A030-CE2442711243}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C5066659-9F71-4488-95B1-C8D10842AFB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5066659-9F71-4488-95B1-C8D10842AFB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5066659-9F71-4488-95B1-C8D10842AFB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5066659-9F71-4488-95B1-C8D10842AFB9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{71008870-2212-4A74-8777-B5B268C27911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{71008870-2212-4A74-8777-B5B268C27911}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71008870-2212-4A74-8777-B5B268C27911}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71008870-2212-4A74-8777-B5B268C27911}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE6FFA3D-820C-4E24-949E-DD28F09FA824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE6FFA3D-820C-4E24-949E-DD28F09FA824}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE6FFA3D-820C-4E24-949E-DD28F09FA824}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE6FFA3D-820C-4E24-949E-DD28F09FA824}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -212,6 +212,10 @@ Global
 		{2423A645-22D1-4736-946F-10A99353581C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2423A645-22D1-4736-946F-10A99353581C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2423A645-22D1-4736-946F-10A99353581C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -223,9 +227,7 @@ Global
 		{C8E2C2FB-FC08-444A-B285-57F2986637A3} = {41AA926F-88C1-4FC4-8F04-6FBA3CA6C741}
 		{B620052D-DA8D-42F6-ACC8-6228B1840A23} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{FAD007A0-8A2C-4871-A030-CE2442711243} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
-		{C5066659-9F71-4488-95B1-C8D10842AFB9} = {346A18CA-EB1F-483B-8BC3-EDF250DA72E6}
 		{71008870-2212-4A74-8777-B5B268C27911} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
-		{FE6FFA3D-820C-4E24-949E-DD28F09FA824} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{5EF8192E-6AEC-4FEF-A104-FEA0E7EA2DCE} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{E9FB2EC3-6C4F-4886-AFED-A2518733CF2A} = {460FBEED-CF76-47AE-8252-77D091A59A80}
 		{CDFC4EAD-60BD-419A-ADF5-451766D22F29} = {A05D5A20-E0D3-4844-8311-C98E8B67DA7F}
@@ -252,6 +254,8 @@ Global
 		{9B590747-74F6-41C8-8733-B5B77A8FCAC1} = {A4F5B449-60D4-4959-9E0B-5EECFD2A317B}
 		{32305B1F-3B44-4BCF-AABC-E33C00DC91B0} = {B5CD1142-F9ED-4006-B99A-AFAF5F9AF4F9}
 		{2423A645-22D1-4736-946F-10A99353581C} = {A05D5A20-E0D3-4844-8311-C98E8B67DA7F}
+		{05922003-7445-47CF-8496-7224F44E7768} = {9B590747-74F6-41C8-8733-B5B77A8FCAC1}
+		{7FF17C87-CC2B-4CD6-B667-18B7BED78850} = {9B590747-74F6-41C8-8733-B5B77A8FCAC1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

@@ -1,59 +1,60 @@
 ﻿using Botticelli.Framework.Exceptions;
+using Botticelli.Interfaces;
 
-namespace Botticelli.Framework.SendOptions
+namespace Botticelli.Framework.SendOptions;
+
+/// <summary>
+///     Additional options for sending messages for partial messenger
+///     (for example you can use InlineKeyboardMarkup  as T)
+/// </summary>
+/// <typeparam name="T"></typeparam>
+public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
 {
-    /// <summary>
-    /// Additional options for sending messages for partial messenger
-    /// (for example you can use InlineKeyboardMarkup  as T)
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class SendOptionsBuilder<T>
-        where T : class
+    private T _innerObject;
+
+    protected SendOptionsBuilder()
     {
-        private T innerObject = default;
-
-        protected SendOptionsBuilder()
-        {
-        }
-
-        public T Create(params object[] args)
-        {
-            if (innerObject != default) 
-                throw new BotException($"You shouldn't use {nameof(Create)}() method twice!");
-
-            var constructors = typeof(T)
-                               .GetConstructors()
-                               .Where(c => c.IsPublic);
-
-            // no params? ok => let's seek a parameterless constructor!
-            if ((args == null || !args.Any()) && constructors.Any(c => !c.GetParameters().Any()))
-            {
-                innerObject = Activator.CreateInstance<T>();
-
-                return innerObject;
-            }
-
-            // Let's see if we can process parameter set and put it to a constructor|initializer
-            foreach (var c in constructors)
-            {
-               // c.CallingConvention = 
-            }
-
-
-
-            return innerObject;
-        }
-
-        public T Set(Func<T> func)
-        {
-            func?.Invoke();
-
-            return innerObject;
-        }
-
-        public T Build()
-            => innerObject;
-
-        public static SendOptionsBuilder<T> CreateBuilder() => new();
     }
+
+    protected SendOptionsBuilder(T innerObject) => _innerObject = innerObject;
+
+    public ISendOptionsBuilder<T> Create(params object[] args)
+    {
+        if (_innerObject != default) throw new BotException($"You shouldn't use {nameof(Create)}() method twice!");
+
+        var constructors = typeof(T)
+                           .GetConstructors()
+                           .Where(c => c.IsPublic);
+
+        // no params? ok => let's seek a parameterless constructor!
+        if ((args == null || !args.Any()) && constructors.Any(c => !c.GetParameters().Any()))
+        {
+            _innerObject = Activator.CreateInstance<T>();
+
+            return this;
+        }
+
+        // Let's see if we can process parameter set and put it to a constructor|initializer
+        foreach (var c in constructors)
+        {
+            // c.CallingConvention = 
+        }
+
+
+        return this;
+    }
+
+    public ISendOptionsBuilder<T> Set(Func<T, T> func)
+    {
+        func?.Invoke(_innerObject);
+
+        return this;
+    }
+
+    public T Build()
+        => _innerObject;
+
+    public static SendOptionsBuilder<T> CreateBuilder() => new();
+
+    public static SendOptionsBuilder<T> CreateBuilder(T input) => new(input);
 }

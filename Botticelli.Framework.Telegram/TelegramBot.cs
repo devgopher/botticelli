@@ -1,8 +1,10 @@
 ﻿using System.Text;
+using BotDataSecureStorage;
+using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
-using Botticelli.Framework.SendOptions;
 using Botticelli.Framework.Telegram.Handlers;
+using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
@@ -21,9 +23,9 @@ namespace Botticelli.Framework.Telegram;
 
 public class TelegramBot : BaseBot<TelegramBot>
 {
-    private readonly ITelegramBotClient _client;
     private readonly IBotUpdateHandler _handler;
-    private readonly ILogger<TelegramBot> _logger;
+    private readonly SecureStorage _secureStorage;
+    private ITelegramBotClient _client;
 
     /// <summary>
     ///     ctor
@@ -31,12 +33,16 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="client"></param>
     /// <param name="handler"></param>
     /// <param name="logger"></param>
-    public TelegramBot(ITelegramBotClient client, IBotUpdateHandler handler, ILogger<TelegramBot> logger) : base(logger)
+    /// <param name="secureStorage"></param>
+    public TelegramBot(ITelegramBotClient client,
+                       IBotUpdateHandler handler,
+                       ILogger<TelegramBot> logger,
+                       SecureStorage secureStorage) : base(logger)
     {
         IsStarted = false;
         _client = client;
         _handler = handler;
-        _logger = logger;
+        _secureStorage = secureStorage;
     }
 
     public override BotType Type => BotType.Telegram;
@@ -100,7 +106,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <exception cref="BotException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
-                                                                                   SendOptionsBuilder<TSendOptions> optionsBuilder,
+                                                                                   ISendOptionsBuilder<TSendOptions> optionsBuilder,
                                                                                    CancellationToken token)
     {
         if (!IsStarted)
@@ -160,8 +166,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                             cancellationToken: token);
             }
 
-            if (request.Message?.Contact != default) 
-                await SendContact<TSendOptions>(request, token, replyMarkup);
+            if (request.Message?.Contact != default) await SendContact<TSendOptions>(request, token, replyMarkup);
 
             if (request.Message?.Attachments != null)
                 foreach (var genAttach in request.Message.Attachments.Where(a => a is BinaryAttachment))
@@ -252,7 +257,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         return response;
     }
 
-    private async Task SendContact<TSendOptions>(SendMessageRequest request, CancellationToken token, IReplyMarkup replyMarkup) 
+    private async Task SendContact<TSendOptions>(SendMessageRequest request, CancellationToken token, IReplyMarkup replyMarkup)
         => await _client.SendContactAsync(request.Message?.ChatId,
                                           request.Message.Contact?.Phone,
                                           request.Message?.Contact?.Name,
@@ -285,7 +290,8 @@ public class TelegramBot : BaseBot<TelegramBot>
                 .Replace("{", @"\{")
                 .Replace("}", @"\}")
                 .Replace("[", @"\[")
-                .Replace("]", @"\]");
+                .Replace("]", @"\]")
+                .Replace("#", @"\#");
 
     /// <summary>
     ///     Starts a bot
@@ -356,5 +362,23 @@ public class TelegramBot : BaseBot<TelegramBot>
         }
 
         return StopBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
+    }
+
+    public override async Task SetBotKey(string key, CancellationToken token)
+    {
+        var currentKey = _secureStorage.GetBotKey(BotDataUtils.GetBotId());
+
+        if (currentKey.Key != key)
+        {
+            var stopRequest = StopBotRequest.GetInstance();
+            var startRequest = StartBotRequest.GetInstance();
+
+            await StopBotAsync(stopRequest, token);
+
+            _secureStorage.SetBotKey(currentKey.Id, key);
+            _client = new TelegramBotClient(key);
+
+            await StartBotAsync(startRequest, token);
+        }
     }
 }

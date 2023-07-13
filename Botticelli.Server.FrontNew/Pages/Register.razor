@@ -1,0 +1,56 @@
+﻿@page "/register"
+@using Botticelli.Server.FrontNew.Models
+@using Botticelli.Server.FrontNew.Clients
+@inject SessionClient SessionClient;
+@inject NavigationManager UriHelper;
+
+@code
+{
+    private readonly Error _error = new()
+    {
+        UserMessage = string.Empty
+    };
+}
+
+<PageTitle>Register User</PageTitle>
+
+<RadzenTemplateForm TItem="RegisterUser" Data="@_model" Submit="@OnValidSubmit">
+    <ChildContent>
+        <DataAnnotationsValidator/>
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Email:" Component="Email" style="width: 100%;"/>
+            </div>
+            <div class="col-md-9">
+                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.Email" Name="Email"/>
+            </div>
+        </div>
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Password:" Component="Password" style="width: 100%;"/>
+            </div>
+            <div class="col-md-9">
+                <RadzenPassword MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.Password" Name=""/>
+            </div>
+        </div>
+        <div style="margin-bottom: 1rem;" class="row">
+            <RadzenLabel @bind-text="@_error.UserMessage" Style="color: red; font-weight: bold"/>
+        </div>
+        <div style="margin-bottom: 1rem;" class="row">
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Save"/>
+        </div>
+        <ValidationMessage For="@(() => _model.Email)"/>
+        <ValidationMessage For="@(() => _model.Password)"/>
+    </ChildContent>
+</RadzenTemplateForm>
+
+@code
+{
+    private readonly RegisterUser _model = new();
+
+    public async Task OnValidSubmit()
+    {
+        var result = await SessionClient.RegisterUser(_model.Email, _model.Password);
+        if (result.Code == 0) UriHelper.NavigateTo("/", true);
+    }
+}

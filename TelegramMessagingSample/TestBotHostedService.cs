@@ -9,7 +9,7 @@ using TelegramMessagingSample.Settings;
 namespace TelegramMessagingSample;
 
 /// <summary>
-/// This hosted service intended for sending messages according to a schedule
+///     This hosted service intended for sending messages according to a schedule
 /// </summary>
 public class TestBotHostedService : IHostedService
 {

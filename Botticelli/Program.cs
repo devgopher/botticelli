@@ -1,8 +1,10 @@
 using BotDataSecureStorage;
 using BotDataSecureStorage.Settings;
+using Botticelli.Server;
 using Botticelli.Server.Data;
 using Botticelli.Server.Services;
 using Botticelli.Server.Services.Auth;
+using Botticelli.Server.Settings;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -10,9 +12,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Botticelli.Server.Settings;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+       .AddJsonFile("appsettings.json")
+       .AddEnvironmentVariables();
 
 var secureStorageSettings = builder.Configuration
                                    .GetSection(nameof(SecureStorageSettings))
@@ -21,8 +27,8 @@ var secureStorageSettings = builder.Configuration
 builder.Services.AddEndpointsApiExplorer()
        .AddSwaggerGen(options =>
        {
-           options.AddSecurityDefinition(name: "Bearer",
-                                         securityScheme: new OpenApiSecurityScheme
+           options.AddSecurityDefinition("Bearer",
+                                         new OpenApiSecurityScheme
                                          {
                                              Name = "Authorization",
                                              Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
@@ -47,11 +53,12 @@ builder.Services.AddEndpointsApiExplorer()
            });
        });
 
-builder.Services.Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration);
+
 
 builder.Services
+       .Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration)
        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-       .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters()
+       .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
        {
            ClockSkew = TimeSpan.Zero,
            ValidateIssuer = true,
@@ -71,11 +78,12 @@ builder.Services
        .AddSingleton<IMapper, Mapper>()
        .AddDbContext<BotInfoContext>(c => c.UseSqlite(@"Data source=botInfo.Db"));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>  options
-                                                              .SignIn
-                                                              .RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options
+                                                             .SignIn
+                                                             .RequireConfirmedAccount = true)
        .AddEntityFrameworkStores<BotInfoContext>();
 builder.Services.AddRazorPages();
+
 
 #if !DEBUG
 builder.Services.Configure<IdentityOptions>(options =>
@@ -111,10 +119,13 @@ builder.Services.Configure<IdentityOptions>(options =>
     });
 #endif
 
-
 builder.Services.AddControllers();
 
+builder.ApplyMigrations<BotInfoContext>();
+
 var app = builder.Build();
+
+app.UseCors("AllowCorsPolicy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -123,14 +134,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-app.UseCors(options => options.AllowAnyOrigin()
-                              .AllowAnyHeader()
-                              .AllowAnyMethod());
-
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+app.UseCors(builder => builder.AllowAnyMethod()
+                              .AllowAnyOrigin()
+                              .AllowAnyHeader());
 app.Run();

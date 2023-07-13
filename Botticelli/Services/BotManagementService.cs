@@ -29,20 +29,25 @@ public class BotManagementService : IBotManagementService
     /// </summary>
     /// <param name="botId"></param>
     /// <param name="botKey"></param>
+    /// <param name="botName"></param>
     /// <param name="botType"></param>
     /// <returns></returns>
-    public async Task<bool> RegisterBot(string botId, string botKey, BotType botType)
+    public async Task<bool> RegisterBot(string botId,
+                                        string botKey,
+                                        string botName,
+                                        BotType botType)
     {
         try
         {
-            _logger.LogInformation($"{nameof(RegisterBot)}({botId}, {botKey}, {botType}) started...");
+            _logger.LogInformation($"{nameof(RegisterBot)}({botId}, {botKey}, {botName}, {botType}) started...");
 
             botKey ??= _secureStorage.GetBotKey(botId).Key;
 
             if (GetBotInfo(botId) == default)
                 AddNewBotInfo(botId,
                               BotStatus.Unknown,
-                              botType);
+                              botType,
+                              botName);
 
             _secureStorage.SetBotKey(botId, botKey);
 
@@ -112,14 +117,6 @@ public class BotManagementService : IBotManagementService
         }
     }
 
-    /// <summary>
-    ///     Gets a bot required status for answering on a poll request from a bot
-    /// </summary>
-    /// <param name="botId"></param>
-    /// <returns></returns>
-    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
-        => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
-
     public async Task RemoveBot(string botId)
     {
         await SetRequiredBotStatus(botId, BotStatus.NonActive);
@@ -134,6 +131,14 @@ public class BotManagementService : IBotManagementService
     }
 
     /// <summary>
+    ///     Gets a bot required status for answering on a poll request from a bot
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <returns></returns>
+    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
+        => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
+
+    /// <summary>
     ///     Add a new bot info to a DB
     /// </summary>
     /// <param name="botId"></param>
@@ -143,6 +148,7 @@ public class BotManagementService : IBotManagementService
     private void AddNewBotInfo(string botId,
                                BotStatus status,
                                BotType botType,
+                               string botName,
                                DateTime? lastKeepAliveUtc = null)
     {
         try
@@ -152,6 +158,7 @@ public class BotManagementService : IBotManagementService
             var botInfo = new BotInfo
             {
                 BotId = botId,
+                BotName = botName,
                 LastKeepAlive = lastKeepAliveUtc,
                 Status = status,
                 Type = botType

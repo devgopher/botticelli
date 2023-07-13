@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 namespace Botticelli.Talks.OpenTts;
 
 /// <summary>
-/// OpenTTS engine speaker
+///     OpenTTS engine speaker
 /// </summary>
 public class OpenTtsSpeaker : BaseTtsSpeaker
 {

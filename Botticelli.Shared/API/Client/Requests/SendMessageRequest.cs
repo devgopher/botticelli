@@ -1,4 +1,5 @@
-﻿using Botticelli.Shared.ValueObjects;
+﻿using Botticelli.Shared.Utils;
+using Botticelli.Shared.ValueObjects;
 
 namespace Botticelli.Shared.API.Client.Requests;
 
@@ -9,5 +10,5 @@ public class SendMessageRequest : BaseRequest<SendMessageRequest>
 
     public Message Message { get; set; }
 
-    public static SendMessageRequest GetInstance() => new(Utils.BotIdUtils.GenerateShortBotId());
+    public static SendMessageRequest GetInstance() => new(BotIdUtils.GenerateShortBotId());
 }

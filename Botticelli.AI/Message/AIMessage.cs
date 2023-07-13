@@ -2,9 +2,10 @@
 
 public class AiMessage : Shared.ValueObjects.Message
 {
-    public AiMessage() : base()
+    public AiMessage()
     {
     }
+
     public AiMessage(string uid) : base(uid)
     {
     }

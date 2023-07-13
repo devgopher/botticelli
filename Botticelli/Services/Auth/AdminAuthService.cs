@@ -1,20 +1,21 @@
-﻿using Botticelli.Server.Data;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Data.Exceptions;
+using Botticelli.Server.Models.Responses;
 using Botticelli.Server.Settings;
 using Botticelli.Shared.Utils;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Botticelli.Server.Models.Responses;
 
 namespace Botticelli.Server.Services.Auth;
 
 /// <summary>
-/// Authentication service
+///     Authentication service
 /// </summary>
 public class AdminAuthService
 {
@@ -25,10 +26,10 @@ public class AdminAuthService
     private readonly IOptionsMonitor<ServerSettings> _settings;
 
     public AdminAuthService(IConfiguration config,
-                       IHttpContextAccessor httpContextAccessor,
-                       BotInfoContext context,
-                       ILogger<AdminAuthService> logger,
-                       IOptionsMonitor<ServerSettings> settings)
+                            IHttpContextAccessor httpContextAccessor,
+                            BotInfoContext context,
+                            ILogger<AdminAuthService> logger,
+                            IOptionsMonitor<ServerSettings> settings)
     {
         _config = config;
         _httpContextAccessor = httpContextAccessor;
@@ -38,7 +39,18 @@ public class AdminAuthService
     }
 
     /// <summary>
-    /// Register an admin user
+    ///     Register an admin user
+    /// </summary>
+    /// <param name="userRegister"></param>
+    /// <returns></returns>
+    /// <exception cref="DataException"></exception>
+    public async Task<bool> HasUsersAsync() 
+        => await _context
+                 .ApplicationUsers
+                 .AnyAsync();
+
+    /// <summary>
+    ///     Registers an admin user
     /// </summary>
     /// <param name="userRegister"></param>
     /// <returns></returns>
@@ -84,7 +96,7 @@ public class AdminAuthService
     }
 
     /// <summary>
-    /// Generates auth token
+    ///     Generates auth token
     /// </summary>
     /// <param name="login"></param>
     /// <returns></returns>
@@ -98,7 +110,7 @@ public class AdminAuthService
             {
                 _logger.LogInformation($"{nameof(GenerateToken)}({login.Email}) access denied...");
 
-                return new()
+                return new GetTokenResponse
                 {
                     IsSuccess = false,
                     Token = null
@@ -141,11 +153,11 @@ public class AdminAuthService
                                              //.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
                                              signingCredentials: signCreds);
 
-            return new()
+            return new GetTokenResponse
             {
                 IsSuccess = true,
                 Token = new JwtSecurityTokenHandler().WriteToken(token)
-        };
+            };
         }
         catch (Exception ex)
         {
@@ -157,7 +169,7 @@ public class AdminAuthService
 
 
     /// <summary>
-    /// Checks auth token
+    ///     Checks auth token
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
@@ -180,17 +192,19 @@ public class AdminAuthService
 
 
             _logger.LogInformation($"{nameof(CheckToken)}() validate token: {validatedToken != default}");
+
             return validatedToken != default;
         }
         catch (Exception ex)
         {
             _logger.LogError($"{nameof(CheckToken)}() error: {ex.Message}");
+
             return false;
         }
     }
 
     /// <summary>
-    /// Checks access
+    ///     Checks access
     /// </summary>
     /// <param name="login"></param>
     /// <returns></returns>
@@ -207,7 +221,8 @@ public class AdminAuthService
         => _httpContextAccessor.HttpContext
                                .User
                                .Claims
-                               .FirstOrDefault(c => c.Type == "applicationUserId")?.Value;
+                               .FirstOrDefault(c => c.Type == "applicationUserId")
+                               ?.Value;
 
     private static string GetNormalized(string input)
         => input?.ToUpper();

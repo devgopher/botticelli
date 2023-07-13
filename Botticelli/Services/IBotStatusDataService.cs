@@ -17,4 +17,11 @@ public interface IBotStatusDataService
     /// <param name="botId"></param>
     /// <returns></returns>
     Task<BotStatus?> GetRequiredBotStatus(string botId);
+
+    /// <summary>
+    ///     Gets bot key/token for a messenger (temporary here!)
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <returns></returns>
+    Task<string> GetRequiredBotKey(string botId);
 }

@@ -1,8 +1,12 @@
-﻿@inject CookieStorageAccessor Cookies;
+﻿@using Botticelli.Server.FrontNew.Clients
+@inject CookieStorageAccessor Cookies;
+@inject SessionClient SessionClient;
 
 @code {
     private bool _collapseNavMenu = true;
     private bool _showLoginMenu = false;
+    private bool _hasAnyUsers = false;
+
     private string _error = "";
 
     private string? NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
@@ -10,18 +14,18 @@
     private void ToggleNavMenu() => _collapseNavMenu = !_collapseNavMenu;
 
     /// <summary>
-    /// Method invoked when the component is ready to start, having received its
-    /// initial parameters from its parent in the render tree.
-    /// Override this method if you will perform an asynchronous operation and
-    /// want the component to refresh when that operation is completed.
+    ///     Method invoked when the component is ready to start, having received its
+    ///     initial parameters from its parent in the render tree.
+    ///     Override this method if you will perform an asynchronous operation and
+    ///     want the component to refresh when that operation is completed.
     /// </summary>
     /// <returns>A <see cref="T:System.Threading.Tasks.Task" /> representing any asynchronous operation.</returns>
     protected override async Task OnInitializedAsync()
     {
         _showLoginMenu = string.IsNullOrWhiteSpace(await Cookies.GetValueAsync("SessionToken"));
         _error = await Cookies.GetValueAsync("SessionToken");
+        _hasAnyUsers = await SessionClient.HasUsersAsync();
     }
-
 }
 
 <div class="top-row ps-3 navbar navbar-dark">
@@ -35,30 +39,42 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        @if (_showLoginMenu)
+        @if (!_hasAnyUsers)
         {
             <div class="nav-item px-3">
-                <NavLink class="nav-link" href="">
+                <NavLink class="nav-link" href="register">
                     <span class="oi oi-home" aria-hidden="true"/>
-                    Login
+                    Register
                 </NavLink>
-            </div>
+            </div>  
         }
         else
         {
+            @if (_showLoginMenu)
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="">
+                        <span class="oi oi-home" aria-hidden="true"/>
+                        Login
+                    </NavLink>
+                </div>
+            }
+            else
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="logoff">
+                        <span class="oi oi-home" aria-hidden="true"/>
+                        Logoff
+                    </NavLink>
+                </div>
+            }
             <div class="nav-item px-3">
-                <NavLink class="nav-link" href="logoff">
-                    <span class="oi oi-home" aria-hidden="true"/>
-                    Logoff
+                <NavLink class="nav-link" href="your_bots">
+                    <span class="oi oi-list-rich" aria-hidden="true"/> Yor bots
                 </NavLink>
             </div>
         }
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="your_bots">
-                <span class="oi oi-list-rich" aria-hidden="true"/> Yor bots
-            </NavLink>
-        </div>
     </nav>
-    
+
     @*<RadzenLabel @bind-text="@_error" Style="color: red; font-weight: bold" />*@
 </div>

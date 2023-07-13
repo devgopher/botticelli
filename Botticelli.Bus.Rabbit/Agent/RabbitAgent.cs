@@ -23,7 +23,6 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         where TBot : IBot
         where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
-    private readonly IList<THandler> _handlers = new List<THandler>(5);
     private readonly ILogger<RabbitAgent<TBot, THandler>> _logger;
     private readonly IConnectionFactory _rabbitConnectionFactory;
     private readonly RabbitBusSettings _settings;
@@ -50,8 +49,8 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
     public async Task SendResponseAsync(SendMessageResponse response,
-                                   CancellationToken token,
-                                   int timeoutMs = 60000)
+                                        CancellationToken token,
+                                        int timeoutMs = 60000)
     {
         try
         {
@@ -89,7 +88,6 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     {
         _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) start...");
         var handler = _sp.GetRequiredService<THandler>();
-        _handlers.Add(handler);
 
         ProcessSubscription(token, handler);
     }

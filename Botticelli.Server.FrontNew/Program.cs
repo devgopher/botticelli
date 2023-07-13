@@ -21,4 +21,5 @@ builder.Services.AddHttpClient<YourBots>(c =>
        .AddHttpMessageHandler<AuthDelegatingHandler>();
 
 var app = builder.Build();
+
 await app.RunAsync();

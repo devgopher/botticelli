@@ -14,6 +14,7 @@ namespace Botticelli.Framework.Telegram.Handlers;
 public interface IBotUpdateHandler : IUpdateHandler
 {
     public delegate void MsgReceivedEventHandler(object sender, MessageReceivedBotEventArgs e);
+
     public event MsgReceivedEventHandler MessageReceived;
 }
 
@@ -68,7 +69,14 @@ public class BotUpdateHandler : IBotUpdateHandler
                     Info = string.Empty,
                     IsBot = botMessage.ForwardFrom?.IsBot,
                     NickName = botMessage.ForwardFrom?.Username
-                }
+                },
+                Location = botMessage.Location != null ?
+                        new GeoLocation
+                        {
+                            Latitude = (decimal) botMessage.Location?.Latitude,
+                            Longitude = (decimal) botMessage.Location?.Longitude
+                        } :
+                        null
             };
 
             await Process(botticelliMessage, cancellationToken);
@@ -80,6 +88,8 @@ public class BotUpdateHandler : IBotUpdateHandler
             _logger.LogError($"{nameof(HandleUpdateAsync)}() error", ex);
         }
     }
+
+    public event IBotUpdateHandler.MsgReceivedEventHandler? MessageReceived;
 
     /// <summary>
     ///     Processes requests
@@ -102,6 +112,4 @@ public class BotUpdateHandler : IBotUpdateHandler
 
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
     }
-
-    public event IBotUpdateHandler.MsgReceivedEventHandler? MessageReceived;
 }
