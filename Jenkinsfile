@@ -24,7 +24,7 @@ pipeline {
 
     stage('run on node 1') {
       steps {
-        sshCommand(command: 'pkill -f Botticelli.Server | exit 0', remote: remote)
+        sshCommand(command: 'pkill -f Botticelli.Server | true', remote: remote)
         sshCommand(command: ' cd /deploy/server_back/publish | dotnet run', remote: remote)
       }
     }
