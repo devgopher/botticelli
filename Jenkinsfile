@@ -18,9 +18,8 @@ pipeline {
 
     stage('run on node 1') {
       steps {
-        sh 'pkill -f Botticelli.Server'
-        sh ' cd /deploy/server_back'
-        sh 'dotnet Botticelli.Server.dll'
+        sshCommand(command: 'pkill -f Botticelli.Server', remote: 'agent@45.126.125.65')
+        sshCommand(command: ' cd /deploy/server_back/ | dotnet run', remote: 'agent@45.126.125.65')
       }
     }
 
