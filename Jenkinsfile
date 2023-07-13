@@ -17,7 +17,9 @@ pipeline {
 
     stage('run on node 1') {
       steps {
-        sh 'cd Botticelli && dotnet run'
+        sh 'pkill -f Botticelli.Server'
+        sh ' cd Botticelli'
+        sh 'dotnet run'
       }
     }
 
