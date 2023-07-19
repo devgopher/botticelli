@@ -370,3 +370,7 @@ FodyWeavers.xsd
 /TelegramAiSample/appsettings.json
 /Botticelli/database.db
 /TelegramAiSample/database.db
+/deploy/linux/server/back/build.sh
+/deploy/linux/server/back/Dockerfile
+/deploy/linux/server/front/build.sh
+/deploy/linux/server/front/Dockerfile
