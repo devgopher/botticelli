@@ -6,12 +6,13 @@ pushd botticelli/
 git checkout mvp/0.1
 git pull
 
+pushd TelegramAiSample
+
 echo -n "Enter your ChatGpt API key:"
 read ChatGptSettings__ApiKey
 echo "API key : $ChatGptSettings__ApiKey"
 
-pushd TelegramAiSample
-sed -i 's/chatgpt-api-key-placeholder/'$ChatGptSettings__ApiKey'/g' Properties/launchSeettings.json
+sed -i 's/chatgpt-api-key-placeholder/'$ChatGptSettings__ApiKey'/g' Properties/launchSettings.json
 
 dotnet run TelegramAiChatGptSample.csproj &
 
