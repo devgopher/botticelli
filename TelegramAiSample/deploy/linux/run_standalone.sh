@@ -6,8 +6,7 @@ pushd botticelli/
 git checkout mvp/0.1
 git pull
 
-pushd Botticelli
-
-dotnet run Botticelli.Server.csproj &
+pushd TelegramAiSample
+dotnet run TelegramAiChatGptSample.csproj &
 
 popd

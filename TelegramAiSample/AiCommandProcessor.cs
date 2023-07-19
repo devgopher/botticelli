@@ -65,10 +65,6 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                                                                                  {
                                                                                                      "/ai Thank you!",
                                                                                                      "/ai Good bye!",
-                                                                                                     //new("/ai Where am I?")
-                                                                                                     //{
-                                                                                                     //    RequestLocation = true
-                                                                                                     //},
                                                                                                      "/ai Tell me smth interesting"
                                                                                                  }
                                                                                              })
