@@ -9,4 +9,8 @@ git pull
 pushd TelegramMessagingSample
 
 dotnet run TelegramMessagingSample.csproj &
+
+echo BOT ID:
+cat Data/botId
+
 popd
