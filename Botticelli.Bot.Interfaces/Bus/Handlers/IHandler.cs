@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Bot.Interfaces.Handlers;
+﻿namespace Botticelli.Bot.Interfaces.Bus.Handlers;
 
 public interface IHandler<in TRequest, TResponse>
 {

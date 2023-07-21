@@ -1,0 +1,77 @@
+## Command processors
+Command processor is a basic unit, intended for processing a command and it's arguments with user-defined business logic.
+
+
+## Usage
+
+In order to define your command processor, you nedd to use ```CommandProcessor<TCommand>``` as a base classm where TCommand is a particular type of command. 
+So, as you can see every type of CommandProcessor is strictly linked with a particular type of Command.
+
+## Command name
+Your command class name should consist of 2 parts: <CommandName>Command
+For example: if you need to process a command ```/Test```, your class name deliberatively should be ```TestCommand```!
+
+## Example 
+(see https://github.com/devgopher/botticelli/blob/develop/TelegramAiSample/AiCommandProcessor.cs)
+
+```
+// Sample command
+public class AiCommand : ICommand
+{
+    public Guid Id { get; }
+}
+
+// Sample command processor
+public class AiCommandProcessor : CommandProcessor<AiCommand>
+{
+    private readonly IBotticelliBusClient _bus;
+
+    public AiCommandProcessor(ILogger<AiCommandProcessor> logger,
+                              ICommandValidator<AiCommand> validator,
+                              IBotticelliBusClient bus)
+            : base(logger, validator) =>
+            _bus = bus;
+
+    protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
+    {
+    }
+
+    protected override async Task InnerProcessPoll(Message message, string argsString, CancellationToken token)
+    {
+    }
+
+    protected override async Task InnerProcessLocation(Message message, string argsString, CancellationToken token)
+    {
+        message.Body = $"{$"Coordinates {message.Location.Latitude:##.#####}".Replace(",", ".")},{$"{message.Location.Longitude:##.#####}".Replace(",", ".")}";
+        await InnerProcess(message, argsString, token);
+    }
+
+
+    protected override async Task InnerProcess(Message message, string args, CancellationToken token)
+    {
+        var response = await _bus.GetResponse(new SendMessageRequest(message.Uid)
+                                              {
+                                                  Message = new AiMessage(message.Uid)
+                                                  {
+                                                      ChatId = message.ChatId,
+                                                      Subject = string.Empty,
+                                                      Body = message.Body
+                                                                    .Replace("/ai", string.Empty)
+                                                                    .Trim(),
+                                                      Attachments = null,
+                                                      From = message.From,
+                                                      ForwardedFrom = message.ForwardedFrom
+                                                  }
+                                              },
+                                              token);
+
+        if (response != null)
+            foreach (var bot in _bots)
+                await bot.SendMessageAsync(new SendMessageRequest(response.Uid)
+                                           {
+                                               Message = response.Message
+                                           },
+                                           token);
+    }
+}
+```

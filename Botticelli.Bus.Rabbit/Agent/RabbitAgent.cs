@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Botticelli.Bot.Interfaces.Agent;
-using Botticelli.Bot.Interfaces.Handlers;
+using Botticelli.Bot.Interfaces.Bus.Handlers;
 using Botticelli.Bus.Rabbit.Settings;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;

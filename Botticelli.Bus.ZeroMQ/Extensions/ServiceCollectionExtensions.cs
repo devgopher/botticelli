@@ -1,5 +1,5 @@
-﻿using Botticelli.Bot.Interfaces.Client;
-using Botticelli.Bot.Interfaces.Handlers;
+﻿using Botticelli.Bot.Interfaces.Bus.Handlers;
+using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Bus.ZeroMQ.Agent;
 using Botticelli.Bus.ZeroMQ.Client;
 using Botticelli.Bus.ZeroMQ.Settings;

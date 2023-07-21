@@ -1,6 +1,6 @@
 ﻿using Botticelli.AI.AIProvider;
 using Botticelli.AI.Message;
-using Botticelli.Bot.Interfaces.Handlers;
+using Botticelli.Bot.Interfaces.Bus.Handlers;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 
