@@ -1,8 +1,9 @@
-## Commands
+### Commands
 
 Command is one of basic entities in our framework intended for processing commands and their arguments from chats.
 
-Command lifecycle:
+## Command lifecycle
+
 1. Receiving from message
 2. Parsing
 3. Validation

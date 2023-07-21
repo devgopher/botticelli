@@ -37,7 +37,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
 
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
-        var response = await _bus.GetResponse(new SendMessageRequest(message.Uid)
+        var response = await _bus.SendAndGetResponse(new SendMessageRequest(message.Uid)
                                               {
                                                   Message = new AiMessage(message.Uid)
                                                   {

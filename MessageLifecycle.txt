@@ -13,7 +13,6 @@
 - message processing
 - sending a response (if needed)
 
-
 ### Sending a response
 
 1. Sending a message (see https://github.com/devgopher/botticelli/blob/develop/Botticelli.Framework/BaseBot.cs SendMessageAsync)

@@ -35,7 +35,7 @@ public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, ID
         Init();
     }
 
-    public async Task<SendMessageResponse> GetResponse(SendMessageRequest request, CancellationToken token)
+    public async Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request, CancellationToken token)
     {
         try
         {

@@ -117,13 +117,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Creating a bot", "Creating 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Framework", "Botticelli.Framework", "{031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}"
 	ProjectSection(SolutionItems) = preProject
-		CommandProcessors.txt = CommandProcessors.txt
-		Commands.txt = Commands.txt
 		Events.txt = Events.txt
-		MessageLifecycle.txt = MessageLifecycle.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Managing a bot", "Managing a bot", "{3771925B-964F-421D-A3F3-F1BB18793C35}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{F657B4EF-2CE8-4FEE-BE03-496536C7AB82}"
+	ProjectSection(SolutionItems) = preProject
+		CommandProcessors.txt = CommandProcessors.txt
+		Commands.txt = Commands.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messages", "Messages", "{DC4310A8-D06A-45FD-A8D9-A149BEB02743}"
+	ProjectSection(SolutionItems) = preProject
+		MessageLifecycle.txt = MessageLifecycle.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{3F9D7CBC-7D61-4805-80AE-8247B4A01C4C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{457113AB-B859-4C1D-B4C7-C42BA74052DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Bus", "Botticelli.Bus", "{85DE8BC6-2A06-4088-B4AA-DD520CBC2369}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -282,6 +296,11 @@ Global
 		{912B05D1-DC22-411E-9D6E-E06FFE96E4E6} = {5961DAF1-951C-4140-AEC1-648539E4D487}
 		{031AE0A5-4B9E-4F45-9A23-38DC108DBF8D} = {912B05D1-DC22-411E-9D6E-E06FFE96E4E6}
 		{3771925B-964F-421D-A3F3-F1BB18793C35} = {5961DAF1-951C-4140-AEC1-648539E4D487}
+		{F657B4EF-2CE8-4FEE-BE03-496536C7AB82} = {031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}
+		{DC4310A8-D06A-45FD-A8D9-A149BEB02743} = {031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}
+		{3F9D7CBC-7D61-4805-80AE-8247B4A01C4C} = {031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}
+		{457113AB-B859-4C1D-B4C7-C42BA74052DF} = {031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}
+		{85DE8BC6-2A06-4088-B4AA-DD520CBC2369} = {912B05D1-DC22-411E-9D6E-E06FFE96E4E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

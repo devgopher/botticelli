@@ -1,10 +1,10 @@
-## Command processors
+### Command processors
 Command processor is a basic unit, intended for processing a command and it's arguments with user-defined business logic.
 
 
 ## Usage
 
-In order to define your command processor, you nedd to use ```CommandProcessor<TCommand>``` as a base classm where TCommand is a particular type of command. 
+In order to define your command processor, you need to use ```CommandProcessor<TCommand>``` as a base classm where TCommand is a particular type of command. 
 So, as you can see every type of CommandProcessor is strictly linked with a particular type of Command.
 
 ## Command name
