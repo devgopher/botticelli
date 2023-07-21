@@ -102,6 +102,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{7FF17C87
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bundle", "Botticelli.Bundle\Botticelli.Bundle.csproj", "{F400F638-EC58-49A2-B730-BD2688FCD4E9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{5961DAF1-951C-4140-AEC1-648539E4D487}"
+	ProjectSection(SolutionItems) = preProject
+		installation.txt = installation.txt
+		docs\site\docs_structure.txt = docs\site\docs_structure.txt
+		docs\site\introduction.txt = docs\site\introduction.txt
+		running.txt = running.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Creating a bot", "Creating a bot", "{912B05D1-DC22-411E-9D6E-E06FFE96E4E6}"
+	ProjectSection(SolutionItems) = preProject
+		Generic description.txt = Generic description.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Framework", "Botticelli.Framework", "{031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}"
+	ProjectSection(SolutionItems) = preProject
+		Events.txt = Events.txt
+		MessageLifecycle.txt = MessageLifecycle.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -256,6 +275,8 @@ Global
 		{2423A645-22D1-4736-946F-10A99353581C} = {A05D5A20-E0D3-4844-8311-C98E8B67DA7F}
 		{05922003-7445-47CF-8496-7224F44E7768} = {9B590747-74F6-41C8-8733-B5B77A8FCAC1}
 		{7FF17C87-CC2B-4CD6-B667-18B7BED78850} = {9B590747-74F6-41C8-8733-B5B77A8FCAC1}
+		{912B05D1-DC22-411E-9D6E-E06FFE96E4E6} = {5961DAF1-951C-4140-AEC1-648539E4D487}
+		{031AE0A5-4B9E-4F45-9A23-38DC108DBF8D} = {912B05D1-DC22-411E-9D6E-E06FFE96E4E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

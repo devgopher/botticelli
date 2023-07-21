@@ -1,0 +1,19 @@
+## Message lifecycle
+
+### Receiving a message
+
+1. Processing in update handler (platform-specific):
+- seeking for commands
+- processing registered commands (see CommandProcessor)
+
+2. Sending to a bot using a particular CommandProcessor:
+- preprocessing (escaping special symbols)
+- message forming (see https://github.com/devgopher/botticelli/blob/develop/Botticelli.Shared/ValueObjects/Message.cs)
+- message validation 
+- message processing
+
+
+### Sending a response
+
+1. Sending a message (see https://github.com/devgopher/botticelli/blob/develop/Botticelli.Framework/BaseBot.cs SendMessageAsync)
+2. Waiting for a reply/another messages from a chat

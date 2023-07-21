@@ -1,0 +1,59 @@
+## Short summary
+Botticelli consists of 2 parts: 
+- Bots
+- Server
+
+## Server side 
+To run a server-side backend, please run this script:
+
+```
+sudo apt-get update && \  sudo apt-get install -y dotnet-sdk-7.0
+
+rm -rf botticelli/
+git clone https://github.com/devgopher/botticelli.git
+pushd botticelli/
+git checkout mvp/0.1
+git pull
+
+pushd Botticelli
+
+dotnet run Botticelli.Server.csproj &
+
+popd
+```
+
+To run a server-side front part (admin pane), please run this script:
+
+```
+sudo apt-get update && \  sudo apt-get install -y dotnet-sdk-7.0
+
+rm -rf botticelli/
+git clone https://github.com/devgopher/botticelli.git
+pushd botticelli/
+git checkout mvp/0.1
+git pull
+
+pushd Botticelli.Server.FrontNew
+
+# Let's propose, that server back is on the same server
+my_ip=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[1]}')
+
+sed -i 's/localhost/'$my_ip'/g' wwwroot/appsettings.json
+
+dotnet run Botticelli.Server.FrontNew.csproj &
+
+popd
+```
+
+In order to see, that server side is on-fly please visit:
+
+<your ip>:5042
+
+## Client-side
+The client-side setup depends on your particular project. In general, you should set a backend address in your config:
+
+```
+  "ServerSettings": {
+    "ServerUri": "http://<server-side ip>:5050"
+  }
+```
