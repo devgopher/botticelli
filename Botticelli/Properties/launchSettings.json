@@ -14,7 +14,7 @@
         "Authorization__Issuer": "Bar",
         "Authorization__Audience": "Foo",
         "Authorization__Salt": "7FGwR76U2ak&6F+j",
-        "ServerSettings__TokenLifetimeMin": 1440
+        "ServerSettings__TokenLifetimeMin": "1440"
       }
     }
   }

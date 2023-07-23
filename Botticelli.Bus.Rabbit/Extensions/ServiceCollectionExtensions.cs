@@ -32,7 +32,9 @@ public static class ServiceCollectionExtensions
             services.AddSingleton<IConnectionFactory>(s => new ConnectionFactory
             {
                 Uri = new Uri(settings.Uri),
-                VirtualHost = settings.VHost
+                VirtualHost = settings.VHost,
+                UserName = settings.UserName,
+                Password = settings.Password
             });
 
         return services;
