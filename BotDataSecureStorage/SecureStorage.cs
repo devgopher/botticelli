@@ -66,12 +66,14 @@ public class SecureStorage
     }
 
     public T GetAnyData<T>(string id)
+            where T : IDbEntity 
+        => GetAnyData<T>().FirstOrDefault(x => x.Id == id);
+
+    public IEnumerable<T> GetAnyData<T>()
             where T : IDbEntity
     {
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 
-        var allRecs = db.GetCollection<T>().FindAll();
-
-        return allRecs.FirstOrDefault(x => x.Id == id);
+        return db.GetCollection<T>().FindAll();
     }
 }
