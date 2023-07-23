@@ -25,4 +25,4 @@ public interface IBotticelliBusAgent : IHostedService
 public interface IBotticelliBusAgent<in THandler> : IBotticelliBusAgent
         where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
-}
+}  
