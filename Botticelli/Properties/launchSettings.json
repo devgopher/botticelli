@@ -9,7 +9,7 @@
       "applicationUrl": "http://0.0.0.0:5050",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "SecureStorageSettings__ConnectionString": "Filename=../../../database.db;Connection=shared;Password=123",
+        "SecureStorageSettings__ConnectionString": "Filename=database.db;Connection=shared;Password=123",
         "Authorization__Key": "12345678123456781234567812345678",
         "Authorization__Issuer": "Bar",
         "Authorization__Audience": "Foo",

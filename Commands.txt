@@ -1,0 +1,22 @@
+### Commands
+
+Command is one of basic entities in our framework intended for processing commands and their arguments from chats.
+
+## Command lifecycle
+
+1. Receiving from message
+2. Parsing
+3. Validation
+4. Getting arguments
+5. Processing
+
+Every command you define must implement interface ICommand (see https://github.com/devgopher/botticelli/blob/develop/Botticelli.Framework/Commands/ICommand.cs)
+
+## Example
+
+```
+public class SampleCommand : ICommand
+{
+    public Guid Id { get; }
+}
+```

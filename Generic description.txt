@@ -1,0 +1,12 @@
+## Generic
+Botticelli implies a event-based bot implementation model, that supports commands, buses and different integrations.
+
+The client-side components set consists of:
+- Botticelli.Framework - basic functions
+- Botticelli.Framework.Telegram - Telegram bot building functions
+- Botticelli.Bot.Interfaces - generic interfaces for all kinds of bots
+- Botticelli.Bus.None - a mock for bus (for development and test purposes)
+- Botticelli.Bus.Rabbit - a RabbitMq-based bus
+- Botticelli.Talks - a speech-recognition engines integration 
+- Botticelli.Scheduler - scheduling functions
+- Botticelli.Scheduler.Interfaces - generic interfaces for scheduler

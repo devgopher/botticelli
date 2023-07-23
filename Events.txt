@@ -1,0 +1,17 @@
+## Bot events
+
+The basic bot has several basic events:
+```
+    /* Rises on start */
+    public event StartedEventHandler Started;
+    /* Rises on stop */
+    public event StoppedEventHandler Stopped;
+    /* Rises on message receive and contains a received message */
+    public abstract event MsgReceivedEventHandler MessageReceived;
+    /* Rises when message is removedm contains message id */
+    public abstract event MsgRemovedEventHandler MessageRemoved;
+    /* Platform-specific event */
+    public abstract event MessengerSpecificEventHandler MessengerSpecificEvent;
+```
+
+

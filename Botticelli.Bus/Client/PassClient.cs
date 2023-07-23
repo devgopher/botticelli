@@ -10,7 +10,7 @@ public class PassClient : IBotticelliBusClient
 {
     private static TimeSpan Timeout => TimeSpan.FromMinutes(5);
 
-    public async Task<SendMessageResponse> GetResponse(SendMessageRequest request,
+    public async Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request,
                                                        CancellationToken token)
     {
         NoneBus.SendMessageRequests.Enqueue(request);

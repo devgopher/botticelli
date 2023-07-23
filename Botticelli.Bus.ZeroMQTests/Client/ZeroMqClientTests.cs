@@ -63,7 +63,7 @@ public class ZeroMqClientTests
         await _agent.SendResponseAsync(new SendMessageResponse(request.Uid, "test"),
                                        CancellationToken.None);
 
-        var response = await _client.GetResponse(request, CancellationToken.None);
+        var response = await _client.SendAndGetResponse(request, CancellationToken.None);
 
         Assert.Fail();
     }

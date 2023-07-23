@@ -1,4 +1,4 @@
-﻿using Botticelli.Bot.Interfaces.Handlers;
+﻿using Botticelli.Bot.Interfaces.Bus.Handlers;
 
 namespace Botticelli.Framework.Handlers;
 

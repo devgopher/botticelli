@@ -1,15 +1,27 @@
-﻿using Botticelli.AI.Message;
-using Botticelli.Bot.Interfaces.Client;
-using Botticelli.Framework.Commands.Processors;
-using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.SendOptions;
-using Botticelli.Shared.API.Client.Requests;
-using Botticelli.Shared.ValueObjects;
-using Telegram.Bot.Types.ReplyMarkups;
-using TelegramAiChatGptSample.Commands;
+### Command processors
+Command processor is a basic unit, intended for processing a command and it's arguments with user-defined business logic.
 
-namespace TelegramAiChatGptSample;
 
+## Usage
+
+In order to define your command processor, you need to use ```CommandProcessor<TCommand>``` as a base classm where TCommand is a particular type of command. 
+So, as you can see every type of CommandProcessor is strictly linked with a particular type of Command.
+
+## Command name
+Your command class name should consist of 2 parts: <CommandName>Command
+For example: if you need to process a command ```/Test```, your class name deliberatively should be ```TestCommand```!
+
+## Example 
+(see https://github.com/devgopher/botticelli/blob/develop/TelegramAiSample/AiCommandProcessor.cs)
+
+```
+// Sample command
+public class AiCommand : ICommand
+{
+    public Guid Id { get; }
+}
+
+// Sample command processor
 public class AiCommandProcessor : CommandProcessor<AiCommand>
 {
     private readonly IBotticelliBusClient _bus;
@@ -37,7 +49,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
 
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
-        var response = await _bus.SendAndGetResponse(new SendMessageRequest(message.Uid)
+        var response = await _bus.GetResponse(new SendMessageRequest(message.Uid)
                                               {
                                                   Message = new AiMessage(message.Uid)
                                                   {
@@ -59,18 +71,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                            {
                                                Message = response.Message
                                            },
-                                           SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(new ReplyKeyboardMarkup(new[]
-                                                                                             {
-                                                                                                 new KeyboardButton[]
-                                                                                                 {
-                                                                                                     "/ai Thank you!",
-                                                                                                     "/ai Good bye!",
-                                                                                                     "/ai Tell me smth interesting"
-                                                                                                 }
-                                                                                             })
-                                                                                             {
-                                                                                                 ResizeKeyboard = true
-                                                                                             }),
                                            token);
     }
 }
+```
