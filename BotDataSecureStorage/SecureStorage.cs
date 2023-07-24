@@ -74,6 +74,6 @@ public class SecureStorage
     {
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 
-        return db.GetCollection<T>().FindAll();
+        return db.GetCollection<T>().FindAll().ToArray();
     }
 }
