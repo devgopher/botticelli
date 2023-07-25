@@ -53,8 +53,6 @@ builder.Services.AddEndpointsApiExplorer()
            });
        });
 
-
-
 builder.Services
        .Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration)
        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -104,8 +104,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bundle", "Bottic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{5961DAF1-951C-4140-AEC1-648539E4D487}"
 	ProjectSection(SolutionItems) = preProject
-		installation.txt = installation.txt
 		docs\site\docs_structure.txt = docs\site\docs_structure.txt
+		installation.txt = installation.txt
 		docs\site\introduction.txt = docs\site\introduction.txt
 		running.txt = running.txt
 	EndProjectSection
@@ -113,6 +113,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Creating a bot", "Creating a bot", "{912B05D1-DC22-411E-9D6E-E06FFE96E4E6}"
 	ProjectSection(SolutionItems) = preProject
 		Generic description.txt = Generic description.txt
+		RegABot.txt = RegABot.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Framework", "Botticelli.Framework", "{031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}"
