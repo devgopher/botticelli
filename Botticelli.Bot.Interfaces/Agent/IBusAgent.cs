@@ -8,8 +8,15 @@ namespace Botticelli.Bot.Interfaces.Agent;
 /// <summary>
 ///     Bus agent works on the side of endpoint
 /// </summary>
-public interface IBotticelliBusAgent : IHostedService
+public interface IBusAgent : IHostedService
 {
+    /// <summary>
+    /// Subscribes to a message queue
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task Subscribe(CancellationToken token);
+
     /// <summary>
     ///     Returns response from a target system to a bus
     /// </summary>
@@ -22,7 +29,7 @@ public interface IBotticelliBusAgent : IHostedService
                                   int timeoutMs = 10000);
 }
 
-public interface IBotticelliBusAgent<in THandler> : IBotticelliBusAgent
+public interface IBotticelliBusAgent<in THandler> : IBusAgent
         where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
 }  

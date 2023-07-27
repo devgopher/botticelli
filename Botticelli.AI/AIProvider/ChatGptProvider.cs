@@ -20,7 +20,7 @@ public class ChatGptProvider : GenericAiProvider
     public ChatGptProvider(IOptionsMonitor<ChatGptSettings> gptSettings,
                            IHttpClientFactory factory,
                            ILogger<ChatGptProvider> logger,
-                           IBotticelliBusClient bus) : base(gptSettings,
+                           IBusClient bus) : base(gptSettings,
                                                             factory,
                                                             logger,
                                                             bus)

@@ -1,0 +1,9 @@
+# Botticelli.Bus
+
+Botticelli.Bus is a component, intended for simplifying interaction with wide range of message brokers (such as rabbitmq).
+The typical use case is when we need to interact with some public API with limited throughput.
+Botticelli.Bus present 2 ways of interaction:
+
+* Agent: the client-side application, that interacts with target API/Database/System/smth else
+* Client: the client-side application, that interacts with an agent or another client in order to get some response
+

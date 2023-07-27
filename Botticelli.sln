@@ -104,40 +104,41 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bundle", "Bottic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{5961DAF1-951C-4140-AEC1-648539E4D487}"
 	ProjectSection(SolutionItems) = preProject
-		installation.txt = installation.txt
 		docs\site\docs_structure.txt = docs\site\docs_structure.txt
+		docs\installation.txt = docs\installation.txt
 		docs\site\introduction.txt = docs\site\introduction.txt
-		running.txt = running.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Creating a bot", "Creating a bot", "{912B05D1-DC22-411E-9D6E-E06FFE96E4E6}"
-	ProjectSection(SolutionItems) = preProject
-		Generic description.txt = Generic description.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Framework", "Botticelli.Framework", "{031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}"
-	ProjectSection(SolutionItems) = preProject
-		Events.txt = Events.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Managing a bot", "Managing a bot", "{3771925B-964F-421D-A3F3-F1BB18793C35}"
+	ProjectSection(SolutionItems) = preProject
+		docs\AddActivateRemoveBot.txt = docs\AddActivateRemoveBot.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{F657B4EF-2CE8-4FEE-BE03-496536C7AB82}"
-	ProjectSection(SolutionItems) = preProject
-		CommandProcessors.txt = CommandProcessors.txt
-		Commands.txt = Commands.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messages", "Messages", "{DC4310A8-D06A-45FD-A8D9-A149BEB02743}"
-	ProjectSection(SolutionItems) = preProject
-		MessageLifecycle.txt = MessageLifecycle.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{3F9D7CBC-7D61-4805-80AE-8247B4A01C4C}"
+	ProjectSection(SolutionItems) = preProject
+		docs\site\BusAgent.jpg = docs\site\BusAgent.jpg
+		docs\site\BusAgent.uxf = docs\site\BusAgent.uxf
+		docs\BusAgentDescription.txt = docs\BusAgentDescription.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{457113AB-B859-4C1D-B4C7-C42BA74052DF}"
+	ProjectSection(SolutionItems) = preProject
+		docs\site\BusClient.jpg = docs\site\BusClient.jpg
+		docs\site\BusClient.uxf = docs\site\BusClient.uxf
+		BusClientDescription.txt = BusClientDescription.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Bus", "Botticelli.Bus", "{85DE8BC6-2A06-4088-B4AA-DD520CBC2369}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Handlers", "Handlers", "{184C8F8D-DC80-4C52-88F9-8AE799C51266}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -298,9 +299,10 @@ Global
 		{3771925B-964F-421D-A3F3-F1BB18793C35} = {5961DAF1-951C-4140-AEC1-648539E4D487}
 		{F657B4EF-2CE8-4FEE-BE03-496536C7AB82} = {031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}
 		{DC4310A8-D06A-45FD-A8D9-A149BEB02743} = {031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}
-		{3F9D7CBC-7D61-4805-80AE-8247B4A01C4C} = {031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}
-		{457113AB-B859-4C1D-B4C7-C42BA74052DF} = {031AE0A5-4B9E-4F45-9A23-38DC108DBF8D}
+		{3F9D7CBC-7D61-4805-80AE-8247B4A01C4C} = {184C8F8D-DC80-4C52-88F9-8AE799C51266}
+		{457113AB-B859-4C1D-B4C7-C42BA74052DF} = {184C8F8D-DC80-4C52-88F9-8AE799C51266}
 		{85DE8BC6-2A06-4088-B4AA-DD520CBC2369} = {912B05D1-DC22-411E-9D6E-E06FFE96E4E6}
+		{184C8F8D-DC80-4C52-88F9-8AE799C51266} = {85DE8BC6-2A06-4088-B4AA-DD520CBC2369}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

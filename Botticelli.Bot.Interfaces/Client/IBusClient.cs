@@ -6,7 +6,7 @@ namespace Botticelli.Bot.Interfaces.Client;
 /// <summary>
 ///     Bus client for sending/receiving req/resp through a bus
 /// </summary>
-public interface IBotticelliBusClient
+public interface IBusClient
 {
     public Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request,
                                                  CancellationToken token);

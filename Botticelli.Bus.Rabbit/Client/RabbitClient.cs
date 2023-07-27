@@ -13,7 +13,7 @@ using RabbitMQ.Client.Events;
 
 namespace Botticelli.Bus.Rabbit.Client;
 
-public class RabbitClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient
+public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
         where TBot : IBot
 {
     private readonly ILogger<RabbitClient<TBot>> _logger;

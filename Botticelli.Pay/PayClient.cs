@@ -3,7 +3,7 @@ using Botticelli.Shared.API.Client.Responses;
 
 namespace Botticelli.Pay;
 
-public class PayClient : IBotticelliBusAgent
+public class PayClient : IBusAgent
 {
     public async Task SendResponseAsync(SendMessageResponse response,
                                         CancellationToken token,

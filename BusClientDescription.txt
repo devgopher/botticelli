@@ -1,0 +1,12 @@
+# Clients
+
+Client is component, responsible for interaction between systems. You should use client in these cases:
+
+- you've a remote application, which has an Agent in order to interact with some API/Database and etc...
+- you need to balance the load in you bot
+- you need to reduce load to your bot
+
+In general, a typical client has several methods:
+- SendAndGetResponse() - sends request and waits for a response from a remote system
+- SendResponse() - sends response to a queue
+

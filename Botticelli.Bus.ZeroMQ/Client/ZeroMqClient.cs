@@ -14,7 +14,7 @@ using Polly.Timeout;
 
 namespace Botticelli.Bus.ZeroMQ.Client;
 
-public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBotticelliBusClient, IDisposable
+public class ZeroMqClient<TBot> : BasicFunctions<TBot>, IBusClient, IDisposable
         where TBot : IBot
 {
     private readonly int _delta = 50;

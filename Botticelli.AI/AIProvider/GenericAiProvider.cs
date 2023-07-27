@@ -8,7 +8,7 @@ namespace Botticelli.AI.AIProvider;
 
 public abstract class GenericAiProvider : IAiProvider
 {
-    protected readonly IBotticelliBusClient _bus;
+    protected readonly IBusClient _bus;
     protected readonly IHttpClientFactory _factory;
     protected readonly ILogger _logger;
     protected readonly IOptionsMonitor<AiSettings> _settings;
@@ -16,7 +16,7 @@ public abstract class GenericAiProvider : IAiProvider
     public GenericAiProvider(IOptionsMonitor<AiSettings> settings,
                              IHttpClientFactory factory,
                              ILogger logger,
-                             IBotticelliBusClient bus)
+                             IBusClient bus)
     {
         _settings = settings;
         _factory = factory;

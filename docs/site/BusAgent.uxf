@@ -4,12 +4,12 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>760</x>
+      <x>720</x>
       <y>740</y>
-      <w>350</w>
+      <w>440</w>
       <h>170</h>
     </coordinates>
-    <panel_attributes>Some API
+    <panel_attributes>Some system
 _umletcode=
 //cloud
 
@@ -24,6 +24,10 @@ drawArc(36,84,60,40,180,180,true, cloudConfig)
 var innerCloudConfig= {fg: '#87CEFA', lt: '-', lw: 2}
 drawArc(45,87,40,30,170,180,true, innerCloudConfig)
 drawArc(75,79,20,20,30,130,true, innerCloudConfig)
+
+var innerCloudConfig1= {fg: '#87CEFA', lt: '-', lw: 2}
+drawArc(45,87,40,30,170,180,true, innerCloudConfig1)
+drawArc(75,79,20,20,30,130,true, innerCloudConfig1)
 
 //server
 //Parameters (x, y, width, height, radius, drawConfig?)
@@ -61,14 +65,14 @@ drawText(className, width/2, 25, center);
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>890</x>
+      <x>910</x>
       <y>560</y>
-      <w>160</w>
+      <w>140</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>//Controll over the text of the whole element..
 _umletcode=
-var className = "IBusClient/IBusAgent"; 
+var className = "IBusAgent"; 
 var publicAttributesDrawConfig = {fg: '#006400'}
 var privateAttributesDrawConfig = {fg: '#8b0000'}
 drawText(className, width/2, 25, center);

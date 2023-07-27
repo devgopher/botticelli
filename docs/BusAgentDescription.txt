@@ -1,0 +1,12 @@
+# Agents
+
+Agent is component, responsible for interaction between some target system and bus. You should use agents in these cases:
+
+- target system API is limited by it's throughput
+- target system API has paid access
+- you need to balance the load in your own target system
+- you need to reduce load to your databases
+
+In general, a typical agent has several methods:
+- Subscribe() - subscribes to a request message queue
+- SendResponseAsync() - sends response after processing an incoming message

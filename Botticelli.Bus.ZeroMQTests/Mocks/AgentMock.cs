@@ -26,6 +26,10 @@ public class AgentMock<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusAge
     {
     }
 
+    public async Task Subscribe(CancellationToken token)
+    {
+    }
+
     public async Task SendResponseAsync(SendMessageResponse response,
                                         CancellationToken token,
                                         int timeoutMs = 10000)

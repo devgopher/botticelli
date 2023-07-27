@@ -12,11 +12,11 @@ namespace TelegramAiChatGptSample;
 
 public class AiCommandProcessor : CommandProcessor<AiCommand>
 {
-    private readonly IBotticelliBusClient _bus;
+    private readonly IBusClient _bus;
 
     public AiCommandProcessor(ILogger<AiCommandProcessor> logger,
                               ICommandValidator<AiCommand> validator,
-                              IBotticelliBusClient bus)
+                              IBusClient bus)
             : base(logger, validator) =>
             _bus = bus;
 

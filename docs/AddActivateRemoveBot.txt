@@ -1,0 +1,18 @@
+# Adding a new bot to admin pane
+
+In order to add a new bot, go to the "Your bots" page and press "Add bot".
+You'll see a form with 3 fields:
+- bot id. This is an id from a Data subfolder (please, look into your own bot's folder)
+- bot key. This is a key, that you'll receive from your messenger after a new bot registration. In case of Telegram bots, please visit 
+@Botfather to see you bot key
+- bot name. This is a bot name, that you'll see on the "Your bots" page after completing a registration.
+
+After filling all of this fields, please, press "Save"
+
+
+# (De)activating a bot
+On "You bots" page choose your bot and press "Start/stop" button. NOTE! All activation|deactivation processes may take some time (30-60 secs)!
+
+# Removing bot from admin pane
+
+In order to remove you bot and stop all of it's functioning, plese, go to "Your bots" page, choose a needed bot and press a "Remove" button

@@ -20,7 +20,7 @@ public class GptJProvider : GenericAiProvider
     public GptJProvider(IOptionsMonitor<AiGptSettings> gptSettings,
                         IHttpClientFactory factory,
                         ILogger<GptJProvider> logger,
-                        IBotticelliBusClient bus) : base(gptSettings,
+                        IBusClient bus) : base(gptSettings,
                                                          factory,
                                                          logger,
                                                          bus)
