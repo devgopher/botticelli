@@ -38,7 +38,7 @@ public class ChatGptProvider : GenericAiProvider
                                     {
                                         Message = new Shared.ValueObjects.Message(message.Uid)
                                         {
-                                            ChatId = message.ChatId,
+                                            ChatIds = message.ChatIds,
                                             Subject = message.Subject,
                                             Body = "Body is null or empty!",
                                             Attachments = null,
@@ -54,7 +54,7 @@ public class ChatGptProvider : GenericAiProvider
 
         try
         {
-            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) started");
+            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) started");
 
             using var client = _factory.CreateClient();
 
@@ -75,7 +75,7 @@ public class ChatGptProvider : GenericAiProvider
                 Temperature = _gptSettings?.CurrentValue?.Temperature ?? (_temperatureRandom.Next(0, 900) + 100) / 1000.0
             });
 
-            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) content: {content.Value}");
+            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
             var response = await client.PostAsync(Url.Combine($"{_settings.CurrentValue.Url}", "completions"),
                                                   content,
@@ -95,7 +95,7 @@ public class ChatGptProvider : GenericAiProvider
                                         {
                                             Message = new Shared.ValueObjects.Message(message.Uid)
                                             {
-                                                ChatId = message.ChatId,
+                                                ChatIds = message.ChatIds,
                                                 Subject = message.Subject,
                                                 Body = text.ToString(),
                                                 Attachments = null,
@@ -114,7 +114,7 @@ public class ChatGptProvider : GenericAiProvider
                                         {
                                             Message = new Shared.ValueObjects.Message(message.Uid)
                                             {
-                                                ChatId = message.ChatId,
+                                                ChatIds = message.ChatIds,
                                                 Subject = message.Subject,
                                                 Body = "Error getting a response from ChatGpt!",
                                                 Attachments = null,
@@ -126,7 +126,7 @@ public class ChatGptProvider : GenericAiProvider
                                         token);
             }
 
-            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) finished");
+            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) finished");
         }
         catch (Exception ex)
         {
@@ -135,7 +135,7 @@ public class ChatGptProvider : GenericAiProvider
                                     {
                                         Message = new Shared.ValueObjects.Message(message.Uid)
                                         {
-                                            ChatId = message.ChatId,
+                                            ChatIds = message.ChatIds,
                                             Subject = message.Subject,
                                             Body = "Error getting a response from ChatGpt!",
                                             Attachments = null,

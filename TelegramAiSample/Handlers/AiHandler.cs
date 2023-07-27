@@ -24,7 +24,7 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
         {
             await _provider.SendAsync(new AiMessage(input.Uid)
                                       {
-                                          ChatId = input.Message.ChatId,
+                                          ChatIds = input.Message.ChatIds,
                                           Body = input.Message.Body,
                                           Subject = input.Message.Subject,
                                           ReplyToMessageUid = input.Uid

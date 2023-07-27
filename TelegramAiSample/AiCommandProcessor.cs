@@ -41,7 +41,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                               {
                                                   Message = new AiMessage(message.Uid)
                                                   {
-                                                      ChatId = message.ChatId,
+                                                      ChatIds = message.ChatIds,
                                                       Subject = string.Empty,
                                                       Body = message.Body
                                                                     .Replace("/ai", string.Empty)

@@ -34,7 +34,7 @@ public class GptJProvider : GenericAiProvider
 
         try
         {
-            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) started");
+            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) started");
 
             using var client = _factory.CreateClient();
 
@@ -51,7 +51,7 @@ public class GptJProvider : GenericAiProvider
                 Temperature = _gptSettings?.CurrentValue?.Temperature ?? (_temperatureRandom.Next(0, 900) + 100) / 1000.0
             });
 
-            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) content: {content.Value}");
+            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
             var response = await client.PostAsync(Url.Combine($"{_settings.CurrentValue.Url}", "generate"),
                                                   content,
@@ -65,7 +65,7 @@ public class GptJProvider : GenericAiProvider
                                         {
                                             Message = new Shared.ValueObjects.Message(message.Uid)
                                             {
-                                                ChatId = message.ChatId,
+                                                ChatIds = message.ChatIds,
                                                 Subject = message.Subject,
                                                 Body = outMessage?.Completion,
                                                 Attachments = null,
@@ -82,7 +82,7 @@ public class GptJProvider : GenericAiProvider
                                         {
                                             Message = new Shared.ValueObjects.Message(message.Uid)
                                             {
-                                                ChatId = message.ChatId,
+                                                ChatIds = message.ChatIds,
                                                 Subject = message.Subject,
                                                 Body = "Error getting a response from Gpt-J!",
                                                 Attachments = null,
@@ -94,7 +94,7 @@ public class GptJProvider : GenericAiProvider
                                         token);
             }
 
-            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) finished");
+            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) finished");
         }
         catch (Exception ex)
         {
@@ -103,7 +103,7 @@ public class GptJProvider : GenericAiProvider
                                     {
                                         Message = new Shared.ValueObjects.Message(message.Uid)
                                         {
-                                            ChatId = message.ChatId,
+                                            ChatIds = message.ChatIds,
                                             Subject = message.Subject,
                                             Body = "Error getting a response from Gpt-J!",
                                             Attachments = null,

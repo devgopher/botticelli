@@ -10,14 +10,18 @@ public static class JobManager
     public static string AddJob<TBot>(IBot<TBot> bot,
                                       Reliability reliability,
                                       Message message,
-                                      Schedule schedule)
+                                      Schedule schedule,
+                                      Action<Message> preprocessFunc = default)
             where TBot : IBot<TBot>
     {
         var jobId = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
         var request = new SendMessageRequest(Guid.NewGuid().ToString())
         {
             Message = message
         };
+
+        preprocessFunc?.Invoke(request.Message);
 
         if (!reliability.IsEnabled)
         {

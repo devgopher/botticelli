@@ -103,7 +103,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                                           CancellationToken token,
                                           SendMessageRequest request)
     {
-        if (await Validator.Validate(message.ChatId, message.Body))
+        if (await Validator.Validate(message.ChatIds, message.Body))
         {
             await InnerProcess(message, args, token);
         }

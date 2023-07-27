@@ -140,6 +140,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Bus", "Botticell
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Handlers", "Handlers", "{184C8F8D-DC80-4C52-88F9-8AE799C51266}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Scheduler", "Botticelli.Scheduler", "{3DFA2DF1-6720-44D7-91E2-B50572F8A2E6}"
+	ProjectSection(SolutionItems) = preProject
+		BotticelliSchedulerDescription.txt = BotticelliSchedulerDescription.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -303,6 +308,7 @@ Global
 		{457113AB-B859-4C1D-B4C7-C42BA74052DF} = {184C8F8D-DC80-4C52-88F9-8AE799C51266}
 		{85DE8BC6-2A06-4088-B4AA-DD520CBC2369} = {912B05D1-DC22-411E-9D6E-E06FFE96E4E6}
 		{184C8F8D-DC80-4C52-88F9-8AE799C51266} = {85DE8BC6-2A06-4088-B4AA-DD520CBC2369}
+		{3DFA2DF1-6720-44D7-91E2-B50572F8A2E6} = {912B05D1-DC22-411E-9D6E-E06FFE96E4E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
