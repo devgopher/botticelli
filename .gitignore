@@ -376,3 +376,4 @@ FodyWeavers.xsd
 /deploy/linux/server/front/Dockerfile
 /Botticelli/botInfo.Db-wal
 /Botticelli/botInfo.Db-shm
+*.odg#
