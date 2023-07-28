@@ -62,7 +62,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         if (!IsStarted)
         {
-            _logger.LogInformation("Bot wasn't started!");
+            Logger.LogInformation("Bot wasn't started!");
 
             return new RemoveMessageResponse(request.Uid, "Bot wasn't started!")
             {
@@ -111,7 +111,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         if (!IsStarted)
         {
-            _logger.LogInformation("Bot wasn't started!");
+            Logger.LogInformation("Bot wasn't started!");
 
             return new SendMessageResponse(request.Uid, "Bot wasn't started!")
             {
@@ -257,7 +257,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         catch (Exception ex)
         {
             response.MessageSentStatus = MessageSentStatus.Fail;
-            _logger.LogError(ex, ex.Message);
+            Logger.LogError(ex, ex.Message);
         }
 
         return response;
@@ -312,12 +312,12 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         try
         {
-            _logger.LogInformation($"{nameof(StartBotAsync)}...");
+            Logger.LogInformation($"{nameof(StartBotAsync)}...");
             var response = await base.StartBotAsync(request, token);
 
             if (IsStarted)
             {
-                _logger.LogInformation($"{nameof(StartBotAsync)}: already started");
+                Logger.LogInformation($"{nameof(StartBotAsync)}: already started");
 
                 return response;
             }
@@ -331,13 +331,13 @@ public class TelegramBot : BaseBot<TelegramBot>
             _client.StartReceiving(_handler, cancellationToken: token);
 
             IsStarted = true;
-            _logger.LogInformation($"{nameof(StartBotAsync)}: started");
+            Logger.LogInformation($"{nameof(StartBotAsync)}: started");
 
             return response;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            Logger.LogError(ex, ex.Message);
         }
 
         return StartBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
@@ -353,7 +353,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         try
         {
-            _logger.LogInformation($"{nameof(StopBotAsync)}...");
+            Logger.LogInformation($"{nameof(StopBotAsync)}...");
             var response = await base.StopBotAsync(request, token);
 
             if (response.Status != AdminCommandStatus.Ok || !IsStarted) return response;
@@ -361,13 +361,13 @@ public class TelegramBot : BaseBot<TelegramBot>
             await _client.CloseAsync(token);
 
             IsStarted = false;
-            _logger.LogInformation($"{nameof(StopBotAsync)}: stopped");
+            Logger.LogInformation($"{nameof(StopBotAsync)}: stopped");
 
             return response;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            Logger.LogError(ex, ex.Message);
         }
 
         return StopBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
