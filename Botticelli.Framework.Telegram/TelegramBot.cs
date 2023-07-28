@@ -13,6 +13,7 @@ using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
@@ -43,6 +44,9 @@ public class TelegramBot : BaseBot<TelegramBot>
         _client = client;
         _handler = handler;
         _secureStorage = secureStorage;
+
+        // Migration to a bot context instead of simple bot key
+        _secureStorage.MigrateToBotContext(BotDataUtils.GetBotId());
     }
 
     public override BotType Type => BotType.Telegram;
@@ -373,6 +377,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         return StopBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
     }
 
+    [Obsolete($"Use {nameof(SetBotContext)}")]
     public override async Task SetBotKey(string key, CancellationToken token)
     {
         var currentKey = _secureStorage.GetBotKey(BotDataUtils.GetBotId());
@@ -386,6 +391,23 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             _secureStorage.SetBotKey(currentKey?.Id, key);
             _client = new TelegramBotClient(key);
+
+            await StartBotAsync(startRequest, token);
+        }
+    }
+
+    public override async Task SetBotContext(BotContext context, CancellationToken token)
+    {
+        var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
+
+        if (currentContext?.BotKey != context.BotKey)
+        {
+            var stopRequest = StopBotRequest.GetInstance();
+            var startRequest = StartBotRequest.GetInstance();
+            await StopBotAsync(stopRequest, token);
+
+            _secureStorage.SetBotContext(context);
+            _client = new TelegramBotClient(context.BotKey);
 
             await StartBotAsync(startRequest, token);
         }

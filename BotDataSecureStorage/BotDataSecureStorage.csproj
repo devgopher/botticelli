@@ -20,4 +20,8 @@
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj" />
+	</ItemGroup>
+
 </Project>

@@ -3,6 +3,7 @@ using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.Constants;
+using Botticelli.Shared.ValueObjects;
 
 namespace Botticelli.Server.Services;
 
@@ -35,13 +36,14 @@ public class BotManagementService : IBotManagementService
     public async Task<bool> RegisterBot(string botId,
                                         string botKey,
                                         string botName,
-                                        BotType botType)
+                                        BotType botType,
+                                        Dictionary<string, string> additionalParams = null)
     {
         try
         {
             _logger.LogInformation($"{nameof(RegisterBot)}({botId}, {botKey}, {botName}, {botType}) started...");
 
-            botKey ??= _secureStorage.GetBotKey(botId).Key;
+            botKey ??= _secureStorage.GetBotContext(botId)?.BotKey;
 
             if (GetBotInfo(botId) == default)
                 AddNewBotInfo(botId,
@@ -49,7 +51,17 @@ public class BotManagementService : IBotManagementService
                               botType,
                               botName);
 
-            _secureStorage.SetBotKey(botId, botKey);
+            var botContext = new BotContext
+            {
+                BotId = botId,
+                BotKey = botKey,
+                Items = additionalParams ?? new()
+            };
+
+            _secureStorage.MigrateToBotContext(botId);
+
+            _secureStorage.SetBotContext(botContext);
+            //_secureStorage.SetBotKey(botId, botKey);
 
             _logger.LogInformation($"{nameof(RegisterBot)} successful");
 

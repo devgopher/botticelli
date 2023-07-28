@@ -2,6 +2,7 @@
 using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities;
 using Botticelli.Shared.API.Admin.Responses;
+using Botticelli.Shared.ValueObjects;
 
 namespace Botticelli.Server.Services;
 
@@ -29,5 +30,12 @@ public class BotStatusDataService : IBotStatusDataService
     public async Task<BotStatus?> GetRequiredBotStatus(string botId)
         => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
 
+    [Obsolete("Use GetRequiredBotContext")]
     public async Task<string> GetRequiredBotKey(string botId) => _secureStorage.GetBotKey(botId)?.Key;
+
+    public async Task<BotContext> GetRequiredBotContext(string botId)
+    {
+        _secureStorage.MigrateToBotContext(botId);
+        return _secureStorage.GetBotContext(botId);
+    }
 }

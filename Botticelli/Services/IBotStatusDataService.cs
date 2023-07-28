@@ -1,5 +1,6 @@
 ﻿using Botticelli.Server.Data.Entities;
 using Botticelli.Shared.API.Admin.Responses;
+using Botticelli.Shared.ValueObjects;
 
 namespace Botticelli.Server.Services;
 
@@ -24,4 +25,11 @@ public interface IBotStatusDataService
     /// <param name="botId"></param>
     /// <returns></returns>
     Task<string> GetRequiredBotKey(string botId);
+
+    /// <summary>
+    ///     Gets bot context
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <returns></returns>
+    Task<BotContext> GetRequiredBotContext(string botId);
 }

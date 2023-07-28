@@ -2,6 +2,7 @@
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.ValueObjects;
 
 namespace Botticelli.Interfaces;
 
@@ -38,9 +39,17 @@ public interface IEventBasedBotAdminApi
     public Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token);
 
     /// <summary>
-    ///     Sets bot key|key for a messenger
+    ///     Sets bot key/key for a messenger
     /// </summary>
     /// <param name="key"></param>
     /// <returns></returns>
+    [Obsolete($"Use {nameof(SetBotContext)}")]
     public Task SetBotKey(string key, CancellationToken token);
+
+    /// <summary>
+    ///     Sets bot context
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public Task SetBotContext(BotContext context, CancellationToken token);
 }

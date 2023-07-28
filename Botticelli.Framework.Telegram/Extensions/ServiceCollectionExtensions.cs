@@ -8,6 +8,7 @@ using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Framework.Telegram.HostedService;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
+using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -31,15 +32,21 @@ public static class ServiceCollectionExtensions
         var settings = optionsBuilder.Build();
         var secureStorage = new SecureStorage(settings.SecureStorageSettings);
         var botId = BotDataUtils.GetBotId();
-        var botKey = secureStorage.GetBotKey(botId);
+        var botContext = secureStorage.GetBotContext(botId);
 
-        if (string.IsNullOrWhiteSpace(botKey?.Id))
+        if (string.IsNullOrWhiteSpace(botContext?.BotId))
         {
-            secureStorage.SetBotKey(botId, string.Empty);
-            botKey = secureStorage.GetBotKey(botId);
+            botContext = new BotContext()
+            {
+                BotId = botId,
+                BotKey = string.Empty,
+                Items = new()
+            };
+
+            secureStorage.SetBotContext(botContext);
         }
 
-        var token = botKey.Key ?? string.Empty;
+        var token = botContext.BotKey ?? string.Empty;
 
         services.AddHttpClient<BotStatusService<TelegramBot>>();
 

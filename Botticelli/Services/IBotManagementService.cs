@@ -8,7 +8,8 @@ public interface IBotManagementService
     Task<bool> RegisterBot(string botId,
                            string botKey,
                            string botName,
-                           BotType botType);
+                           BotType botType,
+                           Dictionary<string, string> additionalParams = null);
 
     Task SetRequiredBotStatus(string botId, BotStatus status);
     Task SetKeepAlive(string botId);

@@ -122,7 +122,9 @@ public class BotStatusService<TBot> : IHostedService
 
                                                                         task.Wait(cancellationToken);
 
-                                                                        _bot.SetBotKey(task.Result?.BotKey, ct);
+                                                                        //_bot.SetBotKey(task.Result?.BotKey, ct);
+                                                                        _bot.SetBotContext(task.Result?.BotContext, ct);
+
 
                                                                         switch (task.Result?.Status)
                                                                         {

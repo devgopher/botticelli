@@ -6,6 +6,7 @@ using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
+using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework;
@@ -80,6 +81,7 @@ public abstract class BaseBot<T> : IBot<T>
     }
 
     public abstract Task SetBotKey(string key, CancellationToken token);
+    public abstract Task SetBotContext(BotContext context, CancellationToken token);
 
     /// <summary>
     ///     Sends a message
