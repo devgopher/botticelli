@@ -34,7 +34,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
     {
         var chatId = message.ChatIds.FirstOrDefault();
 
-        JobManager.AddJob((TelegramBot) _bots.FirstOrDefault(),
+        JobManager.AddJob((TelegramBot) Bots.FirstOrDefault(),
                      new Reliability
                      {
                          IsEnabled = false,

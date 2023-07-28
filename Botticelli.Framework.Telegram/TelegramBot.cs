@@ -81,7 +81,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                              token);
             response.MessageRemovedStatus = MessageRemovedStatus.Ok;
         }
-        catch (Exception ex)
+        catch
         {
             response.MessageRemovedStatus = MessageRemovedStatus.Fail;
         }
@@ -168,79 +168,82 @@ public class TelegramBot : BaseBot<TelegramBot>
                                                     cancellationToken: token);
                     }
 
-                    if (request.Message?.Contact != default) await SendContact<TSendOptions>(request, token, replyMarkup);
+                    if (request.Message?.Contact != default) await SendContact(request, token, replyMarkup);
 
-                    if (request.Message?.Attachments != null)
-                        foreach (var genAttach in request.Message.Attachments.Where(a => a is BinaryAttachment))
+                    if (request.Message?.Attachments == null) continue;
+
+                    foreach (var genAttach in request.Message
+                                                     .Attachments
+                                                     .Where(a => a is BinaryAttachment))
+                    {
+                        var attachment = (BinaryAttachment) genAttach;
+
+                        switch (attachment.MediaType)
                         {
-                            var attachment = (BinaryAttachment) genAttach;
+                            case MediaType.Audio:
+                                var audio = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                await _client.SendAudioAsync(chatId,
+                                                             audio,
+                                                             request.Message.Subject,
+                                                             ParseMode.MarkdownV2,
+                                                             replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                             replyMarkup: replyMarkup,
+                                                             cancellationToken: token);
 
-                            switch (attachment.MediaType)
-                            {
-                                case MediaType.Audio:
-                                    var audio = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
-                                    await _client.SendAudioAsync(chatId,
-                                                                 audio,
-                                                                 request.Message.Subject,
-                                                                 ParseMode.MarkdownV2,
-                                                                 replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
-                                                                 replyMarkup: replyMarkup,
-                                                                 cancellationToken: token);
+                                break;
+                            case MediaType.Video:
+                                var video = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                await _client.SendVideoAsync(chatId,
+                                                             video,
+                                                             replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                             replyMarkup: replyMarkup,
+                                                             cancellationToken: token);
 
-                                    break;
-                                case MediaType.Video:
-                                    var video = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
-                                    await _client.SendVideoAsync(chatId,
-                                                                 video,
-                                                                 replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
-                                                                 replyMarkup: replyMarkup,
-                                                                 cancellationToken: token);
+                                break;
+                            case MediaType.Image:
+                                var image = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                await _client.SendPhotoAsync(chatId,
+                                                             image,
+                                                             replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                             replyMarkup: replyMarkup,
+                                                             cancellationToken: token);
 
-                                    break;
-                                case MediaType.Image:
-                                    var image = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
-                                    await _client.SendPhotoAsync(chatId,
-                                                                 image,
-                                                                 replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
-                                                                 replyMarkup: replyMarkup,
-                                                                 cancellationToken: token);
+                                break;
+                            case MediaType.Voice:
+                                var voice = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                await _client.SendVoiceAsync(chatId,
+                                                             voice,
+                                                             request.Message.Subject,
+                                                             ParseMode.MarkdownV2,
+                                                             replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                             replyMarkup: replyMarkup,
+                                                             cancellationToken: token);
 
-                                    break;
-                                case MediaType.Voice:
-                                    var voice = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
-                                    await _client.SendVoiceAsync(chatId,
-                                                                 voice,
-                                                                 request.Message.Subject,
-                                                                 ParseMode.MarkdownV2,
-                                                                 replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
-                                                                 replyMarkup: replyMarkup,
-                                                                 cancellationToken: token);
+                                break;
+                            case MediaType.Sticker:
+                                var sticker = string.IsNullOrWhiteSpace(attachment.Url) ?
+                                        new InputOnlineFile(attachment.Data.ToStream(), attachment.Name) :
+                                        new InputOnlineFile(attachment.Url);
 
-                                    break;
-                                case MediaType.Sticker:
-                                    var sticker = string.IsNullOrWhiteSpace(attachment.Url) ?
-                                            new InputOnlineFile(attachment.Data.ToStream(), attachment.Name) :
-                                            new InputOnlineFile(attachment.Url);
+                                await _client.SendStickerAsync(chatId,
+                                                               sticker,
+                                                               replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                               replyMarkup: replyMarkup,
+                                                               cancellationToken: token);
 
-                                    await _client.SendStickerAsync(chatId,
-                                                                   sticker,
-                                                                   replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
-                                                                   replyMarkup: replyMarkup,
-                                                                   cancellationToken: token);
+                                break;
+                            case MediaType.Contact:
+                                await SendContact(request, token, replyMarkup);
 
-                                    break;
-                                case MediaType.Contact:
-                                    await SendContact<TSendOptions>(request, token, replyMarkup);
-
-                                    break;
-                                case MediaType.Unknown:
-                                case MediaType.Poll:
-                                case MediaType.Text:
-                                default:
-                                    // nothing to do
-                                    break;
-                            }
+                                break;
+                            case MediaType.Unknown:
+                            case MediaType.Poll:
+                            case MediaType.Text:
+                            default:
+                                // nothing to do
+                                break;
                         }
+                    }
                 }
 
             response.MessageSentStatus = MessageSentStatus.Ok;
@@ -260,7 +263,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         return response;
     }
 
-    private async Task SendContact<TSendOptions>(SendMessageRequest request, CancellationToken token, IReplyMarkup replyMarkup)
+    private async Task SendContact(SendMessageRequest request, CancellationToken token, IReplyMarkup replyMarkup)
     {
         foreach (var chatId in request.Message?.ChatIds)
             await _client.SendContactAsync(chatId,
@@ -374,14 +377,14 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         var currentKey = _secureStorage.GetBotKey(BotDataUtils.GetBotId());
 
-        if (currentKey.Key != key)
+        if (currentKey?.Key != key)
         {
             var stopRequest = StopBotRequest.GetInstance();
             var startRequest = StartBotRequest.GetInstance();
 
             await StopBotAsync(stopRequest, token);
 
-            _secureStorage.SetBotKey(currentKey.Id, key);
+            _secureStorage.SetBotKey(currentKey?.Id, key);
             _client = new TelegramBotClient(key);
 
             await StartBotAsync(startRequest, token);

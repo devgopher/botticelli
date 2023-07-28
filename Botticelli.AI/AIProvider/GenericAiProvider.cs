@@ -8,20 +8,20 @@ namespace Botticelli.AI.AIProvider;
 
 public abstract class GenericAiProvider : IAiProvider
 {
-    protected readonly IBusClient _bus;
-    protected readonly IHttpClientFactory _factory;
-    protected readonly ILogger _logger;
-    protected readonly IOptionsMonitor<AiSettings> _settings;
+    protected readonly IBusClient Bus;
+    protected readonly IHttpClientFactory Factory;
+    protected readonly ILogger Logger;
+    protected readonly IOptionsMonitor<AiSettings> Settings;
 
     public GenericAiProvider(IOptionsMonitor<AiSettings> settings,
                              IHttpClientFactory factory,
                              ILogger logger,
                              IBusClient bus)
     {
-        _settings = settings;
-        _factory = factory;
-        _logger = logger;
-        _bus = bus;
+        Settings = settings;
+        Factory = factory;
+        Logger = logger;
+        Bus = bus;
     }
 
     public abstract Task SendAsync(AiMessage message, CancellationToken token);

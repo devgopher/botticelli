@@ -29,11 +29,11 @@ public abstract class BaseBot<T> : IBot<T>
 
     public delegate void StoppedEventHandler(object sender, StoppedBotEventArgs e);
 
-    protected readonly ILogger _logger;
+    protected readonly ILogger Logger;
 
     public BaseBot(ILogger logger)
     {
-        _logger = logger;
+        Logger = logger;
         IsStarted = false;
     }
 
