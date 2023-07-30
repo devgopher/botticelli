@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
+		<ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj" />
+		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+	</ItemGroup>
+
+</Project>

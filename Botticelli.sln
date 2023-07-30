@@ -145,6 +145,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Scheduler", "Bot
 		BotticelliSchedulerDescription.txt = BotticelliSchedulerDescription.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Vk", "Botticelli.Framework.Vk\Botticelli.Framework.Vk.csproj", "{343922EC-2CF3-4C0E-B745-08F2B333B4E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -259,6 +261,10 @@ Global
 		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F400F638-EC58-49A2-B730-BD2688FCD4E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{343922EC-2CF3-4C0E-B745-08F2B333B4E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{343922EC-2CF3-4C0E-B745-08F2B333B4E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{343922EC-2CF3-4C0E-B745-08F2B333B4E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{343922EC-2CF3-4C0E-B745-08F2B333B4E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -309,6 +315,7 @@ Global
 		{85DE8BC6-2A06-4088-B4AA-DD520CBC2369} = {912B05D1-DC22-411E-9D6E-E06FFE96E4E6}
 		{184C8F8D-DC80-4C52-88F9-8AE799C51266} = {85DE8BC6-2A06-4088-B4AA-DD520CBC2369}
 		{3DFA2DF1-6720-44D7-91E2-B50572F8A2E6} = {912B05D1-DC22-411E-9D6E-E06FFE96E4E6}
+		{343922EC-2CF3-4C0E-B745-08F2B333B4E3} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
