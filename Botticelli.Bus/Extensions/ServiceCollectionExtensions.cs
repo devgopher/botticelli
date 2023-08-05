@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection UsePassBusClient<TBot>(this IServiceCollection services)
             where TBot : IBot =>
-            services.AddSingleton<IBotticelliBusClient, PassClient>();
+            services.AddSingleton<IBusClient, PassClient>();
 
     /// <summary>
     ///     Uses a no-bus scheme

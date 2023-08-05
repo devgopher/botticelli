@@ -1,11 +1,10 @@
-﻿using Botticelli.AI.AIProvider;
-using Botticelli.AI.Message;
-using Botticelli.Bot.Interfaces.Bus.Handlers;
-using Botticelli.Shared.API.Client.Requests;
-using Botticelli.Shared.API.Client.Responses;
+# Handlers 
 
-namespace TelegramAiChatGptSample.Handlers;
+Handler is a basic mechanism of processing incoming messages from a bus
 
+## Example
+
+```
 public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
     private readonly ILogger<AiHandler> _logger;
@@ -24,7 +23,7 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
         {
             await _provider.SendAsync(new AiMessage(input.Uid)
                                       {
-                                          ChatIds = input.Message.ChatIds,
+                                          ChatId = input.Message.ChatId,
                                           Body = input.Message.Body,
                                           Subject = input.Message.Subject,
                                           ReplyToMessageUid = input.Uid
@@ -37,3 +36,6 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
         }
     }
 }
+
+```
+

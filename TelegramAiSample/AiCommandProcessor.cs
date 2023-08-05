@@ -12,11 +12,11 @@ namespace TelegramAiChatGptSample;
 
 public class AiCommandProcessor : CommandProcessor<AiCommand>
 {
-    private readonly IBotticelliBusClient _bus;
+    private readonly IBusClient _bus;
 
     public AiCommandProcessor(ILogger<AiCommandProcessor> logger,
                               ICommandValidator<AiCommand> validator,
-                              IBotticelliBusClient bus)
+                              IBusClient bus)
             : base(logger, validator) =>
             _bus = bus;
 
@@ -41,7 +41,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                               {
                                                   Message = new AiMessage(message.Uid)
                                                   {
-                                                      ChatId = message.ChatId,
+                                                      ChatIds = message.ChatIds,
                                                       Subject = string.Empty,
                                                       Body = message.Body
                                                                     .Replace("/ai", string.Empty)
@@ -54,7 +54,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                                               token);
 
         if (response != null)
-            foreach (var bot in _bots)
+            foreach (var bot in Bots)
                 await bot.SendMessageAsync(new SendMessageRequest(response.Uid)
                                            {
                                                Message = response.Message

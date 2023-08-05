@@ -22,7 +22,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection UseRabbitBusClient<TBot>(this IServiceCollection services, IConfiguration config)
             where TBot : IBot =>
-            services.AddSingleton<IBotticelliBusClient, RabbitClient<TBot>>()
+            services.AddSingleton<IBusClient, RabbitClient<TBot>>()
                     .AddSingleton(GetRabbitBusSettings(config))
                     .AddConnectionFactory(GetRabbitBusSettings(config));
 

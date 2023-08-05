@@ -6,7 +6,7 @@ using Botticelli.Shared.API.Client.Responses;
 
 namespace Botticelli.Bus.None.Client;
 
-public class PassClient : IBotticelliBusClient
+public class PassClient : IBusClient
 {
     private static TimeSpan Timeout => TimeSpan.FromMinutes(5);
 

@@ -1,0 +1,25 @@
+# Botticelli bots
+
+## What's it
+
+The main idea is to provide a simple bot creation and support platform.
+
+Botticelli allows you to develop cross-platform bots with common business logic.
+
+The main features are:
+
+    cross-platform (Windows/Linux are supported)
+    supports different messengers
+    supports AI integration
+    supports message brokers integration (such as RabbitMq)
+    supports scheduling
+    supports bot managing
+    supports bot monitoring
+
+## Repository
+
+https://github.com/devgopher/botticelli
+
+## Actual version
+
+https://github.com/devgopher/botticelli/tree/mvp/0.1

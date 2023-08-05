@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection UseZeroMqBusClient<TBot>(this IServiceCollection services, IConfiguration config)
             where TBot : IBot =>
-            services.AddSingleton<IBotticelliBusClient, ZeroMqClient<TBot>>()
+            services.AddSingleton<IBusClient, ZeroMqClient<TBot>>()
                     .AddSingleton(GetZeroMqBusSettings(config));
 
     private static ZeroMqBusSettings GetZeroMqBusSettings(IConfiguration config)
