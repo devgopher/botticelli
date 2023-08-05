@@ -131,6 +131,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{F6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messages", "Messages", "{DC4310A8-D06A-45FD-A8D9-A149BEB02743}"
 	ProjectSection(SolutionItems) = preProject
+		Info.txt = Info.txt
 		MessageLifecycle.txt = MessageLifecycle.txt
 	EndProjectSection
 EndProject
