@@ -134,6 +134,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{4571
 		docs\site\BusClient.jpg = docs\site\BusClient.jpg
 		docs\site\BusClient.uxf = docs\site\BusClient.uxf
 		BusClientDescription.txt = BusClientDescription.txt
+		Info.txt = Info.txt
+		MessageLifecycle.txt = MessageLifecycle.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Bus", "Botticelli.Bus", "{85DE8BC6-2A06-4088-B4AA-DD520CBC2369}"
