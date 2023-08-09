@@ -15,9 +15,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
     protected readonly ILogger Logger;
     protected readonly ICommandValidator<TCommand> Validator;
-    protected IList<IBot> _bots = new List<IBot>(10);
+    protected IList<IBot> Bots = new List<IBot>(10);
     private readonly string _commandName;
-    protected IServiceProvider _sp;
+    protected IServiceProvider Sp;
 
     protected CommandProcessor(ILogger logger,
                                ICommandValidator<TCommand> validator)
@@ -90,10 +90,10 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     }
 
     public void AddBot(IBot bot)
-        => _bots.Add(bot);
+        => Bots.Add(bot);
 
     public void SetServiceProvider(IServiceProvider sp)
-        => _sp = sp;
+        => Sp = sp;
 
     public string GetCommandName(string fullCommand)
         => fullCommand.ToLowerInvariant().Replace("command", "");
@@ -103,7 +103,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                                           CancellationToken token,
                                           SendMessageRequest request)
     {
-        if (await Validator.Validate(message.ChatId, message.Body))
+        if (await Validator.Validate(message.ChatIds, message.Body))
         {
             await InnerProcess(message, args, token);
         }
@@ -111,7 +111,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         {
             request.Message.Body = Validator.Help();
 
-            foreach (var bot in _bots) await bot.SendMessageAsync(request, token);
+            foreach (var bot in Bots) await bot.SendMessageAsync(request, token);
         }
     }
 

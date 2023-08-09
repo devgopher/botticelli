@@ -1,5 +1,5 @@
-﻿using Botticelli.Bot.Interfaces.Client;
-using Botticelli.Bot.Interfaces.Handlers;
+﻿using Botticelli.Bot.Interfaces.Bus.Handlers;
+using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Bus.Rabbit.Agent;
 using Botticelli.Bus.Rabbit.Client;
 using Botticelli.Bus.Rabbit.Settings;
@@ -22,7 +22,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection UseRabbitBusClient<TBot>(this IServiceCollection services, IConfiguration config)
             where TBot : IBot =>
-            services.AddSingleton<IBotticelliBusClient, RabbitClient<TBot>>()
+            services.AddSingleton<IBusClient, RabbitClient<TBot>>()
                     .AddSingleton(GetRabbitBusSettings(config))
                     .AddConnectionFactory(GetRabbitBusSettings(config));
 
@@ -32,7 +32,9 @@ public static class ServiceCollectionExtensions
             services.AddSingleton<IConnectionFactory>(s => new ConnectionFactory
             {
                 Uri = new Uri(settings.Uri),
-                VirtualHost = settings.VHost
+                VirtualHost = settings.VHost,
+                UserName = settings.UserName,
+                Password = settings.Password
             });
 
         return services;

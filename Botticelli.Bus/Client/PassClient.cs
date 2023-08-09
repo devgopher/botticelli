@@ -6,11 +6,11 @@ using Botticelli.Shared.API.Client.Responses;
 
 namespace Botticelli.Bus.None.Client;
 
-public class PassClient : IBotticelliBusClient
+public class PassClient : IBusClient
 {
     private static TimeSpan Timeout => TimeSpan.FromMinutes(5);
 
-    public async Task<SendMessageResponse> GetResponse(SendMessageRequest request,
+    public async Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request,
                                                        CancellationToken token)
     {
         NoneBus.SendMessageRequests.Enqueue(request);

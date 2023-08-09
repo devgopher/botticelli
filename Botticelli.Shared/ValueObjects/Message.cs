@@ -3,7 +3,8 @@
 /// <summary>
 ///     Received/sent message
 /// </summary>
-public class Message
+[Serializable]
+public class Message 
 {
     public Message() => Uid = Guid.NewGuid().ToString();
 
@@ -15,9 +16,9 @@ public class Message
     public string? Uid { get; set; }
 
     /// <summary>
-    ///     Chat id
+    ///     Chat ids
     /// </summary>
-    public string? ChatId { get; set; }
+    public List<string> ChatIds { get; set; }
 
     /// <summary>
     ///     Message subj

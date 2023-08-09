@@ -8,7 +8,7 @@
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
 @inject CookieStorageAccessor Cookies;
-@inject IJSRuntime JSRuntime;
+@inject IJSRuntime JsRuntime;
 
 @code {
     private string _error = string.Empty;
@@ -87,7 +87,7 @@ else
 
     private async Task RemoveBot(string botId)
     {
-        if (!await JSRuntime.InvokeAsync<bool>("confirm", new object[] {"Are you sure?"}))
+        if (!await JsRuntime.InvokeAsync<bool>("confirm", new object[] {"Are you sure?"}))
             return;
 
         await _http.GetAsync($"/admin/RemoveBot?botId={botId}");

@@ -1,5 +1,5 @@
-﻿using Botticelli.Bot.Interfaces.Client;
-using Botticelli.Bot.Interfaces.Handlers;
+﻿using Botticelli.Bot.Interfaces.Bus.Handlers;
+using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Bus.ZeroMQ.Agent;
 using Botticelli.Bus.ZeroMQ.Client;
 using Botticelli.Bus.ZeroMQ.Settings;
@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection UseZeroMqBusClient<TBot>(this IServiceCollection services, IConfiguration config)
             where TBot : IBot =>
-            services.AddSingleton<IBotticelliBusClient, ZeroMqClient<TBot>>()
+            services.AddSingleton<IBusClient, ZeroMqClient<TBot>>()
                     .AddSingleton(GetZeroMqBusSettings(config));
 
     private static ZeroMqBusSettings GetZeroMqBusSettings(IConfiguration config)

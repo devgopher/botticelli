@@ -8,7 +8,17 @@
       "launchUrl": "",
       "applicationUrl": "http://localhost:5074",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SampleSettings__SecureStorageConnectionString": "Filename=database.db;Password=123;Connection=Shared",
+        "ChatGptSettings__AiName": "chatgpt",
+        "ChatGptSettings__ApiKey": "chatgpt-api-key-placeholder",
+        "ChatGptSettings__GenerateTokensLimit": "800",
+        "ChatGptSettings__TopP": "0.45",
+        "ChatGptSettings__TopK": "0",
+        "ChatGptSettings__Temperature": "0.8",
+        "ChatGptSettings__Url": "https://api.openai.com/v1/chat",
+        "ChatGptSettings__Model": "gpt-3.5-turbo",
+        "ServerSettings__ServerUri": "http://localhost:5050"
       }
     }
   }

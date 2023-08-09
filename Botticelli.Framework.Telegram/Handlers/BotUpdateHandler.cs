@@ -48,7 +48,7 @@ public class BotUpdateHandler : IBotUpdateHandler
 
             var botticelliMessage = new Message(botMessage.MessageId.ToString())
             {
-                ChatId = botMessage.Chat.Id.ToString(),
+                ChatIds = new() {botMessage.Chat.Id.ToString()},
                 Subject = string.Empty,
                 Body = botMessage.Text,
                 Attachments = new List<IAttachment>(5),

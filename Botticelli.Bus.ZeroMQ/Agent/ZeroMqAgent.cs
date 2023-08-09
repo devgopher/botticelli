@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.Json;
 using Botticelli.Bot.Interfaces.Agent;
-using Botticelli.Bot.Interfaces.Handlers;
+using Botticelli.Bot.Interfaces.Bus.Handlers;
 using Botticelli.Bus.ZeroMQ.Settings;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;

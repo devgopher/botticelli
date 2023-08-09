@@ -1,0 +1,18 @@
+# Registering a new bot
+
+## Registering a Telegram bot
+1. Register a bot account: https://core.telegram.org/bots/tutorial#introduction
+2. Save your Bot Token 
+
+## Adding telegram bot key to your bot (Telegram bot)
+
+1. Go to your admin pane
+2. Log in
+3. Go to a "Your bots" menu
+4. Click "Add bot" button
+5. Fill 'Bot id' field with your botId (you can find it in Data folder in your bot project)
+6. Fill 'Bot key' field with your saved Telegram bot key
+8. Fill 'Bot name' field
+7. Press 'Save' 
+8. If your bot process is already running, please wait 30-60 sec in order to get telegram bot id and synchronize data,
+ if not - please, run your bot project

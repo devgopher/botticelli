@@ -55,4 +55,25 @@ public class SecureStorage
                       Data = data
                   });
     }
+
+    public void SetAnyData<T>(string id, T data)
+            where T : IDbEntity
+    {
+        using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
+
+        db.GetCollection<T>()
+          .Upsert(id, data);
+    }
+
+    public T GetAnyData<T>(string id)
+            where T : IDbEntity 
+        => GetAnyData<T>().FirstOrDefault(x => x.Id == id);
+
+    public IEnumerable<T> GetAnyData<T>()
+            where T : IDbEntity
+    {
+        using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
+
+        return db.GetCollection<T>().FindAll().ToArray();
+    }
 }

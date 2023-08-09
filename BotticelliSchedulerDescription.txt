@@ -1,0 +1,7 @@
+# Botticelli.Scheduler
+
+Botticelli.Scheduler is a component, that implmenets functions for scheduled job (for example, scheduled message sending/broadcasting)
+
+The main entities of sheduler are: 
+- Job
+- JobManager

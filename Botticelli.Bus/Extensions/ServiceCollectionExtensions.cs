@@ -1,5 +1,5 @@
-﻿using Botticelli.Bot.Interfaces.Client;
-using Botticelli.Bot.Interfaces.Handlers;
+﻿using Botticelli.Bot.Interfaces.Bus.Handlers;
+using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Bus.None.Agent;
 using Botticelli.Bus.None.Client;
 using Botticelli.Interfaces;
@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection UsePassBusClient<TBot>(this IServiceCollection services)
             where TBot : IBot =>
-            services.AddSingleton<IBotticelliBusClient, PassClient>();
+            services.AddSingleton<IBusClient, PassClient>();
 
     /// <summary>
     ///     Uses a no-bus scheme

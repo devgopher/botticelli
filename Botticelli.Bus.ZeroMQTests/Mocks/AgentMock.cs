@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Botticelli.Bot.Interfaces.Agent;
-using Botticelli.Bot.Interfaces.Handlers;
+using Botticelli.Bot.Interfaces.Bus.Handlers;
 using Botticelli.Bus.ZeroMQ;
 using Botticelli.Bus.ZeroMQ.Settings;
 using Botticelli.Shared.API.Client.Requests;
@@ -23,6 +23,10 @@ public class AgentMock<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusAge
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
+    {
+    }
+
+    public async Task Subscribe(CancellationToken token)
     {
     }
 

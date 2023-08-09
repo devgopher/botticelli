@@ -20,7 +20,7 @@ public class GptJProvider : GenericAiProvider
     public GptJProvider(IOptionsMonitor<AiGptSettings> gptSettings,
                         IHttpClientFactory factory,
                         ILogger<GptJProvider> logger,
-                        IBotticelliBusClient bus) : base(gptSettings,
+                        IBusClient bus) : base(gptSettings,
                                                          factory,
                                                          logger,
                                                          bus)
@@ -34,11 +34,11 @@ public class GptJProvider : GenericAiProvider
 
         try
         {
-            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) started");
+            Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) started");
 
-            using var client = _factory.CreateClient();
+            using var client = Factory.CreateClient();
 
-            client.BaseAddress = new Uri(_settings.CurrentValue.Url);
+            client.BaseAddress = new Uri(Settings.CurrentValue.Url);
 
             if (!string.IsNullOrWhiteSpace(_gptSettings.CurrentValue.ApiKey)) client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
 
@@ -51,9 +51,9 @@ public class GptJProvider : GenericAiProvider
                 Temperature = _gptSettings?.CurrentValue?.Temperature ?? (_temperatureRandom.Next(0, 900) + 100) / 1000.0
             });
 
-            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) content: {content.Value}");
+            Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
-            var response = await client.PostAsync(Url.Combine($"{_settings.CurrentValue.Url}", "generate"),
+            var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", "generate"),
                                                   content,
                                                   token);
 
@@ -61,11 +61,11 @@ public class GptJProvider : GenericAiProvider
             {
                 var outMessage = await response.Content.ReadFromJsonAsync<GptJOutputMessage>();
 
-                await _bus.SendResponse(new SendMessageResponse(message.Uid)
+                await Bus.SendResponse(new SendMessageResponse(message.Uid)
                                         {
                                             Message = new Shared.ValueObjects.Message(message.Uid)
                                             {
-                                                ChatId = message.ChatId,
+                                                ChatIds = message.ChatIds,
                                                 Subject = message.Subject,
                                                 Body = outMessage?.Completion,
                                                 Attachments = null,
@@ -78,11 +78,11 @@ public class GptJProvider : GenericAiProvider
             }
             else
             {
-                await _bus.SendResponse(new SendMessageResponse(message.Uid)
+                await Bus.SendResponse(new SendMessageResponse(message.Uid)
                                         {
                                             Message = new Shared.ValueObjects.Message(message.Uid)
                                             {
-                                                ChatId = message.ChatId,
+                                                ChatIds = message.ChatIds,
                                                 Subject = message.Subject,
                                                 Body = "Error getting a response from Gpt-J!",
                                                 Attachments = null,
@@ -94,16 +94,16 @@ public class GptJProvider : GenericAiProvider
                                         token);
             }
 
-            _logger.LogDebug($"{nameof(SendAsync)}({message.ChatId}) finished");
+            Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) finished");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
-            await _bus.SendResponse(new SendMessageResponse(message.Uid)
+            Logger.LogError(ex, ex.Message);
+            await Bus.SendResponse(new SendMessageResponse(message.Uid)
                                     {
                                         Message = new Shared.ValueObjects.Message(message.Uid)
                                         {
-                                            ChatId = message.ChatId,
+                                            ChatIds = message.ChatIds,
                                             Subject = message.Subject,
                                             Body = "Error getting a response from Gpt-J!",
                                             Attachments = null,

@@ -1,5 +1,5 @@
 ﻿using Botticelli.Bot.Interfaces.Agent;
-using Botticelli.Bot.Interfaces.Handlers;
+using Botticelli.Bot.Interfaces.Bus.Handlers;
 using Botticelli.Bus.None.Bus;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
@@ -16,6 +16,9 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     private readonly THandler _handler;
 
     public PassAgent(THandler handler) => _handler = handler;
+
+    public async Task Subscribe(CancellationToken token) 
+    {}
 
     /// <summary>
     ///     Sends a response
