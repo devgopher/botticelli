@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Framework.Vk;
+﻿namespace Botticelli.Framework.Vk.API.Responses;
 
 public class UpdatesEventArgs
 {

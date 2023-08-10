@@ -1,4 +1,5 @@
-﻿using Botticelli.Framework.Vk.Options;
+﻿using Botticelli.Framework.Vk.API.Responses;
+using Botticelli.Framework.Vk.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

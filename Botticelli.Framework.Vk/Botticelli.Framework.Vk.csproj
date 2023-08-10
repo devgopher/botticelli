@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="API\Responses\" />
+	  <Folder Include="API\Objects\Methods\" />
 	</ItemGroup>
 
 </Project>
