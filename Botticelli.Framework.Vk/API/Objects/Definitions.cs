@@ -4,105 +4,165 @@ namespace Botticelli.Framework.Vk.API.Objects;
 
 public class Definitions
 {
-    [JsonPropertyName("groups_addAddress_response")]
-    public GroupsAddAddressResponse GroupsAddAddressResponse { get; set; }
+    [JsonPropertyName("messages_audio_message")]
+    public MessagesAudioMessage MessagesAudioMessage { get; set; }
 
-    [JsonPropertyName("groups_addCallbackServer_response")]
-    public GroupsAddCallbackServerResponse GroupsAddCallbackServerResponse { get; set; }
+    [JsonPropertyName("messages_chat")]
+    public MessagesChat MessagesChat { get; set; }
 
-    [JsonPropertyName("groups_addLink_response")]
-    public GroupsAddLinkResponse GroupsAddLinkResponse { get; set; }
+    [JsonPropertyName("messages_chat_full")]
+    public MessagesChatFull MessagesChatFull { get; set; }
 
-    [JsonPropertyName("groups_create_response")]
-    public GroupsCreateResponse GroupsCreateResponse { get; set; }
+    [JsonPropertyName("messages_chat_preview")]
+    public MessagesChatPreview MessagesChatPreview { get; set; }
 
-    [JsonPropertyName("groups_editAddress_response")]
-    public GroupsEditAddressResponse GroupsEditAddressResponse { get; set; }
+    [JsonPropertyName("messages_chat_push_settings")]
+    public MessagesChatPushSettings MessagesChatPushSettings { get; set; }
 
-    [JsonPropertyName("groups_getAddresses_response")]
-    public GroupsGetAddressesResponse GroupsGetAddressesResponse { get; set; }
+    [JsonPropertyName("messages_chat_restrictions")]
+    public MessagesChatRestrictions MessagesChatRestrictions { get; set; }
 
-    [JsonPropertyName("groups_getBanned_response")]
-    public GroupsGetBannedResponse GroupsGetBannedResponse { get; set; }
+    [JsonPropertyName("messages_chat_settings")]
+    public MessagesChatSettings MessagesChatSettings { get; set; }
 
-    [JsonPropertyName("groups_getById_object_legacy_response")]
-    public GroupsGetByIdObjectLegacyResponse GroupsGetByIdObjectLegacyResponse { get; set; }
+    [JsonPropertyName("messages_chat_settings_acl")]
+    public MessagesChatSettingsAcl MessagesChatSettingsAcl { get; set; }
 
-    [JsonPropertyName("groups_getCallbackConfirmationCode_response")]
-    public GroupsGetCallbackConfirmationCodeResponse GroupsGetCallbackConfirmationCodeResponse { get; set; }
+    [JsonPropertyName("messages_chat_settings_permissions")]
+    public MessagesChatSettingsPermissions MessagesChatSettingsPermissions { get; set; }
 
-    [JsonPropertyName("groups_getCallbackServers_response")]
-    public GroupsGetCallbackServersResponse GroupsGetCallbackServersResponse { get; set; }
+    [JsonPropertyName("messages_chat_settings_photo")]
+    public MessagesChatSettingsPhoto MessagesChatSettingsPhoto { get; set; }
 
-    [JsonPropertyName("groups_getCallbackSettings_response")]
-    public GroupsGetCallbackSettingsResponse GroupsGetCallbackSettingsResponse { get; set; }
+    [JsonPropertyName("messages_chat_settings_state")]
+    public MessagesChatSettingsState MessagesChatSettingsState { get; set; }
 
-    [JsonPropertyName("groups_getCatalogInfo_extended_response")]
-    public GroupsGetCatalogInfoExtendedResponse GroupsGetCatalogInfoExtendedResponse { get; set; }
+    [JsonPropertyName("messages_conversation")]
+    public MessagesConversation MessagesConversation { get; set; }
 
-    [JsonPropertyName("groups_getCatalogInfo_response")]
-    public GroupsGetCatalogInfoResponse GroupsGetCatalogInfoResponse { get; set; }
+    [JsonPropertyName("messages_conversation_can_write")]
+    public MessagesConversationCanWrite MessagesConversationCanWrite { get; set; }
 
-    [JsonPropertyName("groups_getCatalog_response")]
-    public GroupsGetCatalogResponse GroupsGetCatalogResponse { get; set; }
+    [JsonPropertyName("messages_conversation_member")]
+    public MessagesConversationMember MessagesConversationMember { get; set; }
 
-    [JsonPropertyName("groups_getInvitedUsers_response")]
-    public GroupsGetInvitedUsersResponse GroupsGetInvitedUsersResponse { get; set; }
+    [JsonPropertyName("messages_conversation_peer")]
+    public MessagesConversationPeer MessagesConversationPeer { get; set; }
 
-    [JsonPropertyName("groups_getInvites_extended_response")]
-    public GroupsGetInvitesExtendedResponse GroupsGetInvitesExtendedResponse { get; set; }
+    [JsonPropertyName("messages_conversation_peer_type")]
+    public MessagesConversationPeerType MessagesConversationPeerType { get; set; }
 
-    [JsonPropertyName("groups_getInvites_response")]
-    public GroupsGetInvitesResponse GroupsGetInvitesResponse { get; set; }
+    [JsonPropertyName("messages_conversation_sort_id")]
+    public MessagesConversationSortId MessagesConversationSortId { get; set; }
 
-    [JsonPropertyName("groups_getLongPollServer_response")]
-    public GroupsGetLongPollServerResponse GroupsGetLongPollServerResponse { get; set; }
+    [JsonPropertyName("messages_conversation_with_message")]
+    public MessagesConversationWithMessage MessagesConversationWithMessage { get; set; }
 
-    [JsonPropertyName("groups_getLongPollSettings_response")]
-    public GroupsGetLongPollSettingsResponse GroupsGetLongPollSettingsResponse { get; set; }
+    [JsonPropertyName("messages_foreign_message")]
+    public MessagesForeignMessage MessagesForeignMessage { get; set; }
 
-    [JsonPropertyName("groups_getMembers_fields_response")]
-    public GroupsGetMembersFieldsResponse GroupsGetMembersFieldsResponse { get; set; }
+    [JsonPropertyName("messages_forward")]
+    public MessagesForward MessagesForward { get; set; }
 
-    [JsonPropertyName("groups_getMembers_filter_response")]
-    public GroupsGetMembersFilterResponse GroupsGetMembersFilterResponse { get; set; }
+    [JsonPropertyName("messages_getConversationById")]
+    public MessagesGetConversationById MessagesGetConversationById { get; set; }
 
-    [JsonPropertyName("groups_getMembers_response")]
-    public GroupsGetMembersResponse GroupsGetMembersResponse { get; set; }
+    [JsonPropertyName("messages_getConversationById_extended")]
+    public MessagesGetConversationByIdExtended MessagesGetConversationByIdExtended { get; set; }
 
-    [JsonPropertyName("groups_getRequests_fields_response")]
-    public GroupsGetRequestsFieldsResponse GroupsGetRequestsFieldsResponse { get; set; }
+    [JsonPropertyName("messages_getConversationMembers")]
+    public MessagesGetConversationMembers MessagesGetConversationMembers { get; set; }
 
-    [JsonPropertyName("groups_getRequests_response")]
-    public GroupsGetRequestsResponse GroupsGetRequestsResponse { get; set; }
+    [JsonPropertyName("messages_graffiti")]
+    public MessagesGraffiti MessagesGraffiti { get; set; }
 
-    [JsonPropertyName("groups_getSettings_response")]
-    public GroupsGetSettingsResponse GroupsGetSettingsResponse { get; set; }
+    [JsonPropertyName("messages_history_attachment")]
+    public MessagesHistoryAttachment MessagesHistoryAttachment { get; set; }
 
-    [JsonPropertyName("groups_getTagList_response")]
-    public GroupsGetTagListResponse GroupsGetTagListResponse { get; set; }
+    [JsonPropertyName("messages_history_message_attachment")]
+    public MessagesHistoryMessageAttachment MessagesHistoryMessageAttachment { get; set; }
 
-    [JsonPropertyName("groups_getTokenPermissions_response")]
-    public GroupsGetTokenPermissionsResponse GroupsGetTokenPermissionsResponse { get; set; }
+    [JsonPropertyName("messages_history_message_attachment_type")]
+    public MessagesHistoryMessageAttachmentType MessagesHistoryMessageAttachmentType { get; set; }
 
-    [JsonPropertyName("groups_get_object_extended_response")]
-    public GroupsGetObjectExtendedResponse GroupsGetObjectExtendedResponse { get; set; }
+    [JsonPropertyName("messages_keyboard")]
+    public MessagesKeyboard MessagesKeyboard { get; set; }
 
-    [JsonPropertyName("groups_get_response")]
-    public GroupsGetResponse GroupsGetResponse { get; set; }
+    [JsonPropertyName("messages_keyboard_button")]
+    public MessagesKeyboardButton MessagesKeyboardButton { get; set; }
 
-    [JsonPropertyName("groups_isMember_extended_response")]
-    public GroupsIsMemberExtendedResponse GroupsIsMemberExtendedResponse { get; set; }
+    [JsonPropertyName("messages_keyboard_button_action_callback")]
+    public MessagesKeyboardButtonActionCallback MessagesKeyboardButtonActionCallback { get; set; }
 
-    [JsonPropertyName("groups_isMember_response")]
-    public GroupsIsMemberResponse GroupsIsMemberResponse { get; set; }
+    [JsonPropertyName("messages_keyboard_button_action_location")]
+    public MessagesKeyboardButtonActionLocation MessagesKeyboardButtonActionLocation { get; set; }
 
-    [JsonPropertyName("groups_isMember_user_ids_extended_response")]
-    public GroupsIsMemberUserIdsExtendedResponse GroupsIsMemberUserIdsExtendedResponse { get; set; }
+    [JsonPropertyName("messages_keyboard_button_action_open_app")]
+    public MessagesKeyboardButtonActionOpenApp MessagesKeyboardButtonActionOpenApp { get; set; }
 
-    [JsonPropertyName("groups_isMember_user_ids_response")]
-    public GroupsIsMemberUserIdsResponse GroupsIsMemberUserIdsResponse { get; set; }
+    [JsonPropertyName("messages_keyboard_button_action_open_link")]
+    public MessagesKeyboardButtonActionOpenLink MessagesKeyboardButtonActionOpenLink { get; set; }
 
-    [JsonPropertyName("groups_search_response")]
-    public GroupsSearchResponse GroupsSearchResponse { get; set; }
+    [JsonPropertyName("messages_keyboard_button_action_open_photo")]
+    public MessagesKeyboardButtonActionOpenPhoto MessagesKeyboardButtonActionOpenPhoto { get; set; }
+
+    [JsonPropertyName("messages_keyboard_button_action_text")]
+    public MessagesKeyboardButtonActionText MessagesKeyboardButtonActionText { get; set; }
+
+    [JsonPropertyName("messages_keyboard_button_action_vkpay")]
+    public MessagesKeyboardButtonActionVkpay MessagesKeyboardButtonActionVkpay { get; set; }
+
+    [JsonPropertyName("messages_keyboard_button_property_action")]
+    public MessagesKeyboardButtonPropertyAction MessagesKeyboardButtonPropertyAction { get; set; }
+
+    [JsonPropertyName("messages_last_activity")]
+    public MessagesLastActivity MessagesLastActivity { get; set; }
+
+    [JsonPropertyName("messages_longpoll_messages")]
+    public MessagesLongpollMessages MessagesLongpollMessages { get; set; }
+
+    [JsonPropertyName("messages_longpoll_params")]
+    public MessagesLongpollParams MessagesLongpollParams { get; set; }
+
+    [JsonPropertyName("messages_message")]
+    public MessagesMessage MessagesMessage { get; set; }
+
+    [JsonPropertyName("messages_message_action")]
+    public MessagesMessageAction MessagesMessageAction { get; set; }
+
+    [JsonPropertyName("messages_message_action_photo")]
+    public MessagesMessageActionPhoto MessagesMessageActionPhoto { get; set; }
+
+    [JsonPropertyName("messages_message_action_status")]
+    public MessagesMessageActionStatus MessagesMessageActionStatus { get; set; }
+
+    [JsonPropertyName("messages_message_attachment")]
+    public MessagesMessageAttachment MessagesMessageAttachment { get; set; }
+
+    [JsonPropertyName("messages_message_attachment_type")]
+    public MessagesMessageAttachmentType MessagesMessageAttachmentType { get; set; }
+
+    [JsonPropertyName("messages_message_request_data")]
+    public MessagesMessageRequestData MessagesMessageRequestData { get; set; }
+
+    [JsonPropertyName("messages_messages_array")]
+    public MessagesMessagesArray MessagesMessagesArray { get; set; }
+
+    [JsonPropertyName("messages_out_read_by")]
+    public MessagesOutReadBy MessagesOutReadBy { get; set; }
+
+    [JsonPropertyName("messages_pinned_message")]
+    public MessagesPinnedMessage MessagesPinnedMessage { get; set; }
+
+    [JsonPropertyName("messages_push_settings")]
+    public MessagesPushSettings MessagesPushSettings { get; set; }
+
+    [JsonPropertyName("messages_send_user_ids_response_item")]
+    public MessagesSendUserIdsResponseItem MessagesSendUserIdsResponseItem { get; set; }
+
+    [JsonPropertyName("messages_template_action_type_names")]
+    public MessagesTemplateActionTypeNames MessagesTemplateActionTypeNames { get; set; }
+
+    [JsonPropertyName("messages_user_xtr_invited_by")]
+    public MessagesUserXtrInvitedBy MessagesUserXtrInvitedBy { get; set; }
 }

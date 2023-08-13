@@ -7,6 +7,12 @@ public class Items
     [JsonPropertyName("type")]
     public string Type { get; set; }
 
+    [JsonPropertyName("description")]
+    public string Description { get; set; }
+
+    [JsonPropertyName("minimum")]
+    public int Minimum { get; set; }
+
     [JsonPropertyName("items")]
     public Items Items { get; set; }
 
@@ -21,10 +27,4 @@ public class Items
 
     [JsonPropertyName("entity")]
     public string Entity { get; set; }
-
-    [JsonPropertyName("description")]
-    public string Description { get; set; }
-
-    [JsonPropertyName("minimum")]
-    public int Minimum { get; set; }
 }

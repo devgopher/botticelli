@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -10,13 +10,14 @@
 		<ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
 		<ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj" />
 		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
+		<PackageReference Include="Flurl" Version="3.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="API\Objects\Methods\" />
+	  <Folder Include="Handlers\" />
 	</ItemGroup>
 
 </Project>

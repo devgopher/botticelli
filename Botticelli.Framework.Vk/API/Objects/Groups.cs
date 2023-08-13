@@ -9,7 +9,4 @@ public class Groups
 
     [JsonPropertyName("items")]
     public Items Items { get; set; }
-
-    [JsonPropertyName("required")]
-    public bool Required { get; set; }
 }

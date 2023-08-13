@@ -58,12 +58,12 @@ public static class ServiceCollectionExtensions
 
         var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(120);
 
-        services.AddHttpClient<LongPollProvider>()
+        services.AddHttpClient<LongPollMessagesProvider>()
                 .AddPolicyHandler(retryPolicy)
                 .AddPolicyHandler(timeoutPolicy);
 
         services.AddSingleton(serverConfig)
-                .AddSingleton<LongPollProvider>()
+                .AddSingleton<LongPollMessagesProvider>()
                 .AddBotticelliFramework();
 
         var sp = services.BuildServiceProvider();
