@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using System.Net.Http.Json;
+using Botticelli.Framework.Vk.API.Utils;
 
 namespace Botticelli.Framework.Vk
 {
@@ -102,7 +103,7 @@ namespace Botticelli.Framework.Vk
         private async Task GetSessionData()
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                                                 GetMethodUri("https://api.vk.com",
+                                                 ApiUtils.GetMethodUri("https://api.vk.com",
                                                               "messages.getLongPollServer",
                                                               new
                                                               {
@@ -115,10 +116,6 @@ namespace Botticelli.Framework.Vk
             _server = result?.Response?.Server;
             _apiKey = result?.Response?.Key;
         }
-
-        private static Uri GetMethodUri(string baseAddress, string method, params object[] methodParams)
-            => new(Flurl.Url.Combine(baseAddress, "method", method)
-                        .SetQueryParams(methodParams));
 
         public async Task Stop()
         {
