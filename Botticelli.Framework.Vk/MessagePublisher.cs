@@ -35,10 +35,8 @@ public class MessagePublisher
 
             var responseContent = await response.Content.ReadFromJsonAsync<MessageSendResponse>();
 
-            if (string.IsNullOrEmpty(responseContent.Error))
-            {
+            if (string.IsNullOrEmpty(responseContent.Error)) 
                 _logger.LogError($"Error sending a message {responseContent.MessageId}: {responseContent.Error}");
-            }
 
         }
         catch (HttpRequestException ex)
