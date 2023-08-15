@@ -1,5 +1,8 @@
 ﻿using System.Net;
+using System.Net.Http.Json;
+using Botticelli.Framework.Vk.API.Errors;
 using Botticelli.Framework.Vk.API.Requests;
+using Botticelli.Framework.Vk.API.Responses;
 using Botticelli.Framework.Vk.API.Utils;
 using Microsoft.Extensions.Logging;
 
@@ -23,11 +26,20 @@ public class MessagePublisher
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Get,
                                                  ApiUtils.GetMethodUri("https://api.vk.com",
-                                                                       "messages.getLongPollServer",
+                                                                       "messages.send",
                                                                        vkMessageRequest));
 
             var response = await httpClient.SendAsync(request, token);
-            if (response.StatusCode != HttpStatusCode.OK) _logger.LogError($"Error sending a message: {response.StatusCode} {response.ReasonPhrase}!");
+            if (response.StatusCode != HttpStatusCode.OK) 
+                _logger.LogError($"Error sending a message: {response.StatusCode} {response.ReasonPhrase}!");
+
+            var responseContent = await response.Content.ReadFromJsonAsync<MessageSendResponse>();
+
+            if (string.IsNullOrEmpty(responseContent.Error))
+            {
+                _logger.LogError($"Error sending a message {responseContent.MessageId}: {responseContent.Error}");
+            }
+
         }
         catch (HttpRequestException ex)
         {

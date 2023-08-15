@@ -49,7 +49,7 @@ namespace Botticelli.Framework.Vk
 
                 _secureStorage.SetBotContext(context);
                 _messagesProvider.SetApiKey(context.BotKey);
-                _messagePublisher.SetApiKey(context.BotKey);
+
                 await StartBotAsync(startRequest, token);
             }
         }
