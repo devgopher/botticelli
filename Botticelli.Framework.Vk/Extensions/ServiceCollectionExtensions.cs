@@ -4,6 +4,7 @@ using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
+using Botticelli.Framework.Vk.HostedService;
 using Botticelli.Framework.Vk.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
@@ -62,16 +63,19 @@ public static class ServiceCollectionExtensions
                 .AddPolicyHandler(retryPolicy)
                 .AddPolicyHandler(timeoutPolicy);
 
+        services.AddHttpClient<MessagePublisher>()
+                .AddPolicyHandler(retryPolicy)
+                .AddPolicyHandler(timeoutPolicy);
+
         services.AddSingleton(serverConfig)
                 .AddSingleton<LongPollMessagesProvider>()
+                .AddSingleton<MessagePublisher>()
+                .AddSingleton<VkBot>()
                 .AddBotticelliFramework();
 
         var sp = services.BuildServiceProvider();
 
-        var bot = new VkBot(new VkBotClient(token),
-                                  sp.GetRequiredService<IBotUpdateHandler>(),
-                                  sp.GetRequiredService<ILogger<VkBot>>(),
-                                  secureStorage);
+        var bot = sp.GetRequiredService<VkBot>();
 
         return services.AddSingleton<IBot<VkBot>>(bot)
                        .AddHostedService<BotStatusService<IBot<VkBot>>>()

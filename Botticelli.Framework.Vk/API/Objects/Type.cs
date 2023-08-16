@@ -5,7 +5,7 @@ namespace Botticelli.Framework.Vk.API.Objects;
 public class Type
 {
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string Type1 { get; set; }
 
     [JsonPropertyName("description")]
     public string Description { get; set; }

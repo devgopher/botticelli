@@ -17,6 +17,6 @@ namespace Botticelli.Framework.Vk.API.Requests
         public string AccessToken { get; set; }
 
         [JsonPropertyName("v")]
-        public const string ApiVersion = "5.131";
+        public string ApiVersion => "5.131";
     }
 }

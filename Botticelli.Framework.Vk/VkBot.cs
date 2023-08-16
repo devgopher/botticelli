@@ -59,7 +59,7 @@ namespace Botticelli.Framework.Vk
                                                                                        CancellationToken token)
         {
             try
-            {;
+            {
                 var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
 
                 foreach (var userId in request.Message.ChatIds)
@@ -77,6 +77,8 @@ namespace Botticelli.Framework.Vk
             {
                 throw new BotException($"Can't send a message!", ex);
             }
+
+            return new SendMessageResponse(request.Uid, string.Empty);
         }
 
         public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token) => throw new NotImplementedException();

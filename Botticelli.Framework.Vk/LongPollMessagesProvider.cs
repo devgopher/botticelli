@@ -23,7 +23,7 @@ namespace Botticelli.Framework.Vk
         private readonly ILogger<LongPollMessagesProvider> _logger;
         private readonly IOptionsMonitor<VkBotSettings> _settings;
         private HttpClient _client;
-        private string _sessionId;
+        private string _key;
         private string _server;
         private string _apiKey;
         private CancellationTokenSource _tokenSource;
@@ -55,14 +55,14 @@ namespace Botticelli.Framework.Vk
                 await GetSessionData();
                 
                 // 2. Start polling
-                if (string.IsNullOrWhiteSpace(_sessionId) || string.IsNullOrWhiteSpace(_apiKey)) 
-                    throw new BotException($"{nameof(_sessionId)} or {nameof(_server)} are null or empty!");
+                if (string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_server)) 
+                    throw new BotException($"{nameof(_key)} or {nameof(_server)} are null or empty!");
                 int[] httpStatusCodesWorthRetrying = { 408, 500, 502, 503, 504 };
 
                 var updatePolicy = Policy
                                       .Handle<FlurlHttpException>(ex =>
                                       {
-                                          _logger.LogError(ex, $"Long polling error! session: {_sessionId}, server: {_server}");
+                                          _logger.LogError(ex, $"Long polling error! session: {_key}, server: {_server}");
 
                                           return httpStatusCodesWorthRetrying.Contains(ex.Call.Response.StatusCode);
                                       })
@@ -76,17 +76,26 @@ namespace Botticelli.Framework.Vk
                 var pollingTask = repeatPolicy.WrapAsync(updatePolicy)
                                                  .ExecuteAsync(async () =>
                                                  {
-                                                     var updates = await _server.SetQueryParams(new
+                                                     var url = _server.SetQueryParams(new
+                                                     {
+                                                         act = "a_check",
+                                                         key = _key,
+                                                         wait = 25,
+                                                         mode = 2 + 8 + 32 + 64 + 128,
+                                                         v = ApiVersion
+                                                     });
+                                                     var updates = await $"https://{_server}".SetQueryParams(new
                                                                    {
                                                                        act = "a_check",
-                                                                       key = _sessionId,
+                                                                       key = _key,
                                                                        wait = 25,
                                                                        mode = 2 + 8 + 32 + 64 + 128,
                                                                        v = ApiVersion
                                                                    })
                                                                    .GetJsonAsync<UpdatesResponse>(_tokenSource.Token);
 
-                                                     OnUpdates?.Invoke(new UpdatesEventArgs(updates));
+                                                     if (updates.Updates != default)
+                                                        OnUpdates?.Invoke(new UpdatesEventArgs(updates));
 
                                                      return updates;
                                                  });
@@ -112,16 +121,16 @@ namespace Botticelli.Framework.Vk
                                                               }));
             var response = await _client.SendAsync(request, _tokenSource.Token);
             var result = await response.Content.ReadFromJsonAsync<GetMessageSessionDataResponse>();
-
+            // var rr = response.Content.ReadAsStringAsync();
             _server = result?.Response?.Server;
-            _apiKey = result?.Response?.Key;
+            _key = result?.Response?.Key;
         }
 
         public async Task Stop()
         {
             _client?.CancelPendingRequests();
             _tokenSource.Cancel(false);
-            _sessionId = string.Empty;
+            _key = string.Empty;
             _server = string.Empty;
         }
 

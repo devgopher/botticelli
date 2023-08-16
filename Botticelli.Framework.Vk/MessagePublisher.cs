@@ -12,6 +12,7 @@ public class MessagePublisher
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<MessagePublisher> _logger;
+    private string _apiKey;
 
     public MessagePublisher(IHttpClientFactory httpClientFactory, ILogger<MessagePublisher> logger)
     {
@@ -19,13 +20,20 @@ public class MessagePublisher
         _logger = logger;
     }
 
+
+    public void SetApiKey(string key)
+        => _apiKey = key;
+
+
     public async Task SendAsync(SendMessageRequest vkMessageRequest, CancellationToken token)
     {
         try
         {
+
+            vkMessageRequest.AccessToken = _apiKey;
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Get,
-                                                 ApiUtils.GetMethodUri("https://api.vk.com",
+                                                 ApiUtils.GetMethodUriWithJson("https://api.vk.com",
                                                                        "messages.send",
                                                                        vkMessageRequest));
 
@@ -33,10 +41,10 @@ public class MessagePublisher
             if (response.StatusCode != HttpStatusCode.OK) 
                 _logger.LogError($"Error sending a message: {response.StatusCode} {response.ReasonPhrase}!");
 
-            var responseContent = await response.Content.ReadFromJsonAsync<MessageSendResponse>();
+            var responseContent = await response.Content.ReadAsStringAsync();
 
-            if (string.IsNullOrEmpty(responseContent.Error)) 
-                _logger.LogError($"Error sending a message {responseContent.MessageId}: {responseContent.Error}");
+            if (string.IsNullOrEmpty(responseContent)) 
+                _logger.LogError($"Error sending a message {responseContent}");
 
         }
         catch (HttpRequestException ex)

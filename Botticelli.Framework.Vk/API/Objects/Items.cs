@@ -14,7 +14,7 @@ public class Items
     public int Minimum { get; set; }
 
     [JsonPropertyName("items")]
-    public Items Items { get; set; }
+    public Items Items1 { get; set; }
 
     [JsonPropertyName("required")]
     public bool Required { get; set; }
