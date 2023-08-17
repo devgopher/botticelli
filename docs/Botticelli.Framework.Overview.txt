@@ -1,0 +1,3 @@
+## Botticelli.Framework
+
+Botticelli.Framework is the main part of client-side projects. It defines main entities, such as: Bot, Command, Handler and Message Processor 
