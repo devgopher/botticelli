@@ -120,7 +120,7 @@ namespace Botticelli.Framework.Vk
                                                          return updates;
                                                      } catch (Exception ex)
                                                      {
-
+                                                         _logger.LogError(ex, $"Long polling error: {ex.Message}");
                                                      }
 
                                                      return default;

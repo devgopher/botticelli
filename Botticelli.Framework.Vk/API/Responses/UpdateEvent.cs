@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Botticelli.Framework.Vk.API.Responses;
 
@@ -29,6 +30,6 @@ public class UpdateEvent
     /// Inner object
     /// </summary>
     [JsonPropertyName("object")]
-    public object Object { get; set; }
+    public Dictionary<string, JsonElement> Object { get; set; }
 
 }
