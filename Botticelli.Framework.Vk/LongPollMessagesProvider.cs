@@ -8,6 +8,9 @@ using Microsoft.Extensions.Options;
 using Polly;
 using System.Net.Http.Json;
 using Botticelli.Framework.Vk.API.Utils;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.Data;
 
 namespace Botticelli.Framework.Vk
 {
@@ -25,6 +28,8 @@ namespace Botticelli.Framework.Vk
         private HttpClient _client;
         private string _key;
         private string _server;
+        private int? _lastTs = 0;
+        private int? _groupId = 0;
         private string _apiKey;
         private CancellationTokenSource _tokenSource;
 
@@ -36,11 +41,15 @@ namespace Botticelli.Framework.Vk
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _tokenSource = new CancellationTokenSource();
+            _groupId = settings.CurrentValue.GroupId;
         }
 
-        public delegate void GotUpdates(UpdatesEventArgs  args);
+        public delegate void GotUpdates(VkUpdatesEventArgs  args);
+        public delegate void GotError(VkErrorEventArgs args);
 
         public event GotUpdates OnUpdates;
+        public event GotError OnError;
+
 
         public void SetApiKey(string key)
             => _apiKey  = key;
@@ -57,47 +66,64 @@ namespace Botticelli.Framework.Vk
                 // 2. Start polling
                 if (string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_server)) 
                     throw new BotException($"{nameof(_key)} or {nameof(_server)} are null or empty!");
-                int[] httpStatusCodesWorthRetrying = { 408, 500, 502, 503, 504 };
+                int[] codesForRetry = { 408, 500, 502, 503, 504 };
 
                 var updatePolicy = Policy
                                       .Handle<FlurlHttpException>(ex =>
                                       {
                                           _logger.LogError(ex, $"Long polling error! session: {_key}, server: {_server}");
 
-                                          return httpStatusCodesWorthRetrying.Contains(ex.Call.Response.StatusCode);
+                                          return codesForRetry.Contains(ex.Call.Response.StatusCode);
                                       })
                                       .WaitAndRetryAsync(3, n => n * TimeSpan.FromMilliseconds(_settings.CurrentValue.PollIntervalMs));
 
 
-                var repeatPolicy = Policy.HandleResult<UpdatesResponse>(r => r.Updates != default)
+                var repeatPolicy = Policy.HandleResult<UpdatesResponse>(r => true)
                                          .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(_settings.CurrentValue.PollIntervalMs));
-
 
                 var pollingTask = repeatPolicy.WrapAsync(updatePolicy)
                                                  .ExecuteAsync(async () =>
                                                  {
-                                                     var url = _server.SetQueryParams(new
+                                                     try
                                                      {
-                                                         act = "a_check",
-                                                         key = _key,
-                                                         wait = 25,
-                                                         mode = 2 + 8 + 32 + 64 + 128,
-                                                         v = ApiVersion
-                                                     });
-                                                     var updates = await $"https://{_server}".SetQueryParams(new
-                                                                   {
-                                                                       act = "a_check",
-                                                                       key = _key,
-                                                                       wait = 25,
-                                                                       mode = 2 + 8 + 32 + 64 + 128,
-                                                                       v = ApiVersion
-                                                                   })
-                                                                   .GetJsonAsync<UpdatesResponse>(_tokenSource.Token);
+                                                         var updatesResponse = await $"{_server}".SetQueryParams(new
+                                                         {
+                                                             act = "a_check",
+                                                             key = _key,
+                                                             wait = 90,
+                                                             ts = _lastTs,
+                                                             mode = 2,
+                                                             v = ApiVersion
+                                                         })
+                                                        .GetStringAsync(_tokenSource.Token);
 
-                                                     if (updates.Updates != default)
-                                                        OnUpdates?.Invoke(new UpdatesEventArgs(updates));
+                                                         var updates = JsonSerializer.Deserialize<UpdatesResponse>(updatesResponse);
 
-                                                     return updates;
+                                                         if (updates?.Updates == default)
+                                                         {
+                                                             var error = JsonSerializer.Deserialize<ErrorResponse>(updatesResponse);
+
+                                                             if (error != null)
+                                                             {
+                                                                 _lastTs = error.Ts ?? _lastTs;
+                                                                 OnError?.Invoke(new VkErrorEventArgs(error));
+                                                             }
+
+                                                             return default;
+                                                         }
+
+                                                         _lastTs = int.Parse(updates?.Ts ?? "0");
+
+                                                         if (updates.Updates != default)
+                                                             OnUpdates?.Invoke(new VkUpdatesEventArgs(updates));
+
+                                                         return updates;
+                                                     } catch (Exception ex)
+                                                     {
+
+                                                     }
+
+                                                     return default;
                                                  });
 
                 await pollingTask;
@@ -106,24 +132,27 @@ namespace Botticelli.Framework.Vk
             {
                 _logger.LogError(ex, $"Can't start a {nameof(LongPollMessagesProvider)}!");
             }
-
         }
 
         private async Task GetSessionData()
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
                                                  ApiUtils.GetMethodUri("https://api.vk.com",
-                                                              "messages.getLongPollServer",
+                                                              "groups.getLongPollServer",
                                                               new
                                                               {
                                                                   access_token = _apiKey,
+                                                                  group_id = _groupId,
                                                                   v = ApiVersion
                                                               }));
             var response = await _client.SendAsync(request, _tokenSource.Token);
-            var result = await response.Content.ReadFromJsonAsync<GetMessageSessionDataResponse>();
-            // var rr = response.Content.ReadAsStringAsync();
+            var resultString = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<GetMessageSessionDataResponse>(resultString);
+
             _server = result?.Response?.Server;
             _key = result?.Response?.Key;
+            _lastTs = int.Parse(result?.Response?.Ts ?? "0");
         }
 
         public async Task Stop()

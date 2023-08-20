@@ -28,17 +28,21 @@ public class LongPollMessagesProviderTests
                                                          ConnectionString = settings.SecureStorageConnectionString
                                                      },
                                                      Name = "test",
-                                                     PollIntervalMs = 5000
-                                                 }),
+                                                     PollIntervalMs = 500,
+                                                     GroupId = 221973506
+        }),
                                                  new TestHttpClientFactory(),
                                                  Utils.CreateConsoleLogger<LongPollMessagesProvider>());
-        _provider.SetApiKey(EnvironmentDataProvider.GetApiKey());
     }
 
     [Test]
     public async Task StartTest()
     {
+        _provider.SetApiKey(EnvironmentDataProvider.GetApiKey());
         Assert.DoesNotThrowAsync( async () => await _provider.Start());
+
+
+        Thread.Sleep(1000000);
     }
 
     [Test]

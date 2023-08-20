@@ -14,6 +14,12 @@ public class UpdateEvent
     public string Type { get; set; }
 
     /// <summary>
+    /// Id of an event
+    /// </summary>
+    [JsonPropertyName("event_id")]
+    public string EventId { get; set; }
+
+    /// <summary>
     /// Id of a group
     /// </summary>
     [JsonPropertyName("group_id")]
@@ -23,6 +29,6 @@ public class UpdateEvent
     /// Inner object
     /// </summary>
     [JsonPropertyName("object")]
-    public IApiObject Object { get; set; }
+    public object Object { get; set; }
 
 }

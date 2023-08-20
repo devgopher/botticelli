@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Framework.Vk.API.Responses;
+﻿using System.Text.Json.Serialization;
+
+namespace Botticelli.Framework.Vk.API.Responses;
 
 /// <summary>
 /// Update() response
@@ -8,10 +10,12 @@ public class UpdatesResponse
     /// <summary>
     /// Offset
     /// </summary>
-    public int Ts { get; set; }
+    [JsonPropertyName("ts")]
+    public string Ts { get; set; }
 
     /// <summary>
     /// Updated objects
     /// </summary>
-    public IEnumerable<UpdateEvent> Updates { get; set; }
+    [JsonPropertyName("updates")]
+    public List<UpdateEvent> Updates { get; set; }
 }

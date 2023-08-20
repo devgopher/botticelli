@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace Botticelli.Framework.Vk.API.Responses
 {
@@ -16,6 +11,6 @@ namespace Botticelli.Framework.Vk.API.Responses
         public string Key { get; set; }
 
         [JsonPropertyName("ts")]
-        public int Ts { get; set; }
+        public string Ts { get; set; }
     }
 }
