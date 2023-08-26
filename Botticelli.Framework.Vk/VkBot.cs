@@ -83,6 +83,8 @@ namespace Botticelli.Framework.Vk
                 await _messagesProvider.Start(token);
                 await StartBotAsync(startRequest, token);
             }
+
+            _messagesProvider.SetApiKey(context.BotKey);
         }
 
         public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,

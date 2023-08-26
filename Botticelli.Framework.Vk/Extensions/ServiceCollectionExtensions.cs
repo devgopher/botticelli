@@ -59,6 +59,8 @@ public static class ServiceCollectionExtensions
 
         var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(120);
 
+        services.Configure<VkBotSettings>(config.GetSection(nameof(VkBotSettings)));
+
         services.AddHttpClient<LongPollMessagesProvider>()
                 .AddPolicyHandler(retryPolicy)
                 .AddPolicyHandler(timeoutPolicy);
