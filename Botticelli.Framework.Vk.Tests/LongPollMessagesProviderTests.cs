@@ -38,6 +38,7 @@ public class LongPollMessagesProviderTests
     [Test]
     public async Task StartTest()
     {
+        await _provider.Stop();
         _provider.SetApiKey(EnvironmentDataProvider.GetApiKey()); 
         
         var task = Task.Run(() => _provider.Start());
@@ -50,6 +51,10 @@ public class LongPollMessagesProviderTests
     [Test]
     public void StopTest()
     {
+        var task = _provider.Start();
+
+        Thread.Sleep(2000);
+
         Assert.DoesNotThrowAsync(_provider.Stop);
     }
 }
