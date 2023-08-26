@@ -9,8 +9,6 @@ namespace Botticelli.Framework.Vk.Tests;
 [TestFixture]
 public class LongPollMessagesProviderTests
 {
-    private LongPollMessagesProvider _provider;
-
     [SetUp]
     public void Setup()
     {
@@ -30,24 +28,28 @@ public class LongPollMessagesProviderTests
                                                      Name = "test",
                                                      PollIntervalMs = 500,
                                                      GroupId = 221973506
-        }),
+                                                 }),
                                                  new TestHttpClientFactory(),
                                                  Utils.CreateConsoleLogger<LongPollMessagesProvider>());
     }
 
+    private LongPollMessagesProvider _provider;
+
     [Test]
     public async Task StartTest()
     {
-        _provider.SetApiKey(EnvironmentDataProvider.GetApiKey());
-        Assert.DoesNotThrowAsync( async () => await _provider.Start());
+        _provider.SetApiKey(EnvironmentDataProvider.GetApiKey()); 
+        
+        var task = Task.Run(() => _provider.Start());
 
+        Thread.Sleep(5000);
 
-        Thread.Sleep(1000000);
+        Assert.IsNull(task.Exception);
     }
 
     [Test]
     public void StopTest()
     {
-        Assert.DoesNotThrowAsync(async () => await _provider.Stop());
+        Assert.DoesNotThrowAsync(_provider.Stop);
     }
 }
