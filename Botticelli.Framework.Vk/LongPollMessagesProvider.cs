@@ -54,7 +54,7 @@ namespace Botticelli.Framework.Vk
         public void SetApiKey(string key)
             => _apiKey  = key;
 
-        public async Task Start()
+        public async Task Start(CancellationToken token)
         {
             try
             {

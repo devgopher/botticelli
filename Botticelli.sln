@@ -151,6 +151,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Vk", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Vk.Tests", "Botticelli.Framework.Vk.Tests\Botticelli.Framework.Vk.Tests.csproj", "{2EE26ED9-C949-48E8-BF48-93EEC9E51AF1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VK", "VK", "{5BB351E1-460B-48C1-912C-E13702968BB2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkMessagingSample", "VkMessagingSample\VkMessagingSample.csproj", "{B610D900-6713-4D8F-8E9D-23AA02F846FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -273,6 +277,10 @@ Global
 		{2EE26ED9-C949-48E8-BF48-93EEC9E51AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EE26ED9-C949-48E8-BF48-93EEC9E51AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EE26ED9-C949-48E8-BF48-93EEC9E51AF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B610D900-6713-4D8F-8E9D-23AA02F846FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B610D900-6713-4D8F-8E9D-23AA02F846FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B610D900-6713-4D8F-8E9D-23AA02F846FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B610D900-6713-4D8F-8E9D-23AA02F846FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -325,6 +333,8 @@ Global
 		{3DFA2DF1-6720-44D7-91E2-B50572F8A2E6} = {912B05D1-DC22-411E-9D6E-E06FFE96E4E6}
 		{343922EC-2CF3-4C0E-B745-08F2B333B4E3} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{2EE26ED9-C949-48E8-BF48-93EEC9E51AF1} = {B7B4B68F-7086-49F2-B401-C76B4EF0B320}
+		{5BB351E1-460B-48C1-912C-E13702968BB2} = {35480478-646E-45F1-96A3-EE7AC498ACE3}
+		{B610D900-6713-4D8F-8E9D-23AA02F846FF} = {5BB351E1-460B-48C1-912C-E13702968BB2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

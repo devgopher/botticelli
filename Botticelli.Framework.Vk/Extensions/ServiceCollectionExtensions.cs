@@ -71,11 +71,15 @@ public static class ServiceCollectionExtensions
                 .AddSingleton<LongPollMessagesProvider>()
                 .AddSingleton<MessagePublisher>()
                 .AddSingleton<VkBot>()
+                .AddSingleton(secureStorage)
                 .AddBotticelliFramework();
 
         var sp = services.BuildServiceProvider();
 
-        var bot = sp.GetRequiredService<VkBot>();
+        var bot = new VkBot(sp.GetRequiredService<LongPollMessagesProvider>(),
+                            sp.GetRequiredService<MessagePublisher>(),
+                            secureStorage,
+                            sp.GetRequiredService<ILogger<VkBot>>());
 
         return services.AddSingleton<IBot<VkBot>>(bot)
                        .AddHostedService<BotStatusService<IBot<VkBot>>>()
