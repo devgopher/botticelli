@@ -1,6 +1,8 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Exceptions;
+using Botticelli.Framework.Vk.API.Responses;
+using Botticelli.Framework.Vk.Handlers;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
@@ -18,23 +20,26 @@ namespace Botticelli.Framework.Vk
         private readonly LongPollMessagesProvider _messagesProvider;
         private readonly MessagePublisher _messagePublisher;
         private readonly SecureStorage _secureStorage;
+        private readonly IBotUpdateHandler _handler;
+        private bool _eventsAttached = false;
 
         public VkBot(LongPollMessagesProvider messagesProvider,
                      MessagePublisher messagePublisher,
                      SecureStorage secureStorage,
+                     IBotUpdateHandler handler,
                      ILogger<VkBot> logger) : base(logger)
         {
             _messagesProvider = messagesProvider;
             _messagePublisher = messagePublisher;
             _secureStorage = secureStorage;
+            _handler = handler;
         }
 
 
         [Obsolete($"Use {nameof(SetBotContext)}")]
         public override async Task SetBotKey(string key, CancellationToken token)
             => _messagesProvider.SetApiKey(key);
-
-
+        
         public override async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
         {
             try
@@ -51,6 +56,19 @@ namespace Botticelli.Framework.Vk
 
                 if (response.Status != AdminCommandStatus.Ok || IsStarted) return response;
 
+                if (!_eventsAttached)
+                {
+                    _messagesProvider.OnUpdates += delegate(VkUpdatesEventArgs args, CancellationToken token)
+                    {
+                        var updates = args?.Response?.Updates;
+
+                        if (updates == default) return;
+
+                        _handler.HandleUpdateAsync(updates, CancellationToken.None);
+                    };
+                    _eventsAttached = true;
+                }
+
                 await _messagesProvider.Start(token);
 
                 IsStarted = true;
@@ -65,6 +83,7 @@ namespace Botticelli.Framework.Vk
 
             return StartBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
         }
+
         public override async Task SetBotContext(BotContext context, CancellationToken token)
         {
             var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
@@ -79,12 +98,14 @@ namespace Botticelli.Framework.Vk
 
                 await _messagesProvider.Stop();
                 _messagesProvider.SetApiKey(context.BotKey);
+                _messagePublisher.SetApiKey(context.BotKey);
 
                 await _messagesProvider.Start(token);
                 await StartBotAsync(startRequest, token);
             }
 
             _messagesProvider.SetApiKey(context.BotKey);
+            _messagePublisher.SetApiKey(context.BotKey);
         }
 
         public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,

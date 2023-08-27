@@ -1,9 +1,11 @@
 ﻿using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Telegram;
+using Botticelli.Framework.Vk;
+using Botticelli.Interfaces;
 using Botticelli.Scheduler;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
+using Telegram.Bot.Requests.Abstractions;
 using VkMessagingSample.Commands;
 
 namespace VkMessagingSample;
@@ -31,8 +33,11 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
         var chatId = message.ChatIds.FirstOrDefault();
+  
+       // Thread.Sleep(20000);
 
-        JobManager.AddJob((TelegramBot) Bots.FirstOrDefault(),
+
+        JobManager.AddJob((VkBot) Bots.FirstOrDefault(),
                      new Reliability
                      {
                          IsEnabled = false,

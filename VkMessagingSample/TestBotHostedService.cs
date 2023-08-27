@@ -1,5 +1,7 @@
 ﻿using Botticelli.Framework.Vk;
 using Botticelli.Interfaces;
+using Botticelli.Shared.API.Client.Requests;
+using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Options;
 using VkMessagingSample.Settings;
 
@@ -22,6 +24,19 @@ public class TestBotHostedService : IHostedService
     public Task StartAsync(CancellationToken token)
     {
         Console.WriteLine("Start sending messages...");
+
+        _vkBot.SendMessageAsync(new SendMessageRequest(Guid.NewGuid().ToString())
+                                {
+                                    Message = new Message(Guid.NewGuid().ToString())
+                                    {
+                                        Body = "dewwedewde",
+                                        ChatIds = new List<string>()
+                                        {
+                                            "221973506"
+                                        }
+                                    }
+                                },
+                                CancellationToken.None);
 
         return Task.CompletedTask;
     }

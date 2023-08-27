@@ -4,6 +4,8 @@ using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
+using Botticelli.Framework.Vk.API.Responses;
+using Botticelli.Framework.Vk.Handlers;
 using Botticelli.Framework.Vk.HostedService;
 using Botticelli.Framework.Vk.Options;
 using Botticelli.Interfaces;
@@ -70,6 +72,7 @@ public static class ServiceCollectionExtensions
                 .AddPolicyHandler(timeoutPolicy);
 
         services.AddSingleton(serverConfig)
+                .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
                 .AddSingleton<LongPollMessagesProvider>()
                 .AddSingleton<MessagePublisher>()
                 .AddSingleton<VkBot>()
@@ -81,6 +84,7 @@ public static class ServiceCollectionExtensions
         var bot = new VkBot(sp.GetRequiredService<LongPollMessagesProvider>(),
                             sp.GetRequiredService<MessagePublisher>(),
                             secureStorage,
+                            sp.GetRequiredService<IBotUpdateHandler>(),
                             sp.GetRequiredService<ILogger<VkBot>>());
 
         return services.AddSingleton<IBot<VkBot>>(bot)
