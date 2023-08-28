@@ -4,6 +4,17 @@ namespace Botticelli.Shared.Utils
 {
     public static class StringUtils
     {
+        public static bool ContainsStrings(this string text, params string[] chunks)
+        {
+            foreach (var chunk in chunks)
+            {
+                if (!text.Contains(chunk))
+                    return false;
+            }
+
+            return true;
+        }
+
         public static string ToSnakeCase(this string text)
         {
             if (text == null)

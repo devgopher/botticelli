@@ -34,8 +34,6 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
     {
         var chatId = message.ChatIds.FirstOrDefault();
   
-       // Thread.Sleep(20000);
-
 
         JobManager.AddJob((VkBot) Bots.FirstOrDefault(),
                      new Reliability

@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using Botticelli.Shared.Utils;
+using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Scheduler;
@@ -17,7 +18,8 @@ public class ContainerJobActivator : JobActivator
                                                       s.ServiceType
                                                        .FullName
                                                        .ToLowerInvariant()
-                                                       .Contains(type.Name.ToLowerInvariant()));
+                                                       .ContainsStrings("ibot`", $"{type.Name.ToLowerInvariant()}"));
+
 
         return _services.BuildServiceProvider().GetRequiredService(realTypeDescriptor.ServiceType);
     }

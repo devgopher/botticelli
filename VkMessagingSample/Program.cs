@@ -1,13 +1,12 @@
 using BotDataSecureStorage.Settings;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Options;
-using Botticelli.Framework.Telegram;
-using Botticelli.Scheduler.Extensions;
-using NLog.Extensions.Logging;
 using Botticelli.Framework.Extensions;
+using Botticelli.Framework.Options;
 using Botticelli.Framework.Vk;
 using Botticelli.Framework.Vk.Extensions;
 using Botticelli.Framework.Vk.Options;
+using Botticelli.Scheduler.Extensions;
+using NLog.Extensions.Logging;
 using VkMessagingSample;
 using VkMessagingSample.Commands;
 using VkMessagingSample.Settings;

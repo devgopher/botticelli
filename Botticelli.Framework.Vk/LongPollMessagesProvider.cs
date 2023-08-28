@@ -66,8 +66,6 @@ namespace Botticelli.Framework.Vk
                         !string.IsNullOrWhiteSpace(_key) &&
                         !string.IsNullOrWhiteSpace(_server) &&
                         !string.IsNullOrWhiteSpace(_apiKey)) return;
-
-                    isStarted = true;
                 }
 
                 _client = _httpClientFactory.CreateClient();
@@ -76,8 +74,15 @@ namespace Botticelli.Framework.Vk
                 await GetSessionData();
                 
                 // 2. Start polling
-                if (string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_server)) 
-                    throw new BotException($"{nameof(_key)} or {nameof(_server)} are null or empty!");
+                if (string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_server))
+                {
+                    _logger.LogError($"{nameof(_key)} or {nameof(_server)} are null or empty!");
+
+                    return;
+                    //throw new BotException($"{nameof(_key)} or {nameof(_server)} are null or empty!");
+                }
+
+
                 int[] codesForRetry = { 408, 500, 502, 503, 504 };
 
                 var updatePolicy = Policy
@@ -139,6 +144,7 @@ namespace Botticelli.Framework.Vk
                                                   return default;
                                               });
 
+                isStarted = true;
                 await pollingTask;
             }
             catch (Exception ex) when (ex is not BotException)

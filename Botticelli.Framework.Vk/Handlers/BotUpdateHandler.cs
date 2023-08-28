@@ -23,6 +23,7 @@ public class BotUpdateHandler : IBotUpdateHandler
     {
         try
         {
+            
             _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
             var botMessages = update?

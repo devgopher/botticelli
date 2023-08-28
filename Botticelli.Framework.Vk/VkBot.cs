@@ -58,11 +58,11 @@ namespace Botticelli.Framework.Vk
 
                 if (!_eventsAttached)
                 {
-                    _messagesProvider.OnUpdates += delegate(VkUpdatesEventArgs args, CancellationToken token)
+                    _messagesProvider.OnUpdates += (args, token) =>
                     {
                         var updates = args?.Response?.Updates;
 
-                        if (updates == default) return;
+                        if (updates == default || !updates.Any()) return;
 
                         _handler.HandleUpdateAsync(updates, CancellationToken.None);
                     };
