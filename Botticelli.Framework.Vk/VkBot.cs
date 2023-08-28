@@ -125,6 +125,16 @@ namespace Botticelli.Framework.Vk
                         UserId = userId,
                         Body = request.Message.Body
                     }, token);
+
+                    // Attachments a being sent separately
+                    foreach (var attachment in request.Message.Attachments)
+                        await _messagePublisher.SendAsync(new API.Requests.SendMessageRequest
+                                                          {
+                                                              AccessToken = currentContext.BotKey,
+                                                              UserId = userId,
+                                                              Attachment = attachment.Name
+                                                          },
+                                                          token);
                 }
             }
             catch (Exception ex)
