@@ -5,6 +5,7 @@ using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
+using Botticelli.Shared.ValueObjects;
 
 namespace Botticelli.Bus.ZeroMQTests.Mocks;
 
@@ -20,6 +21,7 @@ public class BotMock : IBot<BotMock>
         => StopBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
 
     public async Task SetBotKey(string key, CancellationToken token) => throw new NotImplementedException();
+    public async Task SetBotContext(BotContext context, CancellationToken token) => throw new NotImplementedException();
 
     public async Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token)
         => SendMessageResponse.GetInstance(request.Uid);

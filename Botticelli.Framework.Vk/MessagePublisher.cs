@@ -29,7 +29,6 @@ public class MessagePublisher
     {
         try
         {
-
             vkMessageRequest.AccessToken = _apiKey;
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Get,

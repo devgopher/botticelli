@@ -31,6 +31,8 @@ namespace Botticelli.Framework.Vk
         private int? _lastTs = 0;
         private int? _groupId = 0;
         private string _apiKey;
+        private bool isStarted = false;
+        private readonly object syncObj = new();
         private CancellationTokenSource _tokenSource;
 
         public LongPollMessagesProvider(IOptionsMonitor<VkBotSettings> settings, 
@@ -44,8 +46,8 @@ namespace Botticelli.Framework.Vk
             _groupId = settings.CurrentValue.GroupId;
         }
 
-        public delegate void GotUpdates(VkUpdatesEventArgs  args);
-        public delegate void GotError(VkErrorEventArgs args);
+        public delegate void GotUpdates(VkUpdatesEventArgs  args, CancellationToken token);
+        public delegate void GotError(VkErrorEventArgs args, CancellationToken token);
 
         public event GotUpdates OnUpdates;
         public event GotError OnError;
@@ -54,18 +56,33 @@ namespace Botticelli.Framework.Vk
         public void SetApiKey(string key)
             => _apiKey  = key;
 
-        public async Task Start()
+        public async Task Start(CancellationToken token)
         {
             try
             {
+                lock (syncObj)
+                {
+                    if (isStarted && 
+                        !string.IsNullOrWhiteSpace(_key) &&
+                        !string.IsNullOrWhiteSpace(_server) &&
+                        !string.IsNullOrWhiteSpace(_apiKey)) return;
+                }
+
                 _client = _httpClientFactory.CreateClient();
               
                 // 1. Get Session
                 await GetSessionData();
                 
                 // 2. Start polling
-                if (string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_server)) 
-                    throw new BotException($"{nameof(_key)} or {nameof(_server)} are null or empty!");
+                if (string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_server))
+                {
+                    _logger.LogError($"{nameof(_key)} or {nameof(_server)} are null or empty!");
+
+                    return;
+                    //throw new BotException($"{nameof(_key)} or {nameof(_server)} are null or empty!");
+                }
+
+
                 int[] codesForRetry = { 408, 500, 502, 503, 504 };
 
                 var updatePolicy = Policy
@@ -82,50 +99,52 @@ namespace Botticelli.Framework.Vk
                                          .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(_settings.CurrentValue.PollIntervalMs));
 
                 var pollingTask = repeatPolicy.WrapAsync(updatePolicy)
-                                                 .ExecuteAsync(async () =>
-                                                 {
-                                                     try
-                                                     {
-                                                         var updatesResponse = await $"{_server}".SetQueryParams(new
-                                                         {
-                                                             act = "a_check",
-                                                             key = _key,
-                                                             wait = 90,
-                                                             ts = _lastTs,
-                                                             mode = 2,
-                                                             v = ApiVersion
-                                                         })
-                                                        .GetStringAsync(_tokenSource.Token);
+                                              .ExecuteAsync(async () =>
+                                              {
+                                                  try
+                                                  {
+                                                      var updatesResponse = await $"{_server}".SetQueryParams(new
+                                                                                              {
+                                                                                                  act = "a_check",
+                                                                                                  key = _key,
+                                                                                                  wait = 90,
+                                                                                                  ts = _lastTs,
+                                                                                                  mode = 2,
+                                                                                                  v = ApiVersion
+                                                                                              })
+                                                                                              .GetStringAsync(_tokenSource.Token);
 
-                                                         var updates = JsonSerializer.Deserialize<UpdatesResponse>(updatesResponse);
+                                                      var updates = JsonSerializer.Deserialize<UpdatesResponse>(updatesResponse);
 
-                                                         if (updates?.Updates == default)
-                                                         {
-                                                             var error = JsonSerializer.Deserialize<ErrorResponse>(updatesResponse);
+                                                      
+                                                      if (updates?.Updates == default)
+                                                      {
+                                                          var error = JsonSerializer.Deserialize<ErrorResponse>(updatesResponse);
 
-                                                             if (error != null)
-                                                             {
-                                                                 _lastTs = error.Ts ?? _lastTs;
-                                                                 OnError?.Invoke(new VkErrorEventArgs(error));
-                                                             }
+                                                          if (error == null) return default;
 
-                                                             return default;
-                                                         }
+                                                          _lastTs = error.Ts ?? _lastTs;
+                                                          OnError?.Invoke(new VkErrorEventArgs(error),  token);
 
-                                                         _lastTs = int.Parse(updates?.Ts ?? "0");
+                                                          return default;
+                                                      }
 
-                                                         if (updates.Updates != default)
-                                                             OnUpdates?.Invoke(new VkUpdatesEventArgs(updates));
+                                                      _lastTs = int.Parse(updates?.Ts ?? "0");
 
-                                                         return updates;
-                                                     } catch (Exception ex)
-                                                     {
-                                                         _logger.LogError(ex, $"Long polling error: {ex.Message}");
-                                                     }
+                                                      
+                                                      if (updates.Updates != default) OnUpdates?.Invoke(new VkUpdatesEventArgs(updates), token);
 
-                                                     return default;
-                                                 });
+                                                      return updates;
+                                                  }
+                                                  catch (Exception ex)
+                                                  {
+                                                      _logger.LogError(ex, $"Long polling error: {ex.Message}");
+                                                  }
 
+                                                  return default;
+                                              });
+
+                isStarted = true;
                 await pollingTask;
             }
             catch (Exception ex) when (ex is not BotException)
@@ -161,6 +180,7 @@ namespace Botticelli.Framework.Vk
             _tokenSource.Cancel(false);
             _key = string.Empty;
             _server = string.Empty;
+            isStarted = false;
         }
 
         public void Dispose()

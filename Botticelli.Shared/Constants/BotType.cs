@@ -7,5 +7,6 @@ public enum BotType
     Viber,
     RocketChat,
     Signal,
+    Vk,
     Unknown
 }

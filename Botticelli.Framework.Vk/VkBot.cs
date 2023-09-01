@@ -1,16 +1,19 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Exceptions;
+using Botticelli.Framework.Vk.API.Responses;
+using Botticelli.Framework.Vk.Handlers;
 using Botticelli.Framework.Vk.API.Objects;
 using Botticelli.Framework.Vk.Options;
 using Botticelli.Interfaces;
+using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
+using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Botticelli.Framework.Vk
 {
@@ -19,24 +22,69 @@ namespace Botticelli.Framework.Vk
         private readonly LongPollMessagesProvider _messagesProvider;
         private readonly MessagePublisher _messagePublisher;
         private readonly SecureStorage _secureStorage;
-        private readonly IOptionsMonitor<VkBotSettings> _settings;
+        private readonly IBotUpdateHandler _handler;
+        private bool _eventsAttached = false;
 
         public VkBot(LongPollMessagesProvider messagesProvider,
                      MessagePublisher messagePublisher,
                      SecureStorage secureStorage,
-                     ILogger<VkBot> logger,
-                     IOptionsMonitor<VkBotSettings> settings) : base(logger)
+                     IBotUpdateHandler handler,
+                     ILogger<VkBot> logger) : base(logger)
         {
             _messagesProvider = messagesProvider;
             _messagePublisher = messagePublisher;
             _secureStorage = secureStorage;
-            _settings = settings;
+            _handler = handler;
         }
 
 
         [Obsolete($"Use {nameof(SetBotContext)}")]
         public override async Task SetBotKey(string key, CancellationToken token)
             => _messagesProvider.SetApiKey(key);
+        
+        public override async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
+        {
+            try
+            {
+                Logger.LogInformation($"{nameof(StartBotAsync)}...");
+                var response = await base.StartBotAsync(request, token);
+
+                if (IsStarted)
+                {
+                    Logger.LogInformation($"{nameof(StartBotAsync)}: already started");
+
+                    return response;
+                }
+
+                if (response.Status != AdminCommandStatus.Ok || IsStarted) return response;
+
+                if (!_eventsAttached)
+                {
+                    _messagesProvider.OnUpdates += (args, token) =>
+                    {
+                        var updates = args?.Response?.Updates;
+
+                        if (updates == default || !updates.Any()) return;
+
+                        _handler.HandleUpdateAsync(updates, CancellationToken.None);
+                    };
+                    _eventsAttached = true;
+                }
+
+                await _messagesProvider.Start(token);
+
+                IsStarted = true;
+                Logger.LogInformation($"{nameof(StartBotAsync)}: started");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+            }
+
+            return StartBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
+        }
 
         public override async Task SetBotContext(BotContext context, CancellationToken token)
         {
@@ -49,10 +97,17 @@ namespace Botticelli.Framework.Vk
                 await StopBotAsync(stopRequest, token);
 
                 _secureStorage.SetBotContext(context);
-                _messagesProvider.SetApiKey(context.BotKey);
 
+                await _messagesProvider.Stop();
+                _messagesProvider.SetApiKey(context.BotKey);
+                _messagePublisher.SetApiKey(context.BotKey);
+
+                await _messagesProvider.Start(token);
                 await StartBotAsync(startRequest, token);
             }
+
+            _messagesProvider.SetApiKey(context.BotKey);
+            _messagePublisher.SetApiKey(context.BotKey);
         }
 
         private API.Objects.Attachment CreateVkAttach(IAttachment fk, string type) 
@@ -95,7 +150,7 @@ namespace Botticelli.Framework.Vk
 
                     await _messagePublisher.SendAsync(vkRequest, token);
 
-                    // If we need to send another attahs - let's send then separately!
+                    // If we need to send another attaсhs - let's send then separately!
                     if (attachmentsCount > 1)
                     {
                         foreach (var fk in request.Message.Attachments.Skip(1))
@@ -156,7 +211,7 @@ namespace Botticelli.Framework.Vk
 
         public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token) => throw new NotImplementedException();
 
-        public override BotType Type { get; }
+        public override BotType Type => BotType.Vk;
         public override event MsgReceivedEventHandler MessageReceived;
         public override event MsgRemovedEventHandler MessageRemoved;
         public override event MessengerSpecificEventHandler MessengerSpecificEvent;
