@@ -20,7 +20,7 @@ public class BinaryAttachment : IAttachment
     public string Url { get; }
     public MediaType MediaType { get; }
     public byte[] Data { get; }
-
     public string Uid { get; }
     public string Name { get; }
+    public string OwnerId { get; }
 }

@@ -1,6 +1,7 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Exceptions;
+using Botticelli.Framework.Vk.API.Objects;
 using Botticelli.Framework.Vk.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Admin.Requests;
@@ -54,6 +55,14 @@ namespace Botticelli.Framework.Vk
             }
         }
 
+        private API.Objects.Attachment CreateVkAttach(IAttachment fk, string type) 
+            => new API.Objects.Attachment()
+        {
+            MediaId = fk.Uid,
+            OwnerId = fk.OwnerId,
+            Type = type
+        };
+
         public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
                                                                                        ISendOptionsBuilder<TSendOptions> optionsBuilder, 
                                                                                        CancellationToken token)
@@ -64,13 +73,49 @@ namespace Botticelli.Framework.Vk
 
                 foreach (var userId in request.Message.ChatIds)
                 {
+                    var attachmentsCount = request.Message.Attachments?.Count ?? 0;
+                    API.Objects.Attachment vkAttach = null;
+                    
+                    if (attachmentsCount > 0)
+                    {
+                        var fk = request.Message.Attachments?.FirstOrDefault();
+                        vkAttach = CreateAttach(fk);
+                    }
 
-                    await _messagePublisher.SendAsync(new API.Requests.SendMessageRequest()
+                    var vkRequest = new API.Requests.SendMessageRequest()
                     {
                         AccessToken = currentContext.BotKey,
                         UserId = userId,
-                        Body = request.Message.Body
-                    }, token);
+                        Body = request.Message.Body,
+                        Lat = request.Message.Location?.Latitude,
+                        Long = request.Message.Location?.Longitude,
+                        ReplyTo = request.Message.ReplyToMessageUid,
+                        Attachment = vkAttach
+                    };
+
+                    await _messagePublisher.SendAsync(vkRequest, token);
+
+                    // If we need to send another attahs - let's send then separately!
+                    if (attachmentsCount > 1)
+                    {
+                        foreach (var fk in request.Message.Attachments.Skip(1))
+                        {
+                            vkAttach = CreateAttach(fk);
+
+                            var vkAttachRequest = new API.Requests.SendMessageRequest()
+                            {
+                                AccessToken = currentContext.BotKey,
+                                UserId = userId,
+                                Body = string.Empty,
+                                Lat = request.Message.Location?.Latitude,
+                                Long = request.Message.Location?.Longitude,
+                                ReplyTo = request.Message.ReplyToMessageUid,
+                                Attachment = vkAttach
+                            };
+
+                            await _messagePublisher.SendAsync(vkAttachRequest, token);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -79,6 +124,34 @@ namespace Botticelli.Framework.Vk
             }
 
             return new SendMessageResponse(request.Uid, string.Empty);
+        }
+
+        private Attachment CreateAttach(IAttachment? fk)
+        {
+            switch (fk)
+            {
+                case BinaryAttachment ba:
+                    {
+                        switch (ba.MediaType)
+                        {
+                            case MediaType.Image:
+                            case MediaType.Sticker:
+                                return CreateVkAttach(fk, "photo");
+                            case MediaType.Video:
+                                return CreateVkAttach(fk, "video");
+                            case MediaType.Voice:
+                            case MediaType.Audio:
+                                return CreateVkAttach(fk, "audio");
+                            default: break;
+                        }
+                    }
+                    break;
+                case InvoiceAttachment:
+                    // Not implemented 
+                    break;
+            }
+
+            return default;
         }
 
         public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token) => throw new NotImplementedException();
