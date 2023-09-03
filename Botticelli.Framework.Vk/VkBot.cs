@@ -100,16 +100,22 @@ namespace Botticelli.Framework.Vk
                 _secureStorage.SetBotContext(context);
 
                 await _messagesProvider.Stop();
-                _messagesProvider.SetApiKey(context.BotKey);
-                _messagePublisher.SetApiKey(context.BotKey);
-                _vkUploader.SetApiKey(context.BotKey);
+                SetApiKey(context);
 
                 await _messagesProvider.Start(token);
                 await StartBotAsync(startRequest, token);
             }
+            else
+            {
+                SetApiKey(context);
+            }
+        }
 
+        private void SetApiKey(BotContext context)
+        {
             _messagesProvider.SetApiKey(context.BotKey);
             _messagePublisher.SetApiKey(context.BotKey);
+            _vkUploader.SetApiKey(context.BotKey);
         }
 
         private Attachment CreateVkAttach(IAttachment fk, string type) 
