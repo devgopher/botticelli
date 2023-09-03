@@ -73,6 +73,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(serverConfig)
                 .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
+                .AddSingleton<VkStorageUploader>()
                 .AddSingleton<LongPollMessagesProvider>()
                 .AddSingleton<MessagePublisher>()
                 .AddSingleton(secureStorage)
@@ -83,6 +84,7 @@ public static class ServiceCollectionExtensions
         var bot = new VkBot(sp.GetRequiredService<LongPollMessagesProvider>(),
                             sp.GetRequiredService<MessagePublisher>(),
                             secureStorage,
+                            sp.GetRequiredService<VkStorageUploader>(),
                             sp.GetRequiredService<IBotUpdateHandler>(),
                             sp.GetRequiredService<ILogger<VkBot>>());
 

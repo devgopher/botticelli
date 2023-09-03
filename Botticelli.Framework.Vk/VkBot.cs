@@ -1,10 +1,8 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Exceptions;
-using Botticelli.Framework.Vk.API.Responses;
-using Botticelli.Framework.Vk.Handlers;
 using Botticelli.Framework.Vk.API.Objects;
-using Botticelli.Framework.Vk.Options;
+using Botticelli.Framework.Vk.Handlers;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
@@ -23,11 +21,13 @@ namespace Botticelli.Framework.Vk
         private readonly MessagePublisher _messagePublisher;
         private readonly SecureStorage _secureStorage;
         private readonly IBotUpdateHandler _handler;
+        private readonly VkStorageUploader _vkUploader;
         private bool _eventsAttached = false;
 
         public VkBot(LongPollMessagesProvider messagesProvider,
                      MessagePublisher messagePublisher,
                      SecureStorage secureStorage,
+                     VkStorageUploader vkUploader,
                      IBotUpdateHandler handler,
                      ILogger<VkBot> logger) : base(logger)
         {
@@ -35,6 +35,7 @@ namespace Botticelli.Framework.Vk
             _messagePublisher = messagePublisher;
             _secureStorage = secureStorage;
             _handler = handler;
+            _vkUploader = vkUploader;
         }
 
 
@@ -101,6 +102,7 @@ namespace Botticelli.Framework.Vk
                 await _messagesProvider.Stop();
                 _messagesProvider.SetApiKey(context.BotKey);
                 _messagePublisher.SetApiKey(context.BotKey);
+                _vkUploader.SetApiKey(context.BotKey);
 
                 await _messagesProvider.Start(token);
                 await StartBotAsync(startRequest, token);
@@ -110,8 +112,8 @@ namespace Botticelli.Framework.Vk
             _messagePublisher.SetApiKey(context.BotKey);
         }
 
-        private API.Objects.Attachment CreateVkAttach(IAttachment fk, string type) 
-            => new API.Objects.Attachment()
+        private Attachment CreateVkAttach(IAttachment fk, string type) 
+            => new()
         {
             MediaId = fk.Uid,
             OwnerId = fk.OwnerId,
@@ -137,7 +139,7 @@ namespace Botticelli.Framework.Vk
                         vkAttach = CreateAttach(fk);
                     }
 
-                    var vkRequest = new API.Requests.SendMessageRequest()
+                    var vkRequest = new API.Requests.VkSendMessageRequest()
                     {
                         AccessToken = currentContext.BotKey,
                         UserId = userId,
@@ -157,7 +159,7 @@ namespace Botticelli.Framework.Vk
                         {
                             vkAttach = CreateAttach(fk);
 
-                            var vkAttachRequest = new API.Requests.SendMessageRequest()
+                            var vkAttachRequest = new API.Requests.VkSendMessageRequest()
                             {
                                 AccessToken = currentContext.BotKey,
                                 UserId = userId,

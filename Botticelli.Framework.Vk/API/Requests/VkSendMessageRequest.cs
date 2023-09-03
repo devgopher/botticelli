@@ -3,13 +3,15 @@ using System.Text.Json.Serialization;
 
 namespace Botticelli.Framework.Vk.API.Requests
 {
-    public class SendMessageRequest
+    public class VkSendMessageRequest
     {
-        public SendMessageRequest()
+        public VkSendMessageRequest()
             => RandomId = new Random(DateTime.Now.Millisecond).Next();
 
         [JsonPropertyName("user_id")]
         public string UserId { get; set; }
+        [JsonPropertyName("peer_id")]
+        public string PeerId { get; set; }
         [JsonPropertyName("random_id")]
         public int RandomId { get; }
         [JsonPropertyName("message")]
