@@ -126,7 +126,10 @@ namespace Botticelli.Framework.Vk
                         Body = request.Message.Body
                     }, token);
 
-                    // Attachments a being sent separately
+                    // Attachments are being sent separately
+                    if (request.Message.Attachments == default)
+                        continue;
+
                     foreach (var attachment in request.Message.Attachments)
                         await _messagePublisher.SendAsync(new API.Requests.SendMessageRequest
                                                           {
