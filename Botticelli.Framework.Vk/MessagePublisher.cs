@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Botticelli.Framework.Vk.API.Errors;
+using Botticelli.Framework.Vk.API.Objects;
 using Botticelli.Framework.Vk.API.Requests;
 using Botticelli.Framework.Vk.API.Responses;
 using Botticelli.Framework.Vk.API.Utils;
@@ -13,6 +15,7 @@ public class MessagePublisher
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<MessagePublisher> _logger;
     private string _apiKey;
+    private string ApiVersion => "5.81";
 
     public MessagePublisher(IHttpClientFactory httpClientFactory, ILogger<MessagePublisher> logger)
     {
@@ -20,12 +23,11 @@ public class MessagePublisher
         _logger = logger;
     }
 
-
     public void SetApiKey(string key)
         => _apiKey = key;
 
 
-    public async Task SendAsync(SendMessageRequest vkMessageRequest, CancellationToken token)
+    public async Task SendAsync(VkSendMessageRequest vkMessageRequest, CancellationToken token)
     {
         try
         {

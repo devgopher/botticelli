@@ -79,7 +79,6 @@ namespace Botticelli.Framework.Vk
                     _logger.LogError($"{nameof(_key)} or {nameof(_server)} are null or empty!");
 
                     return;
-                    //throw new BotException($"{nameof(_key)} or {nameof(_server)} are null or empty!");
                 }
 
 
@@ -131,7 +130,6 @@ namespace Botticelli.Framework.Vk
 
                                                       _lastTs = int.Parse(updates?.Ts ?? "0");
 
-                                                      
                                                       if (updates.Updates != default) OnUpdates?.Invoke(new VkUpdatesEventArgs(updates), token);
 
                                                       return updates;

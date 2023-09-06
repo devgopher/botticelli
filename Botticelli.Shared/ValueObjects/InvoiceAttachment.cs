@@ -48,6 +48,18 @@ public class InvoiceAttachment : IAttachment
     /// </summary>
     public decimal TotalAmount { get; set; }
 
+    /// <summary>
+    ///     Id of an attachment
+    /// </summary>
     public string Uid { get; }
+
+    /// <summary>
+    ///     Attachment name
+    /// </summary>
     public string Name { get; }
+
+    /// <summary>
+    ///     Attachment owner id
+    /// </summary>
+    public string OwnerId { get; }
 }
