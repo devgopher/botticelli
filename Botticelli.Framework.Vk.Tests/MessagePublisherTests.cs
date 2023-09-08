@@ -1,30 +1,30 @@
 ﻿using Botticelli.Framework.Vk.API.Requests;
 using NUnit.Framework;
 
-namespace Botticelli.Framework.Vk.Tests
+namespace Botticelli.Framework.Vk.Tests;
+
+[TestFixture]
+public class MessagePublisherTests
 {
-    [TestFixture()]
-    public class MessagePublisherTests
+    [SetUp]
+    public void Setup()
     {
-        private MessagePublisher _publisher;
+        _publisher = new MessagePublisher(new TestHttpClientFactory(),
+                                          Utils.CreateConsoleLogger<MessagePublisher>());
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            _publisher = new MessagePublisher(new TestHttpClientFactory(),
-                                              Utils.CreateConsoleLogger<MessagePublisher>());
-        }
+    private MessagePublisher _publisher;
 
-        [Test()]
-        public async Task SendAsyncTest()
-        {
-            _publisher.SetApiKey(EnvironmentDataProvider.GetApiKey());
-            Assert.DoesNotThrowAsync( async () => await _publisher.SendAsync(new VkSendMessageRequest()
-            {
-                AccessToken = EnvironmentDataProvider.GetApiKey(),
-                Body = $"test msg {DateTime.Now.ToString()}",
-                UserId = EnvironmentDataProvider.GetTargetUserId().ToString()
-            }, CancellationToken.None));
-        }
+    [Test]
+    public async Task SendAsyncTest()
+    {
+        _publisher.SetApiKey(EnvironmentDataProvider.GetApiKey());
+        Assert.DoesNotThrowAsync(async () => await _publisher.SendAsync(new VkSendMessageRequest
+                                                                        {
+                                                                            AccessToken = EnvironmentDataProvider.GetApiKey(),
+                                                                            Body = $"test msg {DateTime.Now.ToString()}",
+                                                                            UserId = EnvironmentDataProvider.GetTargetUserId().ToString()
+                                                                        },
+                                                                        CancellationToken.None));
     }
 }

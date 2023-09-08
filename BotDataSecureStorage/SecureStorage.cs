@@ -49,11 +49,11 @@ public class SecureStorage
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 
         db.GetCollection<BotContext>()
-          .Upsert(context.BotId,context);
+          .Upsert(context.BotId, context);
     }
 
     /// <summary>
-    /// Migration to a BotContext from an old-fashioned BotKey
+    ///     Migration to a BotContext from an old-fashioned BotKey
     /// </summary>
     /// <param name="botId"></param>
     public void MigrateToBotContext(string botId)
@@ -69,11 +69,11 @@ public class SecureStorage
             if (db.GetCollection<BotContext>().FindById(botId)?.BotKey != default) return;
         }
 
-        SetBotContext(new BotContext()
+        SetBotContext(new BotContext
         {
             BotId = botId,
-            BotKey =  botKey.Key,
-            Items = new()
+            BotKey = botKey.Key,
+            Items = new Dictionary<string, string>()
         });
     }
 
@@ -87,7 +87,7 @@ public class SecureStorage
     }
 
     public T GetAnyData<T>(string id)
-            where T : IDbEntity 
+            where T : IDbEntity
         => GetAnyData<T>().FirstOrDefault(x => x.Id == id);
 
     public IEnumerable<T> GetAnyData<T>()

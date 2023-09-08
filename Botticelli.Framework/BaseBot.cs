@@ -79,8 +79,10 @@ public abstract class BaseBot<T> : IBot<T>
 
         return response;
     }
+
     [Obsolete($"Use {nameof(SetBotContext)}")]
     public abstract Task SetBotKey(string key, CancellationToken token);
+
     public abstract Task SetBotContext(BotContext context, CancellationToken token);
 
     /// <summary>

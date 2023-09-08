@@ -83,12 +83,6 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         Thread.Sleep(3000);
     }
 
-    public void Dispose()
-    {
-        _requestSocket.Dispose();
-        _responseSocket.Dispose();
-    }
-
     /// <summary>
     ///     Subscribes with a new handler
     /// </summary>
@@ -98,6 +92,12 @@ public class ZeroMqAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 
         var handler = _sp.GetRequiredService<THandler>();
         _handlers.Add(handler);
+    }
+
+    public void Dispose()
+    {
+        _requestSocket.Dispose();
+        _responseSocket.Dispose();
     }
 
     private async Task ProcessSubscriptions(CancellationToken token)

@@ -13,10 +13,10 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 {
     private const string SimpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
     private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
+    private readonly string _commandName;
     protected readonly ILogger Logger;
     protected readonly ICommandValidator<TCommand> Validator;
     protected IList<IBot> Bots = new List<IBot>(10);
-    private readonly string _commandName;
     protected IServiceProvider Sp;
 
     protected CommandProcessor(ILogger logger,

@@ -39,8 +39,8 @@ public class LongPollMessagesProviderTests
     public async Task StartTest()
     {
         await _provider.Stop();
-        _provider.SetApiKey(EnvironmentDataProvider.GetApiKey()); 
-        
+        _provider.SetApiKey(EnvironmentDataProvider.GetApiKey());
+
         var task = Task.Run(() => _provider.Start(CancellationToken.None));
 
         Thread.Sleep(5000);

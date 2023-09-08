@@ -12,6 +12,7 @@ public class Attachment
 
     [JsonPropertyName("media_id")]
     public string MediaId { get; set; }
+
     [JsonPropertyName("access_key")]
     public string AccessKey { get; set; }
 }

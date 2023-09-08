@@ -38,20 +38,20 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
         var response = await _bus.SendAndGetResponse(new SendMessageRequest(message.Uid)
-                                              {
-                                                  Message = new AiMessage(message.Uid)
-                                                  {
-                                                      ChatIds = message.ChatIds,
-                                                      Subject = string.Empty,
-                                                      Body = message.Body
-                                                                    .Replace("/ai", string.Empty)
-                                                                    .Trim(),
-                                                      Attachments = null,
-                                                      From = message.From,
-                                                      ForwardedFrom = message.ForwardedFrom
-                                                  }
-                                              },
-                                              token);
+                                                     {
+                                                         Message = new AiMessage(message.Uid)
+                                                         {
+                                                             ChatIds = message.ChatIds,
+                                                             Subject = string.Empty,
+                                                             Body = message.Body
+                                                                           .Replace("/ai", string.Empty)
+                                                                           .Trim(),
+                                                             Attachments = null,
+                                                             From = message.From,
+                                                             ForwardedFrom = message.ForwardedFrom
+                                                         }
+                                                     },
+                                                     token);
 
         if (response != null)
             foreach (var bot in Bots)

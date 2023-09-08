@@ -3,8 +3,6 @@ using Botticelli.Framework.MessageProcessors;
 using Botticelli.Framework.Vk.API.Responses;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
-using Message = Botticelli.Shared.ValueObjects.Message;
-using User = Botticelli.Shared.ValueObjects.User;
 
 namespace Botticelli.Framework.Vk.Handlers;
 
@@ -23,7 +21,6 @@ public class BotUpdateHandler : IBotUpdateHandler
     {
         try
         {
-            
             _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
             var botMessages = update?
@@ -32,8 +29,7 @@ public class BotUpdateHandler : IBotUpdateHandler
 
             foreach (var botMessage in botMessages)
             {
-                if (botMessage == default)
-                    continue;
+                if (botMessage == default) continue;
 
                 var botticelliMessage = new Message(botMessage.EventId)
                 {
@@ -53,7 +49,7 @@ public class BotUpdateHandler : IBotUpdateHandler
                     ForwardedFrom = null,
                     Location = null
                 };
-                
+
                 await Process(botticelliMessage, cancellationToken);
             }
 

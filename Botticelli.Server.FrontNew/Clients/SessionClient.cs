@@ -22,7 +22,7 @@ public class SessionClient
 
     public async Task<Error> RegisterUser(string email, string password)
     {
-        var request = new UserRegisterPost()
+        var request = new UserRegisterPost
         {
             Email = email,
             UserName = email,
@@ -34,20 +34,17 @@ public class SessionClient
                                                          request);
 
         if (!response.IsSuccessStatusCode)
-        {
             return new Error
             {
                 Code = 1,
                 UserMessage = $"Error registering user: {response.ReasonPhrase}!"
             };
-        }
 
         return new Error
         {
-            Code = 0, 
+            Code = 0,
             UserMessage = string.Empty
         };
-
     }
 
     public async Task<bool> HasUsersAsync()
@@ -58,7 +55,7 @@ public class SessionClient
 
         return response;
     }
-    
+
     public async Task<(Session session, Error error)> CreateSession(string login, string password)
     {
         var request = new UserLoginPost
@@ -78,7 +75,7 @@ public class SessionClient
                                                   new Error
                                                   {
                                                       Code = 1,
-                                                      UserMessage = $"Login error!"
+                                                      UserMessage = "Login error!"
                                                   });
 
         _session = new Session

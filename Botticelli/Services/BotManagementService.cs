@@ -55,7 +55,7 @@ public class BotManagementService : IBotManagementService
             {
                 BotId = botId,
                 BotKey = botKey,
-                Items = additionalParams ?? new()
+                Items = additionalParams ?? new Dictionary<string, string>()
             };
 
             _secureStorage.MigrateToBotContext(botId);

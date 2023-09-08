@@ -1,5 +1,6 @@
 using BotDataSecureStorage.Settings;
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
@@ -9,7 +10,6 @@ using NLog.Extensions.Logging;
 using TelegramMessagingSample;
 using TelegramMessagingSample.Commands;
 using TelegramMessagingSample.Settings;
-using Botticelli.Framework.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

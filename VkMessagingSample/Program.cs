@@ -20,17 +20,17 @@ var settings = builder.Configuration
 builder.Services
        .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
        .AddVkBot(builder.Configuration,
-                       new BotOptionsBuilder<VkBotSettings>()
-                               .Set(s => s.SecureStorageSettings = new SecureStorageSettings
-                               {
-                                   ConnectionString = settings.SecureStorageConnectionString
-                               })
-                               .Set(s =>
-                               {
-                                   s.Name = settings.BotName;
-                                   s.PollIntervalMs = 100;
-                                   s.GroupId = 221973506;
-                               }))
+                 new BotOptionsBuilder<VkBotSettings>()
+                         .Set(s => s.SecureStorageSettings = new SecureStorageSettings
+                         {
+                             ConnectionString = settings.SecureStorageConnectionString
+                         })
+                         .Set(s =>
+                         {
+                             s.Name = settings.BotName;
+                             s.PollIntervalMs = 100;
+                             s.GroupId = 221973506;
+                         }))
        .AddLogging(cfg => cfg.AddNLog())
        .AddHangfireScheduler<VkBot>(builder.Configuration)
        .AddHostedService<TestBotHostedService>()

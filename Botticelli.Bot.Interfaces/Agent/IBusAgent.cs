@@ -11,7 +11,7 @@ namespace Botticelli.Bot.Interfaces.Agent;
 public interface IBusAgent : IHostedService
 {
     /// <summary>
-    /// Subscribes to a message queue
+    ///     Subscribes to a message queue
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
@@ -32,4 +32,4 @@ public interface IBusAgent : IHostedService
 public interface IBotticelliBusAgent<in THandler> : IBusAgent
         where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
-}  
+}

@@ -18,7 +18,7 @@
                 <RadzenLabel Text="Bot id:" Component="BotId" style="width: 100%;"/>
             </div>
             <div class="col-md-9">
-                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotId" Name="BotId" />
+                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotId" Name="BotId"/>
                 <RadzenRequiredValidator Component="BotId" Text="Bot id shouldn't be empty!" style="position: absolute;"/>
             </div>
         </div>
@@ -27,8 +27,8 @@
                 <RadzenLabel Text="Bot key:" Component="BotKey" style="width: 100%;"/>
             </div>
             <div class="col-md-9">
-                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotKey" Name="BotKey" />
-                <RadzenRequiredValidator Component="BotKey" Text="Bot key shouldn't be empty!" style="position: absolute;" />
+                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotKey" Name="BotKey"/>
+                <RadzenRequiredValidator Component="BotKey" Text="Bot key shouldn't be empty!" style="position: absolute;"/>
             </div>
         </div>
         <div style="margin-bottom: 1rem;" class="row">
@@ -37,12 +37,12 @@
                 </RadzenLabel>
             </div>
             <div class="col-md-9">
-                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotName" Name="BotName" />
-                <RadzenRequiredValidator Component="BotName" Text="Bot name shouldn't be empty!" style="position: absolute;" />
+                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotName" Name="BotName"/>
+                <RadzenRequiredValidator Component="BotName" Text="Bot name shouldn't be empty!" style="position: absolute;"/>
             </div>
         </div>
         <div style="margin-bottom: 1rem;" class="row">
-            <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Save"/>
         </div>
     </ChildContent>
 </RadzenTemplateForm>
@@ -70,8 +70,7 @@
 
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
 
-        if (string.IsNullOrWhiteSpace(sessionToken))
-            return;
+        if (string.IsNullOrWhiteSpace(sessionToken)) return;
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
         var response = await Http.PostAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/AddNewBot"),

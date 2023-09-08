@@ -4,32 +4,31 @@ using System.Text.Json.Serialization;
 namespace Botticelli.Framework.Vk.API.Responses;
 
 /// <summary>
-/// Particular events
+///     Particular events
 /// </summary>
 public class UpdateEvent
 {
     /// <summary>
-    /// Event type
+    ///     Event type
     /// </summary>
     [JsonPropertyName("type")]
     public string Type { get; set; }
 
     /// <summary>
-    /// Id of an event
+    ///     Id of an event
     /// </summary>
     [JsonPropertyName("event_id")]
     public string EventId { get; set; }
 
     /// <summary>
-    /// Id of a group
+    ///     Id of a group
     /// </summary>
     [JsonPropertyName("group_id")]
     public long GroupId { get; set; }
 
     /// <summary>
-    /// Inner object
+    ///     Inner object
     /// </summary>
     [JsonPropertyName("object")]
     public Dictionary<string, JsonElement> Object { get; set; }
-
 }

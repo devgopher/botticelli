@@ -17,8 +17,9 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
 
     public PassAgent(THandler handler) => _handler = handler;
 
-    public async Task Subscribe(CancellationToken token) 
-    {}
+    public async Task Subscribe(CancellationToken token)
+    {
+    }
 
     /// <summary>
     ///     Sends a response

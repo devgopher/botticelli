@@ -7,7 +7,8 @@
 
 @code
 {
-    private bool _hasAnyUsers = false;
+    private bool _hasAnyUsers;
+
     private readonly Error _error = new()
     {
         UserMessage = string.Empty
@@ -24,8 +25,7 @@
     {
         _hasAnyUsers = await SessionClient.HasUsersAsync();
 
-        if (!_hasAnyUsers)
-            UriHelper.NavigateTo("/register", true);
+        if (!_hasAnyUsers) UriHelper.NavigateTo("/register", true);
     }
 }
 

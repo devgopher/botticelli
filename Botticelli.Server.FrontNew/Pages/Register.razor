@@ -51,6 +51,7 @@
     public async Task OnValidSubmit()
     {
         var result = await SessionClient.RegisterUser(_model.Email, _model.Password);
-        if (result.Code == 0) UriHelper.NavigateTo("/", true);
+        if (result.Code == 0)
+            UriHelper.NavigateTo("/", true);
     }
 }

@@ -36,11 +36,11 @@ public static class ServiceCollectionExtensions
 
         if (string.IsNullOrWhiteSpace(botContext?.BotId))
         {
-            botContext = new BotContext()
+            botContext = new BotContext
             {
                 BotId = botId,
                 BotKey = string.Empty,
-                Items = new()
+                Items = new Dictionary<string, string>()
             };
 
             secureStorage.SetBotContext(botContext);

@@ -1,12 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Botticelli.Framework.Vk.API.Responses
+namespace Botticelli.Framework.Vk.API.Responses;
+
+public class VkSendPhotoResponse
 {
-    public class VkSendPhotoResponse
-    {
-        [JsonPropertyName("response")]
-        public List<Response> Response { get; set; }
-    }
-
-
+    [JsonPropertyName("response")]
+    public List<Response> Response { get; set; }
 }

@@ -35,7 +35,7 @@ public class ZeroMqAgentTests
     {
         var response = SendMessageResponse.GetInstance(Guid.NewGuid().ToString(), "test response");
 
-        Assert.DoesNotThrowAsync(async () => await _agent.SendResponseAsync(response, CancellationToken.None, 60000));
+        Assert.DoesNotThrowAsync(async () => await _agent.SendResponseAsync(response, CancellationToken.None));
     }
 
     [Test]

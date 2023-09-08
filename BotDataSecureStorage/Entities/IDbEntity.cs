@@ -1,7 +1,6 @@
-﻿namespace BotDataSecureStorage.Entities
+﻿namespace BotDataSecureStorage.Entities;
+
+public interface IDbEntity
 {
-    public interface IDbEntity
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

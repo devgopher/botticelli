@@ -21,9 +21,9 @@ public class ChatGptProvider : GenericAiProvider
                            IHttpClientFactory factory,
                            ILogger<ChatGptProvider> logger,
                            IBusClient bus) : base(gptSettings,
-                                                            factory,
-                                                            logger,
-                                                            bus)
+                                                  factory,
+                                                  logger,
+                                                  bus)
         => _gptSettings = gptSettings;
 
     public override string AiName => "chatgpt";
@@ -35,19 +35,19 @@ public class ChatGptProvider : GenericAiProvider
             Logger.LogError($"{nameof(SendAsync)}() body is null or empty!");
 
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                    {
-                                        Message = new Shared.ValueObjects.Message(message.Uid)
-                                        {
-                                            ChatIds = message.ChatIds,
-                                            Subject = message.Subject,
-                                            Body = "Body is null or empty!",
-                                            Attachments = null,
-                                            From = null,
-                                            ForwardedFrom = null,
-                                            ReplyToMessageUid = message.ReplyToMessageUid
-                                        }
-                                    },
-                                    token);
+                                   {
+                                       Message = new Shared.ValueObjects.Message(message.Uid)
+                                       {
+                                           ChatIds = message.ChatIds,
+                                           Subject = message.Subject,
+                                           Body = "Body is null or empty!",
+                                           Attachments = null,
+                                           From = null,
+                                           ForwardedFrom = null,
+                                           ReplyToMessageUid = message.ReplyToMessageUid
+                                       }
+                                   },
+                                   token);
 
             return;
         }
@@ -92,38 +92,38 @@ public class ChatGptProvider : GenericAiProvider
                                         .Select(c => c.Message.Content));
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                        {
-                                            Message = new Shared.ValueObjects.Message(message.Uid)
-                                            {
-                                                ChatIds = message.ChatIds,
-                                                Subject = message.Subject,
-                                                Body = text.ToString(),
-                                                Attachments = null,
-                                                From = null,
-                                                ForwardedFrom = null,
-                                                ReplyToMessageUid = message.ReplyToMessageUid
-                                            }
-                                        },
-                                        token);
+                                       {
+                                           Message = new Shared.ValueObjects.Message(message.Uid)
+                                           {
+                                               ChatIds = message.ChatIds,
+                                               Subject = message.Subject,
+                                               Body = text.ToString(),
+                                               Attachments = null,
+                                               From = null,
+                                               ForwardedFrom = null,
+                                               ReplyToMessageUid = message.ReplyToMessageUid
+                                           }
+                                       },
+                                       token);
             }
             else
             {
                 var reason = await response.Content.ReadAsStringAsync();
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                        {
-                                            Message = new Shared.ValueObjects.Message(message.Uid)
-                                            {
-                                                ChatIds = message.ChatIds,
-                                                Subject = message.Subject,
-                                                Body = "Error getting a response from ChatGpt!",
-                                                Attachments = null,
-                                                From = null,
-                                                ForwardedFrom = null,
-                                                ReplyToMessageUid = message.ReplyToMessageUid
-                                            }
-                                        },
-                                        token);
+                                       {
+                                           Message = new Shared.ValueObjects.Message(message.Uid)
+                                           {
+                                               ChatIds = message.ChatIds,
+                                               Subject = message.Subject,
+                                               Body = "Error getting a response from ChatGpt!",
+                                               Attachments = null,
+                                               From = null,
+                                               ForwardedFrom = null,
+                                               ReplyToMessageUid = message.ReplyToMessageUid
+                                           }
+                                       },
+                                       token);
             }
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) finished");
@@ -132,18 +132,18 @@ public class ChatGptProvider : GenericAiProvider
         {
             Logger.LogError(ex, ex.Message);
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                    {
-                                        Message = new Shared.ValueObjects.Message(message.Uid)
-                                        {
-                                            ChatIds = message.ChatIds,
-                                            Subject = message.Subject,
-                                            Body = "Error getting a response from ChatGpt!",
-                                            Attachments = null,
-                                            From = null,
-                                            ForwardedFrom = null
-                                        }
-                                    },
-                                    token);
+                                   {
+                                       Message = new Shared.ValueObjects.Message(message.Uid)
+                                       {
+                                           ChatIds = message.ChatIds,
+                                           Subject = message.Subject,
+                                           Body = "Error getting a response from ChatGpt!",
+                                           Attachments = null,
+                                           From = null,
+                                           ForwardedFrom = null
+                                       }
+                                   },
+                                   token);
         }
     }
 }

@@ -44,7 +44,7 @@ public class ZeroMqClientTests
         response.Message = new Message(Guid.NewGuid().ToString())
         {
             Uid = uid,
-            ChatIds = new() {"ASDFGH"},
+            ChatIds = new List<string> {"ASDFGH"},
             Body = "1234567890"
         };
 

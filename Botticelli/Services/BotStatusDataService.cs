@@ -36,6 +36,7 @@ public class BotStatusDataService : IBotStatusDataService
     public async Task<BotContext> GetRequiredBotContext(string botId)
     {
         _secureStorage.MigrateToBotContext(botId);
+
         return _secureStorage.GetBotContext(botId);
     }
 }

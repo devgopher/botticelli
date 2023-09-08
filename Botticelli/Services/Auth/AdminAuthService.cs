@@ -44,7 +44,7 @@ public class AdminAuthService
     /// <param name="userRegister"></param>
     /// <returns></returns>
     /// <exception cref="DataException"></exception>
-    public async Task<bool> HasUsersAsync() 
+    public async Task<bool> HasUsersAsync()
         => await _context
                  .ApplicationUsers
                  .AnyAsync();

@@ -1,3 +1,4 @@
+using System.Text;
 using BotDataSecureStorage;
 using BotDataSecureStorage.Settings;
 using Botticelli.Server;
@@ -11,8 +12,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
-
 
 var builder = WebApplication.CreateBuilder(args);
 

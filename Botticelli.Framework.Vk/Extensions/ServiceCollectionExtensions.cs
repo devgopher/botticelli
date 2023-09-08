@@ -4,9 +4,7 @@ using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
-using Botticelli.Framework.Vk.API.Responses;
 using Botticelli.Framework.Vk.Handlers;
-using Botticelli.Framework.Vk.HostedService;
 using Botticelli.Framework.Vk.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
@@ -28,8 +26,8 @@ public static class ServiceCollectionExtensions
     /// <param name="optionsBuilder"></param>
     /// <returns></returns>
     public static IServiceCollection AddVkBot(this IServiceCollection services,
-                                                    IConfiguration config,
-                                                    BotOptionsBuilder<VkBotSettings> optionsBuilder)
+                                              IConfiguration config,
+                                              BotOptionsBuilder<VkBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
         var secureStorage = new SecureStorage(settings.SecureStorageSettings);
@@ -38,11 +36,11 @@ public static class ServiceCollectionExtensions
 
         if (string.IsNullOrWhiteSpace(botContext?.BotId))
         {
-            botContext = new BotContext()
+            botContext = new BotContext
             {
                 BotId = botId,
                 BotKey = string.Empty,
-                Items = new()
+                Items = new Dictionary<string, string>()
             };
 
             secureStorage.SetBotContext(botContext);
@@ -56,8 +54,8 @@ public static class ServiceCollectionExtensions
         config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
 
         var retryPolicy = HttpPolicyExtensions
-                     .HandleTransientHttpError()
-                     .WaitAndRetryForeverAsync(n => TimeSpan.FromMicroseconds(settings.PollIntervalMs));
+                          .HandleTransientHttpError()
+                          .WaitAndRetryForeverAsync(n => TimeSpan.FromMicroseconds(settings.PollIntervalMs));
 
         var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(120);
 

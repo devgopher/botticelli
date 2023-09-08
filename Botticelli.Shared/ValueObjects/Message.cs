@@ -4,7 +4,7 @@
 ///     Received/sent message
 /// </summary>
 [Serializable]
-public class Message 
+public class Message
 {
     public Message() => Uid = Guid.NewGuid().ToString();
 

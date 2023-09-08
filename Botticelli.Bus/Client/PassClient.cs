@@ -11,7 +11,7 @@ public class PassClient : IBusClient
     private static TimeSpan Timeout => TimeSpan.FromMinutes(5);
 
     public async Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request,
-                                                       CancellationToken token)
+                                                              CancellationToken token)
     {
         NoneBus.SendMessageRequests.Enqueue(request);
 

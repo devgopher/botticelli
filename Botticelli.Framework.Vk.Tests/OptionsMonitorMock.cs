@@ -4,14 +4,12 @@ namespace Botticelli.Framework.Vk.Tests;
 
 internal class OptionsMonitorMock<T> : IOptionsMonitor<T>
 {
-    private T _value;
-
-    public OptionsMonitorMock(T value) => _value = value;
+    public OptionsMonitorMock(T value) => CurrentValue = value;
 
 
-    public T Get(string? name) => _value;
+    public T Get(string? name) => CurrentValue;
 
     public IDisposable? OnChange(Action<T, string?> listener) => default;
 
-    public T CurrentValue => _value;
+    public T CurrentValue { get; }
 }

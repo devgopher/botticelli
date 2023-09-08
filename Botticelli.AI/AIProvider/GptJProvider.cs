@@ -21,9 +21,9 @@ public class GptJProvider : GenericAiProvider
                         IHttpClientFactory factory,
                         ILogger<GptJProvider> logger,
                         IBusClient bus) : base(gptSettings,
-                                                         factory,
-                                                         logger,
-                                                         bus)
+                                               factory,
+                                               logger,
+                                               bus)
         => _gptSettings = gptSettings;
 
     public override string AiName => "gptj";
@@ -62,36 +62,36 @@ public class GptJProvider : GenericAiProvider
                 var outMessage = await response.Content.ReadFromJsonAsync<GptJOutputMessage>();
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                        {
-                                            Message = new Shared.ValueObjects.Message(message.Uid)
-                                            {
-                                                ChatIds = message.ChatIds,
-                                                Subject = message.Subject,
-                                                Body = outMessage?.Completion,
-                                                Attachments = null,
-                                                From = null,
-                                                ForwardedFrom = null,
-                                                ReplyToMessageUid = message.ReplyToMessageUid
-                                            }
-                                        },
-                                        token);
+                                       {
+                                           Message = new Shared.ValueObjects.Message(message.Uid)
+                                           {
+                                               ChatIds = message.ChatIds,
+                                               Subject = message.Subject,
+                                               Body = outMessage?.Completion,
+                                               Attachments = null,
+                                               From = null,
+                                               ForwardedFrom = null,
+                                               ReplyToMessageUid = message.ReplyToMessageUid
+                                           }
+                                       },
+                                       token);
             }
             else
             {
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                        {
-                                            Message = new Shared.ValueObjects.Message(message.Uid)
-                                            {
-                                                ChatIds = message.ChatIds,
-                                                Subject = message.Subject,
-                                                Body = "Error getting a response from Gpt-J!",
-                                                Attachments = null,
-                                                From = null,
-                                                ForwardedFrom = null,
-                                                ReplyToMessageUid = message.ReplyToMessageUid
-                                            }
-                                        },
-                                        token);
+                                       {
+                                           Message = new Shared.ValueObjects.Message(message.Uid)
+                                           {
+                                               ChatIds = message.ChatIds,
+                                               Subject = message.Subject,
+                                               Body = "Error getting a response from Gpt-J!",
+                                               Attachments = null,
+                                               From = null,
+                                               ForwardedFrom = null,
+                                               ReplyToMessageUid = message.ReplyToMessageUid
+                                           }
+                                       },
+                                       token);
             }
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) finished");
@@ -100,18 +100,18 @@ public class GptJProvider : GenericAiProvider
         {
             Logger.LogError(ex, ex.Message);
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                    {
-                                        Message = new Shared.ValueObjects.Message(message.Uid)
-                                        {
-                                            ChatIds = message.ChatIds,
-                                            Subject = message.Subject,
-                                            Body = "Error getting a response from Gpt-J!",
-                                            Attachments = null,
-                                            From = null,
-                                            ForwardedFrom = null
-                                        }
-                                    },
-                                    token);
+                                   {
+                                       Message = new Shared.ValueObjects.Message(message.Uid)
+                                       {
+                                           ChatIds = message.ChatIds,
+                                           Subject = message.Subject,
+                                           Body = "Error getting a response from Gpt-J!",
+                                           Attachments = null,
+                                           From = null,
+                                           ForwardedFrom = null
+                                       }
+                                   },
+                                   token);
         }
     }
 }

@@ -1,8 +1,5 @@
 ﻿using Botticelli.Framework.Telegram;
 using Botticelli.Interfaces;
-using Botticelli.Scheduler;
-using Botticelli.Shared.Constants;
-using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Options;
 using TelegramMessagingSample.Settings;
 

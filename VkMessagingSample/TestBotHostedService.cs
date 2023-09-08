@@ -30,7 +30,7 @@ public class TestBotHostedService : IHostedService
                                     Message = new Message(Guid.NewGuid().ToString())
                                     {
                                         Body = "dewwedewde",
-                                        ChatIds = new List<string>()
+                                        ChatIds = new List<string>
                                         {
                                             "221973506"
                                         }
