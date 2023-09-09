@@ -124,13 +124,11 @@ public class VkBot : BaseBot<VkBot>
         _vkUploader.SetApiKey(context.BotKey);
     }
 
-    private Attachment CreateVkAttach(VkSendPhotoResponse fk, string type)
-        => new()
-        {
-            MediaId = fk.Response?.FirstOrDefault()?.Id.ToString(),
-            OwnerId = fk.Response?.FirstOrDefault()?.OwnerId.ToString(),
-            Type = type
-        };
+    private string CreateVkAttach(VkSendPhotoResponse fk, BotContext currentContext, string type)
+        => $"{type}" +
+           $"{fk.Response?.FirstOrDefault()?.OwnerId.ToString()}" +
+           $"_{fk.Response?.FirstOrDefault()?.Id.ToString()}";
+
 
     public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
                                                                                    ISendOptionsBuilder<TSendOptions> optionsBuilder,
@@ -202,9 +200,9 @@ public class VkBot : BaseBot<VkBot>
                     {
                         case {MediaType: MediaType.Image}:
                         case {MediaType: MediaType.Sticker}:
-                            var sendResponse = await _vkUploader.SendPhotoAsync(vkRequest, ba.Data, token);
+                            var sendResponse = await _vkUploader.SendPhotoAsync(vkRequest, ba.Name, ba.Data, token);
 
-                            vkRequest.Attachment = CreateVkAttach(sendResponse, "photo");
+                            vkRequest.Attachment = CreateVkAttach(sendResponse, currentContext, "photo");
                             break;
                         case {MediaType: MediaType.Video}:
                             //var sendResponse = await _vkUploader.SendVideoAsync(vkRequest, ba.Data, token);

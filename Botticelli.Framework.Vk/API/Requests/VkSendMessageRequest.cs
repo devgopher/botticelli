@@ -33,7 +33,7 @@ public class VkSendMessageRequest
     public string AccessToken { get; set; }
 
     [JsonPropertyName("attachment")]
-    public Attachment Attachment { get; set; }
+    public string Attachment { get; set; }
 
     [JsonPropertyName("v")]
     public string ApiVersion => "5.131";
