@@ -2,8 +2,7 @@
 
 namespace Botticelli.Framework.Vk.API.Responses;
 
-// Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
-public class VkSendPhotoResponse
+public class VkSendPhotoPartialResponse
 {
     [JsonPropertyName("album_id")]
     public int AlbumId { get; set; }

@@ -66,6 +66,10 @@ public static class ServiceCollectionExtensions
                 .AddPolicyHandler(retryPolicy)
                 .AddPolicyHandler(timeoutPolicy);
 
+        services.AddHttpClient<VkStorageUploader>()
+                .AddPolicyHandler(retryPolicy)
+                .AddPolicyHandler(timeoutPolicy);
+
         services.AddHttpClient<MessagePublisher>()
                 .AddPolicyHandler(retryPolicy)
                 .AddPolicyHandler(timeoutPolicy);

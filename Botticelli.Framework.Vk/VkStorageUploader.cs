@@ -15,6 +15,12 @@ public class VkStorageUploader
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<MessagePublisher> _logger;
     private string _apiKey;
+
+    public VkStorageUploader(IHttpClientFactory httpClientFactory)
+    {
+        _httpClientFactory = httpClientFactory;
+    }
+
     private string ApiVersion => "5.81";
 
     public void SetApiKey(string key) => _apiKey = key;
@@ -27,21 +33,30 @@ public class VkStorageUploader
     /// <returns></returns>
     private async Task<GetUploadAddress?> GetPhotoUploadAddress(VkSendMessageRequest vkMessageRequest, CancellationToken token)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
-        var request = new HttpRequestMessage(HttpMethod.Get,
-                                             ApiUtils.GetMethodUri("https://api.vk.com",
-                                                                   "photos.getMessagesUploadServer",
-                                                                   new
-                                                                   {
-                                                                       access_token = _apiKey,
-                                                                       v = ApiVersion,
-                                                                       peer_id = vkMessageRequest.PeerId
-                                                                   }));
+        try
+        {
+            using var httpClient = _httpClientFactory.CreateClient();
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                                                 ApiUtils.GetMethodUri("https://api.vk.com",
+                                                                       "photos.getMessagesUploadServer",
+                                                                       new
+                                                                       {
+                                                                           access_token = _apiKey,
+                                                                           v = ApiVersion,
+                                                                           peer_id = vkMessageRequest.PeerId
+                                                                       }));
 
-        var response = await httpClient.SendAsync(request, token);
-        var resultString = await response.Content.ReadAsStringAsync();
+            var response = await httpClient.SendAsync(request, token);
+            var resultString = await response.Content.ReadAsStringAsync(token);
 
-        return JsonSerializer.Deserialize<GetUploadAddress>(resultString);
+            return JsonSerializer.Deserialize<GetUploadAddress>(resultString);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error getting an upload address!");
+        }
+
+        return default;
     }
 
     /// <summary>
@@ -76,7 +91,7 @@ public class VkStorageUploader
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
-    public async Task<VkSendPhotoResponse> SendPhoto(VkSendMessageRequest vkMessageRequest, byte[] binaryContent, CancellationToken token)
+    public async Task<VkSendPhotoResponse> SendPhotoAsync(VkSendMessageRequest vkMessageRequest, byte[] binaryContent, CancellationToken token)
     {
         var address = await GetPhotoUploadAddress(vkMessageRequest, token);
 

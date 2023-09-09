@@ -25,19 +25,6 @@ public class TestBotHostedService : IHostedService
     {
         Console.WriteLine("Start sending messages...");
 
-        _vkBot.SendMessageAsync(new SendMessageRequest(Guid.NewGuid().ToString())
-                                {
-                                    Message = new Message(Guid.NewGuid().ToString())
-                                    {
-                                        Body = "dewwedewde",
-                                        ChatIds = new List<string>
-                                        {
-                                            "221973506"
-                                        }
-                                    }
-                                },
-                                CancellationToken.None);
-
         return Task.CompletedTask;
     }
 

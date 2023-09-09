@@ -3,7 +3,9 @@ using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Exceptions;
 using Botticelli.Framework.Vk.API.Objects;
 using Botticelli.Framework.Vk.API.Requests;
+using Botticelli.Framework.Vk.API.Responses;
 using Botticelli.Framework.Vk.Handlers;
+using Botticelli.Framework.Vk.Messages;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
@@ -64,14 +66,15 @@ public class VkBot : BaseBot<VkBot>
 
             if (!_eventsAttached)
             {
-                _messagesProvider.OnUpdates += (args, token) =>
+                _messagesProvider.OnUpdates += (args, ct) =>
                 {
                     var updates = args?.Response?.Updates;
 
                     if (updates == default || !updates.Any()) return;
 
-                    _handler.HandleUpdateAsync(updates, CancellationToken.None);
+                    _handler.HandleUpdateAsync(updates, ct);
                 };
+
                 _eventsAttached = true;
             }
 
@@ -121,11 +124,11 @@ public class VkBot : BaseBot<VkBot>
         _vkUploader.SetApiKey(context.BotKey);
     }
 
-    private Attachment CreateVkAttach(IAttachment fk, string type)
+    private Attachment CreateVkAttach(VkSendPhotoResponse fk, string type)
         => new()
         {
-            MediaId = fk.Uid,
-            OwnerId = fk.OwnerId,
+            MediaId = fk.Response?.FirstOrDefault()?.Id.ToString(),
+            OwnerId = fk.Response?.FirstOrDefault()?.OwnerId.ToString(),
             Type = type
         };
 
@@ -135,52 +138,14 @@ public class VkBot : BaseBot<VkBot>
     {
         try
         {
-            var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
-
             foreach (var userId in request.Message.ChatIds)
             {
-                var attachmentsCount = request.Message.Attachments?.Count ?? 0;
-                Attachment vkAttach = null;
+                var requests = await CreateRequestsWithAttachments(request, 
+                    userId, token);
 
-                if (attachmentsCount > 0)
-                {
-                    var fk = request.Message.Attachments?.FirstOrDefault();
-                    vkAttach = CreateAttach(fk);
-                }
+                foreach (var vkRequest in requests) 
+                    await _messagePublisher.SendAsync(vkRequest, token);
 
-                var vkRequest = new VkSendMessageRequest
-                {
-                    AccessToken = currentContext.BotKey,
-                    UserId = userId,
-                    Body = request.Message.Body,
-                    Lat = request.Message.Location?.Latitude,
-                    Long = request.Message.Location?.Longitude,
-                    ReplyTo = request.Message.ReplyToMessageUid,
-                    Attachment = vkAttach
-                };
-
-                await _messagePublisher.SendAsync(vkRequest, token);
-
-                // If we need to send another attaсhs - let's send then separately!
-                if (attachmentsCount <= 1) continue;
-
-                foreach (var fk in request.Message.Attachments.Skip(1))
-                {
-                    vkAttach = CreateAttach(fk);
-
-                    var vkAttachRequest = new VkSendMessageRequest
-                    {
-                        AccessToken = currentContext.BotKey,
-                        UserId = userId,
-                        Body = string.Empty,
-                        Lat = request.Message.Location?.Latitude,
-                        Long = request.Message.Location?.Longitude,
-                        ReplyTo = request.Message.ReplyToMessageUid,
-                        Attachment = vkAttach
-                    };
-
-                    await _messagePublisher.SendAsync(vkAttachRequest, token);
-                }
             }
         }
         catch (Exception ex)
@@ -191,31 +156,81 @@ public class VkBot : BaseBot<VkBot>
         return new SendMessageResponse(request.Uid, string.Empty);
     }
 
-    private Attachment CreateAttach(IAttachment? fk)
+    private async Task<IEnumerable<VkSendMessageRequest>> CreateRequestsWithAttachments(SendMessageRequest request,
+                                                                           string userId,
+                                                                           CancellationToken token)
     {
-        switch (fk)
-        {
-            case BinaryAttachment ba:
-            {
-                switch (ba.MediaType)
-                {
-                    case MediaType.Image:
-                    case MediaType.Sticker:
-                        return CreateVkAttach(fk, "photo");
-                    case MediaType.Video: return CreateVkAttach(fk, "video");
-                    case MediaType.Voice:
-                    case MediaType.Audio:
-                        return CreateVkAttach(fk, "audio");
-                }
-            }
+        var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
+        var result = new List<VkSendMessageRequest>(100);
+        var first = true;
 
-                break;
-            case InvoiceAttachment:
-                // Not implemented 
-                break;
+        if (request.Message.Attachments == default)
+        {
+            var vkRequest = new VkSendMessageRequest
+            {
+                AccessToken = currentContext.BotKey,
+                UserId = userId,
+                Body = first ? request.Message.Body : string.Empty,
+                Lat = request?.Message.Location?.Latitude,
+                Long = request?.Message.Location?.Longitude,
+                ReplyTo = request?.Message.ReplyToMessageUid,
+                Attachment = null
+            };
+            result.Add(vkRequest);
+            
+            return result;
         }
 
-        return default;
+        foreach (var attach in request.Message?.Attachments)
+        {
+            var vkRequest = new VkSendMessageRequest
+            {
+                AccessToken = currentContext.BotKey,
+                UserId = userId,
+                Body = first ? request.Message.Body : string.Empty,
+                Lat = request?.Message.Location?.Latitude,
+                Long = request?.Message.Location?.Longitude,
+                ReplyTo = request?.Message.ReplyToMessageUid,
+                Attachment = null
+            };
+
+            switch (attach)
+            {
+                case BinaryAttachment ba:
+                {
+                    switch (ba)
+                    {
+                        case {MediaType: MediaType.Image}:
+                        case {MediaType: MediaType.Sticker}:
+                            var sendResponse = await _vkUploader.SendPhotoAsync(vkRequest, ba.Data, token);
+
+                            vkRequest.Attachment = CreateVkAttach(sendResponse, "photo");
+                            break;
+                        case {MediaType: MediaType.Video}:
+                            //var sendResponse = await _vkUploader.SendVideoAsync(vkRequest, ba.Data, token);
+
+                            //vkRequest.Attachment = CreateVkAttach(sendResponse, "video");
+
+                            //break;
+                            break;
+                        case {MediaType: MediaType.Voice}:
+                        case {MediaType: MediaType.Audio}:
+                            //return CreateVkAttach(attach, "audio");
+                            break;
+                    }
+                }
+
+                    break;
+                case InvoiceAttachment:
+                    // Not implemented 
+                    break;
+            }
+
+            result.Add(vkRequest);
+            first = false;
+        }
+
+        return result;
     }
 
     public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token) => throw new NotImplementedException();
