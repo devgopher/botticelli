@@ -5,6 +5,7 @@ using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Vk.Handlers;
+using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;

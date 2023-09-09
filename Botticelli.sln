@@ -147,7 +147,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Scheduler", "Bot
 		BotticelliSchedulerDescription.txt = BotticelliSchedulerDescription.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Vk", "Botticelli.Framework.Vk\Botticelli.Framework.Vk.csproj", "{343922EC-2CF3-4C0E-B745-08F2B333B4E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Vk.Messages", "Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj", "{343922EC-2CF3-4C0E-B745-08F2B333B4E3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Vk.Tests", "Botticelli.Framework.Vk.Tests\Botticelli.Framework.Vk.Tests.csproj", "{2EE26ED9-C949-48E8-BF48-93EEC9E51AF1}"
 EndProject

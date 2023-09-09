@@ -7,6 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Exceptions\**" />
+	  <EmbeddedResource Remove="Exceptions\**" />
+	  <None Remove="Exceptions\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
 		<ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj" />
 		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
@@ -14,10 +20,6 @@
 		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Exceptions\" />
 	</ItemGroup>
 
 </Project>

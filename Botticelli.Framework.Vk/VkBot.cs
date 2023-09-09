@@ -162,24 +162,25 @@ public class VkBot : BaseBot<VkBot>
                 await _messagePublisher.SendAsync(vkRequest, token);
 
                 // If we need to send another attaсhs - let's send then separately!
-                if (attachmentsCount > 1)
-                    foreach (var fk in request.Message.Attachments.Skip(1))
+                if (attachmentsCount <= 1) continue;
+
+                foreach (var fk in request.Message.Attachments.Skip(1))
+                {
+                    vkAttach = CreateAttach(fk);
+
+                    var vkAttachRequest = new VkSendMessageRequest
                     {
-                        vkAttach = CreateAttach(fk);
+                        AccessToken = currentContext.BotKey,
+                        UserId = userId,
+                        Body = string.Empty,
+                        Lat = request.Message.Location?.Latitude,
+                        Long = request.Message.Location?.Longitude,
+                        ReplyTo = request.Message.ReplyToMessageUid,
+                        Attachment = vkAttach
+                    };
 
-                        var vkAttachRequest = new VkSendMessageRequest
-                        {
-                            AccessToken = currentContext.BotKey,
-                            UserId = userId,
-                            Body = string.Empty,
-                            Lat = request.Message.Location?.Latitude,
-                            Long = request.Message.Location?.Longitude,
-                            ReplyTo = request.Message.ReplyToMessageUid,
-                            Attachment = vkAttach
-                        };
-
-                        await _messagePublisher.SendAsync(vkAttachRequest, token);
-                    }
+                    await _messagePublisher.SendAsync(vkAttachRequest, token);
+                }
             }
         }
         catch (Exception ex)

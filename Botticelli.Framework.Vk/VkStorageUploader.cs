@@ -5,7 +5,7 @@ using Botticelli.Framework.Vk.API.Responses;
 using Botticelli.Framework.Vk.API.Utils;
 using Microsoft.Extensions.Logging;
 
-namespace Botticelli.Framework.Vk;
+namespace Botticelli.Framework.Vk.Messages;
 
 /// <summary>
 ///     VK storage upload component
@@ -25,7 +25,7 @@ public class VkStorageUploader
     /// <param name="vkMessageRequest"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private async Task<GetUploadAddress> GetPhotoUploadAddress(VkSendMessageRequest vkMessageRequest, CancellationToken token)
+    private async Task<GetUploadAddress?> GetPhotoUploadAddress(VkSendMessageRequest vkMessageRequest, CancellationToken token)
     {
         using var httpClient = _httpClientFactory.CreateClient();
         var request = new HttpRequestMessage(HttpMethod.Get,
