@@ -1,8 +1,8 @@
 using System.Text;
 using BotDataSecureStorage;
 using BotDataSecureStorage.Settings;
-using Botticelli.Server;
 using Botticelli.Server.Data;
+using Botticelli.Server.Extensions;
 using Botticelli.Server.Services;
 using Botticelli.Server.Services.Auth;
 using Botticelli.Server.Settings;

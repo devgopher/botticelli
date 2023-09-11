@@ -11,6 +11,11 @@ public interface IBotManagementService
                            BotType botType,
                            Dictionary<string, string> additionalParams = null);
 
+    Task<bool> UpdateBot(string botId,
+        string botKey,
+        string botName,
+        Dictionary<string, string> additionalParams = null);
+
     Task SetRequiredBotStatus(string botId, BotStatus status);
     Task SetKeepAlive(string botId);
     Task RemoveBot(string botId);

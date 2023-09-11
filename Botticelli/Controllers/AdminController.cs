@@ -47,6 +47,23 @@ public class AdminController
         };
     }
 
+    [HttpPut("[action]")]
+    public async Task<UpdateBotResponse> UpdateBot([FromBody] UpdateBotRequest request)
+    {
+        _logger.LogInformation($"{nameof(UpdateBot)}({request.BotId}) started...");
+        var success = await _botManagementService.UpdateBot(request.BotId,
+            request.BotKey,
+            request.BotName);
+
+        _logger.LogInformation($"{nameof(UpdateBot)}({request.BotId}) success: {success}...");
+
+        return new UpdateBotResponse
+        {
+            BotId = request.BotId,
+            IsSuccess = success
+        };
+    }
+
     [HttpGet("[action]")]
     public async Task<ICollection<BotInfo>> GetBots()
         => _botStatusDataService.GetBots();

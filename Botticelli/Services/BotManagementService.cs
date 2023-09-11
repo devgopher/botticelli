@@ -17,8 +17,8 @@ public class BotManagementService : IBotManagementService
     private readonly SecureStorage _secureStorage;
 
     public BotManagementService(BotInfoContext context,
-                                SecureStorage secureStorage,
-                                ILogger<BotManagementService> logger)
+        SecureStorage secureStorage,
+        ILogger<BotManagementService> logger)
     {
         _context = context;
         _secureStorage = secureStorage;
@@ -32,12 +32,13 @@ public class BotManagementService : IBotManagementService
     /// <param name="botKey"></param>
     /// <param name="botName"></param>
     /// <param name="botType"></param>
+    /// <param name="additionalParams"></param>
     /// <returns></returns>
     public async Task<bool> RegisterBot(string botId,
-                                        string botKey,
-                                        string botName,
-                                        BotType botType,
-                                        Dictionary<string, string> additionalParams = null)
+        string botKey,
+        string botName,
+        BotType botType,
+        Dictionary<string, string> additionalParams = null)
     {
         try
         {
@@ -47,9 +48,9 @@ public class BotManagementService : IBotManagementService
 
             if (GetBotInfo(botId) == default)
                 AddNewBotInfo(botId,
-                              BotStatus.Unknown,
-                              botType,
-                              botName);
+                    BotStatus.Unknown,
+                    botType,
+                    botName);
 
             var botContext = new BotContext
             {
@@ -61,7 +62,6 @@ public class BotManagementService : IBotManagementService
             _secureStorage.MigrateToBotContext(botId);
 
             _secureStorage.SetBotContext(botContext);
-            //_secureStorage.SetBotKey(botId, botKey);
 
             _logger.LogInformation($"{nameof(RegisterBot)} successful");
 
@@ -129,6 +129,11 @@ public class BotManagementService : IBotManagementService
         }
     }
 
+    /// <summary>
+    /// Removes a bot
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <returns></returns>
     public async Task RemoveBot(string botId)
     {
         await SetRequiredBotStatus(botId, BotStatus.NonActive);
@@ -140,6 +145,63 @@ public class BotManagementService : IBotManagementService
             _context.BotInfos.Remove(bot);
             await _context.SaveChangesAsync();
         }
+    }
+
+    /// <summary>
+    ///     Updates a botInfo
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <param name="botKey"></param>
+    /// <param name="botName"></param>
+    /// <param name="botType"></param>
+    /// <param name="additionalParams"></param>
+    /// <returns></returns>
+    public async Task<bool> UpdateBot(string botId,
+        string botKey,
+        string botName,
+        Dictionary<string, string> additionalParams = null)
+    {
+        try
+        {
+            _logger.LogInformation($"{nameof(UpdateBot)}({botId}, {botKey}, {botName}) started...");
+
+            var prevStatus = await GetRequiredBotStatus(botId);
+            if (prevStatus == default || prevStatus != BotStatus.NonActive)
+                await SetRequiredBotStatus(botId, BotStatus.NonActive);
+
+            botKey ??= _secureStorage.GetBotContext(botId)?.BotKey;
+
+            if (GetBotInfo(botId) == default)
+            {
+                _logger.LogInformation($"{nameof(UpdateBot)}() : bot with id '{botId}' wasn't found!");
+                return false;
+            }
+
+            var botContext = new BotContext
+            {
+                BotId = botId,
+                BotKey = botKey,
+                Items = additionalParams ?? new Dictionary<string, string>()
+            };
+
+            _secureStorage.MigrateToBotContext(botId);
+
+            _secureStorage.SetBotContext(botContext);
+
+            await SetRequiredBotStatus(botId, prevStatus.Value);
+
+            _logger.LogInformation($"{nameof(UpdateBot)} successful");
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+        }
+
+        _logger.LogInformation($"{nameof(UpdateBot)} failed");
+
+        return false;
     }
 
     /// <summary>
@@ -158,10 +220,10 @@ public class BotManagementService : IBotManagementService
     /// <param name="botType"></param>
     /// <param name="lastKeepAliveUtc"></param>
     private void AddNewBotInfo(string botId,
-                               BotStatus status,
-                               BotType botType,
-                               string botName,
-                               DateTime? lastKeepAliveUtc = null)
+        BotStatus status,
+        BotType botType,
+        string botName,
+        DateTime? lastKeepAliveUtc = null)
     {
         try
         {
