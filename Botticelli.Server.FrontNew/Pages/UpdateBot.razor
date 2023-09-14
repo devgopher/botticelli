@@ -82,14 +82,14 @@
 
     private async Task<GetRequiredStatusFromServerResponse> GetBotStatus(BotInfo bot, string sessionToken)
     {
-        var http = HttpClientFactory.Create();
+        using var http = HttpClientFactory.Create();
         http.BaseAddress = new Uri(BackSettings.CurrentValue.BackUrl);
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
 
         var botStatusResponse = await http.PostAsJsonAsync("/bot/client/GetRequiredBotStatus",
             new GetRequiredStatusFromServerRequest()
             {
-                BotId = this.BotId + "3"
+                BotId = this.BotId
             });
 
         var botStatus = await botStatusResponse.Content.ReadFromJsonAsync<GetRequiredStatusFromServerResponse>();
@@ -98,11 +98,12 @@
 
     private async Task<BotInfo> GetBot(string sessionToken)
     {
-        var http = HttpClientFactory.Create();
+        using var http = HttpClientFactory.Create();
         http.BaseAddress = new Uri(BackSettings.CurrentValue.BackUrl);
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
         var bots = await http.GetFromJsonAsync<BotInfo[]>("/admin/GetBots");
         var bot = bots.FirstOrDefault(b => b.BotId == BotId);
+
         return bot;
     }
 
@@ -127,5 +128,4 @@
 
         UriHelper.NavigateTo("/your_bots", true);
     }
-
 }
