@@ -3,9 +3,9 @@
 namespace Botticelli.Shared.API.Client.Responses;
 
 /// <summary>
-///    Register bot response
+///    Update bot response
 /// </summary>
-public class RegisterBotResponse : ServerBaseResponse
+public class UpdateBotResponse : ServerBaseResponse
 {
     public string? BotId { get; set; }
 }

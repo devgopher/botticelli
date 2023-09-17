@@ -1,13 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Botticelli.Server;
+namespace Botticelli.Server.Extensions;
 
-public static class StartupUtils
+public static class StartupExtensions
 {
     public static void ApplyMigrations<TContext>(this WebApplicationBuilder webApplicationBuilder)
             where TContext : DbContext
     {
-        using var scope = webApplicationBuilder.Services.BuildServiceProvider().CreateScope();
+        using var scope = webApplicationBuilder.Services
+            .BuildServiceProvider()
+            .CreateScope();
 
         var db = scope.ServiceProvider.GetRequiredService<TContext>();
         var pendingMigrations = db.Database.GetPendingMigrations();

@@ -43,6 +43,10 @@ else
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsAlive(bot.LastKeepAlive)"/>
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsActive(bot.Status)"/>
                             <RadzenButton Click="@(e => SendStartStop(bot.BotId, bot.Status))" Text="Start/Stop"/>
+                            <RadzenButton Click="@(e => UriHelper.NavigateTo($"/update_bot/{bot.BotId}", true))"
+                                          ButtonStyle="ButtonStyle.Primary"
+                                          Style="width: 100%"
+                                          Text="Update" />
                             <RadzenButton Click="@(e => RemoveBot(bot.BotId))" Text="Remove"/>
                         </RadzenStack>
                     </RadzenCard>

@@ -1,4 +1,4 @@
-﻿@page "/add_bot"
+﻿@page "/update_bot/{botId}"
 @using Botticelli.Server.FrontNew.Settings
 @using Microsoft.Extensions.Options
 @using Botticelli.Shared.API.Client.Requests
@@ -6,7 +6,9 @@
 @using Botticelli.Shared.Constants
 @using Flurl
 @using System.Net.Http.Headers
+@using Botticelli.Server.Data.Entities
 @using Botticelli.Server.FrontNew.Models
+@using Newtonsoft.Json
 @inject HttpClient Http
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
@@ -49,16 +51,69 @@
 </RadzenTemplateForm>
 
 @code {
+    [Parameter]
+    public string BotId { get; set; }
+
     readonly BotModel _model = new();
+
+    private BotInfo[]? _bots;
+
+    protected override bool ShouldRender() => true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var sessionToken = await Cookies.GetValueAsync("SessionToken");
+
+        try
+        {
+            var bot = await GetBot(sessionToken);
+
+            var botStatus = await GetBotStatus(bot, sessionToken);
+
+            _model.BotId = BotId;
+            _model.BotName = bot.BotName;
+            _model.BotKey = botStatus.BotContext.BotKey;
+        }
+        catch (Exception ex)
+        {
+//            _error = $"token:{sessionToken} ex:{ex.Message}";
+        }
+    }
+
+    private async Task<GetRequiredStatusFromServerResponse> GetBotStatus(BotInfo bot, string sessionToken)
+    {
+        using var http = HttpClientFactory.Create();
+        http.BaseAddress = new Uri(BackSettings.CurrentValue.BackUrl);
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
+
+        var botStatusResponse = await http.PostAsJsonAsync("/bot/client/GetRequiredBotStatus",
+            new GetRequiredStatusFromServerRequest()
+            {
+                BotId = this.BotId
+            });
+
+        var botStatus = await botStatusResponse.Content.ReadFromJsonAsync<GetRequiredStatusFromServerResponse>();
+        return botStatus;
+    }
+
+    private async Task<BotInfo> GetBot(string sessionToken)
+    {
+        using var http = HttpClientFactory.Create();
+        http.BaseAddress = new Uri(BackSettings.CurrentValue.BackUrl);
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
+        var bots = await http.GetFromJsonAsync<BotInfo[]>("/admin/GetBots");
+        var bot = bots.FirstOrDefault(b => b.BotId == BotId);
+
+        return bot;
+    }
 
     private async Task OnSubmit(BotModel model)
     {
-        var request = new RegisterBotRequest
+        var request = new UpdateBotRequest
         {
             BotId = model.BotId,
             BotKey = model.BotKey,
-            BotName = model.BotName,
-            Type = BotType.Telegram
+            BotName = model.BotName
         };
 
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
@@ -66,12 +121,11 @@
         if (string.IsNullOrWhiteSpace(sessionToken)) return;
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
-        var response = await Http.PostAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/AddNewBot"),
+        var response = await Http.PutAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/UpdateBot"),
                                                   request);
 
-        var addBotResponse = await response.Content.ReadFromJsonAsync<RegisterBotResponse>();
+        var updateBotResponse = await response.Content.ReadFromJsonAsync<UpdateBotResponse>();
 
         UriHelper.NavigateTo("/your_bots", true);
     }
-
 }
