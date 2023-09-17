@@ -56,6 +56,40 @@ public class VkStorageUploader
         return default;
     }
 
+
+    /// <summary>
+    ///     Get an upload address for a video
+    /// </summary>
+    /// <param name="vkMessageRequest"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    private async Task<VkSendVideoResponse?> GetVideoUploadData(VkSendMessageRequest vkMessageRequest, CancellationToken token)
+    {
+        try
+        {
+            using var httpClient = _httpClientFactory.CreateClient();
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                                                 ApiUtils.GetMethodUri("https://api.vk.com",
+                                                                       "video.save",
+                                                                       new
+                                                                       {
+                                                                           access_token = _apiKey,
+                                                                           v = ApiVersion
+                                                                       }));
+
+            var response = await httpClient.SendAsync(request, token);
+            var resultString = await response.Content.ReadAsStringAsync(token);
+
+            return JsonSerializer.Deserialize<VkSendVideoResponse>(resultString);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error getting an upload address!");
+        }
+
+        return default;
+    }
+
     /// <summary>
     ///     Uploads a photo (binaries)
     /// </summary>
@@ -75,6 +109,27 @@ public class VkStorageUploader
         var resultString = await response.Content.ReadAsStringAsync();
 
         return JsonSerializer.Deserialize<UploadPhotoResult>(resultString);
+    }
+
+    /// <summary>
+    ///     Uploads a video (binaries)
+    /// </summary>
+    /// <param name="uploadUrl"></param>
+    /// <param name="binaryContent"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    private async Task<UploadVideoResult> UploadVideo(string uploadUrl, string name, byte[] binaryContent, CancellationToken token)
+    {
+        using var httpClient = _httpClientFactory.CreateClient();
+        using var memoryContentStream = new MemoryStream(binaryContent);
+        memoryContentStream.Seek(0, SeekOrigin.Begin);
+
+        var content = new MultipartFormDataContent { { new StreamContent(memoryContentStream), "video", name } };
+
+        var response = await httpClient.PostAsync(uploadUrl, content, token);
+        var resultString = await response.Content.ReadAsStringAsync();
+
+        return JsonSerializer.Deserialize<UploadVideoResult>(resultString);
     }
 
     /// <summary>
@@ -118,6 +173,37 @@ public class VkStorageUploader
             var resultString = await response.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<VkSendPhotoResponse>(resultString);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error uploading media");
+        }
+
+        return default;
+    }
+
+
+    /// <summary>
+    ///     The main public method for sending a video
+    /// </summary>
+    /// <param name="vkMessageRequest"></param>
+    /// <param name="binaryContent"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    /// <exception cref="BotException"></exception>
+    public async Task<VkSendVideoResponse> SendVideoAsync(VkSendMessageRequest vkMessageRequest, string name, byte[] binaryContent, CancellationToken token)
+    {
+        try
+        {
+            var sendVideoData = await GetVideoUploadData(vkMessageRequest, token);
+
+            if (sendVideoData?.Response == default) throw new BotException("Sending video error: no upload server address!");
+
+            var uploadedVideo = await UploadVideo(sendVideoData.Response.UploadUrl, name, binaryContent, token);
+
+            if (uploadedVideo?.Video == default) throw new BotException("Sending video error: no media uploaded!");
+
+            return sendVideoData;
         }
         catch (Exception ex)
         {

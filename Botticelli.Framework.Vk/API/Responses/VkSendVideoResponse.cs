@@ -2,9 +2,8 @@
 
 namespace Botticelli.Framework.Vk.API.Responses;
 
-public class GetUploadAddress
+public class VkSendVideoResponse
 {
     [JsonPropertyName("response")]
-    public GetUploadAddressResponse Response { get; set; }
+    public VkSendVideoResponseData Response { get; set; }
 }
-

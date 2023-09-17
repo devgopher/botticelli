@@ -130,6 +130,12 @@ public class VkBot : BaseBot<VkBot>
            $"_{fk.Response?.FirstOrDefault()?.Id.ToString()}";
 
 
+    private string CreateVkAttach(VkSendVideoResponse fk, BotContext currentContext, string type)
+        => $"{type}" +
+           $"{fk.Response?.OwnerId.ToString()}" +
+           $"_{fk.Response?.VideoId.ToString()}";
+
+
     public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
                                                                                    ISendOptionsBuilder<TSendOptions> optionsBuilder,
                                                                                    CancellationToken token)
@@ -200,16 +206,22 @@ public class VkBot : BaseBot<VkBot>
                     {
                         case {MediaType: MediaType.Image}:
                         case {MediaType: MediaType.Sticker}:
-                            var sendResponse = await _vkUploader.SendPhotoAsync(vkRequest, ba.Name, ba.Data, token);
+                            var sendResponse = await _vkUploader.SendPhotoAsync(vkRequest,
+                                                                                ba.Name,
+                                                                                ba.Data,
+                                                                                token);
 
                             vkRequest.Attachment = CreateVkAttach(sendResponse, currentContext, "photo");
+
                             break;
                         case {MediaType: MediaType.Video}:
-                            //var sendResponse = await _vkUploader.SendVideoAsync(vkRequest, ba.Data, token);
+                            var sendVideoResponse = await _vkUploader.SendVideoAsync(vkRequest, 
+                                                                                     ba.Name,
+                                                                                     ba.Data, 
+                                                                                     token);
 
-                            //vkRequest.Attachment = CreateVkAttach(sendResponse, "video");
+                            vkRequest.Attachment = CreateVkAttach(sendVideoResponse, currentContext, "video");
 
-                            //break;
                             break;
                         case {MediaType: MediaType.Voice}:
                         case {MediaType: MediaType.Audio}:
