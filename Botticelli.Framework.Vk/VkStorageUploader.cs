@@ -16,7 +16,11 @@ public class VkStorageUploader
     private readonly ILogger<MessagePublisher> _logger;
     private string _apiKey;
 
-    public VkStorageUploader(IHttpClientFactory httpClientFactory) => _httpClientFactory = httpClientFactory;
+    public VkStorageUploader(IHttpClientFactory httpClientFactory, ILogger<MessagePublisher> logger)
+    {
+        _httpClientFactory = httpClientFactory;
+        _logger = logger;
+    }
 
     private string ApiVersion => "5.81";
 
@@ -59,36 +63,37 @@ public class VkStorageUploader
 
     /// <summary>
     ///     Get an upload address for a video
+    ///     seems to be prohibited for bots in communities
     /// </summary>
     /// <param name="vkMessageRequest"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private async Task<VkSendVideoResponse?> GetVideoUploadData(VkSendMessageRequest vkMessageRequest, CancellationToken token)
-    {
-        try
-        {
-            using var httpClient = _httpClientFactory.CreateClient();
-            var request = new HttpRequestMessage(HttpMethod.Get,
-                                                 ApiUtils.GetMethodUri("https://api.vk.com",
-                                                                       "video.save",
-                                                                       new
-                                                                       {
-                                                                           access_token = _apiKey,
-                                                                           v = ApiVersion
-                                                                       }));
+    //private async Task<VkSendVideoResponse?> GetVideoUploadData(VkSendMessageRequest vkMessageRequest, CancellationToken token)
+    //{
+    //    try
+    //    {
+    //        using var httpClient = _httpClientFactory.CreateClient();
+    //        var request = new HttpRequestMessage(HttpMethod.Get,
+    //                                             ApiUtils.GetMethodUri("https://api.vk.com",
+    //                                                                   "video.save",
+    //                                                                   new
+    //                                                                   {
+    //                                                                       access_token = _apiKey,
+    //                                                                       v = ApiVersion
+    //                                                                   }));
 
-            var response = await httpClient.SendAsync(request, token);
-            var resultString = await response.Content.ReadAsStringAsync(token);
+    //        var response = await httpClient.SendAsync(request, token);
+    //        var resultString = await response.Content.ReadAsStringAsync(token);
 
-            return JsonSerializer.Deserialize<VkSendVideoResponse>(resultString);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error getting an upload address!");
-        }
+    //        return JsonSerializer.Deserialize<VkSendVideoResponse>(resultString);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        _logger.LogError(ex, $"Error getting an upload address!");
+    //    }
 
-        return default;
-    }
+    //    return default;
+    //}
 
     /// <summary>
     ///     Uploads a photo (binaries)
@@ -185,31 +190,32 @@ public class VkStorageUploader
 
     /// <summary>
     ///     The main public method for sending a video
+    ///     seems to be prohibited for bots in communities
     /// </summary>
     /// <param name="vkMessageRequest"></param>
     /// <param name="binaryContent"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
-    public async Task<VkSendVideoResponse> SendVideoAsync(VkSendMessageRequest vkMessageRequest, string name, byte[] binaryContent, CancellationToken token)
-    {
-        try
-        {
-            var sendVideoData = await GetVideoUploadData(vkMessageRequest, token);
+    //public async Task<VkSendVideoResponse> SendVideoAsync(VkSendMessageRequest vkMessageRequest, string name, byte[] binaryContent, CancellationToken token)
+    //{
+    //    try
+    //    {
+    //        var sendVideoData = await GetVideoUploadData(vkMessageRequest, token);
 
-            if (sendVideoData?.Response == default) throw new BotException("Sending video error: no upload server address!");
+    //        if (sendVideoData?.Response == default) throw new BotException("Sending video error: no upload server address!");
 
-            var uploadedVideo = await UploadVideo(sendVideoData.Response.UploadUrl, name, binaryContent, token);
+    //        var uploadedVideo = await UploadVideo(sendVideoData.Response.UploadUrl, name, binaryContent, token);
 
-            if (uploadedVideo?.Video == default) throw new BotException("Sending video error: no media uploaded!");
+    //        if (uploadedVideo?.Video == default) throw new BotException("Sending video error: no media uploaded!");
 
-            return sendVideoData;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error uploading media");
-        }
+    //        return sendVideoData;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        _logger.LogError(ex, "Error uploading media");
+    //    }
 
-        return default;
-    }
+    //    return default;
+    //}
 }

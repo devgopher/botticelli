@@ -1,7 +1,6 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Exceptions;
-using Botticelli.Framework.Vk.API.Objects;
 using Botticelli.Framework.Vk.API.Requests;
 using Botticelli.Framework.Vk.API.Responses;
 using Botticelli.Framework.Vk.Handlers;
@@ -158,8 +157,8 @@ public class VkBot : BaseBot<VkBot>
     }
 
     private async Task<IEnumerable<VkSendMessageRequest>> CreateRequestsWithAttachments(SendMessageRequest request,
-                                                                           string userId,
-                                                                           CancellationToken token)
+                                                                                        string userId,
+                                                                                        CancellationToken token)
     {
         var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
         var result = new List<VkSendMessageRequest>(100);
@@ -178,12 +177,11 @@ public class VkBot : BaseBot<VkBot>
                 Attachment = null
             };
             result.Add(vkRequest);
-            
+
             return result;
         }
 
         foreach (var attach in request.Message?.Attachments)
-        {
             try
             {
                 var vkRequest = new VkSendMessageRequest
@@ -205,23 +203,22 @@ public class VkBot : BaseBot<VkBot>
                         {
                             case {MediaType: MediaType.Image}:
                             case {MediaType: MediaType.Sticker}:
-                                var sendResponse = await _vkUploader.SendPhotoAsync(vkRequest,
-                                                                                    ba.Name,
-                                                                                    ba.Data,
-                                                                                    token);
-
-                                vkRequest.Attachment = CreateVkAttach(sendResponse, currentContext, "photo");
-
-                                break;
-                            case {MediaType: MediaType.Video}:
-                                var sendVideoResponse = await _vkUploader.SendVideoAsync(vkRequest,
+                                var sendPhotoResponse = await _vkUploader.SendPhotoAsync(vkRequest,
                                                                                          ba.Name,
                                                                                          ba.Data,
                                                                                          token);
-
-                                vkRequest.Attachment = CreateVkAttach(sendVideoResponse, currentContext, "video");
+                                if (sendPhotoResponse != default) vkRequest.Attachment = CreateVkAttach(sendPhotoResponse, currentContext, "photo");
 
                                 break;
+                            case {MediaType: MediaType.Video}:
+                                //var sendVideoResponse = await _vkUploader.SendVideoAsync(vkRequest,
+                                //                                                         ba.Name,
+                                //                                                         ba.Data,
+                                //                                                         token);
+
+                                //if (sendVideoResponse != default) vkRequest.Attachment = CreateVkAttach(sendVideoResponse, currentContext, "video");
+
+                                //break;
                             case {MediaType: MediaType.Voice}:
                             case {MediaType: MediaType.Audio}:
                                 //return CreateVkAttach(attach, "audio");
@@ -242,7 +239,6 @@ public class VkBot : BaseBot<VkBot>
             {
                 Logger.LogInformation($"Error sending a message with attach: {attach.Uid}", ex);
             }
-        }
 
         return result;
     }
