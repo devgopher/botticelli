@@ -2,6 +2,7 @@
 using Botticelli.Framework.MessageProcessors;
 using Botticelli.Framework.Vk.API.Responses;
 using Botticelli.Shared.ValueObjects;
+using Flurl.Util;
 using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Vk.Handlers;
@@ -19,8 +20,7 @@ public class BotUpdateHandler : IBotUpdateHandler
 
     public async Task HandleUpdateAsync(List<UpdateEvent> update, CancellationToken cancellationToken)
     {
-        try
-        {
+   
             _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
             var botMessages = update?
@@ -31,26 +31,45 @@ public class BotUpdateHandler : IBotUpdateHandler
             {
                 if (botMessage == default) continue;
 
-                var botticelliMessage = new Message(botMessage.EventId)
+                try
                 {
-                    ChatIds = new List<string>
-                    {
-                        botMessage.Object["peer_id"]
-                                  .GetInt32()
-                                  .ToString()
-                    },
-                    Subject = string.Empty,
-                    Body = botMessage.Object["text"].GetString(),
-                    Attachments = new List<IAttachment>(5),
-                    From = new User
-                    {
-                        Id = botMessage.Object["from_id"].ToString()
-                    },
-                    ForwardedFrom = null,
-                    Location = null
-                };
+                    var val = botMessage.Object["message"];
+                    var peerId = botMessage.Object.ContainsKey("peer_id") ?
+                            val.ToString() :
+                            val.AsObject()["peer_id"].ToString();
+                 
+                var text = botMessage.Object.ContainsKey("text") ?
+                        val.ToString() :
+                        val.AsObject()["text"].ToString();
 
-                await Process(botticelliMessage, cancellationToken);
+                var fromId = botMessage.Object.ContainsKey("from_id") ?
+                        val.ToString() :
+                        val.AsObject()["from_id"].ToString();
+
+                var botticelliMessage = new Message(botMessage.EventId)
+                    {
+                        ChatIds = new List<string>
+                        {
+                            peerId,
+                            fromId
+                        },
+                        Subject = string.Empty,
+                        Body = text,
+                        Attachments = new List<IAttachment>(5),
+                        From = new User
+                        {
+                            Id = fromId
+                        },
+                        ForwardedFrom = null,
+                        Location = null
+                    };
+
+                    await Process(botticelliMessage, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"{nameof(HandleUpdateAsync)}() error", ex);
+                }
             }
 
 
@@ -92,11 +111,7 @@ public class BotUpdateHandler : IBotUpdateHandler
             //await Process(botticelliMessage, cancellationToken);
 
             _logger.LogDebug($"{nameof(HandleUpdateAsync)}() finished...");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"{nameof(HandleUpdateAsync)}() error", ex);
-        }
+  
     }
 
     public event IBotUpdateHandler.MsgReceivedEventHandler? MessageReceived;

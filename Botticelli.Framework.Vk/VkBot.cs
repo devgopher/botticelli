@@ -140,22 +140,19 @@ public class VkBot : BaseBot<VkBot>
                                                                                    ISendOptionsBuilder<TSendOptions> optionsBuilder,
                                                                                    CancellationToken token)
     {
-        try
-        {
-            foreach (var userId in request.Message.ChatIds)
+        foreach (var userId in request.Message.ChatIds)
+            try
             {
-                var requests = await CreateRequestsWithAttachments(request, 
-                    userId, token);
+                var requests = await CreateRequestsWithAttachments(request,
+                                                                   userId,
+                                                                   token);
 
-                foreach (var vkRequest in requests) 
-                    await _messagePublisher.SendAsync(vkRequest, token);
-
+                foreach (var vkRequest in requests) await _messagePublisher.SendAsync(vkRequest, token);
             }
-        }
-        catch (Exception ex)
-        {
-            throw new BotException("Can't send a message!", ex);
-        }
+            catch (Exception ex)
+            {
+                throw new BotException("Can't send a message!", ex);
+            }
 
         return new SendMessageResponse(request.Uid, string.Empty);
     }
@@ -187,57 +184,64 @@ public class VkBot : BaseBot<VkBot>
 
         foreach (var attach in request.Message?.Attachments)
         {
-            var vkRequest = new VkSendMessageRequest
+            try
             {
-                AccessToken = currentContext.BotKey,
-                UserId = userId,
-                Body = first ? request.Message.Body : string.Empty,
-                Lat = request?.Message.Location?.Latitude,
-                Long = request?.Message.Location?.Longitude,
-                ReplyTo = request?.Message.ReplyToMessageUid,
-                Attachment = null
-            };
-
-            switch (attach)
-            {
-                case BinaryAttachment ba:
+                var vkRequest = new VkSendMessageRequest
                 {
-                    switch (ba)
+                    AccessToken = currentContext.BotKey,
+                    UserId = userId,
+                    Body = first ? request.Message.Body : string.Empty,
+                    Lat = request?.Message.Location?.Latitude,
+                    Long = request?.Message.Location?.Longitude,
+                    ReplyTo = request?.Message.ReplyToMessageUid,
+                    Attachment = null
+                };
+
+                switch (attach)
+                {
+                    case BinaryAttachment ba:
                     {
-                        case {MediaType: MediaType.Image}:
-                        case {MediaType: MediaType.Sticker}:
-                            var sendResponse = await _vkUploader.SendPhotoAsync(vkRequest,
-                                                                                ba.Name,
-                                                                                ba.Data,
-                                                                                token);
+                        switch (ba)
+                        {
+                            case {MediaType: MediaType.Image}:
+                            case {MediaType: MediaType.Sticker}:
+                                var sendResponse = await _vkUploader.SendPhotoAsync(vkRequest,
+                                                                                    ba.Name,
+                                                                                    ba.Data,
+                                                                                    token);
 
-                            vkRequest.Attachment = CreateVkAttach(sendResponse, currentContext, "photo");
+                                vkRequest.Attachment = CreateVkAttach(sendResponse, currentContext, "photo");
 
-                            break;
-                        case {MediaType: MediaType.Video}:
-                            var sendVideoResponse = await _vkUploader.SendVideoAsync(vkRequest, 
-                                                                                     ba.Name,
-                                                                                     ba.Data, 
-                                                                                     token);
+                                break;
+                            case {MediaType: MediaType.Video}:
+                                var sendVideoResponse = await _vkUploader.SendVideoAsync(vkRequest,
+                                                                                         ba.Name,
+                                                                                         ba.Data,
+                                                                                         token);
 
-                            vkRequest.Attachment = CreateVkAttach(sendVideoResponse, currentContext, "video");
+                                vkRequest.Attachment = CreateVkAttach(sendVideoResponse, currentContext, "video");
 
-                            break;
-                        case {MediaType: MediaType.Voice}:
-                        case {MediaType: MediaType.Audio}:
-                            //return CreateVkAttach(attach, "audio");
-                            break;
+                                break;
+                            case {MediaType: MediaType.Voice}:
+                            case {MediaType: MediaType.Audio}:
+                                //return CreateVkAttach(attach, "audio");
+                                break;
+                        }
                     }
+
+                        break;
+                    case InvoiceAttachment:
+                        // Not implemented 
+                        break;
                 }
 
-                    break;
-                case InvoiceAttachment:
-                    // Not implemented 
-                    break;
+                result.Add(vkRequest);
+                first = false;
             }
-
-            result.Add(vkRequest);
-            first = false;
+            catch (Exception ex)
+            {
+                Logger.LogInformation($"Error sending a message with attach: {attach.Uid}", ex);
+            }
         }
 
         return result;

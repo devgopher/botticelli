@@ -30,24 +30,23 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
 
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
-        var chatId = message.ChatIds.FirstOrDefault();
-
-
-        JobManager.AddJob((VkBot) Bots.FirstOrDefault(),
-                          new Reliability
-                          {
-                              IsEnabled = false,
-                              Delay = TimeSpan.FromSeconds(3),
-                              IsExponential = true,
-                              MaxTries = 5
-                          },
-                          new Message
-                          {
-                              Body = "Now you see me!",
-                              Subject = "",
-                              ChatIds = new List<string> {chatId},
-                              Attachments = new List<IAttachment>
-                              {
+        foreach (var chatId in message.ChatIds)
+        {
+            JobManager.AddJob((VkBot) Bots.FirstOrDefault(),
+                         new Reliability
+                         {
+                             IsEnabled = false,
+                             Delay = TimeSpan.FromSeconds(3),
+                             IsExponential = true,
+                             MaxTries = 5
+                         },
+                         new Message
+                         {
+                             Body = "Now you see me!",
+                             Subject = "",
+                             ChatIds = new List<string> { chatId },
+                             Attachments = new List<IAttachment>
+                             {
                                   new BinaryAttachment(Guid.NewGuid().ToString(),
                                                        "testpic.png",
                                                        MediaType.Image,
@@ -63,11 +62,12 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
                                                        MediaType.Video,
                                                        string.Empty,
                                                        await File.ReadAllBytesAsync("Media/video.mp4", token))
-                              }
-                          },
-                          new Schedule
-                          {
-                              Cron = "* * * * *"
-                          });
+                             }
+                         },
+                         new Schedule
+                         {
+                             Cron = "* * * * *"
+                         });
+        }
     }
 }
