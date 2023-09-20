@@ -135,6 +135,12 @@ public class VkBot : BaseBot<VkBot>
            $"_{fk.Response?.VideoId.ToString()}";
 
 
+
+    private string CreateVkAttach(VkSendAudioResponse fk, BotContext currentContext, string type)
+        => $"{type}" +
+           $"{fk.Response?.OwnerId.ToString()}" +
+           $"_{fk.Response?.DocumentId.ToString()}";
+
     public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
                                                                                    ISendOptionsBuilder<TSendOptions> optionsBuilder,
                                                                                    CancellationToken token)
@@ -221,8 +227,14 @@ public class VkBot : BaseBot<VkBot>
                                 //break;
                             case {MediaType: MediaType.Voice}:
                             case {MediaType: MediaType.Audio}:
-                                //return CreateVkAttach(attach, "audio");
-                                break;
+                                var sendAudioMessageResponse = await _vkUploader.SendAudioMessageAsync(vkRequest,
+                                                                                         ba.Name,
+                                                                                         ba.Data,
+                                                                                         token);
+                                if (sendAudioMessageResponse != default) vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, currentContext, "audio");
+
+
+                                    break;
                         }
                     }
 
