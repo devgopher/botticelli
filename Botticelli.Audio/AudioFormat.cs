@@ -7,5 +7,6 @@ public enum AudioFormat
     Ogg,
     Aac,
     M4a,
-    Wav
+    Wav,
+    Opus
 }

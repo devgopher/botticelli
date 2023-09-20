@@ -2,5 +2,5 @@
 
 public interface IConvertor
 {
-    public byte[] Convert(byte[] input, AudioInfo targetParams);
+    public byte[] Convert(Stream input, AudioInfo targetParams);
 }
