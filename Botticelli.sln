@@ -155,7 +155,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VK", "VK", "{5BB351E1-460B-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkMessagingSample", "VkMessagingSample\VkMessagingSample.csproj", "{B610D900-6713-4D8F-8E9D-23AA02F846FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Audio", "Botticelli.Audio\Botticelli.Audio.csproj", "{0B5AB7F0-080D-49F3-A564-CE22F6F808AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Audio", "Botticelli.Audio\Botticelli.Audio.csproj", "{0B5AB7F0-080D-49F3-A564-CE22F6F808AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Audio.Tests", "Botticelli.Audio.Tests\Botticelli.Audio.Tests.csproj", "{868ED8BB-D451-42F3-AB3C-EE76AA9F483E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3dParty", "3dParty", "{8C52EB41-3815-4B12-9E40-C0D1472361CA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSignatures", "3dParty\FileSignatures\src\FileSignatures\FileSignatures.csproj", "{5AC0EFD8-FFA0-4962-8743-2C09D5B7C1CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -287,6 +293,14 @@ Global
 		{0B5AB7F0-080D-49F3-A564-CE22F6F808AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B5AB7F0-080D-49F3-A564-CE22F6F808AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B5AB7F0-080D-49F3-A564-CE22F6F808AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{868ED8BB-D451-42F3-AB3C-EE76AA9F483E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{868ED8BB-D451-42F3-AB3C-EE76AA9F483E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{868ED8BB-D451-42F3-AB3C-EE76AA9F483E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{868ED8BB-D451-42F3-AB3C-EE76AA9F483E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AC0EFD8-FFA0-4962-8743-2C09D5B7C1CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AC0EFD8-FFA0-4962-8743-2C09D5B7C1CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AC0EFD8-FFA0-4962-8743-2C09D5B7C1CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AC0EFD8-FFA0-4962-8743-2C09D5B7C1CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -342,6 +356,8 @@ Global
 		{5BB351E1-460B-48C1-912C-E13702968BB2} = {35480478-646E-45F1-96A3-EE7AC498ACE3}
 		{B610D900-6713-4D8F-8E9D-23AA02F846FF} = {5BB351E1-460B-48C1-912C-E13702968BB2}
 		{0B5AB7F0-080D-49F3-A564-CE22F6F808AB} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
+		{868ED8BB-D451-42F3-AB3C-EE76AA9F483E} = {346A18CA-EB1F-483B-8BC3-EDF250DA72E6}
+		{5AC0EFD8-FFA0-4962-8743-2C09D5B7C1CA} = {8C52EB41-3815-4B12-9E40-C0D1472361CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

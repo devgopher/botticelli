@@ -1,16 +1,24 @@
 ﻿using FileSignatures;
 using FileSignatures.Formats;
-using NAudio.CoreAudioApi;
 using NAudio.Vorbis;
 using NAudio.Wave;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
 
 namespace Botticelli.Audio;
 
 public class InputAnalyzer : IAnalyzer
 {
-    private readonly FileFormatInspector _fileFormatInspector = new();
+    private readonly FileFormatInspector _fileFormatInspector = new(new List<FileFormat>()
+    {
+        new Mpeg3Id3v2(),
+        new Mpeg3NoId3_1(),
+        new Mpeg3NoId3_2(),
+        new Mpeg3NoId3_3(),
+        new Mpeg3NoId3_4(),
+        new Ogg(),
+        new Amr(),
+        new M4A()
+    });
+
     public AudioInfo Analyze(string filePath)
     {
         using var fr = new AudioFileReader(filePath);
@@ -70,13 +78,12 @@ public class InputAnalyzer : IAnalyzer
         if (format == AudioFormat.Unknown) throw new InvalidOperationException($"Invalid format!");
 
         if (reader == default) throw new InvalidOperationException($"Reader is null!");
-        
-        var bitrate = reader.WaveFormat.SampleRate * reader.WaveFormat.BitsPerSample;
-
+ 
         return new AudioInfo
         {
             AudioFormat = format,
-            Bitrate = bitrate
+            SampleRate = reader.WaveFormat.SampleRate,
+            BitsPerSample = reader.WaveFormat.BitsPerSample
         };
     }
 }

@@ -11,10 +11,7 @@ public class UniversalConvertor : IConvertor
 {
     private readonly IAnalyzer _analyzer;
 
-    public UniversalConvertor(IAnalyzer analyzer)
-    {
-        _analyzer = analyzer;
-    }
+    public UniversalConvertor(IAnalyzer analyzer) => _analyzer = analyzer;
 
     public byte[] Convert(Stream input, AudioInfo targetParams)
     {
@@ -34,21 +31,21 @@ public class UniversalConvertor : IConvertor
                 Application = OpusApplication.Voip
             });
 
-            using (var sr = new BinaryReader(input))
-            {
-                var bytes = sr.ReadBytes((int)input.Length);
-                enc.Transform(new MediaBuffer<byte>(bytes));
+            using var sr = new BinaryReader(input);
 
-                return enc.OutputQueue?.LastOrDefault()?.Buffer?.Array;
-            }
+            var bytes = sr.ReadBytes((int)input.Length);
+            enc.Transform(new MediaBuffer<byte>(bytes));
+
+            return enc.OutputQueue?.LastOrDefault()?.Buffer?.Array;
         }
 
         using var resultStream = new MemoryStream();
-        using var srcReader = GetSourceWaveStream(input, srcParams);
-        using var tgtWriter = GetTargetWaveStream(resultStream, targetParams);
-        tgtWriter.Flush();
+        using var srcStream = GetSourceWaveStream(input, srcParams);
+        using var tgtStream = GetTargetWaveStream(srcStream, targetParams);
 
-        return resultStream.ToArray();
+        using var outputSr = new BinaryReader(tgtStream);
+        byte[] result = outputSr.ReadBytes((int) tgtStream.Length);
+        return result;
     }
 
     private WaveStream GetSourceWaveStream(Stream input, AudioInfo srcParams)
@@ -71,10 +68,10 @@ public class UniversalConvertor : IConvertor
     {
         input.Seek(0, SeekOrigin.Begin);
 
-        using MemoryStream ms = new MemoryStream();
+        MemoryStream ms = new MemoryStream();
         var waveFormat = CreateWaveFormat(srcParams);
-        OpusEncoder enc;
-        Stream result = srcParams.AudioFormat switch
+
+        Stream writerStream = srcParams.AudioFormat switch
         {
             AudioFormat.Mp3     => new LameMP3FileWriter(ms, waveFormat , LAMEPreset.MEDIUM_FAST ),
             //AudioFormat.Wav     => new WavFileWriter(input),
@@ -84,7 +81,11 @@ public class UniversalConvertor : IConvertor
             _ => default
         };
 
-        return result;
+        input.CopyTo(writerStream);
+
+        writerStream.Flush();
+
+        return ms;
     }
 
     private static WaveFormat CreateWaveFormat(AudioInfo srcParams) => new(srcParams.SampleRate, srcParams.Channels);
