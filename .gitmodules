@@ -1,0 +1,3 @@
+[submodule "3dParty/FileSignatures"]
+	path = 3dParty/FileSignatures
+	url = https://github.com/devgopher/FileSignatures
