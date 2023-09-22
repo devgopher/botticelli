@@ -42,15 +42,13 @@ public class UniversalConvertor : IConvertor
         using var resultStream = new MemoryStream();
         using var srcStream = GetSourceWaveStream(input, srcParams);
         using var tgtStream = GetTargetWaveStream(srcStream, targetParams);
-
-        using var outputSr = new BinaryReader(tgtStream);
-        byte[] result = outputSr.ReadBytes((int) tgtStream.Length);
+        var result = tgtStream.ToArray();
         return result;
     }
 
     private WaveStream GetSourceWaveStream(Stream input, AudioInfo srcParams)
     {
-        WaveStream result = srcParams.AudioFormat switch
+        return srcParams.AudioFormat switch
         {
             AudioFormat.Mp3     => new Mp3FileReader(input),
             AudioFormat.Ogg     => new VorbisWaveReader(input),
@@ -60,20 +58,16 @@ public class UniversalConvertor : IConvertor
             //AudioFormat.Unknown => new WaveFileReader(input),
             _                   => new WaveFileReader(input)
         };
-
-        return result;
     }
 
-    private Stream GetTargetWaveStream(Stream input, AudioInfo srcParams)
+    private MemoryStream GetTargetWaveStream(WaveStream input, AudioInfo srcParams)
     {
         input.Seek(0, SeekOrigin.Begin);
-
-        MemoryStream ms = new MemoryStream();
-        var waveFormat = CreateWaveFormat(srcParams);
-
+        var ms = new MemoryStream();
+        
         Stream writerStream = srcParams.AudioFormat switch
         {
-            AudioFormat.Mp3     => new LameMP3FileWriter(ms, waveFormat , LAMEPreset.MEDIUM_FAST ),
+            AudioFormat.Mp3     => new LameMP3FileWriter(ms, input.WaveFormat, LAMEPreset.ABR_128),
             //AudioFormat.Wav     => new WavFileWriter(input),
             //AudioFormat.Aac     => new WavFileWriter(input),
             //AudioFormat.M4a     => new WavFileWriter(input),
@@ -83,8 +77,7 @@ public class UniversalConvertor : IConvertor
 
         input.CopyTo(writerStream);
 
-        writerStream.Flush();
-
+        writerStream.Dispose();
         return ms;
     }
 

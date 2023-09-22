@@ -17,6 +17,8 @@ namespace Botticelli.Audio.Tests
         [Test()]
         public void ConvertMp3ToMp3Test()
         {
+            if (!File.Exists("voice.mp3"))
+                Assert.Fail("no voice.mp3!");
             using var stream = File.OpenRead("voice.mp3");
             var outcome = _convertor.Convert(stream, new AudioInfo()
             {
@@ -27,6 +29,7 @@ namespace Botticelli.Audio.Tests
             });
 
             Assert.NotNull(outcome);
+            Assert.IsNotEmpty(outcome);
         }
     }
 }
