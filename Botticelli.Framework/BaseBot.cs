@@ -7,6 +7,7 @@ using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework;
@@ -31,12 +32,17 @@ public abstract class BaseBot<T> : IBot<T>
     public delegate void StoppedEventHandler(object sender, StoppedBotEventArgs e);
 
     protected readonly ILogger Logger;
+    protected readonly IMediator Mediator;
 
-    public BaseBot(ILogger logger)
+    private BaseBot(ILogger logger)
     {
         Logger = logger;
         IsStarted = false;
     }
+
+
+    protected BaseBot(ILogger logger, IMediator mediator) : this(logger) 
+        => Mediator = mediator;
 
     protected bool IsStarted { get; set; }
 
@@ -55,7 +61,9 @@ public abstract class BaseBot<T> : IBot<T>
             response = StartBotResponse.GetInstance(request.Uid, $"Error: {ex.Message}", AdminCommandStatus.Fail);
         }
 
-        Started?.Invoke(this, new StartedBotEventArgs());
+        var startedEventArgs = new StartedBotEventArgs();
+        Started?.Invoke(this, startedEventArgs);
+        Mediator?.Publish(startedEventArgs, token).Start();
 
         return response;
     }
@@ -75,7 +83,9 @@ public abstract class BaseBot<T> : IBot<T>
 
         IsStarted = false;
 
-        Stopped?.Invoke(this, new StoppedBotEventArgs());
+        var stoppedEventArgs = new StoppedBotEventArgs();
+        Stopped?.Invoke(this, stoppedEventArgs);
+        Mediator?.Publish(stoppedEventArgs, token).Start();
 
         return response;
     }
@@ -111,6 +121,7 @@ public abstract class BaseBot<T> : IBot<T>
 
     public event StartedEventHandler Started;
     public event StoppedEventHandler Stopped;
+    public abstract event MsgSentEventHandler MessageSent;
     public abstract event MsgReceivedEventHandler MessageReceived;
     public abstract event MsgRemovedEventHandler MessageRemoved;
     public abstract event MessengerSpecificEventHandler MessengerSpecificEvent;

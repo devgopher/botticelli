@@ -14,7 +14,15 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<ChatMessageProcessor>()
                 .AddSingleton<ClientProcessorFactory>()
-                .AddSingleton<CommandProcessorFactory>();
+                .AddSingleton<CommandProcessorFactory>()
+                .AddMediatR(cfg =>
+                {
+                    var assemblies = services
+                                     .Select(s => s.GetType().Assembly)
+                                     .Distinct()
+                                     .ToArray();
+                    cfg.RegisterServicesFromAssemblies(assemblies);
+                });
 
         return services;
     }

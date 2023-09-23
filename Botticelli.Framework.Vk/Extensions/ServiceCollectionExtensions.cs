@@ -9,6 +9,7 @@ using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -89,6 +90,7 @@ public static class ServiceCollectionExtensions
                             secureStorage,
                             sp.GetRequiredService<VkStorageUploader>(),
                             sp.GetRequiredService<IBotUpdateHandler>(),
+                            sp.GetRequiredService<IMediator>(),
                             sp.GetRequiredService<ILogger<VkBot>>());
 
         return services.AddSingleton<IBot<VkBot>>(bot)

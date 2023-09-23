@@ -1,5 +1,7 @@
-﻿namespace Botticelli.Framework.Events;
+﻿using MediatR;
 
-public class StartedBotEventArgs : BotEventArgs
+namespace Botticelli.Framework.Events;
+
+public class StartedBotEventArgs : BotEventArgs, IRequest
 {
 }

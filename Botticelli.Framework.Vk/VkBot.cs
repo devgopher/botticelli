@@ -1,5 +1,6 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
+using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
 using Botticelli.Framework.Vk.API.Requests;
 using Botticelli.Framework.Vk.API.Responses;
@@ -13,6 +14,7 @@ using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Vk;
@@ -31,7 +33,8 @@ public class VkBot : BaseBot<VkBot>
                  SecureStorage secureStorage,
                  VkStorageUploader vkUploader,
                  IBotUpdateHandler handler,
-                 ILogger<VkBot> logger) : base(logger)
+                 IMediator mediator,
+                 ILogger<VkBot> logger) : base(logger, mediator)
     {
         _messagesProvider = messagesProvider;
         _messagePublisher = messagePublisher;
@@ -152,12 +155,18 @@ public class VkBot : BaseBot<VkBot>
                                                                    userId,
                                                                    token);
 
-                foreach (var vkRequest in requests) await _messagePublisher.SendAsync(vkRequest, token);
+                foreach (var vkRequest in requests) 
+                    await _messagePublisher.SendAsync(vkRequest, token);
             }
             catch (Exception ex)
             {
                 throw new BotException("Can't send a message!", ex);
             }
+
+        MessageSent.Invoke(this, new MessageSentBotEventArgs
+        {
+            Message = request.Message
+        });
 
         return new SendMessageResponse(request.Uid, string.Empty);
     }
@@ -256,6 +265,7 @@ public class VkBot : BaseBot<VkBot>
     }
 
     public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token) => throw new NotImplementedException();
+    public override event MsgSentEventHandler MessageSent;
     public override event MsgReceivedEventHandler MessageReceived;
     public override event MsgRemovedEventHandler MessageRemoved;
     public override event MessengerSpecificEventHandler MessengerSpecificEvent;

@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Diagnostics.Tracing;
+using System.Text;
 using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Events;
@@ -13,6 +15,7 @@ using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
@@ -33,11 +36,13 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="client"></param>
     /// <param name="handler"></param>
     /// <param name="logger"></param>
+    /// <param name="mediator"></param>
     /// <param name="secureStorage"></param>
     public TelegramBot(ITelegramBotClient client,
                        IBotUpdateHandler handler,
                        ILogger<TelegramBot> logger,
-                       SecureStorage secureStorage) : base(logger)
+                       IMediator mediator,
+                       SecureStorage secureStorage) : base(logger, mediator)
     {
         IsStarted = false;
         _client = client;
@@ -49,7 +54,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     public override BotType Type => BotType.Telegram;
-    public virtual event MsgSentEventHandler MessageSent;
+    public override event MsgSentEventHandler MessageSent;
     public override event MsgReceivedEventHandler MessageReceived;
     public override event MsgRemovedEventHandler MessageRemoved;
     public override event MessengerSpecificEventHandler MessengerSpecificEvent;
@@ -91,11 +96,13 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         response.MessageUid = request.Uid;
 
-        MessageRemoved?.Invoke(this,
-                               new MessageRemovedBotEventArgs
-                               {
-                                   MessageUid = request.Uid
-                               });
+        var eventArgs = new MessageRemovedBotEventArgs
+        {
+            MessageUid = request.Uid
+        };
+
+        MessageRemoved?.Invoke(this, eventArgs);
+        Mediator?.Publish(eventArgs, token).Start();
 
         return response;
     }
@@ -251,11 +258,13 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             response.MessageSentStatus = MessageSentStatus.Ok;
 
-            MessageSent?.Invoke(this,
-                                new MessageSentBotEventArgs
-                                {
-                                    Message = request.Message
-                                });
+            var eventArgs = new MessageSentBotEventArgs
+            {
+                Message = request.Message
+            };
+
+            MessageSent?.Invoke(this, eventArgs);
+            Mediator?.Publish(eventArgs, token).Start();
         }
         catch (Exception ex)
         {
@@ -329,7 +338,11 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             // Rethrowing an event from BotUpdateHandler
             _handler.MessageReceived += (sender, e)
-                    => MessageReceived?.Invoke(sender, e);
+                    =>
+            {
+                MessageReceived?.Invoke(sender, e);
+                Mediator?.Publish(e, token).Start();
+            };
 
             _client.StartReceiving(_handler, cancellationToken: token);
 

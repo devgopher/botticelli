@@ -1,6 +1,8 @@
-﻿namespace Botticelli.Framework.Events;
+﻿using MediatR;
 
-public class MessageRemovedBotEventArgs : BotEventArgs
+namespace Botticelli.Framework.Events;
+
+public class MessageRemovedBotEventArgs : BotEventArgs, IRequest
 {
     public string? MessageUid { get; set; }
 }

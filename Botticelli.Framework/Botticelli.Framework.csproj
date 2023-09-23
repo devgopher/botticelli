@@ -19,6 +19,7 @@
 		<ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="MediatR" Version="12.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
