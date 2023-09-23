@@ -11,7 +11,6 @@
     <PackageReference Include="NAudio.Lame" Version="2.1.0" />
     <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
     <PackageReference Include="NAudio.WaveFormRenderer" Version="2.0.0" />
-    <PackageReference Include="Streamcoders.MediaSuite.x64" Version="5.1.2621" />
   </ItemGroup>
 
   <ItemGroup>

@@ -17,16 +17,37 @@ namespace Botticelli.Audio.Tests
         [Test()]
         public void ConvertMp3ToMp3Test()
         {
+            if (!File.Exists("voice.mp3"))
+                Assert.Fail("no voice.mp3!");
             using var stream = File.OpenRead("voice.mp3");
             var outcome = _convertor.Convert(stream, new AudioInfo()
             {
                 AudioFormat = AudioFormat.Mp3,
                 Channels = 2,
                 SampleRate = 8000,
-                BitsPerSample = 16
+                BitsPerSample = 8
             });
 
             Assert.NotNull(outcome);
+            Assert.IsNotEmpty(outcome);
+        }
+
+        [Test()]
+        public void ConvertMp3ToWavTest()
+        {
+            if (!File.Exists("voice.mp3"))
+                Assert.Fail("no voice.mp3!");
+            using var stream = File.OpenRead("voice.mp3");
+            var outcome = _convertor.Convert(stream, new AudioInfo()
+            {
+                AudioFormat = AudioFormat.Aac,
+                Channels = 2,
+                SampleRate = 8000,
+                BitsPerSample = 8
+            });
+
+            Assert.NotNull(outcome);
+            Assert.IsNotEmpty(outcome);
         }
     }
 }
