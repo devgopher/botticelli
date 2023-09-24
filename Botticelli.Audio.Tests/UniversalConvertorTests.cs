@@ -15,7 +15,7 @@ namespace Botticelli.Audio.Tests
         }
 
         [Test()]
-        public void ConvertMp3ToMp3Test()
+        public void ConvertMp3ToOpusTest()
         {
             if (!File.Exists("voice.mp3"))
                 Assert.Fail("no voice.mp3!");
