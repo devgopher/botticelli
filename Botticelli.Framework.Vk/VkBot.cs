@@ -197,6 +197,7 @@ public class VkBot : BaseBot<VkBot>
                     Lat = request?.Message.Location?.Latitude,
                     Long = request?.Message.Location?.Longitude,
                     ReplyTo = request?.Message.ReplyToMessageUid,
+                    PeerId = request?.Message.ChatIds.FirstOrDefault(),
                     Attachment = null
                 };
 

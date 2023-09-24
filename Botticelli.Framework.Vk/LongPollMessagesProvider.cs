@@ -102,7 +102,6 @@ public class LongPollMessagesProvider : IDisposable
 
             var repeatPolicy = Policy.HandleResult<UpdatesResponse>(r => true)
                                      .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(_settings.CurrentValue.PollIntervalMs));
-
             var pollingTask = repeatPolicy.WrapAsync(updatePolicy)
                                           .ExecuteAsync(async () =>
                                           {

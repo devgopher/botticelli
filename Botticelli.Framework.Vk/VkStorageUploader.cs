@@ -74,7 +74,7 @@ public class VkStorageUploader
     /// <param name="token"></param>
     /// <returns></returns>
     private async Task<GetUploadAddress?> GetAudioUploadAddress(VkSendMessageRequest vkMessageRequest, CancellationToken token)
-        => await GetDocsUploadAddress(vkMessageRequest, "audio", token);
+        => await GetDocsUploadAddress(vkMessageRequest, "audio_message", token);
 
     private async Task<GetUploadAddress?> GetDocsUploadAddress(VkSendMessageRequest vkMessageRequest, string type, CancellationToken token)
     {
