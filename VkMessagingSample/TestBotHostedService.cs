@@ -1,4 +1,5 @@
 ﻿using Botticelli.Framework.Vk;
+using Botticelli.Framework.Vk.Messages;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;

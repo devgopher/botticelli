@@ -1,6 +1,6 @@
 ﻿using Botticelli.Framework.Options;
 
-namespace Botticelli.Framework.Vk.Options;
+namespace Botticelli.Framework.Vk.Messages.Options;
 
 /// <inheritdoc />
 public class VkBotSettings : BotSettings

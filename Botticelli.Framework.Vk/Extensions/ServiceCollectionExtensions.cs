@@ -5,9 +5,8 @@ using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
-using Botticelli.Framework.Vk.Handlers;
-using Botticelli.Framework.Vk.Messages;
-using Botticelli.Framework.Vk.Options;
+using Botticelli.Framework.Vk.Messages.Handlers;
+using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +15,7 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
 
-namespace Botticelli.Framework.Vk.Extensions;
+namespace Botticelli.Framework.Vk.Messages.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -81,6 +80,7 @@ public static class ServiceCollectionExtensions
                 .AddSingleton<LongPollMessagesProvider>()
                 .AddSingleton<MessagePublisher>()
                 .AddSingleton<IConvertor, UniversalLowQualityConvertor>()
+                .AddSingleton<IAnalyzer, InputAnalyzer>()
                 .AddSingleton(secureStorage)
                 .AddBotticelliFramework();
 

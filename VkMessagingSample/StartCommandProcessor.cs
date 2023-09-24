@@ -1,6 +1,7 @@
 ﻿using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Vk;
+using Botticelli.Framework.Vk.Messages;
 using Botticelli.Scheduler;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;

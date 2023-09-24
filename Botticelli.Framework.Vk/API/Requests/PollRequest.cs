@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Framework.Vk.API.Requests;
+﻿namespace Botticelli.Framework.Vk.Messages.API.Requests;
 
 public class PollRequest
 {

@@ -1,10 +1,9 @@
 ﻿using System.Reflection;
 using System.Text.Json.Serialization;
-using System.Xml.Linq;
 using Botticelli.Shared.Utils;
 using Flurl;
 
-namespace Botticelli.Framework.Vk.API.Utils;
+namespace Botticelli.Framework.Vk.Messages.API.Utils;
 
 public static class ApiUtils
 {

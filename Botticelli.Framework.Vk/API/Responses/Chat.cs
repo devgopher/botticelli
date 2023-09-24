@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace Botticelli.Framework.Vk.API.Responses;
+namespace Botticelli.Framework.Vk.Messages.API.Responses;
 
 public class Chat
 {

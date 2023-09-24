@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Framework.Vk.API.Errors;
+﻿namespace Botticelli.Framework.Vk.Messages.API.Errors;
 
 public class ResultCode
 {

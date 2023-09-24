@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Framework.Vk.API.Responses;
+﻿namespace Botticelli.Framework.Vk.Messages.API.Responses;
 
 /// <summary>
 ///     VK API object

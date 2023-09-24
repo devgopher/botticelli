@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Botticelli.Framework.Vk.API.Methods;
+namespace Botticelli.Framework.Vk.Messages.API.Methods;
 
 public class ExtendedResponse
 {

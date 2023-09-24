@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace Botticelli.Framework.Vk.API.Objects;
+namespace Botticelli.Framework.Vk.Messages.API.Objects;
 
 public class AccessKey
 {

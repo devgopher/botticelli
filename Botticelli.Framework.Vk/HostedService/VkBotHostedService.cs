@@ -2,7 +2,7 @@
 using Botticelli.Shared.API.Admin.Requests;
 using Microsoft.Extensions.Hosting;
 
-namespace Botticelli.Framework.Vk.HostedService;
+namespace Botticelli.Framework.Vk.Messages.HostedService;
 
 public class VkBotHostedService : IHostedService
 {

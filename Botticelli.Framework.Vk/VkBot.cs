@@ -1,10 +1,9 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Exceptions;
-using Botticelli.Framework.Vk.API.Requests;
-using Botticelli.Framework.Vk.API.Responses;
-using Botticelli.Framework.Vk.Handlers;
-using Botticelli.Framework.Vk.Messages;
+using Botticelli.Framework.Vk.Messages.API.Requests;
+using Botticelli.Framework.Vk.Messages.API.Responses;
+using Botticelli.Framework.Vk.Messages.Handlers;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
@@ -15,7 +14,7 @@ using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 
-namespace Botticelli.Framework.Vk;
+namespace Botticelli.Framework.Vk.Messages;
 
 public class VkBot : BaseBot<VkBot>
 {

@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
 using Botticelli.Audio;
 using Botticelli.BotBase.Exceptions;
-using Botticelli.Framework.Vk.API.Requests;
-using Botticelli.Framework.Vk.API.Responses;
-using Botticelli.Framework.Vk.API.Utils;
+using Botticelli.Framework.Vk.Messages.API.Requests;
+using Botticelli.Framework.Vk.Messages.API.Responses;
+using Botticelli.Framework.Vk.Messages.API.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Vk.Messages;

@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using Botticelli.Framework.Vk.API.Objects;
 
-namespace Botticelli.Framework.Vk.API.Requests;
+namespace Botticelli.Framework.Vk.Messages.API.Requests;
 
 public class VkSendMessageRequest
 {
