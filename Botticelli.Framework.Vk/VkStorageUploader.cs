@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Botticelli.Audio;
 using Botticelli.BotBase.Exceptions;
 using Botticelli.Framework.Vk.API.Requests;
 using Botticelli.Framework.Vk.API.Responses;
@@ -13,12 +14,16 @@ namespace Botticelli.Framework.Vk.Messages;
 public class VkStorageUploader
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IConvertor _audioConvertor;
     private readonly ILogger<MessagePublisher> _logger;
     private string _apiKey;
 
-    public VkStorageUploader(IHttpClientFactory httpClientFactory, ILogger<MessagePublisher> logger)
+    public VkStorageUploader(IHttpClientFactory httpClientFactory, 
+        IConvertor audioConvertor,
+        ILogger<MessagePublisher> logger)
     {
         _httpClientFactory = httpClientFactory;
+        _audioConvertor = audioConvertor;
         _logger = logger;
     }
 
@@ -166,7 +171,14 @@ public class VkStorageUploader
     private async Task<UploadDocResult> UploadAudioMessage(string uploadUrl, string name, byte[] binaryContent, CancellationToken token)
     {
         using var httpClient = _httpClientFactory.CreateClient();
-        using var memoryContentStream = new MemoryStream(binaryContent);
+        // convert to ogg in order to meet VK requirements
+        var oggContent = _audioConvertor.Convert(binaryContent, new AudioInfo()
+        {
+            AudioFormat = AudioFormat.Ogg,
+            Bitrate = 16000
+        });
+
+        using var memoryContentStream = new MemoryStream(oggContent);
         memoryContentStream.Seek(0, SeekOrigin.Begin);
 
         var content = new MultipartFormDataContent { { new StreamContent(memoryContentStream), "audio", name } };

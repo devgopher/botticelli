@@ -1,4 +1,6 @@
-﻿using FFMpegCore;
+﻿using System.ComponentModel;
+using Botticelli.Audio.Exceptions;
+using FFMpegCore;
 using FFMpegCore.Enums;
 using FFMpegCore.Exceptions;
 using FFMpegCore.Pipes;
@@ -8,24 +10,38 @@ using NAudio.Wave;
 
 namespace Botticelli.Audio;
 
-public class UniversalConvertor : IConvertor
+public class UniversalLowQualityConvertor : IConvertor
 {
     private readonly IAnalyzer _analyzer;
 
-    public UniversalConvertor(IAnalyzer analyzer) => _analyzer = analyzer;
+    public UniversalLowQualityConvertor(IAnalyzer analyzer) => _analyzer = analyzer;
 
     public byte[] Convert(Stream input, AudioInfo targetParams)
     {
-        if (targetParams.AudioFormat is AudioFormat.M4a or AudioFormat.Aac or AudioFormat.Opus)
-            return ProcessByStreamEncoder(input, targetParams);
+        try
+        {
+            if (targetParams.AudioFormat is AudioFormat.M4a or AudioFormat.Aac or AudioFormat.Opus or AudioFormat.Ogg)
+                return ProcessByStreamEncoder(input, targetParams);
 
-        var srcParams = _analyzer.Analyze(input);
+            var srcParams = _analyzer.Analyze(input);
 
-        using var resultStream = new MemoryStream();
-        using var srcStream = GetSourceWaveStream(input, srcParams);
-        using var tgtStream = GetTargetWaveStream(srcStream, targetParams);
+            using var resultStream = new MemoryStream();
+            using var srcStream = GetSourceWaveStream(input, srcParams);
+            using var tgtStream = GetTargetWaveStream(srcStream, targetParams);
 
-        return tgtStream.ToArray();
+            return tgtStream.ToArray();
+        }
+        catch (Exception ex)
+        {
+            throw new AudioConvertorException($"Audio conversion error: {ex.Message}", ex);
+        }
+    }
+
+    public byte[] Convert(byte[] input, AudioInfo targetParams)
+    {
+        using var ms = new MemoryStream(input);
+     
+        return Convert(ms, targetParams);
     }
 
     private static byte[] ProcessByStreamEncoder(Stream input, AudioInfo tgtParams)
@@ -47,6 +63,9 @@ public class UniversalConvertor : IConvertor
                 case AudioFormat.Opus:
                     codec = "opus";
                     break;
+                case AudioFormat.Wav:
+                    codec = "wav";
+                    break;
                 case AudioFormat.Unknown:
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -57,6 +76,7 @@ public class UniversalConvertor : IConvertor
                 .FromPipeInput(new StreamPipeSource(input))
                 .OutputToPipe(new StreamPipeSink(output), options => options
                     .ForceFormat(codec)
+                    .WithAudioBitrate(16000)
                     .WithAudioBitrate(AudioQuality.Low))
                 .ProcessSynchronously();
             

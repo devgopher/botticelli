@@ -1,4 +1,5 @@
 ﻿using BotDataSecureStorage;
+using Botticelli.Audio;
 using Botticelli.BotBase;
 using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
@@ -79,6 +80,7 @@ public static class ServiceCollectionExtensions
                 .AddSingleton<VkStorageUploader>()
                 .AddSingleton<LongPollMessagesProvider>()
                 .AddSingleton<MessagePublisher>()
+                .AddSingleton<IConvertor, UniversalLowQualityConvertor>()
                 .AddSingleton(secureStorage)
                 .AddBotticelliFramework();
 
