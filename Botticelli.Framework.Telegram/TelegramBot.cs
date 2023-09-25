@@ -246,6 +246,15 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 await SendContact(request, token, replyMarkup);
 
                                 break;
+                            case MediaType.Document:
+                                var doc = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                await _client.SendDocumentAsync(chatId, 
+                                    doc, 
+                                    replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                    replyMarkup: replyMarkup,
+                                    cancellationToken: token
+                                    );
+                                break;
                             case MediaType.Unknown:
                             case MediaType.Poll:
                             case MediaType.Text:

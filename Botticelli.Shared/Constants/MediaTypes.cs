@@ -10,5 +10,6 @@ public enum MediaType
     Sticker,
     Contact,
     Poll,
+    Document,
     Unknown
 }

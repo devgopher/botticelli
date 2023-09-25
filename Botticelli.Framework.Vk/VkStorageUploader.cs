@@ -171,7 +171,6 @@ public class VkStorageUploader
     /// <returns></returns>
     private async Task<UploadDocResult> UploadAudioMessage(string uploadUrl, string name, byte[] binaryContent, CancellationToken token)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
         // convert to ogg in order to meet VK requirements
         var oggContent = _audioConvertor.Convert(binaryContent, new AudioInfo()
         {
@@ -179,20 +178,37 @@ public class VkStorageUploader
             Bitrate = 16000
         });
 
+        return await PushDocument<UploadDocResult>(uploadUrl, name, oggContent, token);
+    }
+
+    private async Task<TResult> PushDocument<TResult>(string uploadUrl, string name, byte[] binContent,
+        CancellationToken token)
+    {
+        using var httpClient = _httpClientFactory.CreateClient();
         var content = new MultipartFormDataContent
         {
             {
-                new ByteArrayContent(oggContent, 0, oggContent.Length),
+                new ByteArrayContent(binContent, 0, binContent.Length),
                 "file",
-                $"{name}{Guid.NewGuid()}.ogg"
+                $"{Path.GetFileNameWithoutExtension(name)}{Guid.NewGuid()}.{Path.GetExtension(name)}"
             }
         };
 
         var response = await httpClient.PostAsync(uploadUrl, content, token);
         var resultString = await response.Content.ReadAsStringAsync();
 
-        return JsonSerializer.Deserialize<UploadDocResult>(resultString);
+        return JsonSerializer.Deserialize<TResult>(resultString);
     }
+
+    /// <summary>
+    ///     Uploads a document message (binaries)
+    /// </summary>
+    /// <param name="uploadUrl"></param>
+    /// <param name="binaryContent"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    private async Task<UploadDocResult> UploadDocMessage(string uploadUrl, string name, byte[] binaryContent, CancellationToken token) 
+        => await PushDocument<UploadDocResult>(uploadUrl, name, binaryContent, token);
 
     /// <summary>
     ///     Uploads a video (binaries)
@@ -315,6 +331,47 @@ public class VkStorageUploader
         return default;
     }
 
+
+    public async Task<VkSendDocumentResponse> SendDocsMessageAsync(VkSendMessageRequest vkMessageRequest, string name, byte[] binaryContent, CancellationToken token)
+    {
+        try
+        {
+            var address = await GetDocsUploadAddress(vkMessageRequest, "doc", token);
+
+            if (address?.Response == default) throw new BotException("Sending doc error: no upload server address!");
+
+            var uploadedDoc = await UploadDocMessage(address.Response.UploadUrl, name, binaryContent, token);
+
+            if (uploadedDoc?.File == default) throw new BotException("Sending doc error: no file uploaded!");
+
+            using var httpClient = _httpClientFactory.CreateClient();
+            var request = new HttpRequestMessage(HttpMethod.Post,
+                                                 ApiUtils.GetMethodUri("https://api.vk.com",
+                                                                       "docs.save",
+                                                                       new
+                                                                       {
+                                                                           file = uploadedDoc.File,
+                                                                           access_token = _apiKey,
+                                                                           v = ApiVersion
+                                                                       }));
+            request.Content = ApiUtils.GetMethodMultipartFormContent(new
+            {
+                doc = uploadedDoc.File
+            },
+            snakeCase: true);
+
+            var response = await httpClient.SendAsync(request, token);
+            var resultString = await response.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<VkSendDocumentResponse>(resultString);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error uploading media");
+        }
+
+        return default;
+    }
 
     /// <summary>
     ///     The main public method for sending a video

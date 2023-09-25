@@ -125,23 +125,29 @@ public class VkBot : BaseBot<VkBot>
         _vkUploader.SetApiKey(context.BotKey);
     }
 
-    private string CreateVkAttach(VkSendPhotoResponse fk, BotContext currentContext, string type)
+    private string CreateVkAttach(VkSendPhotoResponse fk, string type)
         => $"{type}" +
            $"{fk.Response?.FirstOrDefault()?.OwnerId.ToString()}" +
            $"_{fk.Response?.FirstOrDefault()?.Id.ToString()}";
 
 
-    private string CreateVkAttach(VkSendVideoResponse fk, BotContext currentContext, string type)
+    private string CreateVkAttach(VkSendVideoResponse fk, string type)
         => $"{type}" +
            $"{fk.Response?.OwnerId.ToString()}" +
            $"_{fk.Response?.VideoId.ToString()}";
 
 
 
-    private string CreateVkAttach(VkSendAudioResponse fk, BotContext currentContext, string type)
+    private string CreateVkAttach(VkSendAudioResponse fk, string type)
         => $"{type}" +
-           $"{fk.AudioResponseData.AudioMessage.OwnerId.ToString()}" +
-           $"_{fk.AudioResponseData.AudioMessage.Id.ToString()}";
+           $"{fk.AudioResponseData.AudioMessage.OwnerId}" +
+           $"_{fk.AudioResponseData.AudioMessage.Id}";
+
+    private string CreateVkAttach(VkSendDocumentResponse fk, string type)
+        => $"{type}" +
+           $"{fk.DocumentResponseData.Document.OwnerId}" +
+           $"_{fk.DocumentResponseData.Document.Id}";
+
 
     public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
                                                                                    ISendOptionsBuilder<TSendOptions> optionsBuilder,
@@ -222,7 +228,7 @@ public class VkBot : BaseBot<VkBot>
                                                                                          ba.Name,
                                                                                          ba.Data,
                                                                                          token);
-                                if (sendPhotoResponse != default) vkRequest.Attachment = CreateVkAttach(sendPhotoResponse, currentContext, "photo");
+                                if (sendPhotoResponse != default) vkRequest.Attachment = CreateVkAttach(sendPhotoResponse, "photo");
 
                                 break;
                             case {MediaType: MediaType.Video}:
@@ -240,11 +246,20 @@ public class VkBot : BaseBot<VkBot>
                                                                                          ba.Name,
                                                                                          ba.Data,
                                                                                          token);
-                                if (sendAudioMessageResponse != default) vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, currentContext, "doc");
+                                if (sendAudioMessageResponse != default) vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, "doc");
 
 
                                     break;
-                        }
+                            case { MediaType: MediaType.Document }:
+                                var sendDocMessageResponse = await _vkUploader.SendDocsMessageAsync(vkRequest,
+                                    ba.Name,
+                                    ba.Data,
+                                    token);
+                                if (sendDocMessageResponse != default) vkRequest.Attachment = CreateVkAttach(sendDocMessageResponse, "doc");
+
+
+                                break;
+                            }
                     }
 
                         break;

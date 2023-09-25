@@ -2,7 +2,7 @@
 
 namespace Botticelli.Framework.Vk.Messages.API.Responses;
 
-// Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
+// VkSendDocumentResponse myDeserializedClass = JsonSerializer.Deserialize<VkSendDocumentResponse>(myJsonResponse);
 public class GetUploadAddressResponse
 {
     [JsonPropertyName("album_id")]
