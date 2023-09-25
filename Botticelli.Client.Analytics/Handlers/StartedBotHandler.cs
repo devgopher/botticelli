@@ -1,10 +1,12 @@
 ﻿using Botticelli.Framework.Events;
-using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Client.Analytics.Handlers;
 
-public class StartedBotHandler : IRequestHandler<StartedBotEventArgs>
+
+public class StartedBotHandler : BasicHandler<StartedBotEventArgs>
 {
-    public async Task Handle(StartedBotEventArgs request, CancellationToken cancellationToken)
-        => throw new NotImplementedException();
+    public StartedBotHandler(MetricsPublisher publisher, ILogger<StartedBotEventArgs> logger) : base(publisher, logger)
+    {
+    }
 }

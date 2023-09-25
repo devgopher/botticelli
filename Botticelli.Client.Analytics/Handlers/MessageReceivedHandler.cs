@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Botticelli.Framework.Events;
-using MediatR;
+﻿using Botticelli.Framework.Events;
+using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Client.Analytics.Handlers
 {
-    public class MessageReceivedHandler : IRequestHandler<MessageReceivedBotEventArgs>
+    public class MessageReceivedHandler : BasicHandler<MessageReceivedBotEventArgs>
     {
-        public async Task Handle(MessageReceivedBotEventArgs request, CancellationToken cancellationToken) 
-            => throw new NotImplementedException();
+        public MessageReceivedHandler(MetricsPublisher publisher, ILogger<MessageReceivedBotEventArgs> logger) : base(publisher, logger)
+        {
+        }
     }
 }
