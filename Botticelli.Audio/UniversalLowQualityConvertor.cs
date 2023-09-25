@@ -1,8 +1,6 @@
-﻿using System.ComponentModel;
-using Botticelli.Audio.Exceptions;
+﻿using Botticelli.Audio.Exceptions;
 using FFMpegCore;
 using FFMpegCore.Enums;
-using FFMpegCore.Exceptions;
 using FFMpegCore.Pipes;
 using NAudio.Lame;
 using NAudio.Vorbis;

@@ -137,8 +137,8 @@ public class VkBot : BaseBot<VkBot>
 
     private string CreateVkAttach(VkSendAudioResponse fk, BotContext currentContext, string type)
         => $"{type}" +
-           $"{fk.Response?.OwnerId.ToString()}" +
-           $"_{fk.Response?.DocumentId.ToString()}";
+           $"{fk.AudioResponseData.AudioMessage.OwnerId.ToString()}" +
+           $"_{fk.AudioResponseData.AudioMessage.Id.ToString()}";
 
     public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
                                                                                    ISendOptionsBuilder<TSendOptions> optionsBuilder,
@@ -224,14 +224,14 @@ public class VkBot : BaseBot<VkBot>
 
                                 //if (sendVideoResponse != default) vkRequest.Attachment = CreateVkAttach(sendVideoResponse, currentContext, "video");
 
-                                //break;
+                                break;
                             case {MediaType: MediaType.Voice}:
                             case {MediaType: MediaType.Audio}:
                                 var sendAudioMessageResponse = await _vkUploader.SendAudioMessageAsync(vkRequest,
                                                                                          ba.Name,
                                                                                          ba.Data,
                                                                                          token);
-                                if (sendAudioMessageResponse != default) vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, currentContext, "audio");
+                                if (sendAudioMessageResponse != default) vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, currentContext, "doc");
 
 
                                     break;

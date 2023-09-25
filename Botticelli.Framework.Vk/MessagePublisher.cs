@@ -17,7 +17,7 @@ public class MessagePublisher
         _logger = logger;
     }
 
-    private string ApiVersion => "5.81";
+    private string ApiVersion => "5.131";
 
     public void SetApiKey(string key)
         => _apiKey = key;
