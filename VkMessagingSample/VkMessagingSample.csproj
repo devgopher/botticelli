@@ -25,6 +25,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="Media\document.odt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<None Update="Media\testpic.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

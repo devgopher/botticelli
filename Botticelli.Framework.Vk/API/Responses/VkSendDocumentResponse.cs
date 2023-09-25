@@ -2,8 +2,8 @@
 
 namespace Botticelli.Framework.Vk.Messages.API.Responses;
 
-public class VkSendAudioResponse
+public class VkSendDocumentResponse
 {
     [JsonPropertyName("response")]
-    public AudioResponseData AudioResponseData { get; set; }
+    public DocumentResponseData DocumentResponseData { get; set; }
 }

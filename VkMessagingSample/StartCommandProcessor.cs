@@ -62,7 +62,12 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
                                                        "video.mp4",
                                                        MediaType.Video,
                                                        string.Empty,
-                                                       await File.ReadAllBytesAsync("Media/video.mp4", token))
+                                                       await File.ReadAllBytesAsync("Media/video.mp4", token)),
+                                  new BinaryAttachment(Guid.NewGuid().ToString(),
+                                      "document.odt",
+                                      MediaType.Document,
+                                      string.Empty,
+                                      await File.ReadAllBytesAsync("Media/document.odt", token))
                              }
                          },
                          new Schedule
