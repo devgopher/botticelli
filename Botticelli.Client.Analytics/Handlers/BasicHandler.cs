@@ -1,15 +1,18 @@
-﻿using MediatR;
+﻿using Botticelli.Shared.ValueObjects;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Client.Analytics.Handlers;
 
-public abstract class BasicHandler<TArgs> : IRequestHandler<TArgs> where TArgs : IRequest
+public abstract class BasicHandler<TArgs, TMetric> : IRequestHandler<TArgs> where TArgs : IRequest
 {
-    protected readonly MetricsPublisher _publisher;
-    protected readonly ILogger _logger;
+    private readonly BotContext _context;
+    private readonly MetricsPublisher _publisher;
+    private readonly ILogger _logger;
 
-    public BasicHandler(MetricsPublisher publisher, ILogger logger)
+    protected BasicHandler(BotContext context, MetricsPublisher publisher, ILogger logger)
     {
+        _context = context;
         _publisher = publisher;
         _logger = logger;
     }
@@ -19,11 +22,16 @@ public abstract class BasicHandler<TArgs> : IRequestHandler<TArgs> where TArgs :
         try
         {
             _logger.LogTrace($"Metric {request.GetType().Name} handling...");
-            await _publisher.Publish(request, cancellationToken);
+
+            var metric = Convert(request, _context.BotId);
+
+            await _publisher.Publish(metric, cancellationToken);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex.Message, ex);
         }
     }
+
+    protected abstract TMetric Convert(TArgs args, string botId);
 }

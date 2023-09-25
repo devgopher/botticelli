@@ -9,6 +9,7 @@ using Botticelli.Framework.Telegram.HostedService;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -62,6 +63,7 @@ public static class ServiceCollectionExtensions
         var bot = new TelegramBot(new TelegramBotClient(token),
                                   sp.GetRequiredService<IBotUpdateHandler>(),
                                   sp.GetRequiredService<ILogger<TelegramBot>>(),
+                                  sp.GetRequiredService<IMediator>(),
                                   secureStorage);
 
         return services.AddSingleton<IBot<TelegramBot>>(bot)

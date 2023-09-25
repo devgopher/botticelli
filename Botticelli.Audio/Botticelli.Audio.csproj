@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\3dParty\FileSignatures\src\FileSignatures\FileSignatures.csproj" />
+    <ProjectReference Include="..\3dParty\FileSignatures\FileSignatures.csproj" />
   </ItemGroup>
 
 </Project>

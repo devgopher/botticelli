@@ -1,7 +1,6 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Client.Analytics.Settings;
 using Flurl.Http;
-using MediatR;
 
 namespace Botticelli.Client.Analytics
 {
