@@ -1,7 +1,7 @@
 ﻿using Botticelli.Framework.Events;
-using Botticelli.Framework.Vk.API.Responses;
+using Botticelli.Framework.Vk.Messages.API.Responses;
 
-namespace Botticelli.Framework.Vk.Handlers;
+namespace Botticelli.Framework.Vk.Messages.Handlers;
 
 public interface IBotUpdateHandler
 {

@@ -1,8 +1,7 @@
-﻿using System.Text.Json;
-using System.Text.Json.Nodes;
+﻿using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
-namespace Botticelli.Framework.Vk.API.Responses;
+namespace Botticelli.Framework.Vk.Messages.API.Responses;
 
 /// <summary>
 ///     Particular events

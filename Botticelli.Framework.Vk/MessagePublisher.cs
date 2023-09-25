@@ -1,9 +1,9 @@
 ﻿using System.Net;
-using Botticelli.Framework.Vk.API.Requests;
-using Botticelli.Framework.Vk.API.Utils;
+using Botticelli.Framework.Vk.Messages.API.Requests;
+using Botticelli.Framework.Vk.Messages.API.Utils;
 using Microsoft.Extensions.Logging;
 
-namespace Botticelli.Framework.Vk;
+namespace Botticelli.Framework.Vk.Messages;
 
 public class MessagePublisher
 {
@@ -17,7 +17,7 @@ public class MessagePublisher
         _logger = logger;
     }
 
-    private string ApiVersion => "5.81";
+    private string ApiVersion => "5.131";
 
     public void SetApiKey(string key)
         => _apiKey = key;

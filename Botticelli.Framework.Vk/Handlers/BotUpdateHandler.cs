@@ -1,11 +1,10 @@
 ﻿using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.MessageProcessors;
-using Botticelli.Framework.Vk.API.Responses;
+using Botticelli.Framework.Vk.Messages.API.Responses;
 using Botticelli.Shared.ValueObjects;
-using Flurl.Util;
 using Microsoft.Extensions.Logging;
 
-namespace Botticelli.Framework.Vk.Handlers;
+namespace Botticelli.Framework.Vk.Messages.Handlers;
 
 public class BotUpdateHandler : IBotUpdateHandler
 {

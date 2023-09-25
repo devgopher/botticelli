@@ -1,9 +1,11 @@
-﻿using System.Text.Json;
+﻿using Botticelli.Audio;
 using Botticelli.BotBase.Exceptions;
-using Botticelli.Framework.Vk.API.Requests;
-using Botticelli.Framework.Vk.API.Responses;
-using Botticelli.Framework.Vk.API.Utils;
+using Botticelli.Framework.Vk.Messages.API.Requests;
+using Botticelli.Framework.Vk.Messages.API.Responses;
+using Botticelli.Framework.Vk.Messages.API.Utils;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using AudioMessage = Botticelli.Framework.Vk.Messages.API.Responses.AudioMessage;
 
 namespace Botticelli.Framework.Vk.Messages;
 
@@ -13,16 +15,20 @@ namespace Botticelli.Framework.Vk.Messages;
 public class VkStorageUploader
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IConvertor _audioConvertor;
     private readonly ILogger<MessagePublisher> _logger;
     private string _apiKey;
 
-    public VkStorageUploader(IHttpClientFactory httpClientFactory, ILogger<MessagePublisher> logger)
+    public VkStorageUploader(IHttpClientFactory httpClientFactory, 
+        IConvertor audioConvertor,
+        ILogger<MessagePublisher> logger)
     {
         _httpClientFactory = httpClientFactory;
+        _audioConvertor = audioConvertor;
         _logger = logger;
     }
 
-    private string ApiVersion => "5.81";
+    private string ApiVersion => "5.131";
 
     public void SetApiKey(string key) => _apiKey = key;
 
@@ -69,7 +75,7 @@ public class VkStorageUploader
     /// <param name="token"></param>
     /// <returns></returns>
     private async Task<GetUploadAddress?> GetAudioUploadAddress(VkSendMessageRequest vkMessageRequest, CancellationToken token)
-        => await GetDocsUploadAddress(vkMessageRequest, "audio", token);
+        => await GetDocsUploadAddress(vkMessageRequest, "audio_message", token);
 
     private async Task<GetUploadAddress?> GetDocsUploadAddress(VkSendMessageRequest vkMessageRequest, string type, CancellationToken token)
     {
@@ -166,10 +172,21 @@ public class VkStorageUploader
     private async Task<UploadDocResult> UploadAudioMessage(string uploadUrl, string name, byte[] binaryContent, CancellationToken token)
     {
         using var httpClient = _httpClientFactory.CreateClient();
-        using var memoryContentStream = new MemoryStream(binaryContent);
-        memoryContentStream.Seek(0, SeekOrigin.Begin);
+        // convert to ogg in order to meet VK requirements
+        var oggContent = _audioConvertor.Convert(binaryContent, new AudioInfo()
+        {
+            AudioFormat = AudioFormat.Ogg,
+            Bitrate = 16000
+        });
 
-        var content = new MultipartFormDataContent { { new StreamContent(memoryContentStream), "audio", name } };
+        var content = new MultipartFormDataContent
+        {
+            {
+                new ByteArrayContent(oggContent, 0, oggContent.Length),
+                "file",
+                $"{name}{Guid.NewGuid()}.ogg"
+            }
+        };
 
         var response = await httpClient.PostAsync(uploadUrl, content, token);
         var resultString = await response.Content.ReadAsStringAsync();
@@ -314,9 +331,9 @@ public class VkStorageUploader
     //    {
     //        var sendVideoData = await GetVideoUploadData(vkMessageRequest, token);
 
-    //        if (sendVideoData?.Response == default) throw new BotException("Sending video error: no upload server address!");
+    //        if (sendVideoData?.AudioResponseData == default) throw new BotException("Sending video error: no upload server address!");
 
-    //        var uploadedVideo = await UploadVideo(sendVideoData.Response.UploadUrl, name, binaryContent, token);
+    //        var uploadedVideo = await UploadVideo(sendVideoData.AudioResponseData.UploadUrl, name, binaryContent, token);
 
     //        if (uploadedVideo?.Video == default) throw new BotException("Sending video error: no media uploaded!");
 

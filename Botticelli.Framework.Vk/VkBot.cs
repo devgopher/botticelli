@@ -2,10 +2,9 @@
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
-using Botticelli.Framework.Vk.API.Requests;
-using Botticelli.Framework.Vk.API.Responses;
-using Botticelli.Framework.Vk.Handlers;
-using Botticelli.Framework.Vk.Messages;
+using Botticelli.Framework.Vk.Messages.API.Requests;
+using Botticelli.Framework.Vk.Messages.API.Responses;
+using Botticelli.Framework.Vk.Messages.Handlers;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
@@ -17,7 +16,7 @@ using Botticelli.Shared.ValueObjects;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Botticelli.Framework.Vk;
+namespace Botticelli.Framework.Vk.Messages;
 
 public class VkBot : BaseBot<VkBot>
 {
@@ -141,8 +140,8 @@ public class VkBot : BaseBot<VkBot>
 
     private string CreateVkAttach(VkSendAudioResponse fk, BotContext currentContext, string type)
         => $"{type}" +
-           $"{fk.Response?.OwnerId.ToString()}" +
-           $"_{fk.Response?.DocumentId.ToString()}";
+           $"{fk.AudioResponseData.AudioMessage.OwnerId.ToString()}" +
+           $"_{fk.AudioResponseData.AudioMessage.Id.ToString()}";
 
     public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
                                                                                    ISendOptionsBuilder<TSendOptions> optionsBuilder,
@@ -207,6 +206,7 @@ public class VkBot : BaseBot<VkBot>
                     Lat = request?.Message.Location?.Latitude,
                     Long = request?.Message.Location?.Longitude,
                     ReplyTo = request?.Message.ReplyToMessageUid,
+                    PeerId = request?.Message.ChatIds.FirstOrDefault(),
                     Attachment = null
                 };
 
@@ -233,14 +233,14 @@ public class VkBot : BaseBot<VkBot>
 
                                 //if (sendVideoResponse != default) vkRequest.Attachment = CreateVkAttach(sendVideoResponse, currentContext, "video");
 
-                                //break;
+                                break;
                             case {MediaType: MediaType.Voice}:
                             case {MediaType: MediaType.Audio}:
                                 var sendAudioMessageResponse = await _vkUploader.SendAudioMessageAsync(vkRequest,
                                                                                          ba.Name,
                                                                                          ba.Data,
                                                                                          token);
-                                if (sendAudioMessageResponse != default) vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, currentContext, "audio");
+                                if (sendAudioMessageResponse != default) vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, currentContext, "doc");
 
 
                                     break;

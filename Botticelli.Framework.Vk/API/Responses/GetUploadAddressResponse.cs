@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Botticelli.Framework.Vk.API.Responses;
+namespace Botticelli.Framework.Vk.Messages.API.Responses;
 
 // Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
 public class GetUploadAddressResponse

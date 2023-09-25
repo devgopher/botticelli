@@ -1,4 +1,5 @@
-﻿using Botticelli.Framework.Vk.API.Requests;
+﻿using Botticelli.Framework.Vk.Messages;
+using Botticelli.Framework.Vk.Messages.API.Requests;
 using NUnit.Framework;
 
 namespace Botticelli.Framework.Vk.Tests;

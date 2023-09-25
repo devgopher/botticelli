@@ -39,7 +39,6 @@
 		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
 		<ProjectReference Include="..\Botticelli.Scheduler.Interfaces\Botticelli.Scheduler.Interfaces.csproj" />
 		<ProjectReference Include="..\Botticelli.Scheduler\Botticelli.Scheduler.csproj" />
-		<ProjectReference Include="..\Botticelli.Serialization\Botticelli.Serialization.csproj" />
 		<ProjectReference Include="..\Botticelli.Server.Models\Botticelli.Server.Models.csproj" />
 		<ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj" />
 		<ProjectReference Include="..\Botticelli.Talks.Tests\Botticelli.Talks.Tests.csproj" />

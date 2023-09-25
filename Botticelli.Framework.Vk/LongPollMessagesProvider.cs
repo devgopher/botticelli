@@ -1,15 +1,15 @@
 ﻿using System.Text.Json;
 using Botticelli.BotBase.Exceptions;
-using Botticelli.Framework.Vk.API.Responses;
-using Botticelli.Framework.Vk.API.Utils;
-using Botticelli.Framework.Vk.Options;
+using Botticelli.Framework.Vk.Messages.API.Responses;
+using Botticelli.Framework.Vk.Messages.API.Utils;
+using Botticelli.Framework.Vk.Messages.Options;
 using Flurl;
 using Flurl.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 
-namespace Botticelli.Framework.Vk;
+namespace Botticelli.Framework.Vk.Messages;
 
 /// <summary>
 ///     Long poll method provider
@@ -102,7 +102,6 @@ public class LongPollMessagesProvider : IDisposable
 
             var repeatPolicy = Policy.HandleResult<UpdatesResponse>(r => true)
                                      .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(_settings.CurrentValue.PollIntervalMs));
-
             var pollingTask = repeatPolicy.WrapAsync(updatePolicy)
                                           .ExecuteAsync(async () =>
                                           {
