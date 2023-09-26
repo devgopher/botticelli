@@ -22,21 +22,10 @@
 		<ProjectReference Include="..\Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj" />
 		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
 		<ProjectReference Include="..\Botticelli.Scheduler\Botticelli.Scheduler.csproj" />
+		<ProjectReference Include="..\MessagingSample.Common\MessagingSample.Common.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Media\document.odt">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="Media\testpic.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="Media\video.mp4">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="Media\voice.mp3">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
 		<None Update="Properties\launchSettings.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>

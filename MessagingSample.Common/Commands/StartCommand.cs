@@ -1,6 +1,6 @@
 ﻿using Botticelli.Framework.Commands;
 
-namespace VkMessagingSample.Commands;
+namespace MessagingSample.Common.Commands;
 
 public class StartCommand : ICommand
 {

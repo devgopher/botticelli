@@ -7,12 +7,13 @@ namespace Botticelli.Scheduler;
 
 public static class JobManager
 {
-    public static string AddJob<TBot>(IBot<TBot> bot,
-                                      Reliability reliability,
-                                      Message message,
-                                      Schedule schedule,
-                                      Action<Message> preprocessFunc = default)
-            where TBot : IBot<TBot>
+    private static readonly List<string> JobIds = new(5);
+
+    public static string AddJob(IBot bot,
+        Reliability reliability,
+        Message message,
+        Schedule schedule,
+        Action<Message> preprocessFunc = default)
     {
         var jobId = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
 
@@ -26,47 +27,42 @@ public static class JobManager
         if (!reliability.IsEnabled)
         {
             RecurringJob.AddOrUpdate(jobId,
-                                     () => bot.SendMessageAsync(request, CancellationToken.None),
-                                     schedule.Cron);
+                () => bot.SendMessageAsync(request, CancellationToken.None),
+                schedule.Cron);
+            JobIds.Add(jobId);
 
             return jobId;
         }
 
         RecurringJob.AddOrUpdate(jobId,
-                                 () => SendWithReliability(bot,
-                                                           request,
-                                                           reliability,
-                                                           CancellationToken.None),
-                                 schedule.Cron);
+            () => SendWithReliability(bot,
+                request,
+                reliability,
+                CancellationToken.None),
+            schedule.Cron);
+        JobIds.Add(jobId);
 
         return jobId;
     }
 
-    public static void RemoveJob(string jobId) => RecurringJob.RemoveIfExists(jobId);
+    public static void RemoveJob(string jobId)
+    {
+        RecurringJob.RemoveIfExists(jobId);
+        JobIds.Remove(jobId);
+    }
+    public static void RemoveAllJobs()
+    {
+        foreach (var jobId in JobIds)
+        {
+            RecurringJob.RemoveIfExists(jobId);
+        }
 
-    public static async Task SendWithReliability<TBot>(IBot<TBot> bot,
-                                                       SendMessageRequest request,
-                                                       Reliability reliability,
-                                                       CancellationToken token)
-            where TBot : IBot<TBot> =>
-            throw new NotImplementedException();
-    //try
-    //{
-    //    int t = 0;
-    //    while (reliability.IsEnabled && t < reliability.MaxTries)
-    //    {
-    //        var response = await bot.SendMessageAsync(request, token);
-    //        if (response.MessageSentStatus == MessageSentStatus.Ok) return;
-    //        if (reliability.IsExponential)
-    //        {
-    //            Thread.Sleep((int) (t * Math.Exp(reliability.Delay.TotalMilliseconds)));
-    //            continue;
-    //        }
-    //        Thread.Sleep((int)reliability.Delay.TotalMilliseconds);
-    //        ++t;
-    //    }
-    //}
-    //catch (Exception ex)
-    //{
-    //}
+        JobIds.Clear();
+    }
+
+    public static async Task SendWithReliability(IBot bot,
+        SendMessageRequest request,
+        Reliability reliability,
+        CancellationToken token)
+        => throw new NotImplementedException();
 }

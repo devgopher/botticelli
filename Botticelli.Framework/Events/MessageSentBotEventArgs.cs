@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Botticelli.Framework.Events;
 
-public class MessageSentBotEventArgs : BotEventArgs, IRequest
+public class MessageSentBotEventArgs : BotEventArgs, IRequest, INotification
 {
     public Message Message { get; set; }
 }

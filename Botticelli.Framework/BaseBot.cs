@@ -63,7 +63,7 @@ public abstract class BaseBot<T> : IBot<T>
 
         var startedEventArgs = new StartedBotEventArgs();
         Started?.Invoke(this, startedEventArgs);
-        Mediator?.Publish(startedEventArgs, token).Start();
+        Mediator?.Publish(startedEventArgs, token);
 
         return response;
     }
@@ -85,7 +85,7 @@ public abstract class BaseBot<T> : IBot<T>
 
         var stoppedEventArgs = new StoppedBotEventArgs();
         Stopped?.Invoke(this, stoppedEventArgs);
-        Mediator?.Publish(stoppedEventArgs, token).Start();
+        Mediator?.Publish(stoppedEventArgs, token);
 
         return response;
     }

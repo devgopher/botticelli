@@ -15,8 +15,7 @@ public static class ServiceCollectionExtensions
     /// <param name="services">Service collection</param>
     /// <param name="config">Configuration</param>
     /// <returns></returns>
-    public static IServiceCollection AddHangfireScheduler<TBot>(this IServiceCollection services, IConfiguration config)
-            where TBot : class, IBot<TBot>
+    public static IServiceCollection AddHangfireScheduler(this IServiceCollection services, IConfiguration config)
     {
         var settings = new SchedulerSettings();
         config.GetSection(nameof(SchedulerSettings)).Bind(settings);

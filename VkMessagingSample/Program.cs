@@ -2,14 +2,14 @@ using BotDataSecureStorage.Settings;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
-using Botticelli.Framework.Vk;
 using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Messages.Extensions;
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Scheduler.Extensions;
+using MessagingSample.Common.Commands;
+using MessagingSample.Common.Commands.Processors;
 using NLog.Extensions.Logging;
 using VkMessagingSample;
-using VkMessagingSample.Commands;
 using VkMessagingSample.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,12 +33,15 @@ builder.Services
                              s.GroupId = 221973506;
                          }))
        .AddLogging(cfg => cfg.AddNLog())
-       .AddHangfireScheduler<VkBot>(builder.Configuration)
+       .AddHangfireScheduler(builder.Configuration)
        .AddHostedService<TestBotHostedService>()
        .AddScoped<StartCommandProcessor>()
-       .AddBotCommand<StartCommand, StartCommandProcessor, PassValidator<StartCommand>>();
+       .AddScoped<StopCommandProcessor>()
+       .AddBotCommand<StartCommand, StartCommandProcessor, PassValidator<StartCommand>>()
+       .AddBotCommand<StopCommand, StopCommandProcessor, PassValidator<StopCommand>>();
 
 var app = builder.Build();
 app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor, VkBot>();
+app.Services.RegisterBotCommand<StopCommand, StopCommandProcessor, VkBot>();
 
 app.Run();
