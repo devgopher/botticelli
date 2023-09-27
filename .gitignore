@@ -377,3 +377,4 @@ FodyWeavers.xsd
 /Botticelli/botInfo.Db-wal
 /Botticelli/botInfo.Db-shm
 *.odg#
+/VkAiChatGptSample/appsettings.json
