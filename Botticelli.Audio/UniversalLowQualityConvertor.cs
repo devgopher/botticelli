@@ -1,6 +1,7 @@
 ﻿using Botticelli.Audio.Exceptions;
 using FFMpegCore;
 using FFMpegCore.Pipes;
+using Microsoft.Extensions.Logging;
 using NAudio.Lame;
 using NAudio.Vorbis;
 using NAudio.Wave;
@@ -10,43 +11,48 @@ namespace Botticelli.Audio;
 public class UniversalLowQualityConvertor : IConvertor
 {
     private readonly IAnalyzer _analyzer;
+    private readonly ILogger<UniversalLowQualityConvertor> _logger;
 
-    public UniversalLowQualityConvertor(IAnalyzer analyzer) => _analyzer = analyzer;
+    public UniversalLowQualityConvertor(IAnalyzer analyzer, ILogger<UniversalLowQualityConvertor> logger)
+    {
+        _analyzer = analyzer;
+        _logger = logger;
+    }
 
-    public byte[] Convert(Stream input, AudioInfo targetParams)
+    public byte[] Convert(Stream input, AudioInfo tgtParams)
     {
         try
         {
-            if (targetParams.AudioFormat is AudioFormat.M4a or AudioFormat.Aac or AudioFormat.Opus or AudioFormat.Ogg)
-                return ProcessByStreamEncoder(input, targetParams);
+            if (tgtParams.AudioFormat is AudioFormat.M4a or AudioFormat.Aac or AudioFormat.Opus or AudioFormat.Ogg)
+                return ProcessByStreamEncoder(input, tgtParams);
 
             var srcParams = _analyzer.Analyze(input);
 
             using var resultStream = new MemoryStream();
             using var srcStream = GetSourceWaveStream(input, srcParams);
-            using var tgtStream = GetTargetWaveStream(srcStream, targetParams);
+            using var tgtStream = GetTargetWaveStream(srcStream, tgtParams);
 
             return tgtStream.ToArray();
         }
         catch (Exception ex)
         {
+            _logger.LogError($"{nameof(Convert)} => ({tgtParams.AudioFormat}, {tgtParams.Bitrate}) error", ex);
             throw new AudioConvertorException($"Audio conversion error: {ex.Message}", ex);
         }
     }
 
-    public byte[] Convert(byte[] input, AudioInfo targetParams)
+    public byte[] Convert(byte[] input, AudioInfo tgtParams)
     {
         using var ms = new MemoryStream(input);
      
-        return Convert(ms, targetParams);
+        return Convert(ms, tgtParams);
     }
 
-    private static byte[] ProcessByStreamEncoder(Stream input, AudioInfo tgtParams)
+    private byte[] ProcessByStreamEncoder(Stream input, AudioInfo tgtParams)
     {
         try
         {
             var codec = string.Empty;
-            input.Seek(0, SeekOrigin.Begin);
 
             switch (tgtParams.AudioFormat)
             {
@@ -80,6 +86,7 @@ public class UniversalLowQualityConvertor : IConvertor
         }
         catch (IOException ex)
         {
+            _logger.LogError($"{nameof(Convert)} => ({tgtParams.AudioFormat}, {tgtParams.Bitrate}) error", ex);
             return Array.Empty<byte>();
         }
     }
@@ -96,7 +103,6 @@ public class UniversalLowQualityConvertor : IConvertor
 
     private MemoryStream GetTargetWaveStream(WaveStream input, AudioInfo srcParams)
     {
-        input.Seek(0, SeekOrigin.Begin);
         var ms = new MemoryStream();
         
         Stream writerStream = srcParams.AudioFormat switch

@@ -7,14 +7,14 @@ namespace Botticelli.Framework.Vk.Tests;
 [TestFixture]
 public class MessagePublisherTests
 {
+    private MessagePublisher _publisher;
+
     [SetUp]
     public void Setup()
     {
         _publisher = new MessagePublisher(new TestHttpClientFactory(),
                                           Utils.CreateConsoleLogger<MessagePublisher>());
     }
-
-    private MessagePublisher _publisher;
 
     [Test]
     public async Task SendAsyncTest()

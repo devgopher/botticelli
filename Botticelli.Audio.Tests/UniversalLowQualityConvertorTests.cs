@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+using NUnit.Framework;
 
 namespace Botticelli.Audio.Tests;
 
@@ -6,12 +7,11 @@ namespace Botticelli.Audio.Tests;
 public class UniversalLowQualityConvertorTests
 {
     private readonly IConvertor _convertor;
-    private readonly IAnalyzer _analyzer;
 
     public UniversalLowQualityConvertorTests()
     {
-        _analyzer = new InputAnalyzer();
-        _convertor = new UniversalLowQualityConvertor(_analyzer);
+        IAnalyzer analyzer = new InputAnalyzer();
+        _convertor = new UniversalLowQualityConvertor(analyzer, new NullLogger<UniversalLowQualityConvertor>());
     }
 
     [Test]
@@ -53,7 +53,7 @@ public class UniversalLowQualityConvertorTests
         var outcome = GetOutcome(new AudioInfo
         {
             AudioFormat = AudioFormat.Ogg,
-            Bitrate = AudioBitrate.VkAudioMessage
+            Bitrate = AudioBitrate.LowMusic
         });
 
         AssertOutcome(outcome);
