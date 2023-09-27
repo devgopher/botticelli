@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics.Tracing;
-using System.Text;
-using BotDataSecureStorage;
+﻿using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
@@ -17,10 +14,12 @@ using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Text;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
+using Poll = Botticelli.Shared.ValueObjects.Poll;
 
 namespace Botticelli.Framework.Telegram;
 
@@ -154,7 +153,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                 {
                     await _client.SendTextMessageAsync(chatId,
                                                        retText,
-                                                       ParseMode.MarkdownV2,
+                                                       parseMode: ParseMode.MarkdownV2,
                                                        replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
                                                        replyMarkup: replyMarkup,
                                                        cancellationToken: token);
@@ -171,8 +170,8 @@ public class TelegramBot : BaseBot<TelegramBot>
                         await _client.SendPollAsync(chatId,
                                                     request.Message.Poll?.Question,
                                                     request.Message.Poll?.Variants,
-                                                    request.Message.Poll?.IsAnonymous,
-                                                    type,
+                                                    isAnonymous :request.Message.Poll?.IsAnonymous,
+                                                    type: type,
                                                     replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
                                                     replyMarkup: replyMarkup,
                                                     cancellationToken: token);
@@ -191,18 +190,18 @@ public class TelegramBot : BaseBot<TelegramBot>
                         switch (attachment.MediaType)
                         {
                             case MediaType.Audio:
-                                var audio = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                var audio = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                                 await _client.SendAudioAsync(chatId,
                                                              audio,
-                                                             request.Message.Subject,
-                                                             ParseMode.MarkdownV2,
+                                                             caption: request.Message.Subject,
+                                                             parseMode: ParseMode.MarkdownV2,
                                                              replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
                                                              replyMarkup: replyMarkup,
                                                              cancellationToken: token);
 
                                 break;
                             case MediaType.Video:
-                                var video = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                var video = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                                 await _client.SendVideoAsync(chatId,
                                                              video,
                                                              replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
@@ -211,7 +210,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 
                                 break;
                             case MediaType.Image:
-                                var image = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                var image = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                                 await _client.SendPhotoAsync(chatId,
                                                              image,
                                                              replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
@@ -220,20 +219,20 @@ public class TelegramBot : BaseBot<TelegramBot>
 
                                 break;
                             case MediaType.Voice:
-                                var voice = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                var voice = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                                 await _client.SendVoiceAsync(chatId,
                                                              voice,
-                                                             request.Message.Subject,
-                                                             ParseMode.MarkdownV2,
+                                                             caption: request.Message.Subject,
+                                                             parseMode: ParseMode.MarkdownV2,
                                                              replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
                                                              replyMarkup: replyMarkup,
                                                              cancellationToken: token);
 
                                 break;
                             case MediaType.Sticker:
-                                var sticker = string.IsNullOrWhiteSpace(attachment.Url) ?
-                                        new InputOnlineFile(attachment.Data.ToStream(), attachment.Name) :
-                                        new InputOnlineFile(attachment.Url);
+                                InputFile sticker = string.IsNullOrWhiteSpace(attachment.Url) ?
+                                        new InputFileStream(attachment.Data.ToStream(), attachment.Name) :
+                                        new InputFileUrl(attachment.Url);
 
                                 await _client.SendStickerAsync(chatId,
                                                                sticker,
@@ -247,7 +246,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 
                                 break;
                             case MediaType.Document:
-                                var doc = new InputOnlineFile(attachment.Data.ToStream(), attachment.Name);
+                                var doc = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                                 await _client.SendDocumentAsync(chatId, 
                                     doc, 
                                     replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
@@ -289,8 +288,8 @@ public class TelegramBot : BaseBot<TelegramBot>
         foreach (var chatId in request.Message?.ChatIds)
             await _client.SendContactAsync(chatId,
                                            request.Message.Contact?.Phone,
-                                           request.Message?.Contact?.Name,
-                                           request.Message?.Contact?.Surname,
+                                           firstName: request.Message?.Contact?.Name,
+                                           lastName:request.Message?.Contact?.Surname,
                                            replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
                                            replyMarkup: replyMarkup,
                                            cancellationToken: token);
