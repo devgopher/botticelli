@@ -1,10 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+  </PropertyGroup>
+
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>0.1-beta</Version>
+    <Version>0.3</Version>
     <Company>Botticelli</Company>
     <Copyright>Igor Evdokimov</Copyright>
     <PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
