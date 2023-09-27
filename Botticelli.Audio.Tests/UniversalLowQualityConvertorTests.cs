@@ -1,53 +1,74 @@
 ﻿using NUnit.Framework;
 
-namespace Botticelli.Audio.Tests
+namespace Botticelli.Audio.Tests;
+
+[TestFixture]
+public class UniversalLowQualityConvertorTests
 {
-    [TestFixture()]
-    public class UniversalLowQualityConvertorTests
+    private readonly IConvertor _convertor;
+    private readonly IAnalyzer _analyzer;
+
+    public UniversalLowQualityConvertorTests()
     {
-        private readonly IConvertor _convertor;
-        private readonly IAnalyzer _analyzer;
+        _analyzer = new InputAnalyzer();
+        _convertor = new UniversalLowQualityConvertor(_analyzer);
+    }
 
-        public UniversalLowQualityConvertorTests()
+    [Test]
+    public void ConvertMp3ToOpusTest()
+    {
+        Check();
+        var outcome = GetOutcome(new AudioInfo
         {
-            _analyzer = new InputAnalyzer();
-            _convertor = new UniversalLowQualityConvertor(_analyzer);
-        }
+            AudioFormat = AudioFormat.Opus,
+            Bitrate = AudioBitrate.LowVoice
+        });
 
-        [Test()]
-        public void ConvertMp3ToOpusTest()
+        AssertOutcome(outcome);
+    }
+
+    private static void AssertOutcome(byte[] outcome)
+    {
+        Assert.NotNull(outcome);
+        Assert.IsNotEmpty(outcome);
+    }
+
+    private byte[] GetOutcome(AudioInfo audioInfo)
+    {
+        using var stream = File.OpenRead("voice.mp3");
+        var outcome = _convertor.Convert(stream, audioInfo);
+        return outcome;
+    }
+
+    private static void Check()
+    {
+        if (!File.Exists("voice.mp3"))
+            Assert.Fail("no voice.mp3!");
+    }
+
+    [Test]
+    public void ConvertMp3ToOggTest()
+    {
+        Check();
+        var outcome = GetOutcome(new AudioInfo
         {
-            if (!File.Exists("voice.mp3"))
-                Assert.Fail("no voice.mp3!");
-            using var stream = File.OpenRead("voice.mp3");
-            var outcome = _convertor.Convert(stream, new AudioInfo()
-            {
-                AudioFormat = AudioFormat.Mp3,
-                Channels = 2,
-                SampleRate = 8000,
-                BitsPerSample = 8
-            });
+            AudioFormat = AudioFormat.Ogg,
+            Bitrate = AudioBitrate.VkAudioMessage
+        });
 
-            Assert.NotNull(outcome);
-            Assert.IsNotEmpty(outcome);
-        }
+        AssertOutcome(outcome);
+    }
 
-        [Test()]
-        public void ConvertMp3ToOggTest()
+    [Test]
+    public void ConvertMp3ToMp3LowTest()
+    {
+        Check();
+        var outcome = GetOutcome(new AudioInfo
         {
-            if (!File.Exists("voice.mp3"))
-                Assert.Fail("no voice.mp3!");
-            using var stream = File.OpenRead("voice.mp3");
-            var outcome = _convertor.Convert(stream, new AudioInfo()
-            {
-                AudioFormat = AudioFormat.Ogg,
-                Channels = 2,
-                SampleRate = 8000,
-                BitsPerSample = 8
-            });
+            AudioFormat = AudioFormat.Mp3,
+            Bitrate = AudioBitrate.LowVoice
+        });
 
-            Assert.NotNull(outcome);
-            Assert.IsNotEmpty(outcome);
-        }
+        AssertOutcome(outcome);
     }
 }

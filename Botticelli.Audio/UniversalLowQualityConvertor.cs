@@ -1,6 +1,5 @@
 ﻿using Botticelli.Audio.Exceptions;
 using FFMpegCore;
-using FFMpegCore.Enums;
 using FFMpegCore.Pipes;
 using NAudio.Lame;
 using NAudio.Vorbis;
@@ -74,8 +73,7 @@ public class UniversalLowQualityConvertor : IConvertor
                 .FromPipeInput(new StreamPipeSource(input))
                 .OutputToPipe(new StreamPipeSink(output), options => options
                     .ForceFormat(codec)
-                    .WithAudioBitrate(16000)
-                    .WithAudioBitrate(AudioQuality.Low))
+                    .WithAudioBitrate(tgtParams.Bitrate))
                 .ProcessSynchronously();
             
             return output.ToArray();
@@ -104,10 +102,6 @@ public class UniversalLowQualityConvertor : IConvertor
         Stream writerStream = srcParams.AudioFormat switch
         {
             AudioFormat.Mp3     => new LameMP3FileWriter(ms, input.WaveFormat, LAMEPreset.ABR_16),
-            //AudioFormat.Wav     => new WavFileWriter(input),
-            //AudioFormat.Aac     => new WavFileWriter(input),
-            //AudioFormat.M4a     => new WavFileWriter(input),
-            //AudioFormat.Unknown => new WavFileWriter(input),
             _ => new WaveFileWriter(ms, input.WaveFormat)
         };
 

@@ -174,8 +174,7 @@ public class VkStorageUploader
         // convert to ogg in order to meet VK requirements
         var oggContent = _audioConvertor.Convert(binaryContent, new AudioInfo()
         {
-            AudioFormat = AudioFormat.Ogg,
-            Bitrate = 16000
+            AudioFormat = AudioFormat.Ogg
         });
 
         return await PushDocument<UploadDocResult>(uploadUrl, name, oggContent, token);
