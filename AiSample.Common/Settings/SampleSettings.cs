@@ -1,4 +1,4 @@
-﻿namespace TelegramAiChatGptSample.Settings;
+﻿namespace AiSample.Common.Settings;
 
 /// <summary>
 ///     Settings for a messaging sample

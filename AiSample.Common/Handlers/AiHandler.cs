@@ -3,8 +3,9 @@ using Botticelli.AI.Message;
 using Botticelli.Bot.Interfaces.Bus.Handlers;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Microsoft.Extensions.Logging;
 
-namespace TelegramAiChatGptSample.Handlers;
+namespace AiSample.Common.Handlers;
 
 public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
 {

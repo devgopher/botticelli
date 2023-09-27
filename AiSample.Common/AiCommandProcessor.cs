@@ -1,14 +1,15 @@
-﻿using Botticelli.AI.Message;
+﻿using AiSample.Common.Commands;
+using Botticelli.AI.Message;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramAiChatGptSample.Commands;
 
-namespace TelegramAiChatGptSample;
+namespace AiSample.Common;
 
 public class AiCommandProcessor : CommandProcessor<AiCommand>
 {
