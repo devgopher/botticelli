@@ -9,21 +9,21 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Framework.Commands.Processors;
 
 public abstract class CommandProcessor<TCommand> : ICommandProcessor
-        where TCommand : class, ICommand
+    where TCommand : class, ICommand
 {
     private const string SimpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
     private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
     private readonly string _commandName;
-    protected readonly ILogger Logger;
-    protected readonly ICommandValidator<TCommand> Validator;
-    protected IList<IBot> Bots = new List<IBot>(10);
+    protected readonly IList<IBot> Bots = new List<IBot>(10);
+    private readonly ILogger _logger;
+    private readonly ICommandValidator<TCommand> _validator;
     protected IServiceProvider Sp;
 
     protected CommandProcessor(ILogger logger,
-                               ICommandValidator<TCommand> validator)
+        ICommandValidator<TCommand> validator)
     {
-        Logger = logger;
-        Validator = validator;
+        _logger = logger;
+        _validator = validator;
         _commandName = GetCommandName(typeof(TCommand).Name);
     }
 
@@ -40,7 +40,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 message.Contact == default &&
                 message.Poll == default)
             {
-                Logger.LogWarning("Message {msgId} is empty! Skipping...", message.Uid);
+                _logger.LogWarning("Message {msgId} is empty! Skipping...", message.Uid);
 
                 return;
             }
@@ -50,7 +50,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             if (Regex.IsMatch(message.Body, SimpleCommandPattern))
             {
                 var match = Regex.Matches(message.Body, SimpleCommandPattern)
-                                 .FirstOrDefault();
+                    .FirstOrDefault();
 
                 var commandName = GetCommandName(match.Groups[1].Value);
 
@@ -59,14 +59,14 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 if (match == default) return;
 
                 await ValidateAndProcess(message,
-                                         string.Empty,
-                                         token,
-                                         request);
+                    string.Empty,
+                    token,
+                    request);
             }
             else if (Regex.IsMatch(message.Body, ArgsCommandPattern))
             {
                 var match = Regex.Matches(message.Body, ArgsCommandPattern)
-                                 .FirstOrDefault();
+                    .FirstOrDefault();
                 var argsString = match.Groups[2].Value;
 
                 var commandName = GetCommandName(match.Groups[1].Value);
@@ -74,9 +74,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 if (commandName != _commandName) return;
 
                 await ValidateAndProcess(message,
-                                         argsString,
-                                         token,
-                                         request);
+                    argsString,
+                    token,
+                    request);
             }
 
             if (message.Location != default) await InnerProcessLocation(message, string.Empty, token);
@@ -85,7 +85,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, $"Error in {GetType().Name}: {ex.Message}");
+            _logger.LogError(ex, $"Error in {GetType().Name}: {ex.Message}");
         }
     }
 
@@ -99,17 +99,17 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         => fullCommand.ToLowerInvariant().Replace("command", "");
 
     private async Task ValidateAndProcess(Message message,
-                                          string args,
-                                          CancellationToken token,
-                                          SendMessageRequest request)
+        string args,
+        CancellationToken token,
+        SendMessageRequest request)
     {
-        if (await Validator.Validate(message.ChatIds, message.Body))
+        if (await _validator.Validate(message.ChatIds, message.Body))
         {
             await InnerProcess(message, args, token);
         }
         else
         {
-            request.Message.Body = Validator.Help();
+            request.Message.Body = _validator.Help();
 
             foreach (var bot in Bots) await bot.SendMessageAsync(request, token);
         }

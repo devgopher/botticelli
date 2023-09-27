@@ -153,7 +153,6 @@ public class BotManagementService : IBotManagementService
     /// <param name="botId"></param>
     /// <param name="botKey"></param>
     /// <param name="botName"></param>
-    /// <param name="botType"></param>
     /// <param name="additionalParams"></param>
     /// <returns></returns>
     public async Task<bool> UpdateBot(string botId,
@@ -166,7 +165,7 @@ public class BotManagementService : IBotManagementService
             _logger.LogInformation($"{nameof(UpdateBot)}({botId}, {botKey}, {botName}) started...");
 
             var prevStatus = await GetRequiredBotStatus(botId);
-            if (prevStatus == default || prevStatus != BotStatus.NonActive)
+            if (prevStatus is not BotStatus.NonActive)
                 await SetRequiredBotStatus(botId, BotStatus.NonActive);
 
             botKey ??= _secureStorage.GetBotContext(botId)?.BotKey;
