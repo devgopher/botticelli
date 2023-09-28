@@ -9,7 +9,7 @@ namespace Botticelli.Server.Analytics
         private readonly MetricsContext _context;
         public MetricsWriter(MetricsContext context) => _context = context;
 
-        public void Write<T>(MetricObject<T> input)
+        public async Task Write<T>(MetricObject<T> input)
         {
             _context.MetricModels.Add(new MetricModel()
             {
@@ -18,7 +18,7 @@ namespace Botticelli.Server.Analytics
                 Value = JsonSerializer.Serialize(input.Value)
             });
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }
