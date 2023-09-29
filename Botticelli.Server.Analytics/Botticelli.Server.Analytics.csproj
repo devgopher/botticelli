@@ -45,6 +45,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Botticelli.Analytics.Shared\Botticelli.Analytics.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Resource Include="appsettings.json" />
 	</ItemGroup>
 

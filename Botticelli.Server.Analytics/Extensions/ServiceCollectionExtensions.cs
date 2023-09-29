@@ -6,7 +6,7 @@ namespace Botticelli.Server.Analytics.Extensions
     {
         public static IServiceCollection AddMetrics(this IServiceCollection services)
         {
-            return services.AddScoped<MetricsWriter>();
+            return services.AddScoped<MetricsReaderWriter>();
         }
     }
 }

@@ -45,7 +45,7 @@ builder.Services.AddEndpointsApiExplorer()
 
 builder.Services
        .AddSingleton<IMapper, Mapper>()
-       .AddScoped<MetricsWriter>()
+       .AddScoped<MetricsReaderWriter>()
        .AddDbContext<MetricsContext>(c => c.UseSqlite(@"Data source=botMetrics.Db"))
        .AddMetrics();
 
