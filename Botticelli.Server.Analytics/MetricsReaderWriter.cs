@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Botticelli.Analytics.Shared.Metrics;
+﻿using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Server.Analytics.Models;
 using Botticelli.Server.Analytics.Utils;
 
@@ -10,24 +9,18 @@ public class MetricsReaderWriter
     private readonly MetricsContext _context;
     public MetricsReaderWriter(MetricsContext context) => _context = context;
 
-    public async Task Write<T>(MetricObject<T> input)
+    public async Task WriteAsync(MetricObject input, CancellationToken token)
     {
-        _context.MetricModels.Add(new MetricModel
+        await _context.MetricModels.AddAsync(new MetricModel
         {
             Id = input.Id,
             Timestamp = input.Timestamp,
             BotId = input.BotId,
-            Value = JsonSerializer.Serialize(input.Value)
-        });
+            Name = input.Name
+        }, token);
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(token);
     }
-
-    public IEnumerable<MetricObject<T>> Read<T>(Func<MetricModel, bool> func)
-        => _context.MetricModels
-                   .Where(func)
-                   .Select(x => new MetricObject<T>(JsonSerializer.Deserialize<T>(x.Value), x.BotId));
-
     public int ReadCount(Func<MetricModel, bool> func)
         => _context.MetricModels
                    .Where(func)

@@ -5,13 +5,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Client.Analytics.Handlers;
 
-public class StoppedBotHandler : BasicHandler<StoppedBotEventArgs, StoppedBotMetric>
+public class StoppedBotHandler : BasicHandler<StoppedBotEventArgs, MetricObject>
 {
     public StoppedBotHandler(BotContext context, MetricsPublisher publisher, ILogger<StoppedBotEventArgs> logger) : base(context, publisher, logger)
     {
     }
 
-    protected override StoppedBotMetric Convert(StoppedBotEventArgs args, string botId) => new()
+    protected override MetricObject Convert(StoppedBotEventArgs args, string botId) => new()
     {
         BotId = botId
     };

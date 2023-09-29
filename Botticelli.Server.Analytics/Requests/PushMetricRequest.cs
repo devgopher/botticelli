@@ -1,7 +1,7 @@
-﻿namespace Botticelli.Server.Analytics.Requests;
+﻿using Botticelli.Analytics.Shared.Metrics;
 
-public class UploadMetricRequest
+namespace Botticelli.Server.Analytics.Requests;
+
+public class PushMetricRequest : MetricObject
 {
-    public string BotId { get; set; }
-    public string Name { get; set; }
 }
