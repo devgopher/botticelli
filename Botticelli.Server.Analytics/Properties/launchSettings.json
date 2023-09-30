@@ -6,10 +6,10 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://0.0.0.0:5050",
+      "applicationUrl": "http://0.0.0.0:5251",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "SecureStorageSettings__ConnectionString": "Filename=database.db;Connection=shared;Password=123",
+        "AnalyticsSettings__ConnectionString": "Server=127.0.0.1;Port=5432;Database=botticelli_analytics;Userid=postgres;Password=12345678;Pooling=true;ConnectionLifeTime=15;"
       }
     }
   }

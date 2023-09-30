@@ -1,7 +1,6 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Framework.Events;
 using Botticelli.Shared.ValueObjects;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Client.Analytics.Handlers;

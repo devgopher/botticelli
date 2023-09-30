@@ -2,6 +2,7 @@ using Botticelli.Server.Analytics;
 using Botticelli.Server.Analytics.Extensions;
 using Botticelli.Server.Analytics.Settings;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ builder.Configuration
        .AddJsonFile("appsettings.json")
        .AddEnvironmentVariables();
 
-var secureStorageSettings = builder.Configuration
+var analyticsSettings = builder.Configuration
                                    .GetSection(nameof(AnalyticsSettings))
                                    .Get<AnalyticsSettings>();
 
@@ -36,12 +37,8 @@ builder.Services.AddEndpointsApiExplorer()
 builder.Services
        .AddSingleton<IMapper, Mapper>()
        .AddScoped<MetricsReaderWriter>()
-      // .AddDbContext<MetricsContext>(c => c.UseSqlite(@"Data source=botMetrics.Db"))
+       .AddDbContext<MetricsContext>(c => c.UseNpgsql(analyticsSettings.ConnectionString))
        .AddMetrics();
-
-builder.Services.AddRazorPages();
-
-
 
 builder.Services.AddControllers();
 

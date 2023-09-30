@@ -1,4 +1,5 @@
-﻿using Botticelli.Shared.ValueObjects;
+﻿using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.Shared.ValueObjects;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -33,5 +34,11 @@ public abstract class BasicHandler<TArgs, TMetric> : IRequestHandler<TArgs> wher
         }
     }
 
-    protected abstract TMetric Convert(TArgs args, string botId);
+    protected virtual MetricObject Convert(TArgs args, string botId) =>
+            new()
+            {
+                BotId = botId,
+                Name = typeof(TArgs).Name,
+                Timestamp = DateTime.Now
+            };
 }

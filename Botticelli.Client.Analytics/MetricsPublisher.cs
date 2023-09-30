@@ -9,11 +9,7 @@ namespace Botticelli.Client.Analytics
         private readonly AnalyticsSettings _settings;
         public MetricsPublisher(AnalyticsSettings settings) => _settings = settings;
 
-        public async Task Publish<TObject>(TObject args, CancellationToken token)
-        {
-            var metricsObject = new MetricObject<TObject>(args);
-            
-            await _settings.TargetUrl.SendJsonAsync(HttpMethod.Post, metricsObject, token); // polly!
-        }
+        public async Task Publish(MetricObject metric, CancellationToken token) 
+            => await _settings.TargetUrl.SendJsonAsync(HttpMethod.Post, metric, token); // polly!
     }
 }

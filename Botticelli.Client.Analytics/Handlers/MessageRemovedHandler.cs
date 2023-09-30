@@ -11,10 +11,10 @@ public class MessageRemovedHandler : BasicHandler<MessageRemovedBotEventArgs, Me
     {
     }
 
-    protected override MetricObject Convert(MessageRemovedBotEventArgs args, string botId)
-        => new()
-        {
-            BotId = botId,
-            MessageId = args.MessageUid
-        };
+    //protected override MetricObject Convert(MessageRemovedBotEventArgs args, string botId)
+    //    => new()
+    //    {
+    //        BotId = botId,
+    //        MessageId = args.MessageUid
+    //    };
 }

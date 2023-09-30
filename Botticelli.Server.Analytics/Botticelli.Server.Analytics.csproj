@@ -42,6 +42,8 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="7.0.11" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.11" />
+		<PackageReference Include="Npgsql" Version="7.0.6" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 	</ItemGroup>
 
