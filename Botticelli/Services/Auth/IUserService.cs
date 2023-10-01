@@ -9,7 +9,7 @@ namespace Botticelli.Server.Services.Auth
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task RegisterAsync(UserAddRequest request);
+        Task AddAsync(UserAddRequest request);
         /// <summary>
         /// Updates a user
         /// </summary>
