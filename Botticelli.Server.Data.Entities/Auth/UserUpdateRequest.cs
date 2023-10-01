@@ -1,6 +1,6 @@
 namespace Botticelli.Server.Data.Entities.Auth;
 
-public class UserRegisterPost
+public class UserUpdateRequest
 {
     public string? UserName { get; set; }
     public string? Email { get; set; }

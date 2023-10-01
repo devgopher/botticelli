@@ -13,18 +13,19 @@ namespace Botticelli.Server.Controllers;
 [Route("auth")]
 public class AuthController
 {
-    private readonly AdminAuthService _adminAuthService;
+    private readonly IAdminAuthService _adminAuthService;
 
-    public AuthController(AdminAuthService adminAuthService) => _adminAuthService = adminAuthService;
+    public AuthController(IAdminAuthService adminAuthService) => _adminAuthService = adminAuthService;
 
     [AllowAnonymous]
     [HttpPost("[action]")]
-    public IActionResult GetToken(UserLoginPost request)
+    public IActionResult GetToken(UserLoginRequest request)
         => new OkObjectResult(_adminAuthService.GenerateToken(request));
 
     [AllowAnonymous]
     [HttpPost("[action]")]
-    public async Task Register(UserRegisterPost request)
+    [Obsolete("User AuthController.AddUser()!")]
+    public async Task Register(UserAddRequest request)
         => await _adminAuthService.RegisterAsync(request);
 
     [AllowAnonymous]

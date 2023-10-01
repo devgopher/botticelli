@@ -17,7 +17,7 @@ namespace Botticelli.Server.Services.Auth;
 /// <summary>
 ///     Authentication service
 /// </summary>
-public class AdminAuthService
+public class AdminAuthService : IAdminAuthService
 {
     private readonly IConfiguration _config;
     private readonly BotInfoContext _context;
@@ -39,9 +39,8 @@ public class AdminAuthService
     }
 
     /// <summary>
-    ///     Register an admin user
+    ///     Do we have any users?
     /// </summary>
-    /// <param name="userRegister"></param>
     /// <returns></returns>
     /// <exception cref="DataException"></exception>
     public async Task<bool> HasUsersAsync()
@@ -55,7 +54,7 @@ public class AdminAuthService
     /// <param name="userRegister"></param>
     /// <returns></returns>
     /// <exception cref="DataException"></exception>
-    public async Task RegisterAsync(UserRegisterPost userRegister)
+    public async Task RegisterAsync(UserAddRequest userRegister)
     {
         try
         {
@@ -100,7 +99,7 @@ public class AdminAuthService
     /// </summary>
     /// <param name="login"></param>
     /// <returns></returns>
-    public GetTokenResponse GenerateToken(UserLoginPost login)
+    public GetTokenResponse GenerateToken(UserLoginRequest login)
     {
         try
         {
@@ -208,7 +207,7 @@ public class AdminAuthService
     /// </summary>
     /// <param name="login"></param>
     /// <returns></returns>
-    public bool CheckAccess(UserLoginPost login)
+    public bool CheckAccess(UserLoginRequest login)
     {
         var hashedPassword = HashUtils.GetHash(login.Password, _config["Authorization:Salt"]);
         var normalizedEmail = GetNormalized(login.Email);

@@ -22,7 +22,7 @@ public class SessionClient
 
     public async Task<Error> RegisterUser(string email, string password)
     {
-        var request = new UserRegisterPost
+        var request = new UserAddRequest
         {
             Email = email,
             UserName = email,
@@ -58,7 +58,7 @@ public class SessionClient
 
     public async Task<(Session session, Error error)> CreateSession(string login, string password)
     {
-        var request = new UserLoginPost
+        var request = new UserLoginRequest
         {
             Email = login,
             Password = password
