@@ -8,27 +8,32 @@ namespace Botticelli.Server.Services.Auth
         ///     Registers a user
         /// </summary>
         /// <param name="request"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        Task AddAsync(UserAddRequest request);
+        Task AddAsync(UserAddRequest request, CancellationToken token);
+
         /// <summary>
         /// Updates a user
         /// </summary>
         /// <param name="request"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        Task UpdateAsync(UserUpdateRequest request);
+        Task UpdateAsync(UserUpdateRequest request, CancellationToken token);
 
         /// <summary>
         /// Deletes a user
         /// </summary>
         /// <param name="request"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        Task DeleteAsync(UserDeleteRequest request);
+        Task DeleteAsync(UserDeleteRequest request, CancellationToken token);
 
         /// <summary>
         /// Gets user info
         /// </summary>
         /// <param name="request"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        Task<UserGetResponse> GetAsync(UserGetRequest request);
+        Task<UserGetResponse> GetAsync(UserGetRequest request, CancellationToken token);
     }
 }
