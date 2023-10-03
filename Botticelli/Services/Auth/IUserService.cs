@@ -35,5 +35,14 @@ namespace Botticelli.Server.Services.Auth
         /// <param name="token"></param>
         /// <returns></returns>
         Task<UserGetResponse> GetAsync(UserGetRequest request, CancellationToken token);
+
+        /// <summary>
+        /// Email confirmation
+        /// </summary>
+        /// <param name="requestEmail"></param>
+        /// <param name="requestToken"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        Task<bool> ConfirmCodeAsync(string requestEmail, string requestToken, CancellationToken token);
     }
 }

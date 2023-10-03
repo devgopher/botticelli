@@ -105,7 +105,7 @@ public class AdminAuthService : IAdminAuthService
         {
             _logger.LogInformation($"{nameof(GenerateToken)}({login.Email}) started...");
 
-            if (!CheckAccess(login))
+            if (CheckAccess(login, false).result)
             {
                 _logger.LogInformation($"{nameof(GenerateToken)}({login.Email}) access denied...");
 
@@ -206,14 +206,20 @@ public class AdminAuthService : IAdminAuthService
     ///     Checks access
     /// </summary>
     /// <param name="login"></param>
+    /// <param name="checkEmailConfirmed"></param>
     /// <returns></returns>
-    public bool CheckAccess(UserLoginRequest login)
+    public (bool result, string err) CheckAccess(UserLoginRequest login, bool checkEmailConfirmed)
     {
         var hashedPassword = HashUtils.GetHash(login.Password, _config["Authorization:Salt"]);
         var normalizedEmail = GetNormalized(login.Email);
+        var user = _context.ApplicationUsers.FirstOrDefault(u => u.NormalizedEmail == normalizedEmail &&
+                                                      u.PasswordHash == hashedPassword);
+        if (user == default)
+            return (false, "user not found");
+        if(checkEmailConfirmed && !user.EmailConfirmed)
+            return (false, $"email {user.Email} not confirmed!");
 
-        return _context.ApplicationUsers.Any(u => u.NormalizedEmail == normalizedEmail &&
-                                                  u.PasswordHash == hashedPassword);
+        return (true, string.Empty);
     }
 
     public string? GetCurrentUserId()

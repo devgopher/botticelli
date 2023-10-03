@@ -6,9 +6,14 @@ using Botticelli.Server.Extensions;
 using Botticelli.Server.Services;
 using Botticelli.Server.Services.Auth;
 using Botticelli.Server.Settings;
+using Botticelli.Server.Utils;
+using FluentEmail.Core.Interfaces;
+using FluentEmail.MailKitSmtp;
+using MailKit.Security;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -23,6 +28,17 @@ var secureStorageSettings = builder.Configuration
                                    .GetSection(nameof(SecureStorageSettings))
                                    .Get<SecureStorageSettings>();
 
+var smtpOptions = builder.Configuration
+    .GetSection(nameof(ServerSettings))
+    .GetSection(nameof(SmtpClientOptions))
+    .Get<SmtpClientOptions>();
+
+
+var serverSettings = builder.Configuration
+    .GetSection(nameof(ServerSettings))
+    .Get<ServerSettings>();
+builder.Services.AddSingleton(serverSettings);
+
 builder.Services.AddEndpointsApiExplorer()
        .AddSwaggerGen(options =>
        {
@@ -35,7 +51,7 @@ builder.Services.AddEndpointsApiExplorer()
                                              Type = SecuritySchemeType.Http,
                                              Scheme = "Bearer"
                                          });
-
+           
            options.AddSecurityRequirement(new OpenApiSecurityRequirement
            {
                {
@@ -53,29 +69,36 @@ builder.Services.AddEndpointsApiExplorer()
        });
 
 builder.Services
-       .Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration)
-       .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-       .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
-       {
-           ClockSkew = TimeSpan.Zero,
-           ValidateIssuer = true,
-           ValidateAudience = true,
-           ValidateLifetime = true,
-           ValidateIssuerSigningKey = true,
-           ValidIssuer = builder.Configuration["Authorization:Issuer"],
-           ValidAudience = builder.Configuration["Authorization:Audience"],
-           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authorization:Key"]))
-       });
+    .Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration.GetSection(nameof(ServerSettings)))
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ClockSkew = TimeSpan.Zero,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Authorization:Issuer"],
+        ValidAudience = builder.Configuration["Authorization:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authorization:Key"]))
+    });
+
 
 builder.Services
        .AddScoped<IBotManagementService, BotManagementService>()
        .AddScoped<IBotStatusDataService, BotStatusDataService>()
        .AddSingleton(new SecureStorage(secureStorageSettings))
        .AddScoped<IAdminAuthService, AdminAuthService>()
+       .AddScoped<IUserService, UserService>()
+       .AddScoped<IConfirmationService, ConfirmationService>()
        .AddSingleton<IMapper, Mapper>()
        .AddDbContext<BotInfoContext>(c => c.UseSqlite(@"Data source=botInfo.Db"));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options
+builder.Services
+    .AddScoped<ISender, SslMailKitSender>(_ => new SslMailKitSender(smtpOptions));
+
+
+builder.Services.AddDefaultIdentity<IdentityUser<string>>(options => options
                                                              .SignIn
                                                              .RequireConfirmedAccount = true)
        .AddEntityFrameworkStores<BotInfoContext>();

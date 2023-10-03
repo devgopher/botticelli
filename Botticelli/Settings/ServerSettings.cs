@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Server.Settings;
+﻿using FluentEmail.MailKitSmtp;
+
+namespace Botticelli.Server.Settings;
 
 public class ServerSettings
 {
@@ -6,4 +8,10 @@ public class ServerSettings
     ///     Token lifetime minutes
     /// </summary>
     public int TokenLifetimeMin { get; set; }
+
+    public SmtpClientOptions SmtpClientOptions { get; set; }
+
+    public string ServerEmail { get; set; }
+
+    public string ServerUrl { get; set; }
 }

@@ -69,7 +69,7 @@ namespace Botticelli.Server.Data.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("UserName")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("EmailConfirmed")

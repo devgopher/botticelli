@@ -4,8 +4,8 @@ namespace Botticelli.Server.FrontNew.Models;
 
 public class RegisterUser
 {
-    [Required(ErrorMessage = "Email is required!")]
-    [EmailAddress(ErrorMessage = "Email isn't valid!")]
+    [Required(ErrorMessage = "UserName is required!")]
+    [EmailAddress(ErrorMessage = "UserName isn't valid!")]
     public string Email { get; set; }
 
     [Required(ErrorMessage = "Password is required!")]

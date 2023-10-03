@@ -39,8 +39,9 @@ public interface IAdminAuthService
     ///     Checks access
     /// </summary>
     /// <param name="login"></param>
+    /// <param name="checkEmailConfirmed"></param>
     /// <returns></returns>
-    bool CheckAccess(UserLoginRequest login);
+    public (bool result, string err) CheckAccess(UserLoginRequest login, bool checkEmailConfirmed);
 
     string GetCurrentUserId();
 }
