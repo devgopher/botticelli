@@ -25,7 +25,6 @@ namespace Botticelli.Server.Controllers
         }
 
         [HttpPost()]
-        [Authorize("Bearer", "")]
         public async Task<IActionResult> AddUser(UserAddRequest request, CancellationToken token)
         {
             try
