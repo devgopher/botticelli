@@ -5,7 +5,9 @@ namespace Botticelli.Server.Analytics.Services;
 
 public interface IMetricsOutputService
 {
-    Task PushMetric(PushMetricRequest request, CancellationToken token);
-    GetMetricsResponse GetMetrics(GetMetricsRequest request);
-    GetMetricsIntervalsResponse GetMetricsForInterval(GetMetricsForIntervalsRequest request);
+    Task<GetMetricsResponse> GetMetricsAsync(GetMetricsRequest request,
+        CancellationToken token);
+
+    Task<GetMetricsIntervalsResponse> GetMetricsForIntervalAsync(GetMetricsForIntervalsRequest request,
+        CancellationToken token);
 }

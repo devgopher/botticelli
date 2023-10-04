@@ -2,5 +2,5 @@
 
 public class GetMetricsForIntervalsRequest : GetMetricsRequest
 {
-    public TimeSpan Interval { get; set; }
+    public int Interval { get; set; }
 }

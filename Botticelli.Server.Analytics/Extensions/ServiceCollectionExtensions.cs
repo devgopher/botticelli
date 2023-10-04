@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Botticelli.Server.Analytics.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Server.Analytics.Extensions
 {
@@ -6,7 +7,9 @@ namespace Botticelli.Server.Analytics.Extensions
     {
         public static IServiceCollection AddMetrics(this IServiceCollection services)
         {
-            return services.AddScoped<MetricsReaderWriter>();
+            return services.AddScoped<MetricsReaderWriter>()
+                .AddScoped<IMetricsInputService, MetricsInputService>()
+                .AddScoped<IMetricsOutputService, MetricsOutputService>();
         }
     }
 }

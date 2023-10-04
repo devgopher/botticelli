@@ -16,10 +16,11 @@ public class MetricsOutputController : Controller
 
     public MetricsOutputController(IMetricsOutputService service) => _service = service;
 
-    [Route("[action]")]
-    public GetMetricsResponse GetMetrics(GetMetricsRequest request) => _service.GetMetrics(request);
+    [HttpGet("[action]")]
+    public async Task<GetMetricsResponse> GetMetrics([FromQuery] GetMetricsRequest request, CancellationToken token) 
+        => await _service.GetMetricsAsync(request, token);
 
-    [Route("[action]")]
-    public GetMetricsIntervalsResponse GetMetricsForInterval(GetMetricsForIntervalsRequest request)
-        => _service.GetMetricsForInterval(request);
+    [HttpGet("[action]")]
+    public async Task<GetMetricsIntervalsResponse> GetMetricsForInterval([FromQuery] GetMetricsForIntervalsRequest request, CancellationToken token)
+        => await _service.GetMetricsForIntervalAsync(request, token);
 }

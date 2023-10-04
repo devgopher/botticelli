@@ -9,15 +9,12 @@ public class MetricsOutputService : IMetricsOutputService
 
     public MetricsOutputService(MetricsReaderWriter rw) => _rw = rw;
 
-    public async Task PushMetric(PushMetricRequest request, CancellationToken token)
+    public async Task<GetMetricsResponse> GetMetricsAsync(GetMetricsRequest request,
+        CancellationToken token)
     {
-        await _rw.WriteAsync(request, token);
-    }
-
-    public GetMetricsResponse GetMetrics(GetMetricsRequest request)
-    {
-        var count = _rw.ReadCount(x =>
-                                          x.Timestamp >= request.From && x.Timestamp <= request.To && x.BotId == request.BotId && x.Name == request.Name);
+        var count = await _rw.ReadCountAsync(x =>
+            x.Timestamp >= request.From && x.Timestamp <= request.To && x.BotId == request.BotId && x.Name == request.Name, 
+            token);
 
         return new GetMetricsResponse
         {
@@ -27,22 +24,23 @@ public class MetricsOutputService : IMetricsOutputService
         };
     }
 
-    public GetMetricsIntervalsResponse GetMetricsForInterval(GetMetricsForIntervalsRequest request)
+    public async Task<GetMetricsIntervalsResponse> GetMetricsForIntervalAsync(GetMetricsForIntervalsRequest request, CancellationToken token)
     {
-        var metrics = _rw.ReadCountForFrames(request.Name,
+        var metrics = await _rw.ReadCountForFramesAsync(request.Name,
                                              request.BotId,
                                              request.From,
                                              request.To,
-                                             request.Interval);
+                                             TimeSpan.FromSeconds(request.Interval), 
+                                             token);
         var metricsForIntervals = metrics.Select(m => new GetMetricsResponse
-                                         {
-                                             Count = m.count,
-                                             From = m.dt1,
-                                             To = m.dt2
-                                         })
-                                         .ToList();
-
-        var commonCount = metricsForIntervals.Sum(m => m.Count);
+        {
+            Count = m.count,
+            From = m.dt1,
+            To = m.dt2
+        }).ToBlockingEnumerable()
+          .ToList();
+                                    
+        var commonCount =  metricsForIntervals.Sum(m => m.Count);
 
         return new GetMetricsIntervalsResponse
         {
