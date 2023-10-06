@@ -212,7 +212,7 @@ namespace Botticelli.Server.Utils
             else if (!data.IsHtml)
             {
                 builder.TextBody = data.Body;
-            }
+             }
             else
             {
                 builder.HtmlBody = data.Body;

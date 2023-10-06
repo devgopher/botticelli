@@ -48,7 +48,7 @@
 {
     private readonly RegisterUser _model = new();
 
-    public async Task OnValidSubmit()
+    private async Task OnValidSubmit()
     {
         var result = await SessionClient.RegisterUser(_model.Email, _model.Password);
         if (result.Code == 0)

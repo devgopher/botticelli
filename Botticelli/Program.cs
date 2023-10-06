@@ -91,6 +91,7 @@ builder.Services
        .AddScoped<IAdminAuthService, AdminAuthService>()
        .AddScoped<IUserService, UserService>()
        .AddScoped<IConfirmationService, ConfirmationService>()
+       .AddScoped<IPasswordSender, PasswordSender>()
        .AddSingleton<IMapper, Mapper>()
        .AddDbContext<BotInfoContext>(c => c.UseSqlite(@"Data source=botInfo.Db"));
 

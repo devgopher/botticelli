@@ -7,8 +7,8 @@ namespace Botticelli.Client.Analytics.Handlers
 {
     public class MessageReceivedHandler : BasicHandler<MessageReceivedBotEventArgs, MetricObject>
     {
-        public MessageReceivedHandler(BotContext context, MetricsPublisher publisher, 
-            ILogger<MessageReceivedBotEventArgs> logger) : base(context, publisher, logger)
+        public MessageReceivedHandler(BotContext context, MetricsPublisher metricsPublisher, 
+            ILogger<MessageReceivedBotEventArgs> logger) : base(context, metricsPublisher, logger)
         {
         }
 

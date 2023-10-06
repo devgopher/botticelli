@@ -8,13 +8,13 @@ namespace Botticelli.Client.Analytics.Handlers;
 public abstract class BasicHandler<TArgs, TMetric> : IRequestHandler<TArgs> where TArgs : IRequest
 {
     private readonly BotContext _context;
-    private readonly MetricsPublisher _publisher;
+    private readonly MetricsPublisher _metricsPublisher;
     private readonly ILogger _logger;
 
-    protected BasicHandler(BotContext context, MetricsPublisher publisher, ILogger logger)
+    protected BasicHandler(BotContext context, MetricsPublisher metricsPublisher, ILogger logger)
     {
         _context = context;
-        _publisher = publisher;
+        _metricsPublisher = metricsPublisher;
         _logger = logger;
     }
     
@@ -26,7 +26,7 @@ public abstract class BasicHandler<TArgs, TMetric> : IRequestHandler<TArgs> wher
 
             var metric = Convert(request, _context.BotId);
 
-            await _publisher.Publish(metric, cancellationToken);
+            await _metricsPublisher.Publish(metric, cancellationToken);
         }
         catch (Exception ex)
         {

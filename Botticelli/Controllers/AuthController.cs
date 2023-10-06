@@ -24,7 +24,7 @@ public class AuthController
 
     [AllowAnonymous]
     [HttpPost("[action]")]
-    [Obsolete("User AuthController.AddUser()!")]
+    [Obsolete($"Use {nameof(UserController)}.{nameof(UserController.AddUser)}()!")]
     public async Task Register(UserAddRequest request)
         => await _adminAuthService.RegisterAsync(request);
 

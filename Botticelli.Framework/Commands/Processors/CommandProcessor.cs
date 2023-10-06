@@ -17,7 +17,6 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     protected readonly IList<IBot> Bots = new List<IBot>(10);
     private readonly ILogger _logger;
     private readonly ICommandValidator<TCommand> _validator;
-    protected IServiceProvider Sp;
 
     protected CommandProcessor(ILogger logger,
         ICommandValidator<TCommand> validator)
@@ -93,7 +92,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         => Bots.Add(bot);
 
     public void SetServiceProvider(IServiceProvider sp)
-        => Sp = sp;
+    {
+    }
 
     public string GetCommandName(string fullCommand)
         => fullCommand.ToLowerInvariant().Replace("command", "");

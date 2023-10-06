@@ -25,6 +25,25 @@ public class UserService : IUserService
         _confirmationService = confirmationService;
     }
 
+    public async Task<bool> CheckAndAddAsync(UserAddRequest request, CancellationToken token)
+    {
+        try
+        {
+            if (!await _context.ApplicationUsers.AnyAsync(token))
+                return false;
+
+            await AddAsync(request, token);
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"{nameof(CheckAndAddAsync)}({request.UserName}) error: {ex.Message}", ex);
+
+            throw;
+        }
+    }
+
     public async Task AddAsync(UserAddRequest request, CancellationToken token)
     {
         try

@@ -59,7 +59,7 @@ public class AdminAuthService : IAdminAuthService
         try
         {
             _logger.LogInformation($"{nameof(RegisterAsync)}({userRegister.UserName}) started...");
-
+            
             if (_context.ApplicationUsers.AsQueryable()
                         .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");

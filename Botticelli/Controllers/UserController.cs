@@ -1,7 +1,11 @@
 ﻿using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Services.Auth;
+using Duende.IdentityServer.Models;
+using FluentEmail.Core.Interfaces;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PasswordGenerator;
 
 namespace Botticelli.Server.Controllers
 {
@@ -16,13 +20,44 @@ namespace Botticelli.Server.Controllers
         private readonly IUserService _userService;
         private readonly IConfirmationService _confirmationService;
         private readonly IAdminAuthService _adminAuthService;
-        
-        public UserController(IUserService userService, IConfirmationService confirmationService, IAdminAuthService adminAuthService)
+        private readonly IPasswordSender _passwordSender;
+        private readonly IMapper _mapper;
+
+        private readonly IPassword _password = new Password(includeLowercase: true, includeUppercase: true,
+            includeNumeric: true, includeSpecial: false, passwordLength: 12);
+
+        public UserController(IUserService userService, IConfirmationService confirmationService, IAdminAuthService adminAuthService, IMapper mapper, IPasswordSender passwordSender)
         {
             _userService = userService;
             _confirmationService = confirmationService;
             _adminAuthService = adminAuthService;
+            _mapper = mapper;
+            _passwordSender = passwordSender;
         }
+
+        [HttpPost("[action]")]
+        [AllowAnonymous]
+        public async Task<IActionResult> AddDefaultUser(DefaultUserAddRequest request, CancellationToken token)
+        {
+            try
+            {
+                var password = _password.Next();
+                var mapped = _mapper.Map<UserAddRequest>(request);
+                mapped.Password = password;
+
+                if (await _userService.CheckAndAddAsync(mapped, token))
+                {
+                    await _passwordSender.SendPassword(request.Email, password, token);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
+        }
+
 
         [HttpPost()]
         public async Task<IActionResult> AddUser(UserAddRequest request, CancellationToken token)
