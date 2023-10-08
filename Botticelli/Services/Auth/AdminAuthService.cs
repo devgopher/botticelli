@@ -105,7 +105,7 @@ public class AdminAuthService : IAdminAuthService
         {
             _logger.LogInformation($"{nameof(GenerateToken)}({login.Email}) started...");
 
-            if (CheckAccess(login, false).result)
+            if (!CheckAccess(login, false).result)
             {
                 _logger.LogInformation($"{nameof(GenerateToken)}({login.Email}) access denied...");
 
