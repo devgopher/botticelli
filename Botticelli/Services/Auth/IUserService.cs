@@ -5,6 +5,13 @@ namespace Botticelli.Server.Services.Auth
     public interface IUserService
     {
         /// <summary>
+        /// Do we have any users?
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        Task<bool> HasUsers(CancellationToken token);
+
+        /// <summary>
         ///     Registers a default user if no user exists
         /// </summary>
         /// <param name="request"></param>
@@ -16,9 +23,10 @@ namespace Botticelli.Server.Services.Auth
         ///     Registers a user
         /// </summary>
         /// <param name="request"></param>
+        /// <param name="needConfirmation"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        Task AddAsync(UserAddRequest request, CancellationToken token);
+        Task AddAsync(UserAddRequest request, bool needConfirmation, CancellationToken token);
 
         /// <summary>
         /// Updates a user

@@ -25,14 +25,21 @@ public class UserService : IUserService
         _confirmationService = confirmationService;
     }
 
+    public async Task<bool> HasUsers(CancellationToken token)
+        => await _context.ApplicationUsers.AnyAsync(token);
+
     public async Task<bool> CheckAndAddAsync(UserAddRequest request, CancellationToken token)
     {
         try
         {
-            if (!await _context.ApplicationUsers.AnyAsync(token))
+            if (await _context.ApplicationUsers.AnyAsync(token))
                 return false;
 
-            await AddAsync(request, token);
+            await AddAsync(request, false, token);
+
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.NormalizedEmail == GetNormalized(request.Email), cancellationToken: token);
+            user.EmailConfirmed = true;
+            await _context.SaveChangesAsync(token);
 
             return true;
         }
@@ -44,7 +51,7 @@ public class UserService : IUserService
         }
     }
 
-    public async Task AddAsync(UserAddRequest request, CancellationToken token)
+    public async Task AddAsync(UserAddRequest request, bool needConfirmation, CancellationToken token)
     {
         try
         {
@@ -77,9 +84,12 @@ public class UserService : IUserService
 
             await _context.SaveChangesAsync(token);
 
-            _logger.LogInformation($"{nameof(AddAsync)}({request.UserName})sending a confirmation email to {request.Email}...");
-
-            await _confirmationService.SendConfirmationCode(user, token);
+            if (needConfirmation)
+            {
+                _logger.LogInformation(
+                    $"{nameof(AddAsync)}({request.UserName}) sending a confirmation email to {request.Email}...");
+                await _confirmationService.SendConfirmationCode(user, token);
+            }
 
             _logger.LogInformation($"{nameof(AddAsync)}({request.UserName}) finished...");
         }

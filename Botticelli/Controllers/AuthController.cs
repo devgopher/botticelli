@@ -24,12 +24,13 @@ public class AuthController
 
     [AllowAnonymous]
     [HttpPost("[action]")]
-    [Obsolete($"Use {nameof(UserController)}.{nameof(UserController.AddUser)}()!")]
+    [Obsolete($"Use {nameof(UserController)}.{nameof(UserController.AddUserAsync)}()!")]
     public async Task Register(UserAddRequest request)
         => await _adminAuthService.RegisterAsync(request);
 
     [AllowAnonymous]
     [HttpGet("[action]")]
+    [Obsolete($"Use {nameof(UserController)}.{nameof(UserController.HasUsersAsync)}()!")]
     public async Task<bool> HasUsersAsync()
         => await _adminAuthService.HasUsersAsync();
 }

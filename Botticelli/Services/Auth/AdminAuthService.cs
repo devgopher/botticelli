@@ -105,7 +105,7 @@ public class AdminAuthService : IAdminAuthService
         {
             _logger.LogInformation($"{nameof(GenerateToken)}({login.Email}) started...");
 
-            if (CheckAccess(login, false).result)
+            if (!CheckAccess(login, false).result)
             {
                 _logger.LogInformation($"{nameof(GenerateToken)}({login.Email}) access denied...");
 
@@ -119,6 +119,13 @@ public class AdminAuthService : IAdminAuthService
             var user = _context.ApplicationUsers
                                .AsQueryable()
                                .FirstOrDefault(u => u.NormalizedEmail == GetNormalized(login.Email));
+
+            if (user == default)
+                return new GetTokenResponse
+                {
+                    IsSuccess = false,
+                    Token = null
+                };
 
             var userRole = _context.ApplicationUserRoles
                                    .AsQueryable()

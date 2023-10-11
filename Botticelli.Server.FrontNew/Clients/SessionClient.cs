@@ -20,6 +20,32 @@ public class SessionClient
         _backSettings = backSettings;
     }
 
+    public async Task<Error> RegisterDefaultUser(string email)
+    {
+        var request = new UserAddRequest
+        {
+            Email = email,
+            UserName = email
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
+                "/user/AddDefaultUser"),
+            request);
+
+        if (!response.IsSuccessStatusCode)
+            return new Error
+            {
+                Code = 1,
+                UserMessage = $"Error registering user: {response.ReasonPhrase}!"
+            };
+
+        return new Error
+        {
+            Code = 0,
+            UserMessage = string.Empty
+        };
+    }
+
     public async Task<Error> RegisterUser(string email, string password)
     {
         var request = new UserAddRequest
@@ -30,7 +56,7 @@ public class SessionClient
         };
 
         var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                                                                     "/auth/Register"),
+                                                                     "/user/AddUser"),
                                                          request);
 
         if (!response.IsSuccessStatusCode)
@@ -50,7 +76,7 @@ public class SessionClient
     public async Task<bool> HasUsersAsync()
     {
         var response = await _httpClient.GetFromJsonAsync<bool>(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                                                                            "/auth/HasUsers"));
+                                                                            "/user/HasUsers"));
 
 
         return response;

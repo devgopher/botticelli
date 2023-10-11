@@ -6,10 +6,15 @@
 
 @code
 {
+    private bool _hasNoUsers;
+
     private readonly Error _error = new()
     {
         UserMessage = string.Empty
     };
+
+    protected override async Task OnInitializedAsync()
+        => _hasNoUsers = !await SessionClient.HasUsersAsync();
 }
 
 <PageTitle>Register User</PageTitle>
@@ -30,7 +35,7 @@
                 <RadzenLabel Text="Password:" Component="Password" style="width: 100%;"/>
             </div>
             <div class="col-md-9">
-                <RadzenPassword MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.Password" Name=""/>
+                <RadzenPassword MaxLength="255" style="display: block; width: 100%;" Disabled="@_hasNoUsers" @bind-Value="@_model.Password" Name=""/>
             </div>
         </div>
         <div style="margin-bottom: 1rem;" class="row">
@@ -46,11 +51,14 @@
 
 @code
 {
-    private readonly RegisterUser _model = new();
+    private readonly RegisterUser _model = new()
+    {
+        Password = "11111111"
+    };
 
     private async Task OnValidSubmit()
     {
-        var result = await SessionClient.RegisterUser(_model.Email, _model.Password);
+        var result = _hasNoUsers ? await SessionClient.RegisterDefaultUser(_model.Email) : await SessionClient.RegisterUser(_model.Email, _model.Password);
         if (result.Code == 0)
             UriHelper.NavigateTo("/", true);
     }
