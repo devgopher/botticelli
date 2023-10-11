@@ -23,8 +23,7 @@ public class UserController : Controller
     private readonly IPasswordSender _passwordSender;
     private readonly IUserService _userService;
 
-    public UserController(IUserService userService, IConfirmationService confirmationService,
-        IAdminAuthService adminAuthService, IMapper mapper, IPasswordSender passwordSender)
+    public UserController(IUserService userService, IMapper mapper, IPasswordSender passwordSender)
     {
         _userService = userService;
         _mapper = mapper;

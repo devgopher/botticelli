@@ -70,11 +70,11 @@ public class AdminController
 
     [HttpGet("[action]")]
     public async Task ActivateBot([FromQuery] string botId)
-        => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Active);
+        => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Unlocked);
 
     [HttpGet("[action]")]
     public async Task DeactivateBot([FromQuery] string botId)
-        => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.NonActive);
+        => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Locked);
 
 
     [HttpGet("[action]")]

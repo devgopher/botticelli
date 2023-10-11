@@ -42,7 +42,7 @@ else
                             @*<RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotId"/>*@
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsAlive(bot.LastKeepAlive)"/>
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsActive(bot.Status)"/>
-                            <RadzenButton Click="@(e => SendStartStop(bot.BotId, bot.Status))" Text="Start/Stop"/>
+                            <RadzenButton Click="@(e => SendStartStop(bot.BotId, bot.Status))" Text="Lock/Unlock"/>
                             <RadzenButton Click="@(e => UriHelper.NavigateTo($"/update_bot/{bot.BotId}", true))"
                                           ButtonStyle="ButtonStyle.Primary"
                                           Style="width: 100%"
@@ -99,7 +99,7 @@ else
 
     protected async Task SendStartStop(string botId, BotStatus? status)
     {
-        if (status != BotStatus.Active) await _http.GetAsync($"/admin/ActivateBot?botId={botId}");
+        if (status != BotStatus.Unlocked) await _http.GetAsync($"/admin/ActivateBot?botId={botId}");
         else await _http.GetAsync($"/admin/DeactivateBot?botId={botId}");
 
         UriHelper.NavigateTo("/your_bots", true);
@@ -107,8 +107,8 @@ else
 
     private static string GetIsActive(BotStatus? status) => status switch
     {
-            BotStatus.Active    => "Active",
-            BotStatus.NonActive => "Not active",
+            BotStatus.Unlocked    => "Unlocked",
+            BotStatus.Locked => "Locked",
             _                   => "Unknown"
             };
 
@@ -130,8 +130,8 @@ else
 
     private string GetStyle(BotInfo bot) => bot.Status switch
     {
-            BotStatus.Active => $"width: 200px; background-color: {(GetIsAlive(bot.LastKeepAlive) == "Alive" ? "greenyellow" : "gainsboro")}",
-            BotStatus.NonActive => "width: 200px; background-color: red",
+            BotStatus.Unlocked => $"width: 200px; background-color: {(GetIsAlive(bot.LastKeepAlive) == "Alive" ? "greenyellow" : "gainsboro")}",
+            BotStatus.Locked => "width: 200px; background-color: red",
             _ => "width: 200px; background-color: gray"
             };
 

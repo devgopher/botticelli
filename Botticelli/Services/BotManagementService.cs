@@ -136,7 +136,7 @@ public class BotManagementService : IBotManagementService
     /// <returns></returns>
     public async Task RemoveBot(string botId)
     {
-        await SetRequiredBotStatus(botId, BotStatus.NonActive);
+        await SetRequiredBotStatus(botId, BotStatus.Unlocked);
 
         var bot = _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
 
@@ -165,8 +165,8 @@ public class BotManagementService : IBotManagementService
             _logger.LogInformation($"{nameof(UpdateBot)}({botId}, {botKey}, {botName}) started...");
 
             var prevStatus = await GetRequiredBotStatus(botId);
-            if (prevStatus is not BotStatus.NonActive)
-                await SetRequiredBotStatus(botId, BotStatus.NonActive);
+            if (prevStatus is not BotStatus.Unlocked)
+                await SetRequiredBotStatus(botId, BotStatus.Unlocked);
 
             botKey ??= _secureStorage.GetBotContext(botId)?.BotKey;
 

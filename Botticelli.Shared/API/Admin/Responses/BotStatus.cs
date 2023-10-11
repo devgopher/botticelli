@@ -2,7 +2,7 @@
 
 public enum BotStatus
 {
-    Active,
-    NonActive,
+    Unlocked,
+    Locked,
     Unknown
 }
