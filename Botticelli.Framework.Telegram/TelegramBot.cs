@@ -1,6 +1,5 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
-using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
 using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Interfaces;
@@ -15,6 +14,8 @@ using Botticelli.Shared.ValueObjects;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Text;
+using Botticelli.Client.Analytics;
+using Botticelli.Framework.Events;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -40,8 +41,8 @@ public class TelegramBot : BaseBot<TelegramBot>
     public TelegramBot(ITelegramBotClient client,
                        IBotUpdateHandler handler,
                        ILogger<TelegramBot> logger,
-                       IMediator mediator,
-                       SecureStorage secureStorage) : base(logger, mediator)
+                       MetricsProcessor metricsProcessor,
+                       SecureStorage secureStorage) : base(logger, metricsProcessor)
     {
         IsStarted = false;
         _client = client;
@@ -101,7 +102,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         };
 
         MessageRemoved?.Invoke(this, eventArgs);
-        Mediator?.Publish(eventArgs, token).Start();
+        await MetricsProcessor.Process(eventArgs, token);
 
         return response;
     }
@@ -272,7 +273,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             };
 
             MessageSent?.Invoke(this, eventArgs);
-            Mediator?.Publish(eventArgs, token).Start();
+            await MetricsProcessor.Process(eventArgs, token);
         }
         catch (Exception ex)
         {
@@ -349,7 +350,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     =>
             {
                 MessageReceived?.Invoke(sender, e);
-                Mediator?.Publish(e, token).Start();
+                MetricsProcessor.Process(e, token).Start();
             };
 
             _client.StartReceiving(_handler, cancellationToken: token);

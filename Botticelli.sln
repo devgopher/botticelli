@@ -167,6 +167,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AiSample.Common", "AiSample
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAiChatGptSample", "VkAiChatGptSample\VkAiChatGptSample.csproj", "{AAD10628-7441-419D-8FE8-F37BF8FB4681}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Events", "Botticelli.Framework.Common\Botticelli.Framework.Events.csproj", "{B0863634-2EE0-4F24-898F-6FB0154E3EB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -309,6 +311,10 @@ Global
 		{AAD10628-7441-419D-8FE8-F37BF8FB4681}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAD10628-7441-419D-8FE8-F37BF8FB4681}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAD10628-7441-419D-8FE8-F37BF8FB4681}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0863634-2EE0-4F24-898F-6FB0154E3EB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0863634-2EE0-4F24-898F-6FB0154E3EB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0863634-2EE0-4F24-898F-6FB0154E3EB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0863634-2EE0-4F24-898F-6FB0154E3EB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -368,6 +374,7 @@ Global
 		{CB97DC2A-EE66-43A6-977F-6CB82C030D7A} = {35480478-646E-45F1-96A3-EE7AC498ACE3}
 		{8A5ECE73-1529-4B53-8907-735ADA05C20A} = {35480478-646E-45F1-96A3-EE7AC498ACE3}
 		{AAD10628-7441-419D-8FE8-F37BF8FB4681} = {5BB351E1-460B-48C1-912C-E13702968BB2}
+		{B0863634-2EE0-4F24-898F-6FB0154E3EB5} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

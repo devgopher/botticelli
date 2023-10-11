@@ -1,5 +1,6 @@
 ﻿using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
+using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
 using Botticelli.Framework.Vk.Messages.API.Requests;
@@ -32,8 +33,8 @@ public class VkBot : BaseBot<VkBot>
                  SecureStorage secureStorage,
                  VkStorageUploader vkUploader,
                  IBotUpdateHandler handler,
-                 IMediator mediator,
-                 ILogger<VkBot> logger) : base(logger, mediator)
+                 MetricsProcessor metricsProcessor,
+                 ILogger<VkBot> logger) : base(logger, metricsProcessor)
     {
         _messagesProvider = messagesProvider;
         _messagePublisher = messagePublisher;

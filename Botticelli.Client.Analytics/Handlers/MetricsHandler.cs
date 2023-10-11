@@ -1,24 +1,25 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.Client.Analytics.Requests;
 using Botticelli.Shared.ValueObjects;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Client.Analytics.Handlers;
 
-public abstract class BasicHandler<TArgs, TMetric> : IRequestHandler<TArgs> where TArgs : IRequest
+public abstract class MetricsHandler<TMetric> : IRequestHandler<IMetricRequest>
 {
     private readonly BotContext _context;
     private readonly MetricsPublisher _metricsPublisher;
     private readonly ILogger _logger;
 
-    protected BasicHandler(BotContext context, MetricsPublisher metricsPublisher, ILogger logger)
+    protected MetricsHandler(BotContext context, MetricsPublisher metricsPublisher, ILogger logger)
     {
         _context = context;
         _metricsPublisher = metricsPublisher;
         _logger = logger;
     }
     
-    public virtual async Task Handle(TArgs request, CancellationToken cancellationToken)
+    public virtual async Task Handle(IMetricRequest request, CancellationToken cancellationToken)
     {
         try
         {
@@ -34,11 +35,11 @@ public abstract class BasicHandler<TArgs, TMetric> : IRequestHandler<TArgs> wher
         }
     }
 
-    protected virtual MetricObject Convert(TArgs args, string botId) =>
+    protected virtual MetricObject Convert(IMetricRequest args, string botId) =>
             new()
             {
                 BotId = botId,
-                Name = typeof(TArgs).Name,
+                Name = args.MetricName,
                 Timestamp = DateTime.Now
             };
 }

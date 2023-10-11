@@ -1,9 +1,8 @@
 ﻿using Botticelli.Shared.ValueObjects;
-using MediatR;
 
 namespace Botticelli.Framework.Events;
 
-public class MessageSentBotEventArgs : BotEventArgs, IRequest, INotification
+public class MessageSentBotEventArgs : BotEventArgs
 {
     public Message Message { get; set; }
 }

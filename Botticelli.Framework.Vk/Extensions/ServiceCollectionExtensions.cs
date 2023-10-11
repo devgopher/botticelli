@@ -3,6 +3,7 @@ using Botticelli.Audio;
 using Botticelli.BotBase;
 using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
+using Botticelli.Client.Analytics;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Vk.Messages.Handlers;
@@ -92,7 +93,7 @@ public static class ServiceCollectionExtensions
                             secureStorage,
                             sp.GetRequiredService<VkStorageUploader>(),
                             sp.GetRequiredService<IBotUpdateHandler>(),
-                            sp.GetRequiredService<IMediator>(),
+                            sp.GetRequiredService<MetricsProcessor>(),
                             sp.GetRequiredService<ILogger<VkBot>>());
 
         return services.AddSingleton<IBot<VkBot>>(bot)

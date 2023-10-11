@@ -1,4 +1,5 @@
-﻿using Botticelli.Interfaces;
+﻿using System.Collections.Generic;
+using Botticelli.Interfaces;
 
 namespace Botticelli.Framework.Events;
 

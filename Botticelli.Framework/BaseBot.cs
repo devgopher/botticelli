@@ -1,4 +1,5 @@
-﻿using Botticelli.Framework.Events;
+﻿using Botticelli.Client.Analytics;
+using Botticelli.Framework.Events;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;
@@ -17,7 +18,7 @@ namespace Botticelli.Framework;
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public abstract class BaseBot<T> : IBot<T>
-        where T : BaseBot<T>
+        where T : BaseBot<T>, IBot
 {
     public delegate void MessengerSpecificEventHandler(object sender, MessengerSpecificBotEventArgs<T> e);
 
@@ -32,17 +33,14 @@ public abstract class BaseBot<T> : IBot<T>
     public delegate void StoppedEventHandler(object sender, StoppedBotEventArgs e);
 
     protected readonly ILogger Logger;
-    protected readonly IMediator Mediator;
+    protected MetricsProcessor MetricsProcessor;
 
-    private BaseBot(ILogger logger)
+    protected BaseBot(ILogger logger, MetricsProcessor metricsProcessor)
     {
         Logger = logger;
+        MetricsProcessor = metricsProcessor;
         IsStarted = false;
     }
-
-
-    protected BaseBot(ILogger logger, IMediator mediator) : this(logger) 
-        => Mediator = mediator;
 
     protected bool IsStarted { get; set; }
 
@@ -63,7 +61,7 @@ public abstract class BaseBot<T> : IBot<T>
 
         var startedEventArgs = new StartedBotEventArgs();
         Started?.Invoke(this, startedEventArgs);
-        Mediator?.Publish(startedEventArgs, token);
+        await MetricsProcessor.Process(startedEventArgs, token);
 
         return response;
     }
@@ -85,7 +83,7 @@ public abstract class BaseBot<T> : IBot<T>
 
         var stoppedEventArgs = new StoppedBotEventArgs();
         Stopped?.Invoke(this, stoppedEventArgs);
-        Mediator?.Publish(stoppedEventArgs, token);
+        await MetricsProcessor.Process(stoppedEventArgs, token);
 
         return response;
     }
