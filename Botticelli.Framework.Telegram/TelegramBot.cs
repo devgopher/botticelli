@@ -41,8 +41,8 @@ public class TelegramBot : BaseBot<TelegramBot>
     public TelegramBot(ITelegramBotClient client,
                        IBotUpdateHandler handler,
                        ILogger<TelegramBot> logger,
-                       MetricsProcessor metricsProcessor,
-                       SecureStorage secureStorage) : base(logger, metricsProcessor)
+                       MetricsProcessor metrics,
+                       SecureStorage secureStorage) : base(logger, metrics)
     {
         IsStarted = false;
         _client = client;
@@ -66,7 +66,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
-    public override async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token)
+    protected override async Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request, CancellationToken token)
     {
         if (!IsStarted)
         {
@@ -102,7 +102,6 @@ public class TelegramBot : BaseBot<TelegramBot>
         };
 
         MessageRemoved?.Invoke(this, eventArgs);
-        await MetricsProcessor.Process(eventArgs, token);
 
         return response;
     }
@@ -115,7 +114,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
+    protected override async Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
                                                                                    ISendOptionsBuilder<TSendOptions> optionsBuilder,
                                                                                    CancellationToken token)
     {
@@ -273,7 +272,6 @@ public class TelegramBot : BaseBot<TelegramBot>
             };
 
             MessageSent?.Invoke(this, eventArgs);
-            await MetricsProcessor.Process(eventArgs, token);
         }
         catch (Exception ex)
         {
@@ -329,7 +327,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public override async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
+    protected override async Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token)
     {
         try
         {
@@ -350,7 +348,6 @@ public class TelegramBot : BaseBot<TelegramBot>
                     =>
             {
                 MessageReceived?.Invoke(sender, e);
-                MetricsProcessor.Process(e, token).Start();
             };
 
             _client.StartReceiving(_handler, cancellationToken: token);
@@ -374,7 +371,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public override async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
+    protected override async Task<StopBotResponse> InnerStopBotAsync(StopBotRequest request, CancellationToken token)
     {
         try
         {

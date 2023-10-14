@@ -1,5 +1,4 @@
-﻿using Botticelli.Analytics.Shared.Metrics;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Client.Analytics.Extensions
 {

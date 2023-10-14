@@ -7,14 +7,17 @@ public class MetricsProcessor
 {
     private readonly IMediator _mediator;
 
-    public MetricsProcessor(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public MetricsProcessor(IMediator mediator) => _mediator = mediator;
 
-    public async Task Process(object metricObj, CancellationToken token)
-        => await _mediator.Publish(new MetricRequest
+    public void Process(object metricObj)
+        => Task.Run(() => _mediator.Publish(new MetricRequest
         {
             MetricName = metricObj.GetType().Name
-        }, token);
+        }));
+
+    public void Process(string name)
+        => Task.Run(() => _mediator.Publish(new MetricRequest
+        {
+            MetricName = name
+        }));
 }

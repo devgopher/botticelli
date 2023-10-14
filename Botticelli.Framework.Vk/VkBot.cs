@@ -33,8 +33,8 @@ public class VkBot : BaseBot<VkBot>
                  SecureStorage secureStorage,
                  VkStorageUploader vkUploader,
                  IBotUpdateHandler handler,
-                 MetricsProcessor metricsProcessor,
-                 ILogger<VkBot> logger) : base(logger, metricsProcessor)
+                 MetricsProcessor metrics,
+                 ILogger<VkBot> logger) : base(logger, metrics)
     {
         _messagesProvider = messagesProvider;
         _messagePublisher = messagePublisher;
@@ -46,11 +46,27 @@ public class VkBot : BaseBot<VkBot>
     public override BotType Type => BotType.Vk;
 
 
+    protected override async Task<StopBotResponse> InnerStopBotAsync(StopBotRequest request, CancellationToken token)
+    {
+        try
+        {
+            await _messagesProvider.Stop();
+
+            return StopBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, ex.Message);
+        }
+        
+        return StopBotResponse.GetInstance(request.Uid, "Error stopping a bot", AdminCommandStatus.Fail);
+    }
+
     [Obsolete($"Use {nameof(SetBotContext)}")]
     public override async Task SetBotKey(string key, CancellationToken token)
         => _messagesProvider.SetApiKey(key);
 
-    public override async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
+    protected override async Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token)
     {
         try
         {
@@ -150,9 +166,9 @@ public class VkBot : BaseBot<VkBot>
            $"_{fk.DocumentResponseData.Document.Id}";
 
 
-    public override async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
-                                                                                   ISendOptionsBuilder<TSendOptions> optionsBuilder,
-                                                                                   CancellationToken token)
+    protected override async Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
+                                                                                           ISendOptionsBuilder<TSendOptions> optionsBuilder,
+                                                                                           CancellationToken token)
     {
         foreach (var userId in request.Message.ChatIds)
             try
@@ -176,6 +192,8 @@ public class VkBot : BaseBot<VkBot>
 
         return new SendMessageResponse(request.Uid, string.Empty);
     }
+
+    protected override async Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request, CancellationToken token) => throw new NotImplementedException();
 
     private async Task<IEnumerable<VkSendMessageRequest>> CreateRequestsWithAttachments(SendMessageRequest request,
                                                                                         string userId,

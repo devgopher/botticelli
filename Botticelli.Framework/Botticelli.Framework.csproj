@@ -16,6 +16,7 @@
 		<ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
 		<ProjectReference Include="..\Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj" />
 		<ProjectReference Include="..\Botticelli.Client.Analytics\Botticelli.Client.Analytics.csproj" />
+		<ProjectReference Include="..\Botticelli.Framework.Common\Botticelli.Framework.Events.csproj" />
 		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
 		<ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj" />
 	</ItemGroup>

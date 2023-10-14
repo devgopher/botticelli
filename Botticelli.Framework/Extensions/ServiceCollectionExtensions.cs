@@ -1,4 +1,5 @@
 ﻿using Botticelli.Bot.Interfaces.Processors;
+using Botticelli.Client.Analytics.Extensions;
 using Botticelli.Framework.Commands;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
@@ -15,14 +16,15 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ChatMessageProcessor>()
                 .AddSingleton<ClientProcessorFactory>()
                 .AddSingleton<CommandProcessorFactory>()
-                .AddMediatR(cfg =>
-                {
-                    var assemblies = services
-                                     .Select(s => s.GetType().Assembly)
-                                     .Distinct()
-                                     .ToArray();
-                    cfg.RegisterServicesFromAssemblies(assemblies);
-                });
+                //.AddMediatR(cfg =>
+                //{
+                //    var assemblies = services
+                //                     .Select(s => s.GetType().Assembly)
+                //                     .Distinct()
+                //                     .ToArray();
+                //    cfg.RegisterServicesFromAssemblies(assemblies);
+                //})
+                .AddMetrics();
 
         return services;
     }

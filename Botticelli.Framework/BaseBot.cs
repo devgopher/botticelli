@@ -1,4 +1,5 @@
-﻿using Botticelli.Client.Analytics;
+﻿using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
@@ -8,7 +9,6 @@ using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework;
@@ -33,12 +33,12 @@ public abstract class BaseBot<T> : IBot<T>
     public delegate void StoppedEventHandler(object sender, StoppedBotEventArgs e);
 
     protected readonly ILogger Logger;
-    protected MetricsProcessor MetricsProcessor;
+    private MetricsProcessor _metrics;
 
-    protected BaseBot(ILogger logger, MetricsProcessor metricsProcessor)
+    protected BaseBot(ILogger logger, MetricsProcessor metrics)
     {
         Logger = logger;
-        MetricsProcessor = metricsProcessor;
+        _metrics = metrics;
         IsStarted = false;
     }
 
@@ -48,45 +48,21 @@ public abstract class BaseBot<T> : IBot<T>
 
     public virtual async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
     {
-        StartBotResponse response;
+        _metrics.Process(MetricNames.BotStopped);
 
-        try
-        {
-            response = StartBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
-        }
-        catch (Exception ex)
-        {
-            response = StartBotResponse.GetInstance(request.Uid, $"Error: {ex.Message}", AdminCommandStatus.Fail);
-        }
-
-        var startedEventArgs = new StartedBotEventArgs();
-        Started?.Invoke(this, startedEventArgs);
-        await MetricsProcessor.Process(startedEventArgs, token);
-
-        return response;
+        return await InnerStartBotAsync(request, token);
     }
 
+    protected  abstract Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token);
+    
     public virtual async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
     {
-        StopBotResponse response;
+        _metrics.Process(MetricNames.BotStopped);
 
-        try
-        {
-            response = StopBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
-        }
-        catch (Exception ex)
-        {
-            response = StopBotResponse.GetInstance(request.Uid, $"Error: {ex.Message}", AdminCommandStatus.Fail);
-        }
-
-        IsStarted = false;
-
-        var stoppedEventArgs = new StoppedBotEventArgs();
-        Stopped?.Invoke(this, stoppedEventArgs);
-        await MetricsProcessor.Process(stoppedEventArgs, token);
-
-        return response;
+        return await InnerStopBotAsync(request, token);
     }
+
+    protected abstract Task<StopBotResponse> InnerStopBotAsync(StopBotRequest request, CancellationToken token);
 
     [Obsolete($"Use {nameof(SetBotContext)}")]
     public abstract Task SetBotKey(string key, CancellationToken token);
@@ -108,19 +84,37 @@ public abstract class BaseBot<T> : IBot<T>
     /// <param name="request">Request</param>
     /// <param name="optionsBuilder"></param>
     /// <returns></returns>
-    public abstract Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
-                                                                             ISendOptionsBuilder<TSendOptions> optionsBuilder,
-                                                                             CancellationToken token)
-            where TSendOptions : class;
+    public virtual async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
+                                                                                  ISendOptionsBuilder<TSendOptions> optionsBuilder,
+                                                                                  CancellationToken token)
+            where TSendOptions : class
+    {
+        _metrics.Process(MetricNames.MessageSent);
 
-    public abstract Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token);
+        return await InnerSendMessageAsync(request, optionsBuilder, token);
+    }
+
+    public virtual async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token)
+    {
+        _metrics.Process(MetricNames.MessageRemoved);
+
+        return await InnerDeleteMessageAsync(request, token);
+    }
 
     public abstract BotType Type { get; }
 
+    public virtual event MsgSentEventHandler MessageSent;
+    public virtual event MsgReceivedEventHandler MessageReceived;
+    public virtual event MsgRemovedEventHandler MessageRemoved;
+    public virtual event MessengerSpecificEventHandler MessengerSpecificEvent;
+
+    protected abstract Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
+                                                                                  ISendOptionsBuilder<TSendOptions> optionsBuilder,
+                                                                                  CancellationToken token)
+            where TSendOptions : class;
+
+    protected abstract Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request, CancellationToken token);
+
     public event StartedEventHandler Started;
     public event StoppedEventHandler Stopped;
-    public abstract event MsgSentEventHandler MessageSent;
-    public abstract event MsgReceivedEventHandler MessageReceived;
-    public abstract event MsgRemovedEventHandler MessageRemoved;
-    public abstract event MessengerSpecificEventHandler MessengerSpecificEvent;
 }

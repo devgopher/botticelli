@@ -1,4 +1,6 @@
 ﻿using System.Text.RegularExpressions;
+using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
@@ -12,18 +14,23 @@ public sealed class ChatMessageProcessor : IClientMessageProcessor
     private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
 
     private readonly CommandProcessorFactory _cpFactory;
+    private readonly MetricsProcessor _metrics;
     private readonly ILogger<ChatMessageProcessor> _logger;
 
     public ChatMessageProcessor(ILogger<ChatMessageProcessor> logger,
-                                CommandProcessorFactory cpFactory)
+                                CommandProcessorFactory cpFactory,
+                                MetricsProcessor metrics)
     {
         _logger = logger;
         _cpFactory = cpFactory;
+        _metrics = metrics;
     }
 
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
         _logger.LogDebug($"{nameof(ProcessAsync)}({message.Uid}) started...");
+
+        _metrics.Process(MetricNames.MessageReceived);
 
         try
         {
