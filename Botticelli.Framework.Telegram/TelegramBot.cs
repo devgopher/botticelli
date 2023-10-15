@@ -332,7 +332,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         try
         {
             Logger.LogInformation($"{nameof(StartBotAsync)}...");
-            var response = await base.StartBotAsync(request, token);
+            var response = StartBotResponse.GetInstance(AdminCommandStatus.Ok, "");
 
             if (IsStarted)
             {
@@ -375,8 +375,8 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         try
         {
-            Logger.LogInformation($"{nameof(StopBotAsync)}...");
-            var response = await base.StopBotAsync(request, token);
+            Logger.LogInformation($"{nameof(InnerStopBotAsync)}...");
+            var response = StopBotResponse.GetInstance(request.Uid, "", AdminCommandStatus.Ok);
 
             if (response.Status != AdminCommandStatus.Ok || !IsStarted) return response;
 

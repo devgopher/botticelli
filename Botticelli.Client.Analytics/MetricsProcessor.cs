@@ -1,23 +1,27 @@
-﻿using Botticelli.Client.Analytics.Requests;
+﻿using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.Client.Analytics.Requests;
 using MediatR;
 
 namespace Botticelli.Client.Analytics;
 
 public class MetricsProcessor
 {
-    private readonly IMediator _mediator;
+    private readonly MetricsPublisher _mediator;
 
-    public MetricsProcessor(IMediator mediator) => _mediator = mediator;
+    public MetricsProcessor(MetricsPublisher mediator) => _mediator = mediator;
 
-    public void Process(object metricObj)
-        => Task.Run(() => _mediator.Publish(new MetricRequest
+    public void Process(object metricObj, string botId)
+        => Task.Run(() => _mediator.Publish(new MetricObject()
         {
-            MetricName = metricObj.GetType().Name
-        }));
+            Name = metricObj.GetType().Name,
+            BotId = botId
+        }, CancellationToken.None));
 
-    public void Process(string name)
-        => Task.Run(() => _mediator.Publish(new MetricRequest
+    public void Process(string name, string botId)
+        => Task.Run(() => _mediator.Publish(new MetricObject()
         {
-            MetricName = name
-        }));
+            Name = name,
+            Timestamp = DateTime.Now,
+            BotId = botId
+        }, CancellationToken.None));
 }

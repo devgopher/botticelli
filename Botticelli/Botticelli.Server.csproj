@@ -4,10 +4,6 @@
     <TypeScriptSourceMap>False</TypeScriptSourceMap>
   </PropertyGroup>
 
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TypeScriptSourceMap>False</TypeScriptSourceMap>
-  </PropertyGroup>
-
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>disable</Nullable>

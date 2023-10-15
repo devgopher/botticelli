@@ -1,14 +1,19 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Botticelli.Client.Analytics.Settings;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Client.Analytics.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddMetrics(this IServiceCollection services)
+        public static IServiceCollection AddMetrics(this IServiceCollection services, IConfiguration config)
         {
-            return services.AddScoped<MetricsPublisher>()
+            var settings =  config.GetSection(nameof(AnalyticsSettings)).Get<AnalyticsSettings>();
+            return services.AddSingleton<MetricsPublisher>()
+                           .AddSingleton(settings)
                 .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(MetricsPublisher).Assembly))
-                .AddScoped<MetricsProcessor>();
+                .AddSingleton<MetricsProcessor>();
         }
     }
 }

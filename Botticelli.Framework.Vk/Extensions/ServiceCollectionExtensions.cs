@@ -84,7 +84,7 @@ public static class ServiceCollectionExtensions
                 .AddSingleton<IConvertor, UniversalLowQualityConvertor>()
                 .AddSingleton<IAnalyzer, InputAnalyzer>()
                 .AddSingleton(secureStorage)
-                .AddBotticelliFramework();
+                .AddBotticelliFramework(config);
 
         var sp = services.BuildServiceProvider();
 

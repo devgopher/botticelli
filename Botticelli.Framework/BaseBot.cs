@@ -1,4 +1,5 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
 using Botticelli.Interfaces;
@@ -48,7 +49,7 @@ public abstract class BaseBot<T> : IBot<T>
 
     public virtual async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
     {
-        _metrics.Process(MetricNames.BotStopped);
+        _metrics.Process(MetricNames.BotStarted, BotDataUtils.GetBotId());
 
         return await InnerStartBotAsync(request, token);
     }
@@ -57,7 +58,7 @@ public abstract class BaseBot<T> : IBot<T>
     
     public virtual async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
     {
-        _metrics.Process(MetricNames.BotStopped);
+        _metrics.Process(MetricNames.BotStopped, BotDataUtils.GetBotId());
 
         return await InnerStopBotAsync(request, token);
     }
@@ -89,14 +90,14 @@ public abstract class BaseBot<T> : IBot<T>
                                                                                   CancellationToken token)
             where TSendOptions : class
     {
-        _metrics.Process(MetricNames.MessageSent);
+        _metrics.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
 
         return await InnerSendMessageAsync(request, optionsBuilder, token);
     }
 
     public virtual async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token)
     {
-        _metrics.Process(MetricNames.MessageRemoved);
+        _metrics.Process(MetricNames.MessageRemoved, BotDataUtils.GetBotId());
 
         return await InnerDeleteMessageAsync(request, token);
     }

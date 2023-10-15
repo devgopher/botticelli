@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Interfaces;
@@ -30,7 +31,7 @@ public sealed class ChatMessageProcessor : IClientMessageProcessor
     {
         _logger.LogDebug($"{nameof(ProcessAsync)}({message.Uid}) started...");
 
-        _metrics.Process(MetricNames.MessageReceived);
+        _metrics.Process(MetricNames.MessageReceived, BotDataUtils.GetBotId());
 
         try
         {

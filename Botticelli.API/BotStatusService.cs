@@ -128,11 +128,11 @@ public class BotStatusService<TBot> : IHostedService
 
                                                                         switch (task.Result?.Status)
                                                                         {
-                                                                            case BotStatus.Locked:
+                                                                            case BotStatus.Unlocked:
                                                                                 _bot.StartBotAsync(StartBotRequest.GetInstance(), ct);
 
                                                                                 break;
-                                                                            case BotStatus.Unlocked:
+                                                                            case BotStatus.Locked:
                                                                                 _bot.StopBotAsync(StopBotRequest.GetInstance(), ct);
 
                                                                                 break;

@@ -57,7 +57,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(serverConfig)
                 .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
-                .AddBotticelliFramework();
+                .AddBotticelliFramework(config);
 
         var sp = services.BuildServiceProvider();
 

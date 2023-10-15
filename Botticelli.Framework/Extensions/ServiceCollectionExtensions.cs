@@ -5,13 +5,14 @@ using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.MessageProcessors;
 using Botticelli.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Framework.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddBotticelliFramework(this IServiceCollection services)
+    public static IServiceCollection AddBotticelliFramework(this IServiceCollection services, IConfiguration config)
     {
         services.AddSingleton<ChatMessageProcessor>()
                 .AddSingleton<ClientProcessorFactory>()
@@ -24,7 +25,7 @@ public static class ServiceCollectionExtensions
                 //                     .ToArray();
                 //    cfg.RegisterServicesFromAssemblies(assemblies);
                 //})
-                .AddMetrics();
+                .AddMetrics(config);
 
         return services;
     }
