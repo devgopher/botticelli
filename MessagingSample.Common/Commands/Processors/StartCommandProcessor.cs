@@ -1,6 +1,7 @@
 ﻿using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Scheduler;
+using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -26,11 +27,22 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
     protected override async Task InnerProcessLocation(Message message, string argsString, CancellationToken token)
     {
     }
-
-
+    
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
         var chatId = message.ChatIds.FirstOrDefault();
+        var greetingMessageRequest = new SendMessageRequest(Guid.NewGuid().ToString())
+        {
+            Message = new Message
+            {
+                Uid = Guid.NewGuid().ToString(),
+                ChatIds = message.ChatIds,
+                Body = "Bot started...",
+            }
+        };
+
+        await BroadcastMessage(greetingMessageRequest, token);
+
         var assemblyPath = Path.GetDirectoryName(typeof(StartCommandProcessor).Assembly.Location);
         JobManager.AddJob(Bots.FirstOrDefault(),
             new Reliability
@@ -43,7 +55,6 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
             new Message
             {
                 Body = "Now you see me!",
-                Subject = "",
                 ChatIds = new List<string> { chatId },
                 Attachments = new List<IAttachment>
                 {

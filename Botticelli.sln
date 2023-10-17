@@ -169,7 +169,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAiChatGptSample", "VkAiCh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Events", "Botticelli.Framework.Common\Botticelli.Framework.Events.csproj", "{B0863634-2EE0-4F24-898F-6FB0154E3EB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bot.Utils", "Botticelli.Bot.Utils\Botticelli.Bot.Utils.csproj", "{E843665C-F541-4915-838D-346150389C36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bot.Utils", "Botticelli.Bot.Utils\Botticelli.Bot.Utils.csproj", "{E843665C-F541-4915-838D-346150389C36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

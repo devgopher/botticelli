@@ -4,7 +4,9 @@ using Botticelli.Framework.Commands.Validators;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
+using MediatR;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace Botticelli.Framework.Commands.Processors;
 
@@ -51,21 +53,24 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 var match = Regex.Matches(message.Body, SimpleCommandPattern)
                     .FirstOrDefault();
 
+                if (match == default) return;
+
                 var commandName = GetCommandName(match.Groups[1].Value);
 
                 if (commandName != _commandName) return;
 
-                if (match == default) return;
-
                 await ValidateAndProcess(message,
                     string.Empty,
-                    token,
-                    request);
+                    request,
+                    token);
             }
             else if (Regex.IsMatch(message.Body, ArgsCommandPattern))
             {
                 var match = Regex.Matches(message.Body, ArgsCommandPattern)
                     .FirstOrDefault();
+
+                if (match == default) return;
+
                 var argsString = match.Groups[2].Value;
 
                 var commandName = GetCommandName(match.Groups[1].Value);
@@ -74,8 +79,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
                 await ValidateAndProcess(message,
                     argsString,
-                    token,
-                    request);
+                    request,
+                    token);
             }
 
             if (message.Location != default) await InnerProcessLocation(message, string.Empty, token);
@@ -100,8 +105,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
     private async Task ValidateAndProcess(Message message,
         string args,
-        CancellationToken token,
-        SendMessageRequest request)
+        SendMessageRequest request,
+        CancellationToken token)
     {
         if (await _validator.Validate(message.ChatIds, message.Body))
         {
@@ -111,8 +116,13 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         {
             request.Message.Body = _validator.Help();
 
-            foreach (var bot in Bots) await bot.SendMessageAsync(request, token);
+            await BroadcastMessage(request, token);
         }
+    }
+
+    protected async Task BroadcastMessage(SendMessageRequest request, CancellationToken token)
+    {
+        foreach (var bot in Bots) await bot.SendMessageAsync(request, token);
     }
 
     protected abstract Task InnerProcessContact(Message message, string args, CancellationToken token);
