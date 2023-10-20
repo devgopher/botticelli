@@ -80,14 +80,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Server.Models", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "back", "back", "{05922003-7445-47CF-8496-7224F44E7768}"
 	ProjectSection(SolutionItems) = preProject
-		deploy\linux\server\back\build.sh = deploy\linux\server\back\build.sh
 		deploy\linux\server\back\Dockerfile = deploy\linux\server\back\Dockerfile
 		deploy\linux\server\back\run_standalone.sh = deploy\linux\server\back\run_standalone.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{7FF17C87-CC2B-4CD6-B667-18B7BED78850}"
 	ProjectSection(SolutionItems) = preProject
-		deploy\linux\server\front\build.sh = deploy\linux\server\front\build.sh
 		deploy\linux\server\front\Dockerfile = deploy\linux\server\front\Dockerfile
 		deploy\linux\server\front\run_standalone.sh = deploy\linux\server\front\run_standalone.sh
 	EndProjectSection
