@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Analytics.Shared.Metrics
+﻿using System.Collections.Immutable;
+
+namespace Botticelli.Analytics.Shared.Metrics
 {
     /// <summary>
     /// Names for typical metrics
@@ -10,12 +12,11 @@
         public const string MessageRemoved = "MessageRemoved";
         public const string NewSubscription = "NewSubscription";
         public const string UnSubscription = "UnSubscription";
-
         public const string BotStarted = "BotStarted";
         public const string BotStopped = "BotStopped";
 
-        public static List<string> Names =>
-                new()
+        public static string[] Names =
+                new[]
                 {
                     MessageReceived,
                     MessageSent,

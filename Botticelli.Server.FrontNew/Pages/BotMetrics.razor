@@ -21,7 +21,7 @@
 
 
 @code {
-    private string _error = string.Empty;
+    private string _error = "AAA";
 }
 
 <PageTitle>Bot metrics</PageTitle>
@@ -32,29 +32,19 @@
 {
     <p>
         <em>Loading...</em>
-        <RadzenText TextStyle="TextStyle.Overline" Text="@_error"></RadzenText>
     </p>
 }
 else
 {
     <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" Gap="20px">
         @{
-            foreach (var metricName in MetricNames.Names)
+            foreach (var metricName in _metrics.Keys)
             {
-                var request = new GetMetricsForIntervalsRequest()
-                {
-                    BotId = this.BotId,
-                    From = DateTime.Now.AddHours(-24),
-                    To = DateTime.Now,
-                    Interval = 3600,
-                    Name = metricName
-                };
-
-                var metrics = GetBotMetrics(request, metricName).Result;
+                _metrics[metricName] ??= new List<MetricsModel>();
                 <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" Gap="20px">
                     <RadzenText TextStyle="TextStyle.Overline" Text="@metricName"/>
                     <RadzenChart>
-                        <RadzenColumnSeries Data="@metrics" CategoryProperty="DateTime" ValueProperty="Value"/>
+                        <RadzenColumnSeries Title="Count" Data="@_metrics[metricName]" CategoryProperty="DateTime" ValueProperty="Value"/>
                         <RadzenValueAxis>
                             <RadzenGridLines Visible="true"/>
                         </RadzenValueAxis>
@@ -72,28 +62,38 @@ else
     [Parameter]
     public string BotId { get; set; }
     readonly BotModel _model = new();
+    readonly Dictionary<string, IEnumerable<MetricsModel>> _metrics = new Dictionary<string, IEnumerable<MetricsModel>>();
 
     private BotInfo _bot;
 
     protected override bool ShouldRender() => true;
-
+    
     protected override async Task OnInitializedAsync()
     {
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
-        _error = sessionToken;
         try
         {
             _bot = await GetBot(sessionToken);
+            foreach (var metricName in MetricNames.Names)
+            {
+                _error = metricName;
+                var request = new GetMetricsForIntervalsRequest()
+                {
+                    BotId = this.BotId,
+                    From = DateTime.Now.AddDays(-10),
+                    To = DateTime.Now,
+                    Interval = 3600,
+                    Name = metricName
+                };
 
-            //var botStatus = await GetBotStatus(bot, sessionToken);
+                var metrics = await GetBotMetrics(request, metricName);
+                _metrics[metricName] = metrics;
+            }
 
-            _model.BotId = BotId;
-            _model.BotName = _bot.BotName;
-            //_model.BotKey = botStatus.BotContext.BotKey;
         }
         catch (Exception ex)
         {
-          // _error = $"token:{sessionToken} ex:{ex.Message}";
+            _error = $"token:{sessionToken} ex:{ex.Message} {ex.InnerException?.Message}";
         }
     }
 
