@@ -1,7 +1,5 @@
-﻿using Botticelli.Server.Analytics.Requests;
-using Botticelli.Server.Analytics.Responses;
+﻿using Botticelli.Analytics.Shared.Requests;
 using Botticelli.Server.Analytics.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.Server.Analytics.Controllers;
@@ -18,7 +16,7 @@ public class MetricsInputController : Controller
     public MetricsInputController(IMetricsInputService service) => _service = service;
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> ReceiveMetric([FromQuery]PushMetricRequest request, CancellationToken token)
+    public async Task<IActionResult> ReceiveMetric([FromQuery] PushMetricRequest request, CancellationToken token)
     {
         try
         {

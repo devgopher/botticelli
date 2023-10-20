@@ -1,5 +1,4 @@
 ﻿using Botticelli.Server.Analytics.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Server.Analytics.Extensions
 {

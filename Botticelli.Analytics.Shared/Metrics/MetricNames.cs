@@ -13,5 +13,17 @@
 
         public const string BotStarted = "BotStarted";
         public const string BotStopped = "BotStopped";
+
+        public static List<string> Names =>
+                new()
+                {
+                    MessageReceived,
+                    MessageSent,
+                    MessageRemoved,
+                    BotStarted,
+                    BotStopped,
+                    NewSubscription,
+                    UnSubscription
+                };
     }
 }

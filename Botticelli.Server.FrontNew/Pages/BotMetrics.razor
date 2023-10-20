@@ -1,0 +1,157 @@
+﻿@page "/bot_metrics/{botId}"
+@using Botticelli.Analytics.Shared.Metrics;
+@using Botticelli.Analytics.Shared.Requests;
+@using Botticelli.Analytics.Shared.Responses;
+@using Botticelli.Server.Data.Entities
+@using Botticelli.Server.FrontNew;
+@using Botticelli.Server.FrontNew.Models;
+@using Botticelli.Shared.API.Admin.Responses
+@using Botticelli.Shared.API.Client.Requests;
+@using Botticelli.Shared.API.Client.Responses;
+@using Botticelli.Shared.Constants
+@using Microsoft.Extensions.Options
+@using Botticelli.Server.FrontNew.Settings
+@using System.Net.Http.Headers
+@using System.Net.Http.Json;
+@using Flurl
+@using Flurl.Http
+@inject NavigationManager UriHelper;
+@inject IOptionsMonitor<BackSettings> BackSettings;
+@inject CookieStorageAccessor Cookies;
+
+
+@code {
+    private string _error = string.Empty;
+}
+
+<PageTitle>Bot metrics</PageTitle>
+
+<h1>Bot metrics</h1>
+
+@if (_bot == null)
+{
+    <p>
+        <em>Loading...</em>
+        <RadzenText TextStyle="TextStyle.Overline" Text="@_error"></RadzenText>
+    </p>
+}
+else
+{
+    <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" Gap="20px">
+        @{
+            foreach (var metricName in MetricNames.Names)
+            {
+                var request = new GetMetricsForIntervalsRequest()
+                {
+                    BotId = this.BotId,
+                    From = DateTime.Now.AddHours(-24),
+                    To = DateTime.Now,
+                    Interval = 3600,
+                    Name = metricName
+                };
+
+                var metrics = GetBotMetrics(request, metricName).Result;
+                <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" Gap="20px">
+                    <RadzenText TextStyle="TextStyle.Overline" Text="@metricName"/>
+                    <RadzenChart>
+                        <RadzenColumnSeries Data="@metrics" CategoryProperty="DateTime" ValueProperty="Value"/>
+                        <RadzenValueAxis>
+                            <RadzenGridLines Visible="true"/>
+                        </RadzenValueAxis>
+                        <RadzenCategoryAxis>
+                            <RadzenGridLines Visible="true"/>
+                        </RadzenCategoryAxis>
+                    </RadzenChart>
+                </RadzenStack>
+            }
+        }
+    </RadzenStack>
+}
+
+@code {
+    [Parameter]
+    public string BotId { get; set; }
+    readonly BotModel _model = new();
+
+    private BotInfo _bot;
+
+    protected override bool ShouldRender() => true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var sessionToken = await Cookies.GetValueAsync("SessionToken");
+        _error = sessionToken;
+        try
+        {
+            _bot = await GetBot(sessionToken);
+
+            //var botStatus = await GetBotStatus(bot, sessionToken);
+
+            _model.BotId = BotId;
+            _model.BotName = _bot.BotName;
+            //_model.BotKey = botStatus.BotContext.BotKey;
+        }
+        catch (Exception ex)
+        {
+          // _error = $"token:{sessionToken} ex:{ex.Message}";
+        }
+    }
+
+
+    private async Task<IEnumerable<MetricsModel>> GetBotMetrics(GetMetricsForIntervalsRequest request,
+        string metricName)
+    {
+        using var http = HttpClientFactory.Create();
+        http.BaseAddress = new Uri(BackSettings.CurrentValue.AnalyticsUrl);
+        var botStatusResponse = await http.GetAsync("/metrics/getter/GetMetricsForInterval?".SetQueryParams(request));
+        var metrics = await botStatusResponse.Content.ReadFromJsonAsync<GetMetricsIntervalsResponse>();
+        var output = metrics.MetricsForIntervals.Select(m => new MetricsModel()
+        {
+                DateTime = m.From,
+                Value = m.Count
+        });
+
+        return output;
+    }
+
+    private static string GetIsActive(BotStatus? status) => status switch
+    {
+            BotStatus.Unlocked    => "Unlocked",
+            BotStatus.Locked => "Locked",
+            _                   => "Unknown"
+            };
+
+    private static string GetIsAlive(DateTime? lastKeepAlive)
+            => DateTime.UtcNow - lastKeepAlive <= TimeSpan.FromSeconds(30) ? "Alive" : "Dead";
+
+    private async Task<BotInfo> GetBot(string sessionToken)
+    {
+        using var http = HttpClientFactory.Create();
+        http.BaseAddress = new Uri(BackSettings.CurrentValue.BackUrl);
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
+        var bots = await http.GetFromJsonAsync<BotInfo[]>("/admin/GetBots");
+        var bot = bots.FirstOrDefault(b => b.BotId == BotId);
+
+        return bot;
+    }
+
+    private string GetLogo(BotType? type) => type switch
+    {
+            BotType.Telegram => "Logos/Telegram.png",
+            BotType.WhatsApp => "Logos/Whatsapp.png",
+            BotType.Viber => "Logos/Viber.png",
+            BotType.RocketChat => "Logos/RocketChat.png",
+            BotType.Signal => "Logos/Signal.png",
+            BotType.Unknown => "Logos/Unknown.png",
+            _ => "Logos/Unknown.png"
+            };
+
+
+    private string GetStyle(BotInfo bot) => bot.Status switch
+    {
+            BotStatus.Unlocked => $"width: 200px; background-color: {(GetIsAlive(bot.LastKeepAlive) == "Alive" ? "greenyellow" : "gainsboro")}",
+            BotStatus.Locked => "width: 200px; background-color: red",
+            _ => "width: 200px; background-color: gray"
+            };
+
+}

@@ -18,7 +18,11 @@ public class CookieStorageAccessor
     {
         await WaitForReference();
         var result = await _accessorJsRef.Value.InvokeAsync<string>("get", key);
-        result = result.Replace($"{key}=", "");
+        result = result.Replace($"{key}=", "")
+                       .Replace(";", string.Empty)
+                       .Replace("\n", string.Empty)
+                       .Replace("\r", string.Empty);
+        result = result.Substring(0, result.Contains(' ') ? result.IndexOf(' ') : result.Length);
 
         return result.Trim();
     }

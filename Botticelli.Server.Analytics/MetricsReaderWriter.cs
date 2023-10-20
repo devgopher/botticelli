@@ -1,7 +1,6 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Server.Analytics.Models;
 using Botticelli.Server.Analytics.Utils;
-using Microsoft.EntityFrameworkCore;
 
 namespace Botticelli.Server.Analytics;
 

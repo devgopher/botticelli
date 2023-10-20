@@ -14,4 +14,5 @@ public class ServerSettings
     public string ServerEmail { get; set; }
 
     public string ServerUrl { get; set; }
+    public string AnalyticsUrl { get; set; }
 }

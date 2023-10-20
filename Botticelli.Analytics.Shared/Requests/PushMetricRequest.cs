@@ -1,6 +1,6 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
 
-namespace Botticelli.Server.Analytics.Requests;
+namespace Botticelli.Analytics.Shared.Requests;
 
 public class PushMetricRequest : MetricObject
 {

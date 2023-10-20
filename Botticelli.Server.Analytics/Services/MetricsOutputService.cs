@@ -1,5 +1,5 @@
-﻿using Botticelli.Server.Analytics.Requests;
-using Botticelli.Server.Analytics.Responses;
+﻿using Botticelli.Analytics.Shared.Requests;
+using Botticelli.Analytics.Shared.Responses;
 
 namespace Botticelli.Server.Analytics.Services;
 

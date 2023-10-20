@@ -46,8 +46,6 @@ builder.ApplyMigrations<MetricsContext>();
 
 var app = builder.Build();
 
-app.UseCors("AllowCorsPolicy");
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

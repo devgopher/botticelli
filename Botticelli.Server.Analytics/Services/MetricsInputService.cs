@@ -1,4 +1,4 @@
-﻿using Botticelli.Server.Analytics.Requests;
+﻿using Botticelli.Analytics.Shared.Requests;
 
 namespace Botticelli.Server.Analytics.Services;
 

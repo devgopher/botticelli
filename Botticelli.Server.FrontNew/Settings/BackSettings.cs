@@ -6,4 +6,9 @@ public class BackSettings
     ///     Backend URL
     /// </summary>
     public string BackUrl { get; set; }
+
+    /// <summary>
+    /// Analytics URL
+    /// </summary>
+    public string AnalyticsUrl { get; set; }
 }

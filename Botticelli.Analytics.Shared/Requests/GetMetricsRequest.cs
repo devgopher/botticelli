@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Server.Analytics.Requests
+﻿namespace Botticelli.Analytics.Shared.Requests
 {
     public class GetMetricsRequest
     {

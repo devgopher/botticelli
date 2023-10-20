@@ -39,7 +39,6 @@ else
                         </RadzenStack>
                         <RadzenStack Gap="10px">
                             <RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotName"/>
-                            @*<RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotId"/>*@
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsAlive(bot.LastKeepAlive)"/>
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsActive(bot.Status)"/>
                             <RadzenButton Click="@(e => SendStartStop(bot.BotId, bot.Status))" Text="Lock/Unlock"/>
@@ -47,6 +46,10 @@ else
                                           ButtonStyle="ButtonStyle.Primary"
                                           Style="width: 100%"
                                           Text="Update" />
+                            <RadzenButton Click="@(e => UriHelper.NavigateTo($"/bot_metrics/{bot.BotId}", true))"
+                                          ButtonStyle="ButtonStyle.Primary"
+                                          Style="width: 100%"
+                                          Text="See metrics" />
                             <RadzenButton Click="@(e => RemoveBot(bot.BotId))" Text="Remove"/>
                         </RadzenStack>
                     </RadzenCard>
