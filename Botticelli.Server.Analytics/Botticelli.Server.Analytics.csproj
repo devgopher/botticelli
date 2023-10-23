@@ -18,7 +18,8 @@
 		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
 		<PackageIcon>logo.jpg</PackageIcon>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-	</PropertyGroup>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+  </PropertyGroup>
 
 	<ItemGroup>
 		<Content Remove="appsettings.json" />
