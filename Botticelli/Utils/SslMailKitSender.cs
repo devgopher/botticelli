@@ -4,6 +4,7 @@ using FluentEmail.Core.Interfaces;
 using FluentEmail.Core.Models;
 using FluentEmail.MailKitSmtp;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace Botticelli.Server.Utils
@@ -13,13 +14,13 @@ namespace Botticelli.Server.Utils
     /// </summary>
     public class SslMailKitSender : ISender 
     {
-        private readonly SmtpClientOptions _smtpClientOptions;
+        private readonly IOptionsMonitor<SmtpClientOptions> _smtpClientOptions;
 
         /// <summary>
         /// Creates a sender that uses the given SmtpClientOptions when sending with MailKit. Since the client is internal this will dispose of the client.
         /// </summary>
         /// <param name="smtpClientOptions">The SmtpClientOptions to use to create the MailKit client</param>
-        public SslMailKitSender(SmtpClientOptions smtpClientOptions)
+        public SslMailKitSender(IOptionsMonitor<SmtpClientOptions> smtpClientOptions)
         {
             _smtpClientOptions = smtpClientOptions;
         }
@@ -43,9 +44,9 @@ namespace Botticelli.Server.Utils
 
             try
             {
-                if (_smtpClientOptions.UsePickupDirectory)
+                if (_smtpClientOptions.CurrentValue.UsePickupDirectory)
                 {
-                    this.SaveToPickupDirectory(message, _smtpClientOptions.MailPickupDirectory).Wait();
+                    this.SaveToPickupDirectory(message, _smtpClientOptions.CurrentValue.MailPickupDirectory).Wait();
                     return response;
                 }
 
@@ -53,27 +54,27 @@ namespace Botticelli.Server.Utils
                 using var client = new SmtpClient();
                 SslCertCheckOff(client);
 
-                if (_smtpClientOptions.SocketOptions.HasValue)
+                if (_smtpClientOptions.CurrentValue.SocketOptions.HasValue)
                 {
                     client.Connect(
-                        _smtpClientOptions.Server,
-                        _smtpClientOptions.Port,
-                        _smtpClientOptions.SocketOptions.Value,
+                        _smtpClientOptions.CurrentValue.Server,
+                        _smtpClientOptions.CurrentValue.Port,
+                        _smtpClientOptions.CurrentValue.SocketOptions.Value,
                         token.GetValueOrDefault());
                 }
                 else
                 {
                     client.Connect(
-                        _smtpClientOptions.Server,
-                        _smtpClientOptions.Port,
-                        _smtpClientOptions.UseSsl,
+                        _smtpClientOptions.CurrentValue.Server,
+                        _smtpClientOptions.CurrentValue.Port,
+                        _smtpClientOptions.CurrentValue.UseSsl,
                         token.GetValueOrDefault());
                 }
 
                 // Note: only needed if the SMTP server requires authentication
-                if (_smtpClientOptions.RequiresAuthentication)
+                if (_smtpClientOptions.CurrentValue.RequiresAuthentication)
                 {
-                    client.Authenticate(_smtpClientOptions.User, _smtpClientOptions.Password, token.GetValueOrDefault());
+                    client.Authenticate(_smtpClientOptions.CurrentValue.User, _smtpClientOptions.CurrentValue.Password, token.GetValueOrDefault());
                 }
 
                 client.Send(message, token.GetValueOrDefault());
@@ -112,35 +113,35 @@ namespace Botticelli.Server.Utils
 
             try
             {
-                if (_smtpClientOptions.UsePickupDirectory)
+                if (_smtpClientOptions.CurrentValue.UsePickupDirectory)
                 {
-                    await this.SaveToPickupDirectory(message, _smtpClientOptions.MailPickupDirectory);
+                    await this.SaveToPickupDirectory(message, _smtpClientOptions.CurrentValue.MailPickupDirectory);
                     return response;
                 }
 
                 using var client = new SmtpClient(); 
                 SslCertCheckOff(client);
-                if (_smtpClientOptions.SocketOptions.HasValue)
+                if (_smtpClientOptions.CurrentValue.SocketOptions.HasValue)
                 {
                     await client.ConnectAsync(
-                        _smtpClientOptions.Server,
-                        _smtpClientOptions.Port,
-                        _smtpClientOptions.SocketOptions.Value,
+                        _smtpClientOptions.CurrentValue.Server,
+                        _smtpClientOptions.CurrentValue.Port,
+                        _smtpClientOptions.CurrentValue.SocketOptions.Value,
                         token.GetValueOrDefault());
                 }
                 else
                 {
                     await client.ConnectAsync(
-                        _smtpClientOptions.Server,
-                        _smtpClientOptions.Port,
-                        _smtpClientOptions.UseSsl,
+                        _smtpClientOptions.CurrentValue.Server,
+                        _smtpClientOptions.CurrentValue.Port,
+                        _smtpClientOptions.CurrentValue.UseSsl,
                         token.GetValueOrDefault());
                 }
 
                 // Note: only needed if the SMTP server requires authentication
-                if (_smtpClientOptions.RequiresAuthentication)
+                if (_smtpClientOptions.CurrentValue.RequiresAuthentication)
                 {
-                    await client.AuthenticateAsync(_smtpClientOptions.User, _smtpClientOptions.Password, token.GetValueOrDefault());
+                    await client.AuthenticateAsync(_smtpClientOptions.CurrentValue.User, _smtpClientOptions.CurrentValue.Password, token.GetValueOrDefault());
                 }
 
                 await client.SendAsync(message, token.GetValueOrDefault());
@@ -212,7 +213,7 @@ namespace Botticelli.Server.Utils
             else if (!data.IsHtml)
             {
                 builder.TextBody = data.Body;
-             }
+            }
             else
             {
                 builder.HtmlBody = data.Body;

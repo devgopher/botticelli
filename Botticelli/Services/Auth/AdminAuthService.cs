@@ -48,12 +48,7 @@ public class AdminAuthService : IAdminAuthService
                  .ApplicationUsers
                  .AnyAsync();
 
-    /// <summary>
-    ///     Registers an admin user
-    /// </summary>
-    /// <param name="userRegister"></param>
-    /// <returns></returns>
-    /// <exception cref="DataException"></exception>
+    /// <inheritdoc/>
     public async Task RegisterAsync(UserAddRequest userRegister)
     {
         try
@@ -94,11 +89,46 @@ public class AdminAuthService : IAdminAuthService
         }
     }
 
-    /// <summary>
-    ///     Generates auth token
-    /// </summary>
-    /// <param name="login"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
+    public async Task RegeneratePassword(UserAddRequest userRegister)
+    {
+        try
+        {
+            _logger.LogInformation($"{nameof(RegeneratePassword)}({userRegister.UserName}) started...");
+
+            if (_context.ApplicationUsers.AsQueryable()
+                .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email)))
+                throw new DataException($"User with email {userRegister.Email} already exists!");
+
+            var user = new IdentityUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = userRegister.Email,
+                NormalizedEmail = GetNormalized(userRegister.Email),
+                UserName = userRegister.Email,
+                NormalizedUserName = GetNormalized(userRegister.Email),
+                PasswordHash = HashUtils.GetHash(userRegister.Password, _config["Authorization:Salt"])
+            };
+
+            // Temporary - because now we assume, that we've only a single role - "admin"! 
+            var appRole = new IdentityUserRole<string>
+            {
+                UserId = user.Id,
+                RoleId = _context.ApplicationRoles.FirstOrDefault()?.Id ?? "-1"
+            };
+
+
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"{nameof(RegeneratePassword)}({userRegister.UserName}) finished...");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"{nameof(RegeneratePassword)}({userRegister.UserName}) error: {ex.Message}", ex);
+        }
+    }
+
+    /// <inheritdoc/>
     public GetTokenResponse GenerateToken(UserLoginRequest login)
     {
         try
@@ -174,11 +204,7 @@ public class AdminAuthService : IAdminAuthService
     }
 
 
-    /// <summary>
-    ///     Checks auth token
-    /// </summary>
-    /// <param name="token"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public bool CheckToken(string token)
     {
         try
@@ -209,12 +235,7 @@ public class AdminAuthService : IAdminAuthService
         }
     }
 
-    /// <summary>
-    ///     Checks access
-    /// </summary>
-    /// <param name="login"></param>
-    /// <param name="checkEmailConfirmed"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public (bool result, string err) CheckAccess(UserLoginRequest login, bool checkEmailConfirmed)
     {
         var hashedPassword = HashUtils.GetHash(login.Password, _config["Authorization:Salt"]);

@@ -55,6 +55,25 @@ public class UserController : Controller
         return Ok();
     }
 
+    [HttpPost("[action]")]
+    [AllowAnonymous]
+    public async Task<IActionResult> RegeneratePasswordAsync(RegeneratePasswordRequest passwordRequest, CancellationToken token)
+    {
+        try
+        {
+            var mapped = _mapper.Map<UserUpdateRequest>(passwordRequest);
+            mapped.Password = _password.Next();
+
+            await _userService.UpdateAsync(mapped, token);
+            await _passwordSender.SendPassword(passwordRequest.Email, mapped.Password, token);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+        return Ok();
+    }
 
     [HttpPost]
     public async Task<IActionResult> AddUserAsync(UserAddRequest request, CancellationToken token)

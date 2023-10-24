@@ -73,6 +73,32 @@ public class SessionClient
         };
     }
 
+    public async Task<Error> ResetPassword(string email)
+    {
+        var request = new RegeneratePasswordRequest()
+        {
+            Email = email,
+            UserName = email
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
+                "/user/RegeneratePassword"),
+            request);
+
+        if (!response.IsSuccessStatusCode)
+            return new Error
+            {
+                Code = 1,
+                UserMessage = $"Error resetting password for a user: {response.ReasonPhrase}!"
+            };
+
+        return new Error
+        {
+            Code = 0,
+            UserMessage = "Success"
+        };
+    }
+
     public async Task<bool> HasUsersAsync()
     {
         var response = await _httpClient.GetFromJsonAsync<bool>(Url.Combine(_backSettings.CurrentValue.BackUrl,

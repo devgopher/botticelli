@@ -22,6 +22,15 @@ public interface IAdminAuthService
     Task RegisterAsync(UserAddRequest userRegister);
 
     /// <summary>
+    ///     Regenerates password for user
+    /// </summary>
+    /// <param name="userRegister"></param>
+    /// <returns></returns>
+    /// <exception cref="DataException"></exception>
+    Task RegeneratePassword(UserAddRequest userRegister);
+
+
+    /// <summary>
     ///     Generates auth token
     /// </summary>
     /// <param name="login"></param>

@@ -25,7 +25,7 @@ namespace Botticelli.Server.Services.Auth
         {
             var message = Email.From(_serverSettings.ServerEmail, "BotticelliBots Admin Service")
                 .To(email)
-                .Subject("BotticelliBots default user")
+                .Subject("BotticelliBots user credentials")
                 .Body($"Your login/password: {email}/{password}");
 
             if (ct.CanBeCanceled && ct.IsCancellationRequested)

@@ -11,7 +11,7 @@
 
     private readonly Error _error = new()
     {
-        UserMessage = string.Empty
+        UserMessage = ""
     };
 
     /// <summary>
@@ -35,10 +35,11 @@
     <RadzenStack Orientation="Orientation.Vertical" Gap="5px">
         <RadzenTemplateForm Data=@("SimpleLogin")>
             <RadzenLogin Login="async e => await DoLogin(e)"
+                         ResetPassword="async e => await DoReset(e)"
                          AllowRegister="false"
-                         AllowResetPassword="false"/>
+                         AllowResetPassword="true"/>
         </RadzenTemplateForm>
-        <RadzenLabel @bind-text="@_error.UserMessage" Style="color: red; font-weight: bold"/>
+        <RadzenLabel  Text = "@_error.UserMessage" Style="color: red; font-weight: bold; border: none"/>
 
         @code
         {
@@ -70,6 +71,19 @@
                     _error.UserMessage = sessionToken;
                     UriHelper.NavigateTo("/logoff", true);
                 }
+            }
+
+            public async Task DoReset(string userName)
+            {
+                    var result = await SessionClient.ResetPassword(userName);
+                    if (result != default && result.UserMessage.ToLowerInvariant() != "success")
+                    {
+                        _error.UserMessage = result.UserMessage;
+                    }
+                    else
+                    {
+                        _error.UserMessage = "Check your email";
+                    }
             }
         }
 
