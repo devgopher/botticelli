@@ -44,6 +44,6 @@ public class StopCommandProcessor : CommandProcessor<StopCommand>
             }
         };
 
-        await BroadcastMessage(farewellMessageRequest, token);
+        await _bot.SendMessageAsync(farewellMessageRequest, token);
     }
 }

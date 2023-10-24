@@ -75,7 +75,7 @@ public sealed class ChatMessageProcessor : IClientMessageProcessor
         }
     }
 
-    public void AddBot(IBot bot)
+    public void SetBot(IBot bot)
     {
     }
 

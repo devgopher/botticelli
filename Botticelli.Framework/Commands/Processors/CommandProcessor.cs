@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Botticelli.Analytics.Shared.Metrics;
+﻿using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Bot.Interfaces.Processors;
 using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
@@ -7,9 +6,8 @@ using Botticelli.Framework.Commands.Validators;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
-using MediatR;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace Botticelli.Framework.Commands.Processors;
 
@@ -19,7 +17,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     private const string SimpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
     private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
     private readonly string _commandName;
-    protected readonly IList<IBot> Bots = new List<IBot>(10);
+    protected IBot _bot;
     private readonly ILogger _logger;
     private readonly ICommandValidator<TCommand> _validator;
     private readonly MetricsProcessor _metricsProcessor;
@@ -109,8 +107,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     protected void SendMetric() => _metricsProcessor.Process(GetCommandName(
         $"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId());
 
-    public void AddBot(IBot bot)
-        => Bots.Add(bot);
+    public void SetBot(IBot bot)
+        => _bot = bot;
 
     public void SetServiceProvider(IServiceProvider sp)
     {
@@ -133,18 +131,12 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         {
             request.Message.Body = _validator.Help();
 
-            await BroadcastMessage(request, token);
+            await _bot.SendMessageAsync(request, token);
         }
-    }
-
-    protected async Task BroadcastMessage(SendMessageRequest request, CancellationToken token)
-    {
-        foreach (var bot in Bots) await bot.SendMessageAsync(request, token);
     }
 
     protected abstract Task InnerProcessContact(Message message, string args, CancellationToken token);
     protected abstract Task InnerProcessPoll(Message message, string args, CancellationToken token);
     protected abstract Task InnerProcessLocation(Message message, string args, CancellationToken token);
-
     protected abstract Task InnerProcess(Message message, string args, CancellationToken token);
 }

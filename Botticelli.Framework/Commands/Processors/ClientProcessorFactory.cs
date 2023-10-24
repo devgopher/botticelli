@@ -21,7 +21,7 @@ public class ClientProcessorFactory
 
         var bot = sp.GetRequiredService<IBot<TBot>>();
         var proc = sp.CreateScope().ServiceProvider.GetRequiredService<TProcessor>();
-        proc.AddBot(bot);
+        proc.SetBot(bot);
         proc.SetServiceProvider(sp);
         ClientProcessors.Add(proc);
     }
