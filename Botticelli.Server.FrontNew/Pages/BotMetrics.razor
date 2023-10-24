@@ -44,7 +44,7 @@ else
                 <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" Gap="20px">
                     <RadzenText TextStyle="TextStyle.Overline" Text="@metricName"/>
                     <RadzenChart>
-                        <RadzenColumnSeries Title="Count" Data="@_metrics[metricName]" CategoryProperty="DateTime" ValueProperty="Value"/>
+                        <RadzenLineSeries Title="Count" Data="@_metrics[metricName]" CategoryProperty="DateTime" ValueProperty="Value"/>
                         <RadzenValueAxis>
                             <RadzenGridLines Visible="true"/>
                         </RadzenValueAxis>
