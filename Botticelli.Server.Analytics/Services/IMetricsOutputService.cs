@@ -10,4 +10,6 @@ public interface IMetricsOutputService
 
     Task<GetMetricsIntervalsResponse> GetMetricsForIntervalAsync(GetMetricsForIntervalsRequest request,
         CancellationToken token);
+
+    Task<IEnumerable<string>> GetMetricNamesAsync(CancellationToken token);
 }

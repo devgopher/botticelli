@@ -14,6 +14,8 @@ namespace Botticelli.Analytics.Shared.Metrics
         public const string UnSubscription = "UnSubscription";
         public const string BotStarted = "BotStarted";
         public const string BotStopped = "BotStopped";
+        public const string CommandReceived = "CommandReceived";
+        public const string BotError = "BotError";
 
         public static string[] Names =
                 new[]
@@ -24,7 +26,9 @@ namespace Botticelli.Analytics.Shared.Metrics
                     BotStarted,
                     BotStopped,
                     NewSubscription,
-                    UnSubscription
+                    UnSubscription,
+                    CommandReceived,
+                    BotError
                 };
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AiSample.Common.Commands;
 using Botticelli.AI.Message;
 using Botticelli.Bot.Interfaces.Client;
+using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.SendOptions;
@@ -17,8 +18,9 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
 
     public AiCommandProcessor(ILogger<AiCommandProcessor> logger,
                               ICommandValidator<AiCommand> validator,
+                              MetricsProcessor metricsProcessor,
                               IBusClient bus)
-            : base(logger, validator) =>
+            : base(logger, validator, metricsProcessor) =>
             _bus = bus;
 
     protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)

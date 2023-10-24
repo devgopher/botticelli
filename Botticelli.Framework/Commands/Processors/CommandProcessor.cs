@@ -1,5 +1,8 @@
 ﻿using System.Text.RegularExpressions;
+using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Bot.Interfaces.Processors;
+using Botticelli.BotBase.Utils;
+using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
@@ -19,12 +22,16 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     protected readonly IList<IBot> Bots = new List<IBot>(10);
     private readonly ILogger _logger;
     private readonly ICommandValidator<TCommand> _validator;
+    private readonly MetricsProcessor _metricsProcessor;
+
 
     protected CommandProcessor(ILogger logger,
-        ICommandValidator<TCommand> validator)
+        ICommandValidator<TCommand> validator, 
+        MetricsProcessor metricsProcessor)
     {
         _logger = logger;
         _validator = validator;
+        _metricsProcessor = metricsProcessor;
         _commandName = GetCommandName(typeof(TCommand).Name);
     }
 
@@ -63,6 +70,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                     string.Empty,
                     request,
                     token);
+
+                SendMetric(MetricNames.CommandReceived);
             }
             else if (Regex.IsMatch(message.Body, ArgsCommandPattern))
             {
@@ -81,6 +90,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                     argsString,
                     request,
                     token);
+
+                SendMetric(MetricNames.CommandReceived);
             }
 
             if (message.Location != default) await InnerProcessLocation(message, string.Empty, token);
@@ -89,9 +100,14 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         }
         catch (Exception ex)
         {
+            _metricsProcessor.Process(MetricNames.BotError, BotDataUtils.GetBotId());
             _logger.LogError(ex, $"Error in {GetType().Name}: {ex.Message}");
         }
     }
+
+    private void SendMetric(string metricName) => _metricsProcessor.Process(metricName, BotDataUtils.GetBotId());
+    protected void SendMetric() => _metricsProcessor.Process(GetCommandName(
+        $"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId());
 
     public void AddBot(IBot bot)
         => Bots.Add(bot);
@@ -110,6 +126,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     {
         if (await _validator.Validate(message.ChatIds, message.Body))
         {
+            SendMetric();
             await InnerProcess(message, args, token);
         }
         else

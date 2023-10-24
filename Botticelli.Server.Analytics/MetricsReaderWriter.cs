@@ -28,6 +28,9 @@ public class MetricsReaderWriter
             .Where(func)
             .CountAsync(token);
 
+    public async Task<IEnumerable<string>> GetMetricNamesAsync(CancellationToken token)
+        => _context.MetricModels.Select(x => x.Name).Distinct();
+
     public async Task<IAsyncEnumerable<(DateTime dt1, DateTime dt2, int count)>> ReadCountForFramesAsync(string name,
                                                                    string botId,
                                                                    DateTime from,

@@ -1,4 +1,5 @@
-﻿using Botticelli.Framework.Commands.Processors;
+﻿using Botticelli.Client.Analytics;
+using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Scheduler;
 using Botticelli.Shared.API.Client.Requests;
@@ -11,8 +12,9 @@ namespace MessagingSample.Common.Commands.Processors;
 public class StartCommandProcessor : CommandProcessor<StartCommand>
 {
     public StartCommandProcessor(ILogger<StartCommandProcessor> logger,
-        ICommandValidator<StartCommand> validator)
-        : base(logger, validator)
+        ICommandValidator<StartCommand> validator,
+        MetricsProcessor metricsProcessor)
+        : base(logger, validator, metricsProcessor)
     {
     }
 

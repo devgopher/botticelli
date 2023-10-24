@@ -23,4 +23,8 @@ public class MetricsOutputController : Controller
     [HttpGet("[action]")]
     public async Task<GetMetricsIntervalsResponse> GetMetricsForInterval([FromQuery] GetMetricsForIntervalsRequest request, CancellationToken token)
         => await _service.GetMetricsForIntervalAsync(request, token);
+
+    [HttpGet("[action]")]
+    public async Task<IEnumerable<string>> GetMetricNames(CancellationToken token)
+        => await _service.GetMetricNamesAsync(token);
 }
