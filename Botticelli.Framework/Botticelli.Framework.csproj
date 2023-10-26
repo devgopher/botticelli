@@ -13,6 +13,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Handlers\**" />
+	  <Compile Remove="HostedService\**" />
+	  <EmbeddedResource Remove="Handlers\**" />
+	  <EmbeddedResource Remove="HostedService\**" />
+	  <None Remove="Handlers\**" />
+	  <None Remove="HostedService\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
 		<ProjectReference Include="..\Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj" />
 		<ProjectReference Include="..\Botticelli.Bot.Utils\Botticelli.Bot.Utils.csproj" />
@@ -28,10 +37,6 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="Handlers\" />
-		<Folder Include="HostedService\" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\logo.jpg">

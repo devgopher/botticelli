@@ -11,7 +11,7 @@ namespace Botticelli.Server.Controllers;
 /// </summary>
 [ApiController]
 [AllowAnonymous]
-[Route("bot")]
+[Route("/v1/bot")]
 public class BotController
 {
     private readonly IBotManagementService _botManagementService;

@@ -56,8 +56,6 @@
 
     readonly BotModel _model = new();
 
-    private BotInfo[]? _bots;
-
     protected override bool ShouldRender() => true;
 
     protected override async Task OnInitializedAsync()
@@ -83,10 +81,9 @@
     private async Task<GetRequiredStatusFromServerResponse> GetBotStatus(BotInfo bot, string sessionToken)
     {
         using var http = HttpClientFactory.Create();
-        http.BaseAddress = new Uri(BackSettings.CurrentValue.BackUrl);
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
 
-        var botStatusResponse = await http.PostAsJsonAsync("/bot/client/GetRequiredBotStatus",
+        var botStatusResponse = await http.PostAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/bot/client/GetRequiredBotStatus"),
             new GetRequiredStatusFromServerRequest()
             {
                 BotId = this.BotId
@@ -99,9 +96,8 @@
     private async Task<BotInfo> GetBot(string sessionToken)
     {
         using var http = HttpClientFactory.Create();
-        http.BaseAddress = new Uri(BackSettings.CurrentValue.BackUrl);
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
-        var bots = await http.GetFromJsonAsync<BotInfo[]>("/admin/GetBots");
+        var bots = await http.GetFromJsonAsync<BotInfo[]>(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/GetBots"));
         var bot = bots.FirstOrDefault(b => b.BotId == BotId);
 
         return bot;

@@ -13,7 +13,7 @@ namespace Botticelli.Server.Controllers;
 /// </summary>
 [ApiController]
 [Authorize(AuthenticationSchemes = "Bearer")]
-[Route("admin")]
+[Route("/v1/admin")]
 public class AdminController
 {
     private readonly IBotManagementService _botManagementService;

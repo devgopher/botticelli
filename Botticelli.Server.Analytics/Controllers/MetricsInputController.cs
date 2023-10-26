@@ -8,7 +8,7 @@ namespace Botticelli.Server.Analytics.Controllers;
 ///     MetricsOutputController receiver controller
 /// </summary>
 [ApiController]
-[Route("metrics/receiver")]
+[Route("/v1/metrics/receiver")]
 public class MetricsInputController : Controller
 {
     private readonly IMetricsInputService _service;

@@ -5,6 +5,7 @@
 @using Microsoft.Extensions.Options
 @using Botticelli.Server.FrontNew.Settings
 @using System.Net.Http.Headers
+@using Flurl
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
 @inject CookieStorageAccessor Cookies;
@@ -82,9 +83,8 @@ else
         try
         {
             _http = HttpClientFactory.Create();
-            _http.BaseAddress = new Uri(BackSettings.CurrentValue.BackUrl);
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
-            _bots = await _http.GetFromJsonAsync<BotInfo?[]>("/admin/GetBots");
+            _bots = await _http.GetFromJsonAsync<BotInfo?[]>(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/GetBots"));
         }
         catch (Exception ex)
         {
@@ -96,14 +96,14 @@ else
     {
         if (!await JsRuntime.InvokeAsync<bool>("confirm", new object[] {"Are you sure?"})) return;
 
-        await _http.GetAsync($"/admin/RemoveBot?botId={botId}");
+        await _http.GetAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/RemoveBot?botId={botId}"));
         UriHelper.NavigateTo("/your_bots", true);
     }
 
     protected async Task SendStartStop(string botId, BotStatus? status)
     {
-        if (status != BotStatus.Unlocked) await _http.GetAsync($"/admin/ActivateBot?botId={botId}");
-        else await _http.GetAsync($"/admin/DeactivateBot?botId={botId}");
+        if (status != BotStatus.Unlocked) await _http.GetAsync(Url.Combine(BackSettings.CurrentValue.BackUrl,$"/admin/ActivateBot?botId={botId}"));
+        else await _http.GetAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/DeactivateBot?botId={botId}"));
 
         UriHelper.NavigateTo("/your_bots", true);
     }

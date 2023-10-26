@@ -125,8 +125,9 @@ else
     private async Task<IEnumerable<MetricsModel>> GetBotMetrics(GetMetricsForIntervalsRequest request)
     {
         using var http = HttpClientFactory.Create();
-        http.BaseAddress = new Uri(BackSettings.CurrentValue.AnalyticsUrl);
-        var botStatusResponse = await http.GetAsync("/metrics/getter/GetMetricsForInterval?".SetQueryParams(request));
+        var botStatusResponse = await http.GetAsync(Url.Combine(BackSettings.CurrentValue.AnalyticsUrl, 
+            "/metrics/getter/GetMetricsForInterval?")
+            .SetQueryParams(request));
         var metrics = await botStatusResponse.Content.ReadFromJsonAsync<GetMetricsIntervalsResponse>();
         var output = metrics.MetricsForIntervals.Select(m => new MetricsModel
         {
@@ -140,8 +141,7 @@ else
     private async Task<IEnumerable<string>> GetMetricNames()
     {
         using var http = HttpClientFactory.Create();
-        http.BaseAddress = new Uri(BackSettings.CurrentValue.AnalyticsUrl);
-        var response = await http.GetAsync("/metrics/getter/GetMetricNames");
+        var response = await http.GetAsync(Url.Combine(BackSettings.CurrentValue.AnalyticsUrl, "/metrics/getter/GetMetricNames"));
         var output = await response.Content.ReadFromJsonAsync<IEnumerable<string>>();
  
         return output;
@@ -150,9 +150,8 @@ else
     private async Task<BotInfo> GetBot(string sessionToken)
     {
         using var http = HttpClientFactory.Create();
-        http.BaseAddress = new Uri(BackSettings.CurrentValue.BackUrl);
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
-        var bots = await http.GetFromJsonAsync<BotInfo[]>("/admin/GetBots");
+        var bots = await http.GetFromJsonAsync<BotInfo[]>(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/GetBots"));
         var bot = bots.FirstOrDefault(b => b.BotId == BotId);
 
         return bot;

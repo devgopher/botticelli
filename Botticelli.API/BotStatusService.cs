@@ -8,6 +8,7 @@ using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
+using Flurl;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -162,11 +163,10 @@ public class BotStatusService<TBot> : IHostedService
         try
         {
             using var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_serverSettings.ServerUri);
 
             var content = JsonContent.Create(request);
 
-            var response = await httpClient.PostAsync(funcName, content, cancellationToken);
+            var response = await httpClient.PostAsync(Url.Combine(_serverSettings.ServerUri, funcName), content, cancellationToken);
 
             var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
 

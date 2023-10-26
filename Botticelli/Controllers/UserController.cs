@@ -12,7 +12,7 @@ namespace Botticelli.Server.Controllers;
 /// </summary>
 [ApiController]
 [Authorize(AuthenticationSchemes = "Bearer")]
-[Route("user")]
+[Route("/v1/user")]
 public class UserController : Controller
 {
     private readonly IMapper _mapper;

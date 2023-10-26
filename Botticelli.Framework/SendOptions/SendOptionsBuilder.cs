@@ -51,8 +51,7 @@ public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
         return this;
     }
 
-    public T Build()
-        => _innerObject;
+    public T Build() => _innerObject;
 
     public static SendOptionsBuilder<T> CreateBuilder() => new();
 
