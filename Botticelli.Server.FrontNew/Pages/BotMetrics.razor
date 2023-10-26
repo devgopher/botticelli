@@ -6,8 +6,6 @@
 @using Botticelli.Server.Data.Entities
 @using Botticelli.Analytics.Shared.Requests
 @using Botticelli.Analytics.Shared.Responses
-@using Botticelli.Shared.API.Admin.Responses
-@using Botticelli.Shared.Constants
 @using Botticelli.Analytics.Shared.Metrics
 @using System.Net.Http.Headers
 @inject NavigationManager UriHelper;
@@ -89,7 +87,7 @@ else
 
     private async Task GetMetrics()
     {
-        var interval= TimeSpan.FromHours(1);
+        TimeSpan interval;
         var delta = _to - _from;
 
         if (delta < TimeSpan.Zero)
@@ -119,14 +117,12 @@ else
                 Name = metricName
             };
 
-            var metrics = await GetBotMetrics(request, metricName);
+            var metrics = await GetBotMetrics(request);
             _metrics[metricName] = metrics;
         }
     }
-
-
-    private async Task<IEnumerable<MetricsModel>> GetBotMetrics(GetMetricsForIntervalsRequest request,
-        string metricName)
+    
+    private async Task<IEnumerable<MetricsModel>> GetBotMetrics(GetMetricsForIntervalsRequest request)
     {
         using var http = HttpClientFactory.Create();
         http.BaseAddress = new Uri(BackSettings.CurrentValue.AnalyticsUrl);
@@ -141,8 +137,6 @@ else
         return output;
     }
 
-    
-
     private async Task<IEnumerable<string>> GetMetricNames()
     {
         using var http = HttpClientFactory.Create();
@@ -152,16 +146,6 @@ else
  
         return output;
     }
-
-    private static string GetIsActive(BotStatus? status) => status switch
-    {
-        BotStatus.Unlocked    => "Unlocked",
-        BotStatus.Locked => "Locked",
-        _                   => "Unknown"
-        };
-
-    private static string GetIsAlive(DateTime? lastKeepAlive)
-        => DateTime.UtcNow - lastKeepAlive <= TimeSpan.FromSeconds(30) ? "Alive" : "Dead";
 
     private async Task<BotInfo> GetBot(string sessionToken)
     {
@@ -173,24 +157,4 @@ else
 
         return bot;
     }
-
-    private string GetLogo(BotType? type) => type switch
-    {
-        BotType.Telegram => "Logos/Telegram.png",
-        BotType.WhatsApp => "Logos/Whatsapp.png",
-        BotType.Viber => "Logos/Viber.png",
-        BotType.RocketChat => "Logos/RocketChat.png",
-        BotType.Signal => "Logos/Signal.png",
-        BotType.Unknown => "Logos/Unknown.png",
-        _ => "Logos/Unknown.png"
-        };
-
-
-    private string GetStyle(BotInfo bot) => bot.Status switch
-    {
-        BotStatus.Unlocked => $"width: 200px; background-color: {(GetIsAlive(bot.LastKeepAlive) == "Alive" ? "greenyellow" : "gainsboro")}",
-        BotStatus.Locked => "width: 200px; background-color: red",
-        _ => "width: 200px; background-color: gray"
-        };
-
 }
