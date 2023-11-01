@@ -13,6 +13,6 @@ my_ip=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[1]}')
 
 sed -i 's/localhost/'$my_ip'/g' wwwroot/appsettings.json
 
-dotnet run Botticelli.Server.FrontNew.csproj &
+nohup dotnet run Botticelli.Server.FrontNew.csproj &
 
 popd

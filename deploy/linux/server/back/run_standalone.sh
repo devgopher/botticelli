@@ -8,6 +8,6 @@ git pull
 
 pushd Botticelli
 
-dotnet run Botticelli.Server.csproj &
+nohup dotnet run Botticelli.Server.csproj &
 
 popd
