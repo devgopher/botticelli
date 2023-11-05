@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
     ///     Adds a scheduler server (Hangfire)
     /// </summary>
     /// <param name="services">Service collection</param>
-    /// <param name="config">Configuration</param>
+    /// <param name="config">Settings</param>
     /// <returns></returns>
     public static IServiceCollection AddHangfireScheduler(this IServiceCollection services, IConfiguration config)
     {

@@ -20,10 +20,7 @@ namespace Botticelli.Server.Utils
         /// Creates a sender that uses the given SmtpClientOptions when sending with MailKit. Since the client is internal this will dispose of the client.
         /// </summary>
         /// <param name="smtpClientOptions">The SmtpClientOptions to use to create the MailKit client</param>
-        public SslMailKitSender(IOptionsMonitor<SmtpClientOptions> smtpClientOptions)
-        {
-            _smtpClientOptions = smtpClientOptions;
-        }
+        public SslMailKitSender(IOptionsMonitor<SmtpClientOptions> smtpClientOptions) => _smtpClientOptions = smtpClientOptions;
 
         /// <summary>
         /// Send the specified email.
@@ -163,7 +160,7 @@ namespace Botticelli.Server.Utils
         private async Task SaveToPickupDirectory(MimeMessage message, string pickupDirectory)
         {
             // Note: this will require that you know where the specified pickup directory is.
-            var path = Path.Combine(pickupDirectory, Guid.NewGuid().ToString() + ".eml");
+            var path = Path.Combine(pickupDirectory, $"{Guid.NewGuid()}.eml");
 
             if (File.Exists(path))
                 return;
@@ -172,7 +169,6 @@ namespace Botticelli.Server.Utils
             {
                 await using var stream = new FileStream(path, FileMode.CreateNew);
                 await message.WriteToAsync(stream);
-                return;
             }
             catch (IOException)
             {
@@ -253,18 +249,13 @@ namespace Botticelli.Server.Utils
                 message.ReplyTo.Add(new MailboxAddress(x.Name, x.EmailAddress));
             });
 
-            switch (data.Priority)
+            message.Priority = data.Priority switch
             {
-                case Priority.Low:
-                    message.Priority = MessagePriority.NonUrgent;
-                    break;
-                case Priority.Normal:
-                    message.Priority = MessagePriority.Normal;
-                    break;
-                case Priority.High:
-                    message.Priority = MessagePriority.Urgent;
-                    break;
-            }
+                Priority.Low => MessagePriority.NonUrgent,
+                Priority.Normal => MessagePriority.Normal,
+                Priority.High => MessagePriority.Urgent,
+                _ => message.Priority
+            };
 
             return message;
         }

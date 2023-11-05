@@ -17,14 +17,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ChatMessageProcessor>()
                 .AddSingleton<ClientProcessorFactory>()
                 .AddSingleton<CommandProcessorFactory>()
-                //.AddMediatR(cfg =>
-                //{
-                //    var assemblies = services
-                //                     .Select(s => s.GetType().Assembly)
-                //                     .Distinct()
-                //                     .ToArray();
-                //    cfg.RegisterServicesFromAssemblies(assemblies);
-                //})
                 .AddMetrics(config);
 
         return services;

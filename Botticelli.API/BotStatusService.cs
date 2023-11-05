@@ -7,7 +7,6 @@ using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
-using Botticelli.Shared.Constants;
 using Flurl;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -30,7 +29,6 @@ public class BotStatusService<TBot> : IHostedService
     private readonly ManualResetEventSlim _keepAliveEvent = new(false);
     private readonly ILogger<BotStatusService<TBot>> _logger;
     private readonly ServerSettings _serverSettings;
-    private readonly BotType _type;
     private TBot _bot;
     private Task _getRequiredStatusEventTask;
     private Task _keepAliveTask;
