@@ -120,10 +120,15 @@ public class BotStatusService<TBot> : IHostedService
                                                                                                                                                                       ct);
 
                                                                         task.Wait(cancellationToken);
-
-                                                                        //_bot.SetBotKey(task.Result?.BotKey, ct);
                                                                         _bot.SetBotContext(task.Result?.BotContext, ct);
 
+                                                                        if (task.Exception != default)
+                                                                        {
+                                                                            _logger.LogError($"GetRequiredStatus task error: {task.Exception?.Message}");
+                                                                            _bot.StopBotAsync(StopBotRequest.GetInstance(), ct);
+
+                                                                            return task;
+                                                                        }
 
                                                                         switch (task.Result?.Status)
                                                                         {
@@ -132,11 +137,11 @@ public class BotStatusService<TBot> : IHostedService
 
                                                                                 break;
                                                                             case BotStatus.Locked:
+                                                                            case BotStatus.Unknown:
+                                                                            case null:
                                                                                 _bot.StopBotAsync(StopBotRequest.GetInstance(), ct);
 
                                                                                 break;
-                                                                            case BotStatus.Unknown: break;
-                                                                            case null:              break;
                                                                             default:                throw new ArgumentOutOfRangeException();
                                                                         }
 

@@ -1,4 +1,5 @@
 ﻿using Botticelli.Server.Data.Entities;
+using Botticelli.Shared.API;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,5 +25,33 @@ public class BotInfoContext : DbContext
             .HasKey(k => new { k.UserId, k.RoleId });
         modelBuilder.Entity<IdentityUser<string>>()
             .HasKey(k => k.Id);
+
+        modelBuilder.Entity<IdentityRole<string>>()
+            .HasData(new IdentityRole<string>[]
+            {
+                new IdentityRole<string>()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = DateTime.UtcNow.ToString()
+                },
+                new IdentityRole<string>()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "bot_manager",
+                    NormalizedName = "BOT_MANAGER",
+                    ConcurrencyStamp = DateTime.UtcNow.ToString()
+                },
+                new IdentityRole<string>()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "viewer",
+                    NormalizedName = "VIEWER",
+                    ConcurrencyStamp = DateTime.UtcNow.ToString()
+                },
+            });
     }
 }
+
+
