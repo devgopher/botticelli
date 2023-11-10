@@ -51,7 +51,11 @@ public abstract class BaseBot<T> : IBot<T>
     {
         _metrics.Process(MetricNames.BotStarted, BotDataUtils.GetBotId());
 
-        return await InnerStartBotAsync(request, token);
+        var result = await InnerStartBotAsync(request, token);
+
+        Started?.Invoke(this, new StartedBotEventArgs());
+
+        return result;
     }
 
     protected  abstract Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token);
@@ -60,7 +64,11 @@ public abstract class BaseBot<T> : IBot<T>
     {
         _metrics.Process(MetricNames.BotStopped, BotDataUtils.GetBotId());
 
-        return await InnerStopBotAsync(request, token);
+        var result = await InnerStopBotAsync(request, token);
+
+        Stopped?.Invoke(this, new StoppedBotEventArgs());
+
+        return result;
     }
 
     protected abstract Task<StopBotResponse> InnerStopBotAsync(StopBotRequest request, CancellationToken token);
