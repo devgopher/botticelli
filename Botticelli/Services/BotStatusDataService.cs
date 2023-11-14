@@ -31,7 +31,7 @@ public class BotStatusDataService : IBotStatusDataService
         => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
 
     [Obsolete("Use GetRequiredBotContext")]
-    public async Task<string> GetRequiredBotKey(string botId) => _secureStorage.GetBotKey(botId)?.Key;
+    public async Task<string> GetRequiredBotKey(string botId) => _secureStorage.GetBotContext(botId)?.BotKey;
 
     public async Task<BotContext> GetRequiredBotContext(string botId)
     {

@@ -6,7 +6,9 @@
       "launchBrowser": true,
       "launchUrl": "http://0.0.0.0:5042",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "BackSettings__BackUrl": "http://localhost:50361/v1/",
+        "BackSettings__AnalyticsUrl": "http://localhost:5251/v1/"
       },
       "dotnetRunMessages": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",

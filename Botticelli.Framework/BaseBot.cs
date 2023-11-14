@@ -49,6 +49,9 @@ public abstract class BaseBot<T> : IBot<T>
 
     public virtual async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
     {
+        if (IsStarted)
+            return StartBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
+
         _metrics.Process(MetricNames.BotStarted, BotDataUtils.GetBotId());
 
         var result = await InnerStartBotAsync(request, token);

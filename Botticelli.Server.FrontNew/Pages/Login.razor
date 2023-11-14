@@ -58,7 +58,7 @@
                     else
                     {
                         sessionToken = result.session.Token;
-                        await Cookies.SetValueAsync("SessionToken", sessionToken);
+                        await Cookies.SetValueAsync("SessionToken", sessionToken + ";SameSite=None;Secure=True");
                         UriHelper.NavigateTo("/your_bots", true);
 #if DEBUG
                         _error.UserMessage = await Cookies.GetValueAsync("SessionToken");
@@ -67,7 +67,7 @@
                 }
                 else
                 {
-                    await Cookies.SetValueAsync("SessionToken", sessionToken);
+            await Cookies.SetValueAsync("SessionToken", sessionToken + ";SameSite=None;Secure=True");
                     _error.UserMessage = sessionToken;
                     UriHelper.NavigateTo("/logoff", true);
                 }

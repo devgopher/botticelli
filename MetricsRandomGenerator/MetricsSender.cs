@@ -52,13 +52,15 @@ namespace MetricsRandomGenerator
 
                     var task = _publisher.Publish(metric, token);
                     task.Wait();
+
+                    Thread.Sleep(500);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }
             }
-        }
+        } 
 
 
         public async Task StopAsync(CancellationToken cancellationToken)
