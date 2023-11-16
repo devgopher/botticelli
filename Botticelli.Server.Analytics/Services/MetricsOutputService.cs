@@ -1,19 +1,14 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Analytics.Shared.Requests;
 using Botticelli.Analytics.Shared.Responses;
-using Botticelli.Server.Analytics.Cache;
 
 namespace Botticelli.Server.Analytics.Services;
 
 public class MetricsOutputService : IMetricsOutputService
 {
     private readonly MetricsReaderWriter _rw;
-    private readonly ICache _cache;
-    public MetricsOutputService(MetricsReaderWriter rw, ICache cache)
-    {
-        _rw = rw;
-        _cache = cache;
-    }
+
+    public MetricsOutputService(MetricsReaderWriter rw) => _rw = rw;
 
     public async Task<GetMetricsResponse> GetMetricsAsync(GetMetricsRequest request,
         CancellationToken token)
@@ -40,14 +35,12 @@ public class MetricsOutputService : IMetricsOutputService
             request.To,
             TimeSpan.FromSeconds(request.Interval),
             token);
-
-        var metricsForIntervals = metrics.Select(m =>
-        new GetMetricsResponse
-            {
-                Count = m.count,
-                From = m.dt1,
-                To = m.dt2
-            }).ToBlockingEnumerable()
+        var metricsForIntervals = metrics.Select(m => new GetMetricsResponse
+        {
+            Count = m.count,
+            From = m.dt1,
+            To = m.dt2
+        }).ToBlockingEnumerable()
             .ToList();
 
         var commonCount = metricsForIntervals.Sum(m => m.Count);

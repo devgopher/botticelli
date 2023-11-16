@@ -1,5 +1,6 @@
 ﻿using Botticelli.Analytics.Shared.Requests;
 using Botticelli.Analytics.Shared.Responses;
+using Botticelli.Server.Analytics.Models;
 using Botticelli.Server.Analytics.Utils;
 using System.Collections.Concurrent;
 
@@ -22,7 +23,7 @@ namespace Botticelli.Server.Analytics.Cache
             };
         }
 
-        public GetMetricsIntervalsResponse GetAsync(GetMetricsForIntervalsRequest request)
+        public GetMetricsIntervalsResponse GetForIntervals(GetMetricsForIntervalsRequest request)
         {
             var frames = DateTimeUtils.GetRange(request.From,
                                                 request.To,
@@ -46,7 +47,7 @@ namespace Botticelli.Server.Analytics.Cache
             };
         }
 
-        public void SetAsync(PushMetricRequest request)
+        public void Set(MetricModel request)
         {
             _memoryCache.TryAdd(new CacheRequest
             {
