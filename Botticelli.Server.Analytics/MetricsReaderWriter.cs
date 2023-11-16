@@ -1,4 +1,7 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.Analytics.Shared.Requests;
+using Botticelli.Analytics.Shared.Responses;
+using Botticelli.Server.Analytics.Cache;
 using Botticelli.Server.Analytics.Models;
 using Botticelli.Server.Analytics.Utils;
 
@@ -7,7 +10,12 @@ namespace Botticelli.Server.Analytics;
 public class MetricsReaderWriter
 {
     private readonly MetricsContext _context;
-    public MetricsReaderWriter(MetricsContext context) => _context = context;
+    private readonly ICache _cache;
+    public MetricsReaderWriter(MetricsContext context, ICache cache)
+    {
+        _context = context;
+        _cache = cache;
+    }
 
     public async Task WriteAsync(MetricObject input, CancellationToken token)
     {
@@ -40,12 +48,35 @@ public class MetricsReaderWriter
     {
         var frames = DateTimeUtils.GetRange(from, to, frameLength, token);
 
-        return frames.Select(f => (f.dt1, f.dt2,  _context.MetricModels
-                                                         .Count(mm =>
-                                                                        mm.BotId == botId &&
-                                                                        mm.Name == name &&
-                                                                        mm.Timestamp >= f.dt1.ToUniversalTime() &&
-                                                                        mm.Timestamp <= f.dt2.ToUniversalTime())))
+        IAsyncEnumerable<(DateTime dt1, DateTime dt2, int count)> result = new AsyncEnumerable<(DateTime dt1, DateTime dt2, int count)>();
+
+        foreach (var frame in frames.ToBlockingEnumerable())
+        {
+            var cached = _cache.Get(new GetMetricsForIntervalsRequest()
+            {
+                From = frame.dt1,
+                To = frame.dt2,
+                Name = name
+            });
+
+            if (cached == null || cached.Count <= 0)
+            {
+                cached = new GetMetricsResponse()
+                {
+                    From = frame.dt1,
+                    To = frame.dt2,
+                    Count = _context.MetricModels.Count(mm => mm.BotId == botId &&
+                                                              mm.Name == name &&
+                                                              mm.Timestamp >= frame.dt1.ToUniversalTime() &&
+                                                              mm.Timestamp <= frame.dt2.ToUniversalTime())
+                };
+            }
+
+            if (cached.Count > 0)
+                yield cached;
+        }
+
+        return frames.Select(f => (f.dt1, f.dt2, )))
             .Where(f => f.Item3 > 0);
     }
 }

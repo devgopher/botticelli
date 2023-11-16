@@ -1,4 +1,5 @@
 using Botticelli.Server.Analytics;
+using Botticelli.Server.Analytics.Cache;
 using Botticelli.Server.Analytics.Extensions;
 using Botticelli.Server.Analytics.Settings;
 using MapsterMapper;
@@ -38,7 +39,8 @@ builder.Services
        .AddSingleton<IMapper, Mapper>()
        .AddScoped<MetricsReaderWriter>()
        .AddDbContext<MetricsContext>(c => c.UseNpgsql(analyticsSettings.ConnectionString))
-       .AddMetrics();
+       .AddMetrics()
+       .AddSingleton<ICache, Cache>();
 
 builder.Services.AddControllers();
 
