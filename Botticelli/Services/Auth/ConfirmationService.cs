@@ -29,9 +29,8 @@ public class ConfirmationService : IConfirmationService
         var message = Email.From(_serverSettings.ServerEmail, "BotticelliBots Admin Service")
             .To(user.Email)
             .Subject("BotticelliBots email confirmation")
-            .Body($"Confirmation email link: {Url.Combine(_serverSettings.ServerUrl, "/user/ConfirmEmail")
-                    .SetQueryParam("Email", user.Email)
-                    .SetQueryParam("Token", token)}");
+            .Body(
+                $"Confirmation email link: {Url.Combine(_serverSettings.ServerUrl, "/user/ConfirmEmail").SetQueryParam("Email", user.Email).SetQueryParam("Token", token)}");
 
         var sendResult = await _fluentEmail.SendAsync(message, ct);
 

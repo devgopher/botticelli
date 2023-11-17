@@ -22,7 +22,7 @@ namespace Viber.Api
         private readonly ManualResetEventSlim _stopReceiving = new ManualResetEventSlim(false);
 
         public ViberService(IHttpClientFactory httpClientFactory,
-                            ViberApiSettings settings)
+            ViberApiSettings settings)
         {
             _httpListener = new HttpListener();
             _httpClientFactory = httpClientFactory;
@@ -62,23 +62,23 @@ namespace Viber.Api
         }
 
         public async Task<SetWebHookResponse> SetWebHook(SetWebHookRequest request,
-                                                         CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             request.AuthToken = _settings.ViberToken;
 
             return await InnerSend<SetWebHookRequest, SetWebHookResponse>(request,
-                                                                          "set_webhook",
-                                                                          cancellationToken);
+                "set_webhook",
+                cancellationToken);
         }
 
         public async Task<ApiSendMessageResponse> SendMessage(ApiSendMessageRequest request,
-                                                              CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             request.AuthToken = _settings.ViberToken;
 
             return await InnerSend<ApiSendMessageRequest, ApiSendMessageResponse>(request,
-                                                                                  "send_message",
-                                                                                  cancellationToken);
+                "send_message",
+                cancellationToken);
         }
 
         public void Dispose()
@@ -92,7 +92,7 @@ namespace Viber.Api
             while (!_stopReceiving.IsSet)
                 try
                 {
-                    if (cancellationToken is {CanBeCanceled: true, IsCancellationRequested: true})
+                    if (cancellationToken is { CanBeCanceled: true, IsCancellationRequested: true })
                     {
                         _stopReceiving.Set();
 
@@ -103,7 +103,7 @@ namespace Viber.Api
 
                     var context = await _httpListener.GetContextAsync();
 
-                    if (context.Response.StatusCode == (int) HttpStatusCode.OK)
+                    if (context.Response.StatusCode == (int)HttpStatusCode.OK)
                     {
                         using var sr = new StreamReader(context.Response.OutputStream);
                         var content = await sr.ReadToEndAsync();
@@ -126,8 +126,8 @@ namespace Viber.Api
         }
 
         private async Task<TResp> InnerSend<TReq, TResp>(TReq request,
-                                                         string funcName,
-                                                         CancellationToken cancellationToken)
+            string funcName,
+            CancellationToken cancellationToken)
         {
             using var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri( /*_settings.RemoteUrl*/ _settings.HookUrl);
@@ -136,7 +136,9 @@ namespace Viber.Api
 
             var httpResponse = await httpClient.PostAsync(funcName, content, cancellationToken);
 
-            if (!httpResponse.IsSuccessStatusCode) throw new ViberClientException($"Error sending request {nameof(SetWebHook)}: {httpResponse.StatusCode}!");
+            if (!httpResponse.IsSuccessStatusCode)
+                throw new ViberClientException(
+                    $"Error sending request {nameof(SetWebHook)}: {httpResponse.StatusCode}!");
 
             var responseJson = await httpResponse.Content.ReadAsStringAsync();
 

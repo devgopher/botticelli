@@ -21,10 +21,10 @@ public static class ServiceCollectionExtensions
     /// <param name="services"></param>
     /// <returns></returns>
     public static IServiceCollection UseRabbitBusClient<TBot>(this IServiceCollection services, IConfiguration config)
-            where TBot : IBot =>
-            services.AddSingleton<IBusClient, RabbitClient<TBot>>()
-                    .AddSingleton(GetRabbitBusSettings(config))
-                    .AddConnectionFactory(GetRabbitBusSettings(config));
+        where TBot : IBot =>
+        services.AddSingleton<IBusClient, RabbitClient<TBot>>()
+            .AddSingleton(GetRabbitBusSettings(config))
+            .AddConnectionFactory(GetRabbitBusSettings(config));
 
     private static IServiceCollection AddConnectionFactory(this IServiceCollection services, RabbitBusSettings settings)
     {
@@ -54,10 +54,11 @@ public static class ServiceCollectionExtensions
     /// <typeparam name="TBot"></typeparam>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection UseRabbitBusAgent<TBot, THandler>(this IServiceCollection services, IConfiguration config)
-            where TBot : IBot
-            where THandler : IHandler<SendMessageRequest, SendMessageResponse> =>
-            services.AddHostedService<RabbitAgent<TBot, THandler>>()
-                    .AddSingleton(GetRabbitBusSettings(config))
-                    .AddConnectionFactory(GetRabbitBusSettings(config));
+    public static IServiceCollection UseRabbitBusAgent<TBot, THandler>(this IServiceCollection services,
+        IConfiguration config)
+        where TBot : IBot
+        where THandler : IHandler<SendMessageRequest, SendMessageResponse> =>
+        services.AddHostedService<RabbitAgent<TBot, THandler>>()
+            .AddSingleton(GetRabbitBusSettings(config))
+            .AddConnectionFactory(GetRabbitBusSettings(config));
 }

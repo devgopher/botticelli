@@ -1,71 +1,65 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Client.Analytics;
 
-namespace MetricsRandomGenerator
+namespace MetricsRandomGenerator;
+
+public class MetricsSender : IHostedService
 {
-    public class MetricsSender : IHostedService
+    private readonly MetricsPublisher _publisher;
+    private readonly Random _rand = new(DateTime.Now.Microsecond);
+    private readonly IServiceProvider _sp;
+    private readonly int _threadsCount = 10;
+    private readonly CancellationTokenSource _tokenSource = new();
+
+
+    public MetricsSender(IServiceProvider sp)
     {
-        private readonly IServiceProvider _sp;
-        private readonly MetricsPublisher _publisher;
-        private readonly int _threadsCount = 10;
-        private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
-        private readonly Random _rand = new Random(DateTime.Now.Microsecond);
+        _sp = sp;
+        _publisher = _sp.GetRequiredService<MetricsPublisher>();
+    }
 
 
-        public MetricsSender(IServiceProvider sp)
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        for (var i = 0; i < _threadsCount; i++)
         {
-            _sp = sp;
-            _publisher = _sp.GetRequiredService<MetricsPublisher>();
+            var thread = new Thread(ThreadProc);
+            thread.Start();
         }
+    }
 
 
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            for (int i = 0; i < _threadsCount; i++)
+    public async Task StopAsync(CancellationToken cancellationToken) => _tokenSource.Cancel();
+
+    private void ThreadProc()
+    {
+        var token = _tokenSource.Token;
+        if (!token.CanBeCanceled)
+            return;
+
+        while (!token.IsCancellationRequested)
+            try
             {
-                var thread = new Thread(ThreadProc);
-                thread.Start();
+                if (token.IsCancellationRequested)
+                    break;
+
+                var metric = new MetricObject
+                {
+                    BotId = "TestBot",
+                    Name = MetricNames.Names[_rand.Next(0, MetricNames.Names.Length)],
+                    Timestamp = DateTime.Now
+                };
+
+                Console.WriteLine($"Publishing: {metric.BotId}, {metric.Name}, {metric.Timestamp}");
+
+                var task = _publisher.Publish(metric, token);
+                task.Wait();
+
+                Thread.Sleep(500);
             }
-        }
-
-        private void ThreadProc()
-        {
-            var token = _tokenSource.Token;
-            if (!token.CanBeCanceled)
-                return;
-
-            while (!token.IsCancellationRequested)
+            catch (Exception ex)
             {
-                try
-                {
-                    if (token.IsCancellationRequested)
-                        break;
-
-                    var metric = new MetricObject()
-                    {
-                        BotId = "TestBot",
-                        Name = MetricNames.Names[_rand.Next(0, MetricNames.Names.Length)],
-                        Timestamp = DateTime.Now
-                    };
-
-                    Console.WriteLine($"Publishing: {metric.BotId}, {metric.Name}, {metric.Timestamp}");
-
-                    var task = _publisher.Publish(metric, token);
-                    task.Wait();
-
-                    Thread.Sleep(500);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
+                Console.WriteLine(ex.ToString());
             }
-        } 
-
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            _tokenSource.Cancel();
-        }
     }
 }

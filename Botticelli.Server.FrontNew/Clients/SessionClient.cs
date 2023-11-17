@@ -56,8 +56,8 @@ public class SessionClient
         };
 
         var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                                                                     "/user/AddUser"),
-                                                         request);
+                "/user/AddUser"),
+            request);
 
         if (!response.IsSuccessStatusCode)
             return new Error
@@ -75,7 +75,7 @@ public class SessionClient
 
     public async Task<Error> ResetPassword(string email)
     {
-        var request = new RegeneratePasswordRequest()
+        var request = new RegeneratePasswordRequest
         {
             Email = email,
             UserName = email
@@ -102,7 +102,7 @@ public class SessionClient
     public async Task<bool> HasUsersAsync()
     {
         var response = await _httpClient.GetFromJsonAsync<bool>(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                                                                            "/user/HasUsers"));
+            "/user/HasUsers"));
 
 
         return response;
@@ -117,18 +117,18 @@ public class SessionClient
         };
 
         var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                                                                     "/auth/GetToken"),
-                                                         request);
+                "/auth/GetToken"),
+            request);
 
         var tokenResponse = await response.Content.ReadFromJsonAsync<GetTokenResponse>();
 
         if (!tokenResponse.IsSuccess)
             return new ValueTuple<Session, Error>(default,
-                                                  new Error
-                                                  {
-                                                      Code = 1,
-                                                      UserMessage = "Login error!"
-                                                  });
+                new Error
+                {
+                    Code = 1,
+                    UserMessage = "Login error!"
+                });
 
         _session = new Session
         {

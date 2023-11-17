@@ -18,8 +18,8 @@ public static class ServiceCollectionExtensions
     /// <param name="services"></param>
     /// <returns></returns>
     public static IServiceCollection UsePassBusClient<TBot>(this IServiceCollection services)
-            where TBot : IBot =>
-            services.AddSingleton<IBusClient, PassClient>();
+        where TBot : IBot =>
+        services.AddSingleton<IBusClient, PassClient>();
 
     /// <summary>
     ///     Uses a no-bus scheme
@@ -29,6 +29,6 @@ public static class ServiceCollectionExtensions
     /// <param name="services"></param>
     /// <returns></returns>
     public static IServiceCollection UsePassBusAgent<TBot, THandler>(this IServiceCollection services)
-            where TBot : IBot where THandler : IHandler<SendMessageRequest, SendMessageResponse> =>
-            services.AddHostedService<PassAgent<THandler>>();
+        where TBot : IBot where THandler : IHandler<SendMessageRequest, SendMessageResponse> =>
+        services.AddHostedService<PassAgent<THandler>>();
 }

@@ -3,7 +3,7 @@
 namespace Botticelli.Shared.API.Client.Responses;
 
 /// <summary>
-///    Update bot response
+///     Update bot response
 /// </summary>
 public class UpdateBotResponse : ServerBaseResponse
 {

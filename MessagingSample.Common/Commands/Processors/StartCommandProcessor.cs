@@ -29,7 +29,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
     protected override async Task InnerProcessLocation(Message message, string argsString, CancellationToken token)
     {
     }
-    
+
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
         var chatId = message.ChatIds.FirstOrDefault();
@@ -39,7 +39,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
             {
                 Uid = Guid.NewGuid().ToString(),
                 ChatIds = message.ChatIds,
-                Body = "Bot started...",
+                Body = "Bot started..."
             }
         };
 

@@ -1,11 +1,11 @@
 ﻿@page "/your_bots"
+@using Botticelli.Server.FrontNew.Settings
+@using Microsoft.Extensions.Options
 @using Botticelli.Server.Data.Entities
 @using Botticelli.Shared.API.Admin.Responses
 @using Botticelli.Shared.Constants
-@using Microsoft.Extensions.Options
-@using Botticelli.Server.FrontNew.Settings
-@using System.Net.Http.Headers
 @using Flurl
+@using System.Net.Http.Headers
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
 @inject CookieStorageAccessor Cookies;
@@ -46,11 +46,11 @@ else
                             <RadzenButton Click="@(e => UriHelper.NavigateTo($"/update_bot/{bot.BotId}", true))"
                                           ButtonStyle="ButtonStyle.Primary"
                                           Style="width: 100%"
-                                          Text="Update" />
+                                          Text="Update"/>
                             <RadzenButton Click="@(e => UriHelper.NavigateTo($"/bot_metrics/{bot.BotId}", true))"
                                           ButtonStyle="ButtonStyle.Primary"
                                           Style="width: 100%"
-                                          Text="See metrics" />
+                                          Text="See metrics"/>
                             <RadzenButton Click="@(e => RemoveBot(bot.BotId))" Text="Remove"/>
                         </RadzenStack>
                     </RadzenCard>
@@ -94,7 +94,7 @@ else
 
     private async Task RemoveBot(string botId)
     {
-        if (!await JsRuntime.InvokeAsync<bool>("confirm", new object[] {"Are you sure?"})) return;
+        if (!await JsRuntime.InvokeAsync<bool>("confirm", new object[] { "Are you sure?" })) return;
 
         await _http.GetAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/RemoveBot?botId={botId}"));
         UriHelper.NavigateTo("/your_bots", true);
@@ -102,7 +102,7 @@ else
 
     protected async Task SendStartStop(string botId, BotStatus? status)
     {
-        if (status != BotStatus.Unlocked) await _http.GetAsync(Url.Combine(BackSettings.CurrentValue.BackUrl,$"/admin/ActivateBot?botId={botId}"));
+        if (status != BotStatus.Unlocked) await _http.GetAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/ActivateBot?botId={botId}"));
         else await _http.GetAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/DeactivateBot?botId={botId}"));
 
         UriHelper.NavigateTo("/your_bots", true);
@@ -110,32 +110,32 @@ else
 
     private static string GetIsActive(BotStatus? status) => status switch
     {
-            BotStatus.Unlocked    => "Unlocked",
-            BotStatus.Locked => "Locked",
-            _                   => "Unknown"
-            };
+        BotStatus.Unlocked    => "Unlocked",
+        BotStatus.Locked => "Locked",
+        _                   => "Unknown"
+        };
 
     private static string GetIsAlive(DateTime? lastKeepAlive)
-            => DateTime.UtcNow - lastKeepAlive <= TimeSpan.FromSeconds(30) ? "Alive" : "Dead";
+        => DateTime.UtcNow - lastKeepAlive <= TimeSpan.FromSeconds(30) ? "Alive" : "Dead";
 
 
     private string GetLogo(BotType? type) => type switch
     {
-            BotType.Telegram => "Logos/Telegram.png",
-            BotType.WhatsApp => "Logos/Whatsapp.png",
-            BotType.Viber => "Logos/Viber.png",
-            BotType.RocketChat => "Logos/RocketChat.png",
-            BotType.Signal => "Logos/Signal.png",
-            BotType.Unknown => "Logos/Unknown.png",
-            _ => "Logos/Unknown.png"
-            };
+        BotType.Telegram => "Logos/Telegram.png",
+        BotType.WhatsApp => "Logos/Whatsapp.png",
+        BotType.Viber => "Logos/Viber.png",
+        BotType.RocketChat => "Logos/RocketChat.png",
+        BotType.Signal => "Logos/Signal.png",
+        BotType.Unknown => "Logos/Unknown.png",
+        _ => "Logos/Unknown.png"
+        };
 
 
     private string GetStyle(BotInfo bot) => bot.Status switch
     {
-            BotStatus.Unlocked => $"width: 200px; background-color: {(GetIsAlive(bot.LastKeepAlive) == "Alive" ? "greenyellow" : "gainsboro")}",
-            BotStatus.Locked => "width: 200px; background-color: red",
-            _ => "width: 200px; background-color: gray"
-            };
+        BotStatus.Unlocked => $"width: 200px; background-color: {(GetIsAlive(bot.LastKeepAlive) == "Alive" ? "greenyellow" : "gainsboro")}",
+        BotStatus.Locked => "width: 200px; background-color: red",
+        _ => "width: 200px; background-color: gray"
+        };
 
 }

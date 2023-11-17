@@ -14,7 +14,7 @@ namespace Botticelli.Scheduler;
 ///     with some reliability parameters
 /// </summary>
 public class BotAction<TBot> : IJob
-        where TBot : IBot
+    where TBot : IBot
 {
     private AsyncRetryPolicy<SendMessageResponse> _sendExceptionPolicy;
     private AsyncRetryPolicy<SendMessageResponse> _sendOkPolicy;
@@ -46,7 +46,7 @@ public class BotAction<TBot> : IJob
 
             //_logger.LogDebug($"{nameof(RunAsync)}(): reliability");
             var result = await _sendPolicy
-                    .ExecuteAndCaptureAsync(async ct => await Bot.SendMessageAsync(request, ct), token);
+                .ExecuteAndCaptureAsync(async ct => await Bot.SendMessageAsync(request, ct), token);
 
             //_logger.LogTrace($"{nameof(RunAsync)}(): send status={result?.Result?.MessageSentStatus}");
         }
@@ -62,17 +62,17 @@ public class BotAction<TBot> : IJob
         if (!Reliability.IsEnabled) return;
 
         _sendOkPolicy = Policy<SendMessageResponse>
-                        .HandleResult(resp => resp.MessageSentStatus != MessageSentStatus.Ok)
-                        .WaitAndRetryAsync(Reliability.MaxTries,
-                                           n => Reliability.IsExponential ?
-                                                   TimeSpan.FromSeconds(n * Math.Exp(Reliability.Delay.TotalSeconds)) :
-                                                   Reliability.Delay);
+            .HandleResult(resp => resp.MessageSentStatus != MessageSentStatus.Ok)
+            .WaitAndRetryAsync(Reliability.MaxTries,
+                n => Reliability.IsExponential
+                    ? TimeSpan.FromSeconds(n * Math.Exp(Reliability.Delay.TotalSeconds))
+                    : Reliability.Delay);
         _sendExceptionPolicy = Policy<SendMessageResponse>
-                               .Handle<Exception>()
-                               .WaitAndRetryAsync(Reliability.MaxTries,
-                                                  n => Reliability.IsExponential ?
-                                                          TimeSpan.FromSeconds(n * Math.Exp(Reliability.Delay.TotalSeconds)) :
-                                                          Reliability.Delay);
+            .Handle<Exception>()
+            .WaitAndRetryAsync(Reliability.MaxTries,
+                n => Reliability.IsExponential
+                    ? TimeSpan.FromSeconds(n * Math.Exp(Reliability.Delay.TotalSeconds))
+                    : Reliability.Delay);
 
         _sendPolicy = _sendExceptionPolicy.WrapAsync(_sendOkPolicy);
     }

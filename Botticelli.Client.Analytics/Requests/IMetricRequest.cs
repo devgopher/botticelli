@@ -1,9 +1,8 @@
 ﻿using MediatR;
 
-namespace Botticelli.Client.Analytics.Requests
+namespace Botticelli.Client.Analytics.Requests;
+
+public interface IMetricRequest : IRequest
 {
-    public interface IMetricRequest : IRequest
-    {
-        public string MetricName { get; set; }
-    }
+    public string MetricName { get; set; }
 }

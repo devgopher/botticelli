@@ -1,7 +1,8 @@
-﻿namespace Botticelli.Server.Analytics.Exceptions
+﻿namespace Botticelli.Server.Analytics.Exceptions;
+
+public class AnalyticsException : Exception
 {
-    public class AnalyticsException : Exception
+    public AnalyticsException(string message, Exception inner) : base(message, inner)
     {
-        public AnalyticsException(string message, Exception inner) : base(message, inner) { }
     }
 }

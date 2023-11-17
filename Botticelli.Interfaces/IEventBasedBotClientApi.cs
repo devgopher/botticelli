@@ -21,9 +21,9 @@ public interface IEventBasedBotClientApi
     /// <param name="token">Cancellation token</param>
     /// <returns></returns>
     public Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
-                                                                    ISendOptionsBuilder<TSendOptions> optionsBuilder,
-                                                                    CancellationToken token)
-            where TSendOptions : class;
+        ISendOptionsBuilder<TSendOptions> optionsBuilder,
+        CancellationToken token)
+        where TSendOptions : class;
 
     public Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token);
 }

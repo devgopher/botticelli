@@ -17,23 +17,23 @@ using NLog.Extensions.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 var settings = builder.Configuration
-                      .GetSection(nameof(SampleSettings))
-                      .Get<SampleSettings>();
+    .GetSection(nameof(SampleSettings))
+    .Get<SampleSettings>();
 
 builder.Services.AddTelegramBot(builder.Configuration,
-                                new BotOptionsBuilder<TelegramBotSettings>()
-                                        .Set(s => s.SecureStorageSettings = new SecureStorageSettings
-                                        {
-                                            ConnectionString = settings.SecureStorageConnectionString
-                                        })
-                                        .Set(s => s.Name = "test_bot"))
-       .AddLogging(cfg => cfg.AddNLog())
-       .AddChatGptProvider(builder.Configuration)
-       .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
-       .AddSingleton<AiHandler>()
-       .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
-       .UsePassBusClient<IBot<TelegramBot>>()
-       .AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>();
+        new BotOptionsBuilder<TelegramBotSettings>()
+            .Set(s => s.SecureStorageSettings = new SecureStorageSettings
+            {
+                ConnectionString = settings.SecureStorageConnectionString
+            })
+            .Set(s => s.Name = "test_bot"))
+    .AddLogging(cfg => cfg.AddNLog())
+    .AddChatGptProvider(builder.Configuration)
+    .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
+    .AddSingleton<AiHandler>()
+    .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
+    .UsePassBusClient<IBot<TelegramBot>>()
+    .AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>();
 
 var app = builder.Build();
 app.Services.RegisterBotCommand<AiCommand, AiCommandProcessor, TelegramBot>();

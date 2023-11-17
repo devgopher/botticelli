@@ -4,7 +4,6 @@ namespace Viber.Api.Requests
 {
     public class RemoveWebHookRequest : BaseRequest
     {
-        [JsonPropertyName("url")]
-        public string? Url { get; set; }
+        [JsonPropertyName("url")] public string? Url { get; set; }
     }
 }

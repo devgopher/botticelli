@@ -5,22 +5,16 @@ namespace Viber.Api.Requests
 {
     public class ApiSendMessageRequest : BaseRequest
     {
-        [JsonPropertyName("receiver")]
-        public string? Receiver { get; set; }
+        [JsonPropertyName("receiver")] public string? Receiver { get; set; }
 
-        [JsonPropertyName("min_api_version")]
-        public int MinApiVersion { get; set; }
+        [JsonPropertyName("min_api_version")] public int MinApiVersion { get; set; }
 
-        [JsonPropertyName("sender")]
-        public Sender? Sender { get; set; }
+        [JsonPropertyName("sender")] public Sender? Sender { get; set; }
 
-        [JsonPropertyName("tracking_data")]
-        public string? TrackingData { get; set; }
+        [JsonPropertyName("tracking_data")] public string? TrackingData { get; set; }
 
-        [JsonPropertyName("type")]
-        public string? Type { get; set; }
+        [JsonPropertyName("type")] public string? Type { get; set; }
 
-        [JsonPropertyName("text")]
-        public string? Text { get; set; }
+        [JsonPropertyName("text")] public string? Text { get; set; }
     }
 }

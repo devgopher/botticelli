@@ -8,7 +8,7 @@ namespace Botticelli.Talks.Extensions;
 public static class ServiceExtensions
 {
     public static IServiceCollection AddOpenTtsTalks(this IServiceCollection services,
-                                                     IConfiguration config)
+        IConfiguration config)
     {
         services.Configure<TtsSettings>(config.GetSection(nameof(TtsSettings)));
         services.AddHttpClient<OpenTtsSpeaker>();

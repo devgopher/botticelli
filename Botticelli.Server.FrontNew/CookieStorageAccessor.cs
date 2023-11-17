@@ -7,11 +7,17 @@ public class CookieStorageAccessor
     private readonly IJSRuntime _jsRuntime;
     private Lazy<IJSObjectReference> _accessorJsRef = new();
 
-    public CookieStorageAccessor(IJSRuntime jsRuntime) => _jsRuntime = jsRuntime;
+    public CookieStorageAccessor(IJSRuntime jsRuntime)
+    {
+        _jsRuntime = jsRuntime;
+    }
 
     private async Task WaitForReference()
     {
-        if (_accessorJsRef.IsValueCreated is false) _accessorJsRef = new Lazy<IJSObjectReference>(await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "/js/CookieStorageAccessor.js"));
+        if (_accessorJsRef.IsValueCreated is false)
+            _accessorJsRef =
+                new Lazy<IJSObjectReference>(
+                    await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "/js/CookieStorageAccessor.js"));
     }
 
     public async Task<string> GetValueAsync(string key)
@@ -19,9 +25,9 @@ public class CookieStorageAccessor
         await WaitForReference();
         var result = await _accessorJsRef.Value.InvokeAsync<string>("get", key);
         result = result.Replace($"{key}=", "")
-                       .Replace(";", string.Empty)
-                       .Replace("\n", string.Empty)
-                       .Replace("\r", string.Empty);
+            .Replace(";", string.Empty)
+            .Replace("\n", string.Empty)
+            .Replace("\r", string.Empty);
         result = result.Substring(0, result.Contains(' ') ? result.IndexOf(' ') : result.Length);
 
         return result.Trim();

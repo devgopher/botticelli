@@ -19,8 +19,8 @@ public class BotController
     private readonly ILogger<BotController> _logger;
 
     public BotController(IBotManagementService botManagementService,
-                         IBotStatusDataService botStatusDataService,
-                         ILogger<BotController> logger)
+        IBotStatusDataService botStatusDataService,
+        ILogger<BotController> logger)
     {
         _botManagementService = botManagementService;
         _botStatusDataService = botStatusDataService;
@@ -36,15 +36,16 @@ public class BotController
     /// <returns></returns>
     [AllowAnonymous]
     [HttpPost("client/[action]")]
-    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus([FromBody] GetRequiredStatusFromServerRequest request) =>
-            new()
-            {
-                BotId = request.BotId,
-                IsSuccess = true,
-                Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId),
-                BotKey = await _botStatusDataService.GetRequiredBotKey(request.BotId),
-                BotContext = await _botStatusDataService.GetRequiredBotContext(request.BotId)
-            };
+    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus(
+        [FromBody] GetRequiredStatusFromServerRequest request) =>
+        new()
+        {
+            BotId = request.BotId,
+            IsSuccess = true,
+            Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId),
+            BotKey = await _botStatusDataService.GetRequiredBotKey(request.BotId),
+            BotContext = await _botStatusDataService.GetRequiredBotContext(request.BotId)
+        };
 
     /// <summary>
     ///     Keep alive function

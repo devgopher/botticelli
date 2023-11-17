@@ -8,7 +8,10 @@ public class VkBotHostedService : IHostedService
 {
     private readonly IBot<VkBot> _bot;
 
-    public VkBotHostedService(IBot<VkBot> bot) => _bot = bot;
+    public VkBotHostedService(IBot<VkBot> bot)
+    {
+        _bot = bot;
+    }
 
     public async Task StartAsync(CancellationToken cancellationToken)
         => await _bot.StartBotAsync(StartBotRequest.GetInstance(), CancellationToken.None);

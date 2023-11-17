@@ -14,14 +14,18 @@ public class MetricsOutputController : Controller
 {
     private readonly IMetricsOutputService _service;
 
-    public MetricsOutputController(IMetricsOutputService service) => _service = service;
+    public MetricsOutputController(IMetricsOutputService service)
+    {
+        _service = service;
+    }
 
     [HttpGet("[action]")]
-    public async Task<GetMetricsResponse> GetMetrics([FromQuery] GetMetricsRequest request, CancellationToken token) 
+    public async Task<GetMetricsResponse> GetMetrics([FromQuery] GetMetricsRequest request, CancellationToken token)
         => await _service.GetMetricsAsync(request, token);
 
     [HttpGet("[action]")]
-    public async Task<GetMetricsIntervalsResponse> GetMetricsForInterval([FromQuery] GetMetricsForIntervalsRequest request, CancellationToken token)
+    public async Task<GetMetricsIntervalsResponse> GetMetricsForInterval(
+        [FromQuery] GetMetricsForIntervalsRequest request, CancellationToken token)
         => await _service.GetMetricsForIntervalAsync(request, token);
 
     [HttpGet("[action]")]

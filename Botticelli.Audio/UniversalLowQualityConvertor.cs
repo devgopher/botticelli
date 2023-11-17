@@ -44,7 +44,7 @@ public class UniversalLowQualityConvertor : IConvertor
     public byte[] Convert(byte[] input, AudioInfo tgtParams)
     {
         using var ms = new MemoryStream(input);
-     
+
         return Convert(ms, tgtParams);
     }
 
@@ -81,7 +81,7 @@ public class UniversalLowQualityConvertor : IConvertor
                     .ForceFormat(codec)
                     .WithAudioBitrate(tgtParams.Bitrate))
                 .ProcessSynchronously();
-            
+
             return output.ToArray();
         }
         catch (IOException ex)
@@ -95,19 +95,19 @@ public class UniversalLowQualityConvertor : IConvertor
     {
         return srcParams.AudioFormat switch
         {
-            AudioFormat.Mp3     => new Mp3FileReader(input),
-            AudioFormat.Ogg     => new VorbisWaveReader(input),
-            _                   => new WaveFileReader(input)
+            AudioFormat.Mp3 => new Mp3FileReader(input),
+            AudioFormat.Ogg => new VorbisWaveReader(input),
+            _ => new WaveFileReader(input)
         };
     }
 
     private MemoryStream GetTargetWaveStream(WaveStream input, AudioInfo srcParams)
     {
         var ms = new MemoryStream();
-        
+
         Stream writerStream = srcParams.AudioFormat switch
         {
-            AudioFormat.Mp3     => new LameMP3FileWriter(ms, input.WaveFormat, LAMEPreset.ABR_16),
+            AudioFormat.Mp3 => new LameMP3FileWriter(ms, input.WaveFormat, LAMEPreset.ABR_16),
             _ => new WaveFileWriter(ms, input.WaveFormat)
         };
 

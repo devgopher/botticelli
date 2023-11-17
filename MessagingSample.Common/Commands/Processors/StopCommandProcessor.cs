@@ -11,9 +11,9 @@ namespace MessagingSample.Common.Commands.Processors;
 public class StopCommandProcessor : CommandProcessor<StopCommand>
 {
     public StopCommandProcessor(ILogger<StopCommandProcessor> logger,
-                                ICommandValidator<StopCommand> validator,
-                                MetricsProcessor metricsProcessor)
-            : base(logger, validator, metricsProcessor)
+        ICommandValidator<StopCommand> validator,
+        MetricsProcessor metricsProcessor)
+        : base(logger, validator, metricsProcessor)
     {
     }
 
@@ -40,7 +40,7 @@ public class StopCommandProcessor : CommandProcessor<StopCommand>
             {
                 Uid = Guid.NewGuid().ToString(),
                 ChatIds = message.ChatIds,
-                Body = "Bot stopped...",
+                Body = "Bot stopped..."
             }
         };
 

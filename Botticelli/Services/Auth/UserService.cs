@@ -10,13 +10,13 @@ namespace Botticelli.Server.Services.Auth;
 public class UserService : IUserService
 {
     private readonly IConfiguration _config;
-    private readonly BotInfoContext _context;
     private readonly IConfirmationService _confirmationService;
+    private readonly BotInfoContext _context;
     private readonly ILogger<AdminAuthService> _logger;
 
     public UserService(IConfiguration config,
         BotInfoContext context,
-        ILogger<AdminAuthService> logger, 
+        ILogger<AdminAuthService> logger,
         IConfirmationService confirmationService)
     {
         _config = config;
@@ -37,7 +37,8 @@ public class UserService : IUserService
 
             await AddAsync(request, false, token);
 
-            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.NormalizedEmail == GetNormalized(request.Email), cancellationToken: token);
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(
+                u => u.NormalizedEmail == GetNormalized(request.Email), token);
             user.EmailConfirmed = true;
             await _context.SaveChangesAsync(token);
 
@@ -58,9 +59,10 @@ public class UserService : IUserService
             _logger.LogInformation($"{nameof(AddAsync)}({request.UserName}) started...");
 
             if (_context.ApplicationUsers.AsQueryable()
-                .Any(u => u.NormalizedUserName == GetNormalized(request.UserName) || u.Email == GetNormalized(request.Email)))
+                .Any(u => u.NormalizedUserName == GetNormalized(request.UserName) ||
+                          u.Email == GetNormalized(request.Email)))
                 throw new DataException($"User with name {request.UserName} and/or email {request.Email}" +
-                                        $" already exists!");
+                                        " already exists!");
 
             var user = new IdentityUser
             {
@@ -119,7 +121,7 @@ public class UserService : IUserService
             user.Email = request.Email;
             user.NormalizedEmail = GetNormalized(request.Email);
             user.PasswordHash = HashUtils.GetHash(request.Password, _config["Authorization:Salt"]);
-            
+
             if (prevMail != GetNormalized(request.Email))
                 await _confirmationService.SendConfirmationCode(user, token);
 
@@ -198,7 +200,7 @@ public class UserService : IUserService
         if (_context.ApplicationUsers.AsQueryable()
             .All(u => u.NormalizedEmail != GetNormalized(requestEmail)))
             throw new DataException($"User with email {requestEmail} doesn't exist!");
-        
+
         var user = await _context.ApplicationUsers.FirstOrDefaultAsync(
             u => u.NormalizedEmail == GetNormalized(requestEmail), token);
 

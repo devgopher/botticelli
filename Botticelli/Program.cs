@@ -1,3 +1,4 @@
+using System.Text;
 using BotDataSecureStorage;
 using BotDataSecureStorage.Settings;
 using Botticelli.Server.Data;
@@ -14,17 +15,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
-       .AddJsonFile("appsettings.json")
-       .AddEnvironmentVariables();
+    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables();
 
 var secureStorageSettings = builder.Configuration
-                                   .GetSection(nameof(SecureStorageSettings))
-                                   .Get<SecureStorageSettings>();
+    .GetSection(nameof(SecureStorageSettings))
+    .Get<SecureStorageSettings>();
 
 
 var serverSettings = builder.Configuration
@@ -34,35 +34,36 @@ var serverSettings = builder.Configuration
 builder.Services.AddSingleton(serverSettings);
 
 builder.Services.AddEndpointsApiExplorer()
-       .AddSwaggerGen(options =>
-       {
-           options.AddSecurityDefinition("Bearer",
-                                         new OpenApiSecurityScheme
-                                         {
-                                             Name = "Authorization",
-                                             Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
-                                             In = ParameterLocation.Header,
-                                             Type = SecuritySchemeType.Http,
-                                             Scheme = "Bearer"
-                                         });
-           
-           options.AddSecurityRequirement(new OpenApiSecurityRequirement
-           {
-               {
-                   new OpenApiSecurityScheme
-                   {
-                       Reference = new OpenApiReference
-                       {
-                           Type = ReferenceType.SecurityScheme,
-                           Id = "Bearer"
-                       }
-                   },
-                   Array.Empty<string>()
-               }
-           });
-       });
+    .AddSwaggerGen(options =>
+    {
+        options.AddSecurityDefinition("Bearer",
+            new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer"
+            });
 
-builder.Services.Configure<SmtpClientOptions>(builder.Configuration.GetSection($"{nameof(ServerSettings)}:{nameof(SmtpClientOptions)}"));
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+    });
+
+builder.Services.Configure<SmtpClientOptions>(
+    builder.Configuration.GetSection($"{nameof(ServerSettings)}:{nameof(SmtpClientOptions)}"));
 
 builder.Services
     .Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration.GetSection(nameof(ServerSettings)))
@@ -95,7 +96,7 @@ builder.Services
         .SignIn
         .RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<BotInfoContext>();
-       
+
 builder.Services.AddRazorPages();
 
 #if !DEBUG
@@ -163,6 +164,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseCors(builder => builder.AllowAnyMethod()
-                              .AllowAnyOrigin()
-                              .AllowAnyHeader());
+    .AllowAnyOrigin()
+    .AllowAnyHeader());
 app.Run();

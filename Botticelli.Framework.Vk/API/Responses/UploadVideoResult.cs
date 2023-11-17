@@ -4,12 +4,9 @@ namespace Botticelli.Framework.Vk.Messages.API.Responses;
 
 public class UploadVideoResult
 {
-    [JsonPropertyName("server")]
-    public int Server { get; set; }
+    [JsonPropertyName("server")] public int Server { get; set; }
 
-    [JsonPropertyName("video")]
-    public string Video { get; set; }
+    [JsonPropertyName("video")] public string Video { get; set; }
 
-    [JsonPropertyName("hash")]
-    public string Hash { get; set; }
+    [JsonPropertyName("hash")] public string Hash { get; set; }
 }

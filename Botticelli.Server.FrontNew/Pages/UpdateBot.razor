@@ -1,14 +1,12 @@
 ﻿@page "/update_bot/{botId}"
 @using Botticelli.Server.FrontNew.Settings
 @using Microsoft.Extensions.Options
-@using Botticelli.Shared.API.Client.Requests
-@using Botticelli.Shared.API.Client.Responses
-@using Botticelli.Shared.Constants
-@using Flurl
-@using System.Net.Http.Headers
-@using Botticelli.Server.Data.Entities
 @using Botticelli.Server.FrontNew.Models
-@using Newtonsoft.Json
+@using Botticelli.Shared.API.Client.Responses
+@using Flurl
+@using Botticelli.Server.Data.Entities
+@using System.Net.Http.Headers
+@using Botticelli.Shared.API.Client.Requests
 @inject HttpClient Http
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
@@ -51,6 +49,7 @@
 </RadzenTemplateForm>
 
 @code {
+
     [Parameter]
     public string BotId { get; set; }
 
@@ -74,7 +73,7 @@
         }
         catch (Exception ex)
         {
-//            _error = $"token:{sessionToken} ex:{ex.Message}";
+    //            _error = $"token:{sessionToken} ex:{ex.Message}";
         }
     }
 
@@ -84,9 +83,9 @@
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
 
         var botStatusResponse = await http.PostAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/bot/client/GetRequiredBotStatus"),
-            new GetRequiredStatusFromServerRequest()
+            new GetRequiredStatusFromServerRequest
             {
-                BotId = this.BotId
+                BotId = BotId
             });
 
         var botStatus = await botStatusResponse.Content.ReadFromJsonAsync<GetRequiredStatusFromServerResponse>();
@@ -118,10 +117,11 @@
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
         var response = await Http.PutAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/UpdateBot"),
-                                                  request);
+            request);
 
         var updateBotResponse = await response.Content.ReadFromJsonAsync<UpdateBotResponse>();
 
         UriHelper.NavigateTo("/your_bots", true);
     }
+
 }

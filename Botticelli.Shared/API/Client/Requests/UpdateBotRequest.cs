@@ -1,6 +1,4 @@
-﻿using Botticelli.Shared.Constants;
-
-namespace Botticelli.Shared.API.Client.Requests;
+﻿namespace Botticelli.Shared.API.Client.Requests;
 
 public class UpdateBotRequest
 {

@@ -1,12 +1,12 @@
 ﻿namespace Botticelli.Server.Services.Auth;
 
 /// <summary>
-///  Code generator
+///     Code generator
 /// </summary>
 public interface IConfirmationCodeGenerator
 {
     /// <summary>
-    /// Generates a code
+    ///     Generates a code
     /// </summary>
     /// <param name="size"></param>
     /// <param name="lifetimeSec"></param>

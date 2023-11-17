@@ -17,9 +17,9 @@ namespace Viber.Api
         void Stop();
 
         Task<SetWebHookResponse> SetWebHook(SetWebHookRequest request,
-                                            CancellationToken cancellationToken = default);
+            CancellationToken cancellationToken = default);
 
         Task<ApiSendMessageResponse> SendMessage(ApiSendMessageRequest request,
-                                                 CancellationToken cancellationToken = default);
+            CancellationToken cancellationToken = default);
     }
 }

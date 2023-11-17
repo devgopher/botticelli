@@ -21,8 +21,8 @@ public class AdminController
     private readonly ILogger<AdminController> _logger;
 
     public AdminController(IBotManagementService botManagementService,
-                           IBotStatusDataService botStatusDataService,
-                           ILogger<AdminController> logger)
+        IBotStatusDataService botStatusDataService,
+        ILogger<AdminController> logger)
     {
         _botManagementService = botManagementService;
         _botStatusDataService = botStatusDataService;
@@ -34,9 +34,9 @@ public class AdminController
     {
         _logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) started...");
         var success = await _botManagementService.RegisterBot(request.BotId,
-                                                              request.BotKey,
-                                                              request.BotName,
-                                                              request.Type);
+            request.BotKey,
+            request.BotName,
+            request.Type);
 
         _logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) success: {success}...");
 

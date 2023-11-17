@@ -10,7 +10,6 @@ using Botticelli.Framework.Telegram.HostedService;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -28,8 +27,8 @@ public static class ServiceCollectionExtensions
     /// <param name="optionsBuilder"></param>
     /// <returns></returns>
     public static IServiceCollection AddTelegramBot(this IServiceCollection services,
-                                                    IConfiguration config,
-                                                    BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
+        IConfiguration config,
+        BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
         var secureStorage = new SecureStorage(settings.SecureStorageSettings);
@@ -56,19 +55,19 @@ public static class ServiceCollectionExtensions
         config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
 
         services.AddSingleton(serverConfig)
-                .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
-                .AddBotticelliFramework(config);
+            .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
+            .AddBotticelliFramework(config);
 
         var sp = services.BuildServiceProvider();
 
         var bot = new TelegramBot(new TelegramBotClient(token),
-                                  sp.GetRequiredService<IBotUpdateHandler>(),
-                                  sp.GetRequiredService<ILogger<TelegramBot>>(),
-                                  sp.GetRequiredService<MetricsProcessor>(),
-                                  secureStorage);
+            sp.GetRequiredService<IBotUpdateHandler>(),
+            sp.GetRequiredService<ILogger<TelegramBot>>(),
+            sp.GetRequiredService<MetricsProcessor>(),
+            secureStorage);
 
         return services.AddSingleton<IBot<TelegramBot>>(bot)
-                       .AddHostedService<BotStatusService<IBot<TelegramBot>>>()
-                       .AddHostedService<TelegramBotHostedService>();
+            .AddHostedService<BotStatusService<IBot<TelegramBot>>>()
+            .AddHostedService<TelegramBotHostedService>();
     }
 }

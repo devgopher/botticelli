@@ -14,9 +14,9 @@ public abstract class GenericAiProvider : IAiProvider
     protected readonly IOptionsMonitor<AiSettings> Settings;
 
     public GenericAiProvider(IOptionsMonitor<AiSettings> settings,
-                             IHttpClientFactory factory,
-                             ILogger logger,
-                             IBusClient bus)
+        IHttpClientFactory factory,
+        ILogger logger,
+        IBusClient bus)
     {
         Settings = settings;
         Factory = factory;

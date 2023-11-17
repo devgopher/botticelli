@@ -130,7 +130,7 @@ public class BotManagementService : IBotManagementService
     }
 
     /// <summary>
-    /// Removes a bot
+    ///     Removes a bot
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>

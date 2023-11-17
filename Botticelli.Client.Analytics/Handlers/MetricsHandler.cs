@@ -9,8 +9,8 @@ namespace Botticelli.Client.Analytics.Handlers;
 public abstract class MetricsHandler<TMetric> : IRequestHandler<IMetricRequest>
 {
     private readonly BotContext _context;
-    private readonly MetricsPublisher _metricsPublisher;
     private readonly ILogger _logger;
+    private readonly MetricsPublisher _metricsPublisher;
 
     protected MetricsHandler(BotContext context, MetricsPublisher metricsPublisher, ILogger logger)
     {
@@ -18,7 +18,7 @@ public abstract class MetricsHandler<TMetric> : IRequestHandler<IMetricRequest>
         _metricsPublisher = metricsPublisher;
         _logger = logger;
     }
-    
+
     public virtual async Task Handle(IMetricRequest request, CancellationToken cancellationToken)
     {
         try
@@ -36,10 +36,10 @@ public abstract class MetricsHandler<TMetric> : IRequestHandler<IMetricRequest>
     }
 
     protected virtual MetricObject Convert(IMetricRequest args, string botId) =>
-            new()
-            {
-                BotId = botId,
-                Name = args.MetricName,
-                Timestamp = DateTime.Now
-            };
+        new()
+        {
+            BotId = botId,
+            Name = args.MetricName,
+            Timestamp = DateTime.Now
+        };
 }

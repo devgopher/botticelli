@@ -2,7 +2,10 @@
 
 public class VkErrorEventArgs
 {
-    public VkErrorEventArgs(ErrorResponse response) => Response = response;
+    public VkErrorEventArgs(ErrorResponse response)
+    {
+        Response = response;
+    }
 
     public ErrorResponse Response { get; }
 }

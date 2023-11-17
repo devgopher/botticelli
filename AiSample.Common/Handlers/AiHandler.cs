@@ -24,13 +24,13 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
         try
         {
             await _provider.SendAsync(new AiMessage(input.Uid)
-                                      {
-                                          ChatIds = input.Message.ChatIds,
-                                          Body = input.Message.Body,
-                                          Subject = input.Message.Subject,
-                                          ReplyToMessageUid = input.Uid
-                                      },
-                                      token);
+                {
+                    ChatIds = input.Message.ChatIds,
+                    Body = input.Message.Body,
+                    Subject = input.Message.Subject,
+                    ReplyToMessageUid = input.Uid
+                },
+                token);
         }
         catch (Exception ex)
         {

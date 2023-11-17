@@ -6,7 +6,10 @@ public class MetricsInputService : IMetricsInputService
 {
     private readonly MetricsReaderWriter _rw;
 
-    public MetricsInputService(MetricsReaderWriter rw) => _rw = rw;
+    public MetricsInputService(MetricsReaderWriter rw)
+    {
+        _rw = rw;
+    }
 
     public async Task PushMetricAsync(PushMetricRequest request, CancellationToken token)
     {

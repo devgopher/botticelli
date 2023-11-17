@@ -1,6 +1,6 @@
 ﻿@page "/"
-@using Botticelli.Server.FrontNew.Models
 @using Botticelli.Server.FrontNew.Clients
+@using Botticelli.Server.FrontNew.Models
 @inject SessionClient SessionClient;
 @inject NavigationManager UriHelper;
 @inject CookieStorageAccessor Cookies;
@@ -39,7 +39,7 @@
                          AllowRegister="false"
                          AllowResetPassword="true"/>
         </RadzenTemplateForm>
-        <RadzenLabel  Text = "@_error.UserMessage" Style="color: red; font-weight: bold; border: none"/>
+        <RadzenLabel Text="@_error.UserMessage" Style="color: red; font-weight: bold; border: none"/>
 
         @code
         {
@@ -67,7 +67,7 @@
                 }
                 else
                 {
-            await Cookies.SetValueAsync("SessionToken", sessionToken + ";SameSite=None;Secure=True");
+                    await Cookies.SetValueAsync("SessionToken", sessionToken + ";SameSite=None;Secure=True");
                     _error.UserMessage = sessionToken;
                     UriHelper.NavigateTo("/logoff", true);
                 }
@@ -75,15 +75,15 @@
 
             public async Task DoReset(string userName)
             {
-                    var result = await SessionClient.ResetPassword(userName);
-                    if (result != default && result.UserMessage.ToLowerInvariant() != "success")
-                    {
-                        _error.UserMessage = result.UserMessage;
-                    }
-                    else
-                    {
-                        _error.UserMessage = "Check your email";
-                    }
+                var result = await SessionClient.ResetPassword(userName);
+                if (result != default && result.UserMessage.ToLowerInvariant() != "success")
+                {
+                    _error.UserMessage = result.UserMessage;
+                }
+                else
+                {
+                    _error.UserMessage = "Check your email";
+                }
             }
         }
 

@@ -1,7 +1,6 @@
-﻿namespace Botticelli.Client.Analytics.Settings
+﻿namespace Botticelli.Client.Analytics.Settings;
+
+public class AnalyticsSettings
 {
-    public class AnalyticsSettings
-    {
-        public string TargetUrl { get; set; }
-    }
+    public string TargetUrl { get; set; }
 }

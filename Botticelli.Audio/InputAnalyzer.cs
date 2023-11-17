@@ -7,7 +7,7 @@ namespace Botticelli.Audio;
 
 public class InputAnalyzer : IAnalyzer
 {
-    private readonly FileFormatInspector _fileFormatInspector = new(new List<FileFormat>()
+    private readonly FileFormatInspector _fileFormatInspector = new(new List<FileFormat>
     {
         new Mpeg3Id3v2(),
         new Mpeg3NoId3_1(),
@@ -30,7 +30,7 @@ public class InputAnalyzer : IAnalyzer
             "m4a" => AudioFormat.M4a,
             "aac" => AudioFormat.Aac,
             "ogg" => AudioFormat.Ogg,
-            _     => AudioFormat.Unknown
+            _ => AudioFormat.Unknown
         };
 
         return new AudioInfo
@@ -75,10 +75,10 @@ public class InputAnalyzer : IAnalyzer
                 break;
         }
 
-        if (format == AudioFormat.Unknown) throw new InvalidOperationException($"Invalid format!");
+        if (format == AudioFormat.Unknown) throw new InvalidOperationException("Invalid format!");
 
-        if (reader == default) throw new InvalidOperationException($"Reader is null!");
- 
+        if (reader == default) throw new InvalidOperationException("Reader is null!");
+
         return new AudioInfo
         {
             AudioFormat = format,

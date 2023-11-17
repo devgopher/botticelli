@@ -1,7 +1,6 @@
-﻿namespace Botticelli.Analytics.Shared.Responses
+﻿namespace Botticelli.Analytics.Shared.Responses;
+
+public class GetMetricsIntervalsResponse : GetMetricsResponse
 {
-    public class GetMetricsIntervalsResponse : GetMetricsResponse
-    {
-        public IEnumerable<GetMetricsResponse> MetricsForIntervals { get; set; }
-    }
+    public IEnumerable<GetMetricsResponse> MetricsForIntervals { get; set; }
 }

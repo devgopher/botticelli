@@ -5,10 +5,10 @@ namespace Botticelli.Shared.ValueObjects;
 public class BinaryAttachment : IAttachment
 {
     public BinaryAttachment(string uid,
-                            string name,
-                            MediaType mediaType,
-                            string url,
-                            byte[] data)
+        string name,
+        MediaType mediaType,
+        string url,
+        byte[] data)
     {
         Uid = uid;
         Name = name;

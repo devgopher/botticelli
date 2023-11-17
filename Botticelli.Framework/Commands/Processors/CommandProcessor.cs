@@ -1,4 +1,5 @@
-﻿using Botticelli.Analytics.Shared.Metrics;
+﻿using System.Text.RegularExpressions;
+using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Bot.Interfaces.Processors;
 using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
@@ -7,7 +8,6 @@ using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
-using System.Text.RegularExpressions;
 
 namespace Botticelli.Framework.Commands.Processors;
 
@@ -17,14 +17,14 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     private const string SimpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
     private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
     private readonly string _commandName;
-    protected IBot _bot;
     private readonly ILogger _logger;
-    private readonly ICommandValidator<TCommand> _validator;
     private readonly MetricsProcessor _metricsProcessor;
+    private readonly ICommandValidator<TCommand> _validator;
+    protected IBot _bot;
 
 
     protected CommandProcessor(ILogger logger,
-        ICommandValidator<TCommand> validator, 
+        ICommandValidator<TCommand> validator,
         MetricsProcessor metricsProcessor)
     {
         _logger = logger;
@@ -103,16 +103,17 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         }
     }
 
-    private void SendMetric(string metricName) => _metricsProcessor.Process(metricName, BotDataUtils.GetBotId());
-    protected void SendMetric() => _metricsProcessor.Process(GetCommandName(
-        $"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId());
-
     public void SetBot(IBot bot)
         => _bot = bot;
 
     public void SetServiceProvider(IServiceProvider sp)
     {
     }
+
+    private void SendMetric(string metricName) => _metricsProcessor.Process(metricName, BotDataUtils.GetBotId());
+
+    protected void SendMetric() => _metricsProcessor.Process(GetCommandName(
+        $"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId());
 
     public string GetCommandName(string fullCommand)
         => fullCommand.ToLowerInvariant().Replace("command", "");

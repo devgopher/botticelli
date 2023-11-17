@@ -14,11 +14,11 @@ builder.Services.Configure<BackSettings>(builder.Configuration.GetSection(nameof
 builder.Services.AddScoped<AuthDelegatingHandler>();
 builder.Services.AddScoped<CookieStorageAccessor>();
 builder.Services.AddHttpClient<YourBots>(c =>
-       {
-           c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
-           c.DefaultRequestHeaders.Clear();
-       })
-       .AddHttpMessageHandler<AuthDelegatingHandler>();
+    {
+        c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+        c.DefaultRequestHeaders.Clear();
+    })
+    .AddHttpMessageHandler<AuthDelegatingHandler>();
 
 var app = builder.Build();
 

@@ -57,7 +57,8 @@ public class UserController : Controller
 
     [HttpPost("[action]")]
     [AllowAnonymous]
-    public async Task<IActionResult> RegeneratePasswordAsync(RegeneratePasswordRequest passwordRequest, CancellationToken token)
+    public async Task<IActionResult> RegeneratePasswordAsync(RegeneratePasswordRequest passwordRequest,
+        CancellationToken token)
     {
         try
         {

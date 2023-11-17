@@ -10,7 +10,7 @@ public static class BotIdUtils
     {
         var salt = new byte[size];
 
-        for (var i = 0; i < size; i++) salt[i] = (byte) (Rand.Next() % (byte.MaxValue + 1));
+        for (var i = 0; i < size; i++) salt[i] = (byte)(Rand.Next() % (byte.MaxValue + 1));
 
         return salt;
     }
@@ -29,7 +29,7 @@ public static class BotIdUtils
 
     public static string GenerateShortBotId()
         => Regex.Replace(Convert.ToBase64String(BitWiseSum(Guid.NewGuid().ToByteArray(),
-                                                           GenerateSalt(32))),
-                         "[/+=]",
-                         string.Empty);
+                GenerateSalt(32))),
+            "[/+=]",
+            string.Empty);
 }

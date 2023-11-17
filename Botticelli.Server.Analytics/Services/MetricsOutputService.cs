@@ -8,7 +8,10 @@ public class MetricsOutputService : IMetricsOutputService
 {
     private readonly MetricsReaderWriter _rw;
 
-    public MetricsOutputService(MetricsReaderWriter rw) => _rw = rw;
+    public MetricsOutputService(MetricsReaderWriter rw)
+    {
+        _rw = rw;
+    }
 
     public async Task<GetMetricsResponse> GetMetricsAsync(GetMetricsRequest request,
         CancellationToken token)
@@ -17,6 +20,7 @@ public class MetricsOutputService : IMetricsOutputService
                 x.Timestamp >= request.From && x.Timestamp <= request.To && x.BotId == request.BotId &&
                 x.Name == request.Name,
             token);
+
 
         return new GetMetricsResponse
         {
@@ -36,11 +40,11 @@ public class MetricsOutputService : IMetricsOutputService
             TimeSpan.FromSeconds(request.Interval),
             token);
         var metricsForIntervals = metrics.Select(m => new GetMetricsResponse
-        {
-            Count = m.count,
-            From = m.dt1,
-            To = m.dt2
-        }).ToBlockingEnumerable()
+            {
+                Count = m.count,
+                From = m.dt1,
+                To = m.dt2
+            }).ToBlockingEnumerable()
             .ToList();
 
         var commonCount = metricsForIntervals.Sum(m => m.Count);

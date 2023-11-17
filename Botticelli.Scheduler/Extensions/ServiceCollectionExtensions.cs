@@ -1,5 +1,4 @@
-﻿using Botticelli.Interfaces;
-using Botticelli.Scheduler.Settings;
+﻿using Botticelli.Scheduler.Settings;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.Extensions.Configuration;
@@ -21,12 +20,12 @@ public static class ServiceCollectionExtensions
         config.GetSection(nameof(SchedulerSettings)).Bind(settings);
 
         return services.AddHangfire(cfg => cfg
-                                           .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                                           .UseSimpleAssemblyNameTypeSerializer()
-                                           .UseRecommendedSerializerSettings()
-                                           .UseActivator(new ContainerJobActivator(services))
-                                           .UseMemoryStorage())
-                       .AddHangfireServer()
-                       .AddSingleton(services);
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseActivator(new ContainerJobActivator(services))
+                .UseMemoryStorage())
+            .AddHangfireServer()
+            .AddSingleton(services);
     }
 }

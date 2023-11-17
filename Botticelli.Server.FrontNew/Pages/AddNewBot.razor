@@ -1,12 +1,12 @@
 ﻿@page "/add_bot"
 @using Botticelli.Server.FrontNew.Settings
 @using Microsoft.Extensions.Options
+@using Botticelli.Server.FrontNew.Models
 @using Botticelli.Shared.API.Client.Requests
 @using Botticelli.Shared.API.Client.Responses
 @using Botticelli.Shared.Constants
 @using Flurl
 @using System.Net.Http.Headers
-@using Botticelli.Server.FrontNew.Models
 @inject HttpClient Http
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
@@ -67,7 +67,7 @@
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
         var response = await Http.PostAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/AddNewBot"),
-                                                  request);
+            request);
 
         var addBotResponse = await response.Content.ReadFromJsonAsync<RegisterBotResponse>();
 

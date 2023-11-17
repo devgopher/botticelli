@@ -1,8 +1,7 @@
-﻿namespace Botticelli.Server.FrontNew.Models
+﻿namespace Botticelli.Server.FrontNew.Models;
+
+public class MetricsModel
 {
-    public class MetricsModel
-    {
-        public DateTime DateTime { get; set; }
-        public decimal Value { get; set; }
-    }
+    public DateTime DateTime { get; set; }
+    public decimal Value { get; set; }
 }

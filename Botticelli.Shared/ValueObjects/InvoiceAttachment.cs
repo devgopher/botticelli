@@ -3,13 +3,13 @@
 public class InvoiceAttachment : IAttachment
 {
     public InvoiceAttachment(string uid,
-                             string name,
-                             string url,
-                             string title,
-                             string description,
-                             string startParameter,
-                             string currency,
-                             int totalAmount)
+        string name,
+        string url,
+        string title,
+        string description,
+        string startParameter,
+        string currency,
+        int totalAmount)
     {
         Uid = uid;
         Name = name;

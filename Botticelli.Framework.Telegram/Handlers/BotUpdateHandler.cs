@@ -30,13 +30,13 @@ public class BotUpdateHandler : IBotUpdateHandler
     }
 
     public async Task HandlePollingErrorAsync(ITelegramBotClient botClient,
-                                              Exception exception,
-                                              CancellationToken cancellationToken) =>
-            _logger.LogError($"{nameof(HandlePollingErrorAsync)}() error: {exception.Message}", exception);
+        Exception exception,
+        CancellationToken cancellationToken) =>
+        _logger.LogError($"{nameof(HandlePollingErrorAsync)}() error: {exception.Message}", exception);
 
     public async Task HandleUpdateAsync(ITelegramBotClient botClient,
-                                        Update update,
-                                        CancellationToken cancellationToken)
+        Update update,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -48,7 +48,7 @@ public class BotUpdateHandler : IBotUpdateHandler
 
             var botticelliMessage = new Message(botMessage.MessageId.ToString())
             {
-                ChatIds = new List<string> {botMessage.Chat.Id.ToString()},
+                ChatIds = new List<string> { botMessage.Chat.Id.ToString() },
                 Subject = string.Empty,
                 Body = botMessage.Text,
                 Attachments = new List<IAttachment>(5),
@@ -70,13 +70,13 @@ public class BotUpdateHandler : IBotUpdateHandler
                     IsBot = botMessage.ForwardFrom?.IsBot,
                     NickName = botMessage.ForwardFrom?.Username
                 },
-                Location = botMessage.Location != null ?
-                        new GeoLocation
-                        {
-                            Latitude = (decimal) botMessage.Location?.Latitude,
-                            Longitude = (decimal) botMessage.Location?.Longitude
-                        } :
-                        null
+                Location = botMessage.Location != null
+                    ? new GeoLocation
+                    {
+                        Latitude = (decimal)botMessage.Location?.Latitude,
+                        Longitude = (decimal)botMessage.Location?.Longitude
+                    }
+                    : null
             };
 
             await Process(botticelliMessage, cancellationToken);
@@ -100,12 +100,12 @@ public class BotUpdateHandler : IBotUpdateHandler
     {
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) started...");
 
-        if (token is {CanBeCanceled: true, IsCancellationRequested: true}) return;
+        if (token is { CanBeCanceled: true, IsCancellationRequested: true }) return;
 
         var clientTasks = _processorFactory
-                          .GetProcessors()
-                          .Where(p => p.GetType() != typeof(ChatMessageProcessor))
-                          .Select(p => p.ProcessAsync(request, token));
+            .GetProcessors()
+            .Where(p => p.GetType() != typeof(ChatMessageProcessor))
+            .Select(p => p.ProcessAsync(request, token));
 
 
         Task.WaitAll(clientTasks.ToArray());

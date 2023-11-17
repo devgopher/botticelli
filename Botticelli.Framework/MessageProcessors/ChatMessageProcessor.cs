@@ -15,12 +15,12 @@ public sealed class ChatMessageProcessor : IClientMessageProcessor
     private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
 
     private readonly CommandProcessorFactory _cpFactory;
-    private readonly MetricsProcessor _metrics;
     private readonly ILogger<ChatMessageProcessor> _logger;
+    private readonly MetricsProcessor _metrics;
 
     public ChatMessageProcessor(ILogger<ChatMessageProcessor> logger,
-                                CommandProcessorFactory cpFactory,
-                                MetricsProcessor metrics)
+        CommandProcessorFactory cpFactory,
+        MetricsProcessor metrics)
     {
         _logger = logger;
         _cpFactory = cpFactory;
@@ -40,20 +40,20 @@ public sealed class ChatMessageProcessor : IClientMessageProcessor
             if (Regex.IsMatch(message.Body, SimpleCommandPattern))
             {
                 var match = Regex.Matches(message.Body, SimpleCommandPattern)
-                                 .FirstOrDefault();
+                    .FirstOrDefault();
 
                 if (match == default) return;
 
                 command = match.Groups[1]
-                               .Value;
+                    .Value;
 
                 await _cpFactory.Get(command)
-                                .ProcessAsync(message, token);
+                    .ProcessAsync(message, token);
             }
             else if (Regex.IsMatch(message.Body, ArgsCommandPattern))
             {
                 var match = Regex.Matches(message.Body, ArgsCommandPattern)
-                                 .FirstOrDefault();
+                    .FirstOrDefault();
 
                 command = match.Groups[1].Value;
 
@@ -64,7 +64,7 @@ public sealed class ChatMessageProcessor : IClientMessageProcessor
                 if (!string.IsNullOrWhiteSpace(argsString)) args = argsString.Split(" ");
 
                 await _cpFactory.Get(command)
-                                .ProcessAsync(message, token);
+                    .ProcessAsync(message, token);
             }
 
             _logger.LogDebug($"{nameof(ProcessAsync)}({message.Uid}) finished...");

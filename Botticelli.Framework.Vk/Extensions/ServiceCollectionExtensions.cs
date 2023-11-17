@@ -10,7 +10,6 @@ using Botticelli.Framework.Vk.Messages.Handlers;
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,8 +28,8 @@ public static class ServiceCollectionExtensions
     /// <param name="optionsBuilder"></param>
     /// <returns></returns>
     public static IServiceCollection AddVkBot(this IServiceCollection services,
-                                              IConfiguration config,
-                                              BotOptionsBuilder<VkBotSettings> optionsBuilder)
+        IConfiguration config,
+        BotOptionsBuilder<VkBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
         var secureStorage = new SecureStorage(settings.SecureStorageSettings);
@@ -57,46 +56,46 @@ public static class ServiceCollectionExtensions
         config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
 
         var retryPolicy = HttpPolicyExtensions
-                          .HandleTransientHttpError()
-                          .WaitAndRetryForeverAsync(n => TimeSpan.FromMicroseconds(settings.PollIntervalMs));
+            .HandleTransientHttpError()
+            .WaitAndRetryForeverAsync(n => TimeSpan.FromMicroseconds(settings.PollIntervalMs));
 
         var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(120);
 
         services.Configure<VkBotSettings>(config.GetSection(nameof(VkBotSettings)));
 
         services.AddHttpClient<LongPollMessagesProvider>()
-                .AddPolicyHandler(retryPolicy)
-                .AddPolicyHandler(timeoutPolicy);
+            .AddPolicyHandler(retryPolicy)
+            .AddPolicyHandler(timeoutPolicy);
 
         services.AddHttpClient<VkStorageUploader>()
-                .AddPolicyHandler(retryPolicy)
-                .AddPolicyHandler(timeoutPolicy);
+            .AddPolicyHandler(retryPolicy)
+            .AddPolicyHandler(timeoutPolicy);
 
         services.AddHttpClient<MessagePublisher>()
-                .AddPolicyHandler(retryPolicy)
-                .AddPolicyHandler(timeoutPolicy);
+            .AddPolicyHandler(retryPolicy)
+            .AddPolicyHandler(timeoutPolicy);
 
         services.AddSingleton(serverConfig)
-                .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
-                .AddSingleton<VkStorageUploader>()
-                .AddSingleton<LongPollMessagesProvider>()
-                .AddSingleton<MessagePublisher>()
-                .AddSingleton<IConvertor, UniversalLowQualityConvertor>()
-                .AddSingleton<IAnalyzer, InputAnalyzer>()
-                .AddSingleton(secureStorage)
-                .AddBotticelliFramework(config);
+            .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
+            .AddSingleton<VkStorageUploader>()
+            .AddSingleton<LongPollMessagesProvider>()
+            .AddSingleton<MessagePublisher>()
+            .AddSingleton<IConvertor, UniversalLowQualityConvertor>()
+            .AddSingleton<IAnalyzer, InputAnalyzer>()
+            .AddSingleton(secureStorage)
+            .AddBotticelliFramework(config);
 
         var sp = services.BuildServiceProvider();
 
         var bot = new VkBot(sp.GetRequiredService<LongPollMessagesProvider>(),
-                            sp.GetRequiredService<MessagePublisher>(),
-                            secureStorage,
-                            sp.GetRequiredService<VkStorageUploader>(),
-                            sp.GetRequiredService<IBotUpdateHandler>(),
-                            sp.GetRequiredService<MetricsProcessor>(),
-                            sp.GetRequiredService<ILogger<VkBot>>());
+            sp.GetRequiredService<MessagePublisher>(),
+            secureStorage,
+            sp.GetRequiredService<VkStorageUploader>(),
+            sp.GetRequiredService<IBotUpdateHandler>(),
+            sp.GetRequiredService<MetricsProcessor>(),
+            sp.GetRequiredService<ILogger<VkBot>>());
 
         return services.AddSingleton<IBot<VkBot>>(bot)
-                       .AddHostedService<BotStatusService<IBot<VkBot>>>();
+            .AddHostedService<BotStatusService<IBot<VkBot>>>();
     }
 }

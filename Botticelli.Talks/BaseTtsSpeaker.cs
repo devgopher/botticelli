@@ -17,8 +17,8 @@ public abstract class BaseTtsSpeaker : ISpeaker
     protected readonly IOptionsMonitor<TtsSettings> Settings;
 
     protected BaseTtsSpeaker(ILogger logger,
-                             IHttpClientFactory httpClientFactory,
-                             IOptionsMonitor<TtsSettings> settings)
+        IHttpClientFactory httpClientFactory,
+        IOptionsMonitor<TtsSettings> settings)
     {
         Logger = logger;
         HttpClientFactory = httpClientFactory;
@@ -26,17 +26,17 @@ public abstract class BaseTtsSpeaker : ISpeaker
     }
 
     public abstract Task<byte[]> Speak(string markedText,
-                                       string voice,
-                                       string lang,
-                                       CancellationToken token);
+        string voice,
+        string lang,
+        CancellationToken token);
 
     public abstract Task<byte[]> Speak(string markedText, CancellationToken token);
 
     public abstract Task<byte[]> Speak(string markedText,
-                                       string voice,
-                                       string lang,
-                                       double speed,
-                                       CancellationToken token);
+        string voice,
+        string lang,
+        double speed,
+        CancellationToken token);
 
     /// <summary>
     ///     Output compression
@@ -53,10 +53,10 @@ public abstract class BaseTtsSpeaker : ISpeaker
 
             var preset = Settings.CurrentValue.CompressionLevel switch
             {
-                CompressionLevels.Low    => LAMEPreset.EXTREME_FAST,
+                CompressionLevels.Low => LAMEPreset.EXTREME_FAST,
                 CompressionLevels.Medium => LAMEPreset.MEDIUM_FAST,
-                CompressionLevels.High   => LAMEPreset.ABR_16,
-                _                        => throw new ArgumentOutOfRangeException()
+                CompressionLevels.High => LAMEPreset.ABR_16,
+                _ => throw new ArgumentOutOfRangeException()
             };
 
             using var resultStream = new MemoryStream();

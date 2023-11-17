@@ -7,6 +7,6 @@ internal static class Utils
     public static ILogger<T> CreateConsoleLogger<T>()
     {
         return LoggerFactory.Create(o => o.AddConsole())
-                            .CreateLogger<T>();
+            .CreateLogger<T>();
     }
 }

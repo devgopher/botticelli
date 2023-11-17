@@ -18,13 +18,15 @@ public class ChatGptProvider : GenericAiProvider
     private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
 
     public ChatGptProvider(IOptionsMonitor<ChatGptSettings> gptSettings,
-                           IHttpClientFactory factory,
-                           ILogger<ChatGptProvider> logger,
-                           IBusClient bus) : base(gptSettings,
-                                                  factory,
-                                                  logger,
-                                                  bus)
-        => _gptSettings = gptSettings;
+        IHttpClientFactory factory,
+        ILogger<ChatGptProvider> logger,
+        IBusClient bus) : base(gptSettings,
+        factory,
+        logger,
+        bus)
+    {
+        _gptSettings = gptSettings;
+    }
 
     public override string AiName => "chatgpt";
 
@@ -35,19 +37,19 @@ public class ChatGptProvider : GenericAiProvider
             Logger.LogError($"{nameof(SendAsync)}() body is null or empty!");
 
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                   {
-                                       Message = new Shared.ValueObjects.Message(message.Uid)
-                                       {
-                                           ChatIds = message.ChatIds,
-                                           Subject = message.Subject,
-                                           Body = "Body is null or empty!",
-                                           Attachments = null,
-                                           From = null,
-                                           ForwardedFrom = null,
-                                           ReplyToMessageUid = message.ReplyToMessageUid
-                                       }
-                                   },
-                                   token);
+                {
+                    Message = new Shared.ValueObjects.Message(message.Uid)
+                    {
+                        ChatIds = message.ChatIds,
+                        Subject = message.Subject,
+                        Body = "Body is null or empty!",
+                        Attachments = null,
+                        From = null,
+                        ForwardedFrom = null,
+                        ReplyToMessageUid = message.ReplyToMessageUid
+                    }
+                },
+                token);
 
             return;
         }
@@ -59,7 +61,8 @@ public class ChatGptProvider : GenericAiProvider
             using var client = Factory.CreateClient();
 
             client.BaseAddress = new Uri(Settings.CurrentValue.Url);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
 
             var content = JsonContent.Create(new ChatGptInputMessage
             {
@@ -72,14 +75,15 @@ public class ChatGptProvider : GenericAiProvider
                         Content = message.Body
                     }
                 },
-                Temperature = _gptSettings?.CurrentValue?.Temperature ?? (_temperatureRandom.Next(0, 900) + 100) / 1000.0
+                Temperature = _gptSettings?.CurrentValue?.Temperature ??
+                              (_temperatureRandom.Next(0, 900) + 100) / 1000.0
             });
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
             var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", "completions"),
-                                                  content,
-                                                  token);
+                content,
+                token);
 
             if (response.IsSuccessStatusCode)
             {
@@ -87,43 +91,43 @@ public class ChatGptProvider : GenericAiProvider
 
                 var text = new StringBuilder();
                 text.AppendJoin(' ',
-                                outMessage?
-                                        .Choices?
-                                        .Select(c => c.Message.Content));
+                    outMessage?
+                        .Choices?
+                        .Select(c => c.Message.Content));
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                       {
-                                           Message = new Shared.ValueObjects.Message(message.Uid)
-                                           {
-                                               ChatIds = message.ChatIds,
-                                               Subject = message.Subject,
-                                               Body = text.ToString(),
-                                               Attachments = null,
-                                               From = null,
-                                               ForwardedFrom = null,
-                                               ReplyToMessageUid = message.ReplyToMessageUid
-                                           }
-                                       },
-                                       token);
+                    {
+                        Message = new Shared.ValueObjects.Message(message.Uid)
+                        {
+                            ChatIds = message.ChatIds,
+                            Subject = message.Subject,
+                            Body = text.ToString(),
+                            Attachments = null,
+                            From = null,
+                            ForwardedFrom = null,
+                            ReplyToMessageUid = message.ReplyToMessageUid
+                        }
+                    },
+                    token);
             }
             else
             {
                 var reason = await response.Content.ReadAsStringAsync();
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                       {
-                                           Message = new Shared.ValueObjects.Message(message.Uid)
-                                           {
-                                               ChatIds = message.ChatIds,
-                                               Subject = message.Subject,
-                                               Body = "Error getting a response from ChatGpt!",
-                                               Attachments = null,
-                                               From = null,
-                                               ForwardedFrom = null,
-                                               ReplyToMessageUid = message.ReplyToMessageUid
-                                           }
-                                       },
-                                       token);
+                    {
+                        Message = new Shared.ValueObjects.Message(message.Uid)
+                        {
+                            ChatIds = message.ChatIds,
+                            Subject = message.Subject,
+                            Body = "Error getting a response from ChatGpt!",
+                            Attachments = null,
+                            From = null,
+                            ForwardedFrom = null,
+                            ReplyToMessageUid = message.ReplyToMessageUid
+                        }
+                    },
+                    token);
             }
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) finished");
@@ -132,18 +136,18 @@ public class ChatGptProvider : GenericAiProvider
         {
             Logger.LogError(ex, ex.Message);
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                   {
-                                       Message = new Shared.ValueObjects.Message(message.Uid)
-                                       {
-                                           ChatIds = message.ChatIds,
-                                           Subject = message.Subject,
-                                           Body = "Error getting a response from ChatGpt!",
-                                           Attachments = null,
-                                           From = null,
-                                           ForwardedFrom = null
-                                       }
-                                   },
-                                   token);
+                {
+                    Message = new Shared.ValueObjects.Message(message.Uid)
+                    {
+                        ChatIds = message.ChatIds,
+                        Subject = message.Subject,
+                        Body = "Error getting a response from ChatGpt!",
+                        Attachments = null,
+                        From = null,
+                        ForwardedFrom = null
+                    }
+                },
+                token);
         }
     }
 }

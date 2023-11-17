@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Botticelli.Audio;
+﻿namespace Botticelli.Audio;
 
 public interface IAnalyzer
 {

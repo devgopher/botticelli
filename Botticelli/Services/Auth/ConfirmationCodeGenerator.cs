@@ -10,7 +10,7 @@ public class ConfirmationCodeGenerator : IConfirmationCodeGenerator
     {
         var code = new StringBuilder(size);
 
-        for (int i = 0; i < size; ++i) 
+        for (var i = 0; i < size; ++i)
             code.Append(_rand.Next(0, 9));
 
         return code.ToString();

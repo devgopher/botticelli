@@ -50,12 +50,10 @@ public static class JobManager
         RecurringJob.RemoveIfExists(jobId);
         JobIds.Remove(jobId);
     }
+
     public static void RemoveAllJobs()
     {
-        foreach (var jobId in JobIds)
-        {
-            RecurringJob.RemoveIfExists(jobId);
-        }
+        foreach (var jobId in JobIds) RecurringJob.RemoveIfExists(jobId);
 
         JobIds.Clear();
     }

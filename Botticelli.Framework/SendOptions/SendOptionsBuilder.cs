@@ -16,15 +16,18 @@ public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
     {
     }
 
-    protected SendOptionsBuilder(T innerObject) => _innerObject = innerObject;
+    protected SendOptionsBuilder(T innerObject)
+    {
+        _innerObject = innerObject;
+    }
 
     public ISendOptionsBuilder<T> Create(params object[] args)
     {
         if (_innerObject != default) throw new BotException($"You shouldn't use {nameof(Create)}() method twice!");
 
         var constructors = typeof(T)
-                           .GetConstructors()
-                           .Where(c => c.IsPublic);
+            .GetConstructors()
+            .Where(c => c.IsPublic);
 
         // no params? ok => let's seek a parameterless constructor!
         if ((args == null || !args.Any()) && constructors.Any(c => !c.GetParameters().Any()))

@@ -15,7 +15,10 @@ public class AuthController
 {
     private readonly IAdminAuthService _adminAuthService;
 
-    public AuthController(IAdminAuthService adminAuthService) => _adminAuthService = adminAuthService;
+    public AuthController(IAdminAuthService adminAuthService)
+    {
+        _adminAuthService = adminAuthService;
+    }
 
     [AllowAnonymous]
     [HttpPost("[action]")]

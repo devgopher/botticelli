@@ -20,8 +20,8 @@ namespace Botticelli.Bus.Rabbit.Agent;
 /// <typeparam name="TBot" />
 /// <typeparam name="THandler"></typeparam>
 public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusAgent<THandler>
-        where TBot : IBot
-        where THandler : IHandler<SendMessageRequest, SendMessageResponse>
+    where TBot : IBot
+    where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
     private readonly ILogger<RabbitAgent<TBot, THandler>> _logger;
     private readonly IConnectionFactory _rabbitConnectionFactory;
@@ -31,9 +31,9 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     private bool _isActive;
 
     public RabbitAgent(IConnectionFactory rabbitConnectionFactory,
-                       IServiceProvider sp,
-                       RabbitBusSettings settings,
-                       ILogger<RabbitAgent<TBot, THandler>> logger)
+        IServiceProvider sp,
+        RabbitBusSettings settings,
+        ILogger<RabbitAgent<TBot, THandler>> logger)
     {
         _rabbitConnectionFactory = rabbitConnectionFactory;
         _sp = sp;
@@ -49,15 +49,15 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
     public async Task SendResponseAsync(SendMessageResponse response,
-                                        CancellationToken token,
-                                        int timeoutMs = 60000)
+        CancellationToken token,
+        int timeoutMs = 60000)
     {
         try
         {
             _logger.LogDebug($"{nameof(SendResponseAsync)}({response.Uid}) start...");
 
             var policy = Policy.Handle<RabbitMQClientException>()
-                               .WaitAndRetryAsync(5, n => TimeSpan.FromSeconds(3 * Math.Exp(n)));
+                .WaitAndRetryAsync(5, n => TimeSpan.FromSeconds(3 * Math.Exp(n)));
 
             await policy.ExecuteAsync(() => InnerSend(response));
 
@@ -99,7 +99,9 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
             var connection = _rabbitConnectionFactory.CreateConnection();
             var channel = connection.CreateModel();
             var queue = GetRequestQueueName();
-            var declareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) : channel.QueueDeclarePassive(queue);
+            var declareResult = _settings.QueueSettings.TryCreate
+                ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false)
+                : channel.QueueDeclarePassive(queue);
 
             _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {declareResult.QueueName}");
 
@@ -107,8 +109,8 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 
 
             channel.BasicConsume(queue,
-                                 true,
-                                 _consumer);
+                true,
+                _consumer);
         }
 
         _consumer.Received += (model, ea) =>
@@ -119,7 +121,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 
                 var deserialized = JsonSerializer.Deserialize<SendMessageRequest>(ea.Body.ToArray());
                 var policy = Policy.Handle<Exception>()
-                                   .WaitAndRetry(3, n => TimeSpan.FromSeconds(0.5 * Math.Exp(n)));
+                    .WaitAndRetry(3, n => TimeSpan.FromSeconds(0.5 * Math.Exp(n)));
 
                 policy.Execute(() => handler.Handle(deserialized, token));
             }
@@ -140,9 +142,9 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
             var rk = GetResponseQueueName();
             var queue = GetResponseQueueName();
 
-            _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ?
-                    channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
-                    channel.QueueDeclarePassive(queue);
+            _ = _settings.QueueSettings is { TryCreate: true, CheckQueueOnPublish: true }
+                ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false)
+                : channel.QueueDeclarePassive(queue);
 
             channel.QueueBind(queue, _settings.Exchange, rk);
             channel.BasicPublish(_settings.Exchange, rk, body: JsonSerializer.SerializeToUtf8Bytes(response));

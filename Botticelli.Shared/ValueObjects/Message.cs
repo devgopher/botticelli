@@ -6,9 +6,15 @@
 [Serializable]
 public class Message
 {
-    public Message() => Uid = Guid.NewGuid().ToString();
+    public Message()
+    {
+        Uid = Guid.NewGuid().ToString();
+    }
 
-    public Message(string uid) => Uid = uid;
+    public Message(string uid)
+    {
+        Uid = uid;
+    }
 
     /// <summary>
     ///     Message uid

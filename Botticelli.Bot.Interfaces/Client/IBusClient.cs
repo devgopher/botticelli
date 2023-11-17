@@ -9,7 +9,7 @@ namespace Botticelli.Bot.Interfaces.Client;
 public interface IBusClient
 {
     public Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request,
-                                                        CancellationToken token);
+        CancellationToken token);
 
     public Task SendResponse(SendMessageResponse response, CancellationToken token);
 }

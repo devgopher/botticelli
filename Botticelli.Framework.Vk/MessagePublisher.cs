@@ -30,12 +30,13 @@ public class MessagePublisher
             vkMessageRequest.AccessToken = _apiKey;
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Get,
-                                                 ApiUtils.GetMethodUriWithJson("https://api.vk.com",
-                                                                               "messages.send",
-                                                                               vkMessageRequest));
+                ApiUtils.GetMethodUriWithJson("https://api.vk.com",
+                    "messages.send",
+                    vkMessageRequest));
 
             var response = await httpClient.SendAsync(request, token);
-            if (response.StatusCode != HttpStatusCode.OK) _logger.LogError($"Error sending a message: {response.StatusCode} {response.ReasonPhrase}!");
+            if (response.StatusCode != HttpStatusCode.OK)
+                _logger.LogError($"Error sending a message: {response.StatusCode} {response.ReasonPhrase}!");
 
             var responseContent = await response.Content.ReadAsStringAsync();
 

@@ -8,7 +8,7 @@ public class BackSettings
     public string BackUrl { get; set; }
 
     /// <summary>
-    /// Analytics URL
+    ///     Analytics URL
     /// </summary>
     public string AnalyticsUrl { get; set; }
 }

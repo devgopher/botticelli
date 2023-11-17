@@ -3,7 +3,7 @@
 namespace Botticelli.Shared.API.Client.Responses;
 
 /// <summary>
-///    Register bot response
+///     Register bot response
 /// </summary>
 public class RegisterBotResponse : ServerBaseResponse
 {

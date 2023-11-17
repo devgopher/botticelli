@@ -8,14 +8,14 @@ namespace Botticelli.Framework.Vk.Messages.API.Utils;
 public static class ApiUtils
 {
     public static Uri GetMethodUri(string baseAddress,
-                                   string method,
-                                   object methodParams = default,
-                                   bool snakeCase = true)
+        string method,
+        object methodParams = default,
+        bool snakeCase = true)
     {
-        if (methodParams == default) 
+        if (methodParams == default)
             return new Uri(Url.Combine(baseAddress, "method", method));
 
-        if (!snakeCase) 
+        if (!snakeCase)
             return new Uri(Url.Combine(baseAddress, "method", method).SetQueryParams(methodParams));
 
         var snaked = new Dictionary<string, object>();
@@ -33,7 +33,7 @@ public static class ApiUtils
     }
 
     public static MultipartFormDataContent GetMethodMultipartFormContent(object methodParams = default,
-                                                                        bool snakeCase = true)
+        bool snakeCase = true)
     {
         var props = methodParams.GetType().GetProperties();
         var content = new MultipartFormDataContent();

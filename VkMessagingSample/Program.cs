@@ -15,30 +15,30 @@ using VkMessagingSample.Settings;
 var builder = WebApplication.CreateBuilder(args);
 
 var settings = builder.Configuration
-                      .GetSection(nameof(SampleSettings))
-                      .Get<SampleSettings>();
+    .GetSection(nameof(SampleSettings))
+    .Get<SampleSettings>();
 
 builder.Services
-       .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
-       .AddVkBot(builder.Configuration,
-                 new BotOptionsBuilder<VkBotSettings>()
-                         .Set(s => s.SecureStorageSettings = new SecureStorageSettings
-                         {
-                             ConnectionString = settings.SecureStorageConnectionString
-                         })
-                         .Set(s =>
-                         {
-                             s.Name = settings.BotName;
-                             s.PollIntervalMs = 100;
-                             s.GroupId = 221973506;
-                         }))
-       .AddLogging(cfg => cfg.AddNLog())
-       .AddHangfireScheduler(builder.Configuration)
-       .AddHostedService<TestBotHostedService>()
-       .AddScoped<StartCommandProcessor>()
-       .AddScoped<StopCommandProcessor>()
-       .AddBotCommand<StartCommand, StartCommandProcessor, PassValidator<StartCommand>>()
-       .AddBotCommand<StopCommand, StopCommandProcessor, PassValidator<StopCommand>>();
+    .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
+    .AddVkBot(builder.Configuration,
+        new BotOptionsBuilder<VkBotSettings>()
+            .Set(s => s.SecureStorageSettings = new SecureStorageSettings
+            {
+                ConnectionString = settings.SecureStorageConnectionString
+            })
+            .Set(s =>
+            {
+                s.Name = settings.BotName;
+                s.PollIntervalMs = 100;
+                s.GroupId = 221973506;
+            }))
+    .AddLogging(cfg => cfg.AddNLog())
+    .AddHangfireScheduler(builder.Configuration)
+    .AddHostedService<TestBotHostedService>()
+    .AddScoped<StartCommandProcessor>()
+    .AddScoped<StopCommandProcessor>()
+    .AddBotCommand<StartCommand, StartCommandProcessor, PassValidator<StartCommand>>()
+    .AddBotCommand<StopCommand, StopCommandProcessor, PassValidator<StopCommand>>();
 
 var app = builder.Build();
 app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor, VkBot>();
