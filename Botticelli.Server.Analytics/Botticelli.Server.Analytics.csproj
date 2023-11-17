@@ -22,7 +22,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Remove="appsettings.json"/>
+        <Content Remove="appsettings.json" />
     </ItemGroup>
 
     <ItemGroup>
@@ -33,30 +33,31 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Mapster" Version="7.4.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.13"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.13"/>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.13"/>
+        <PackageReference Include="Mapster" Version="7.4.0" />
+        <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.13" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.13" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.13" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.13">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="7.0.13"/>
-        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.13"/>
-        <PackageReference Include="Npgsql" Version="7.0.6"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
-        <PackageReference Include="System.Linq.Async" Version="6.0.1"/>
-        <PackageReference Include="System.Linq.Async.Queryable" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="7.0.13" />
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.13" />
+        <PackageReference Include="Npgsql" Version="7.0.6" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
+        <PackageReference Include="Polly" Version="8.2.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+        <PackageReference Include="System.Linq.Async.Queryable" Version="6.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj"/>
-        <ProjectReference Include="..\Botticelli.Analytics.Shared\Botticelli.Analytics.Shared.csproj"/>
+        <ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
+        <ProjectReference Include="..\Botticelli.Analytics.Shared\Botticelli.Analytics.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="appsettings.json"/>
+        <Resource Include="appsettings.json" />
     </ItemGroup>
 
 </Project>

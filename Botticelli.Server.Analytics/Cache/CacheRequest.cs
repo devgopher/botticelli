@@ -1,7 +1,8 @@
-﻿namespace Botticelli.Server.Analytics.Cache;
+﻿using Botticelli.Server.Analytics.Models;
+
+namespace Botticelli.Server.Analytics.Cache;
 
 internal class CacheRequest
 {
-    public string BotId { get; set; }
-    public DateTime Timestamp { get; set; }
+    public MetricModel Metric { get; set; }
 }

@@ -39,8 +39,7 @@ builder.Services
     .AddSingleton<IMapper, Mapper>()
     .AddScoped<MetricsReaderWriter>()
     .AddDbContext<MetricsContext>(c => c.UseNpgsql(analyticsSettings.ConnectionString))
-    .AddMetrics()
-    .AddSingleton<ICache, Cache>();
+    .AddMetrics(analyticsSettings);
 
 builder.Services.AddControllers();
 

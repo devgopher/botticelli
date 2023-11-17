@@ -1,22 +1,32 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Analytics.Shared.Requests;
 using Botticelli.Analytics.Shared.Responses;
+using Botticelli.Server.Analytics.Cache;
 
 namespace Botticelli.Server.Analytics.Services;
 
 public class MetricsOutputService : IMetricsOutputService
 {
     private readonly MetricsReaderWriter _rw;
-
-    public MetricsOutputService(MetricsReaderWriter rw)
+    private readonly ICacheAccessor _cacheAccessor;
+    
+    public MetricsOutputService(MetricsReaderWriter rw, ICacheAccessor cacheAccessor)
     {
         _rw = rw;
+        _cacheAccessor = cacheAccessor;
     }
 
     public async Task<GetMetricsResponse> GetMetricsAsync(GetMetricsRequest request,
         CancellationToken token)
     {
-        var count = await _rw.ReadCountAsync(x =>
+        int count = 0;
+
+        count = _cacheAccessor.ReadCount(x =>
+                x.Timestamp >= request.From && x.Timestamp <= request.To && x.BotId == request.BotId &&
+                x.Name == request.Name);
+        
+        if (count == 0) 
+            count = await _rw.ReadCountAsync(x =>
                 x.Timestamp >= request.From && x.Timestamp <= request.To && x.BotId == request.BotId &&
                 x.Name == request.Name,
             token);
@@ -39,6 +49,7 @@ public class MetricsOutputService : IMetricsOutputService
             request.To,
             TimeSpan.FromSeconds(request.Interval),
             token);
+        
         var metricsForIntervals = metrics.Select(m => new GetMetricsResponse
             {
                 Count = m.count,
