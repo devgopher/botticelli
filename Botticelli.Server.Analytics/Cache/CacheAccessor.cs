@@ -16,7 +16,7 @@ public class CacheAccessor : ICacheAccessor
     private static readonly ConcurrentDictionary<string, MetricModel> _memoryCache = new();
     private static long _maxCacheSize = 1024768;
     private static Task<PolicyResult<bool>> _cacheCleaningTask;
-    private static CancellationTokenSource _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(new CancellationToken());
+    private static CancellationTokenSource _cancellationTokenSource = new();
     private static CancellationToken _ct = _cancellationTokenSource.Token;
 
     private static void InitCacheCleaning()
