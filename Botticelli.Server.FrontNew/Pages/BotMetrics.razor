@@ -43,9 +43,12 @@ else
                 _metrics[metricName] ??= new List<MetricsModel>();
                 <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" Gap="20px">
                     <RadzenText TextStyle="TextStyle.Overline" Text="@metricName"/>
+
                     <RadzenChart>
                         <RadzenLegend Position="LegendPosition.Left"/>
-                        <RadzenLineSeries Title="Count" Data="@_metrics[metricName].Select(x => new { DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), x.Value })" CategoryProperty="DateTime" ValueProperty="Value"/>
+                        <RadzenColumnSeries Data="@_metrics[metricName].Select(x => new { DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), Value = x.Value })" CategoryProperty="DateTime" Title="Count" LineType="LineType.Dashed" ValueProperty="Value">
+                            <RadzenSeriesDataLabels Visible="true" />
+                        </RadzenColumnSeries>
                         <RadzenValueAxis>
                             <RadzenGridLines Visible="true"/>
                         </RadzenValueAxis>
