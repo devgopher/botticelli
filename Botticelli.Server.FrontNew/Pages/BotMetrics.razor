@@ -1,4 +1,4 @@
-﻿@page "/bot_metrics/{botId}"
+﻿@page "/bot_metrics/{botId}/{From?}/{To?}"
 @using Flurl
 @using Microsoft.Extensions.Options
 @using Botticelli.Server.FrontNew.Settings
@@ -7,15 +7,18 @@
 @using Botticelli.Analytics.Shared.Requests
 @using Botticelli.Analytics.Shared.Responses
 @using System.Net.Http.Headers
+@using Botticelli.Server.FrontNew.Utils
+@using System.Globalization
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
 @inject CookieStorageAccessor Cookies;
 
 
 @code {
-    private string _error = "";
-    private DateTime _from = DateTime.Now.AddDays(-5);
-    private DateTime _to = DateTime.Now;
+    private string _error = string.Empty;
+    private DateTime _from;
+    private DateTime _to;
+    private const string dateFormat = "yyyy-MM-dd HH:mm:ss";
 }
 
 <PageTitle>Bot metrics</PageTitle>
@@ -43,11 +46,10 @@ else
                 _metrics[metricName] ??= new List<MetricsModel>();
                 <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" Gap="20px">
                     <RadzenText TextStyle="TextStyle.Overline" Text="@metricName"/>
-
                     <RadzenChart>
                         <RadzenLegend Position="LegendPosition.Left"/>
-                        <RadzenColumnSeries Data="@_metrics[metricName].Select(x => new { DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), Value = x.Value })" CategoryProperty="DateTime" Title="Count" LineType="LineType.Dashed" ValueProperty="Value">
-                            <RadzenSeriesDataLabels Visible="true" />
+                        <RadzenColumnSeries Data="@_metrics[metricName].Select(x => new {DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), x.Value})" CategoryProperty="DateTime" Title="Count" LineType="LineType.Dashed" ValueProperty="Value">
+                            <RadzenSeriesDataLabels Visible="true"/>
                         </RadzenColumnSeries>
                         <RadzenValueAxis>
                             <RadzenGridLines Visible="true"/>
@@ -67,6 +69,12 @@ else
     [Parameter]
     public string BotId { get; set; }
 
+    [Parameter]
+    public string From { get; set; }
+
+    [Parameter]
+    public string To { get; set; }
+
     readonly Dictionary<string, IEnumerable<MetricsModel>> _metrics = new();
 
     private BotInfo _bot;
@@ -75,6 +83,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        _from = From?.ToDateTime(dateFormat, CultureInfo.InvariantCulture) ?? DateTime.Now.AddDays(-14);
+        _to = To?.ToDateTime(dateFormat, CultureInfo.InvariantCulture) ?? DateTime.Now;
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
         try
         {
@@ -92,16 +102,11 @@ else
         TimeSpan interval;
         var delta = _to - _from;
 
-        if (delta < TimeSpan.Zero)
-            interval = TimeSpan.FromHours(1);
-        else if (delta <= TimeSpan.FromHours(3))
-            interval = TimeSpan.FromMinutes(10);
-        else if (delta <= TimeSpan.FromHours(12))
-            interval = TimeSpan.FromMinutes(30);
-        else if (delta <= TimeSpan.FromDays(1))
-            interval = TimeSpan.FromHours(1);
-        else if (delta <= TimeSpan.FromDays(7))
-            interval = TimeSpan.FromDays(1);
+        if (delta < TimeSpan.Zero) interval = TimeSpan.FromHours(1);
+        else if (delta <= TimeSpan.FromHours(3)) interval = TimeSpan.FromMinutes(10);
+        else if (delta <= TimeSpan.FromHours(12)) interval = TimeSpan.FromMinutes(30);
+        else if (delta <= TimeSpan.FromDays(1)) interval = TimeSpan.FromHours(1);
+        else if (delta <= TimeSpan.FromDays(7)) interval = TimeSpan.FromDays(1);
         else interval = TimeSpan.FromDays(7);
 
         var metricNames = await GetMetricNames();
@@ -115,7 +120,7 @@ else
                 BotId = BotId,
                 From = _from,
                 To = _to + interval,
-                Interval = (int)interval.TotalSeconds,
+                Interval = (int) interval.TotalSeconds,
                 Name = metricName
             };
 
@@ -128,8 +133,8 @@ else
     {
         using var http = HttpClientFactory.Create();
         var botStatusResponse = await http.GetAsync(Url.Combine(BackSettings.CurrentValue.AnalyticsUrl,
-            "/metrics/getter/GetMetricsForInterval?")
-            .SetQueryParams(request));
+                                                                "/metrics/getter/GetMetricsForInterval?")
+                                                       .SetQueryParams(request));
         var metrics = await botStatusResponse.Content.ReadFromJsonAsync<GetMetricsIntervalsResponse>();
         var output = metrics.MetricsForIntervals.Select(m => new MetricsModel
         {

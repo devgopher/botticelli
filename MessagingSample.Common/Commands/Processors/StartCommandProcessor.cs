@@ -84,7 +84,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
             },
             new Schedule
             {
-                Cron = "* * * * *"
+                Cron = "*/30 * * * * *"
             });
     }
 }
