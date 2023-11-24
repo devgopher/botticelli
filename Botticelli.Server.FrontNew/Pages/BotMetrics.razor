@@ -41,6 +41,7 @@ else
             <RadzenStack Orientation="Orientation.Horizontal">
                 <RadzenLabel Text="To:"/><RadzenDatePicker Change="async () => await GetMetrics()" @bind-Value=@_to/>
             </RadzenStack>
+            <RadzenButton Text="Apply"/>
             foreach (var metricName in _metrics.Keys)
             {
                 _metrics[metricName] ??= new List<MetricsModel>();
