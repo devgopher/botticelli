@@ -41,7 +41,8 @@ else
             <RadzenStack Orientation="Orientation.Horizontal">
                 <RadzenLabel Text="To:"/><RadzenDatePicker Change="async () => await GetMetrics()" @bind-Value=@_to/>
             </RadzenStack>
-            <RadzenButton Text="Apply"/>
+            <RadzenButton Text="Apply" Click="ApplyDates"/>
+
             foreach (var metricName in _metrics.Keys)
             {
                 _metrics[metricName] ??= new List<MetricsModel>();
@@ -49,7 +50,14 @@ else
                     <RadzenText TextStyle="TextStyle.Overline" Text="@metricName"/>
                     <RadzenChart>
                         <RadzenLegend Position="LegendPosition.Left"/>
-                        <RadzenColumnSeries Data="@_metrics[metricName].Select(x => new {DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), x.Value})" CategoryProperty="DateTime" Title="Count" LineType="LineType.Dashed" ValueProperty="Value">
+                        <RadzenColumnSeries Data="@_metrics[metricName].Select(x => new 
+                                                  {
+                                                      DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), x.Value
+                                                  })"
+                                            CategoryProperty="DateTime"
+                                            Title="Count"
+                                            LineType="LineType.Dashed"
+                                            ValueProperty="Value">
                             <RadzenSeriesDataLabels Visible="true"/>
                         </RadzenColumnSeries>
                         <RadzenValueAxis>
@@ -165,4 +173,8 @@ else
         return bot;
     }
 
+    private void ApplyDates()
+    {
+        UriHelper.NavigateTo($"/bot_metrics/{BotId}/{_from.ToString(dateFormat)}/{_to.ToString(dateFormat)}", true);
+    }
 }
