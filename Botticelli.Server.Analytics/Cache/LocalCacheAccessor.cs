@@ -1,17 +1,16 @@
-﻿using System.Collections.Concurrent;
-using Botticelli.Analytics.Shared.Requests;
+﻿using Botticelli.Analytics.Shared.Requests;
 using Botticelli.Analytics.Shared.Responses;
 using Botticelli.Server.Analytics.Models;
 using Botticelli.Server.Analytics.Utils;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Polly;
-using Polly.Retry;
+using System.Collections.Concurrent;
 
 namespace Botticelli.Server.Analytics.Cache;
 
-
-public class CacheAccessor : ICacheAccessor
+/// <summary>
+/// Local-based memory cache with auto-cleaning
+/// </summary>
+public class LocalCacheAccessor : ICacheAccessor
 {
     private static readonly ConcurrentDictionary<string, MetricModel> _memoryCache = new();
     private static long _maxCacheSize = 1024768;
@@ -58,7 +57,7 @@ public class CacheAccessor : ICacheAccessor
         _ct = _cancellationTokenSource.Token;
     }
 
-    public CacheAccessor(long maxCacheSize)
+    public LocalCacheAccessor(long maxCacheSize)
     {
         _maxCacheSize = maxCacheSize;
         InitCacheCleaning();

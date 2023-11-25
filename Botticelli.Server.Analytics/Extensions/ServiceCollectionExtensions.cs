@@ -10,5 +10,5 @@ public static class ServiceCollectionExtensions
         services.AddScoped<MetricsReaderWriter>()
             .AddScoped<IMetricsInputService, MetricsInputService>()
             .AddScoped<IMetricsOutputService, MetricsOutputService>()
-            .AddScoped<ICacheAccessor, CacheAccessor>(_ => new CacheAccessor(settings.MaxCacheSize));
+            .AddScoped<ICacheAccessor, LocalCacheAccessor>(_ => new LocalCacheAccessor(settings.MaxCacheSize));
 }

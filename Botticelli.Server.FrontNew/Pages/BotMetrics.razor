@@ -50,6 +50,7 @@ else
                     <RadzenText TextStyle="TextStyle.Overline" Text="@metricName"/>
                     <RadzenChart>
                         <RadzenLegend Position="LegendPosition.Left"/>
+                        <RadzenColumnOptions Radius="3" Width="10.0" />
                         <RadzenColumnSeries Data="@_metrics[metricName].Select(x => new 
                                                   {
                                                       DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), x.Value
@@ -57,6 +58,7 @@ else
                                             CategoryProperty="DateTime"
                                             Title="Count"
                                             LineType="LineType.Dashed"
+                                            StrokeWidth="0.0"
                                             ValueProperty="Value">
                             <RadzenSeriesDataLabels Visible="true"/>
                         </RadzenColumnSeries>
