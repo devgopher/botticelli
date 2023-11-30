@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NLog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,6 +83,7 @@ builder.Services
 
 
 builder.Services
+    .AddLogging(cfg => cfg.AddNLog())
     .AddScoped<IBotManagementService, BotManagementService>()
     .AddScoped<IBotStatusDataService, BotStatusDataService>()
     .AddSingleton(new SecureStorage(secureStorageSettings))
