@@ -63,4 +63,31 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+    
+    /// <summary>
+    ///     Adds a provider for Yandex Gpt-based solution
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="config"></param>
+    /// <returns></returns>
+    /// <exception cref="AiException"></exception>
+    public static IServiceCollection AddYaGptProvider(this IServiceCollection services, IConfiguration config)
+    {
+        var yaGptSettings = new YaGptSettings();
+        config.Bind(nameof(YaGptSettings), yaGptSettings);
+
+        services.Configure<YaGptSettings>(s =>
+        {
+            s.Model = yaGptSettings.Model;
+            s.Temperature = yaGptSettings.Temperature;
+            s.ApiKey = yaGptSettings.ApiKey;
+            s.Url = yaGptSettings.Url;
+            s.AiName = yaGptSettings.AiName;
+            s.Instruction = yaGptSettings.Instruction;
+        });
+
+        services.AddSingleton<IAiProvider, YaGptProvider>();
+
+        return services;
+    }
 }
