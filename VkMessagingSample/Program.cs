@@ -30,7 +30,7 @@ builder.Services
             {
                 s.Name = settings.BotName;
                 s.PollIntervalMs = 100;
-                s.GroupId = 221973506;
+                s.GroupId = 222602273;
             }))
     .AddLogging(cfg => cfg.AddNLog())
     .AddHangfireScheduler(builder.Configuration)
