@@ -169,7 +169,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bot.Utils", "Bot
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metrics", "Metrics", "{255BE0A1-C453-466B-9BEF-11AFF0DBD2CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsRandomGenerator", "MetricsRandomGenerator\MetricsRandomGenerator.csproj", "{17C89EE6-7845-4895-B945-05FC1134D680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsRandomGenerator", "MetricsRandomGenerator\MetricsRandomGenerator.csproj", "{17C89EE6-7845-4895-B945-05FC1134D680}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
