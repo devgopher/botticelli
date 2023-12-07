@@ -169,7 +169,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Bot.Utils", "Bot
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metrics", "Metrics", "{255BE0A1-C453-466B-9BEF-11AFF0DBD2CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsRandomGenerator", "MetricsRandomGenerator\MetricsRandomGenerator.csproj", "{17C89EE6-7845-4895-B945-05FC1134D680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsRandomGenerator", "MetricsRandomGenerator\MetricsRandomGenerator.csproj", "{17C89EE6-7845-4895-B945-05FC1134D680}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "analytics_back", "analytics_back", "{F3D3569B-39C7-427C-B123-EF268F0CB895}"
+	ProjectSection(SolutionItems) = preProject
+		run_standalone.sh = run_standalone.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -388,6 +393,7 @@ Global
 		{E843665C-F541-4915-838D-346150389C36} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{255BE0A1-C453-466B-9BEF-11AFF0DBD2CF} = {346A18CA-EB1F-483B-8BC3-EDF250DA72E6}
 		{17C89EE6-7845-4895-B945-05FC1134D680} = {255BE0A1-C453-466B-9BEF-11AFF0DBD2CF}
+		{F3D3569B-39C7-427C-B123-EF268F0CB895} = {9B590747-74F6-41C8-8733-B5B77A8FCAC1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
