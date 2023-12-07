@@ -4,24 +4,30 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
-        <Version>0.3</Version>
-        <Company>Botticelli</Company>
-        <Copyright>Igor Evdokimov</Copyright>
-        <PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
-        <PackageIcon>logo.jpg</PackageIcon>
+        <Version>0.3.0</Version>
+        <Title>Botticelli.Talks</Title>
+        <Authors>BotticelliBots</Authors>
+        <PackageIcon>new_logo_compact.png</PackageIcon>
+        <Description>Botticelli voice generators integration</Description>
+        <Copyright>BotticelliBots</Copyright>
+        <PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
         <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\new_logo_compact.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+            <Link>new_logo_compact.png</Link>
+        </None>
+    </ItemGroup>
 
     <ItemGroup>
         <Folder Include="GoogleTts\"/>
     </ItemGroup>
-    <ItemGroup>
-        <None Include="..\logo.jpg">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
-    </ItemGroup>
+
     <ItemGroup>
         <PackageReference Include="Flurl.Http" Version="3.2.4"/>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0"/>

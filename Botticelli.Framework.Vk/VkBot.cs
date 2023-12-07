@@ -70,7 +70,7 @@ public class VkBot : BaseBot<VkBot>
         try
         {
             Logger.LogInformation($"{nameof(StartBotAsync)}...");
-            var response = await base.StartBotAsync(request, token);
+            var response = StartBotResponse.GetInstance(AdminCommandStatus.Ok, "");
 
             if (IsStarted)
             {
@@ -112,6 +112,7 @@ public class VkBot : BaseBot<VkBot>
 
     public override async Task SetBotContext(BotContext context, CancellationToken token)
     {
+        if (context == default) return;
         var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
 
         if (currentContext?.BotKey != context.BotKey)
@@ -183,7 +184,7 @@ public class VkBot : BaseBot<VkBot>
                 throw new BotException("Can't send a message!", ex);
             }
 
-        MessageSent.Invoke(this, new MessageSentBotEventArgs
+        MessageSent?.Invoke(this, new MessageSentBotEventArgs
         {
             Message = request.Message
         });

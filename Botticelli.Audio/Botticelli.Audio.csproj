@@ -4,7 +4,25 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>0.3.0</Version>
+        <Title>Botticelli.Audio</Title>
+        <Authors>BotticelliBots</Authors>
+        <PackageIcon>new_logo_compact.png</PackageIcon>
+        <Description>Botticelli audio conversion tools</Description>
+        <Copyright>BotticelliBots</Copyright>
+        <PackageProjectUrl>http://botticellibots.com</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+        <PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <None Include="..\new_logo_compact.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+            <Link>new_logo_compact.png</Link>
+        </None>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="FFMpegCore" Version="5.1.0"/>

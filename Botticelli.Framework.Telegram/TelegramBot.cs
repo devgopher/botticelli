@@ -434,6 +434,8 @@ public class TelegramBot : BaseBot<TelegramBot>
 
     public override async Task SetBotContext(BotContext context, CancellationToken token)
     {
+        if (context == default) return;
+
         var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
 
         if (currentContext?.BotKey != context.BotKey)

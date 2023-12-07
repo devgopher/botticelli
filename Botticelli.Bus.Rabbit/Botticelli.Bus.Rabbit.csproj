@@ -4,18 +4,23 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
-        <Version>0.3</Version>
-        <Company>Botticelli</Company>
-        <Copyright>Igor Evdokimov</Copyright>
-        <PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
-        <PackageIcon>logo.jpg</PackageIcon>
+        <Version>0.3.0</Version>
+        <Title>Botticelli.Bus.Rabbit</Title>
+        <Authors>BotticelliBots</Authors>
+        <PackageIcon>new_logo_compact.png</PackageIcon>
+        <Description>Botticelli rabbitmq bus integration</Description>
+        <Copyright>BotticelliBots</Copyright>
+        <PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
         <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
+
     <ItemGroup>
-        <None Include="..\logo.jpg">
+        <None Include="..\new_logo_compact.png">
             <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
+            <PackagePath></PackagePath>
+            <Link>new_logo_compact.png</Link>
         </None>
     </ItemGroup>
     <ItemGroup>

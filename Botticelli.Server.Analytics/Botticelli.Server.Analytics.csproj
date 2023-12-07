@@ -12,15 +12,26 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>disable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Version>0.3</Version>
-        <Company>Botticelli</Company>
-        <Copyright>Igor Evdokimov</Copyright>
-        <PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
-        <PackageIcon>logo.jpg</PackageIcon>
+        <PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
+        <PackageIcon>new_logo_compact.png</PackageIcon>
         <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <PackageTags>bot, telegram, vk, whatsapp, wechat, facebook</PackageTags>
+        <IsPackable>true</IsPackable>
+        <Title>Botticelli.Server.Analytics</Title>
+        <Authors>BotticelliBots</Authors>
+        <Description>Botticelli analytics server part</Description>
+        <Copyright>BotticelliBots</Copyright>
     </PropertyGroup>
 
+    <ItemGroup>
+        <None Include="..\new_logo_compact.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+            <Link>new_logo_compact.png</Link>
+        </None>
+    </ItemGroup>
     <ItemGroup>
         <Content Remove="appsettings.json" />
     </ItemGroup>
