@@ -73,19 +73,7 @@ public static class ServiceCollectionExtensions
     /// <exception cref="AiException"></exception>
     public static IServiceCollection AddYaGptProvider(this IServiceCollection services, IConfiguration config)
     {
-        var yaGptSettings = new YaGptSettings();
-        config.Bind(nameof(YaGptSettings), yaGptSettings);
-
-        services.Configure<YaGptSettings>(s =>
-        {
-            s.Model = yaGptSettings.Model;
-            s.Temperature = yaGptSettings.Temperature;
-            s.ApiKey = yaGptSettings.ApiKey;
-            s.Url = yaGptSettings.Url;
-            s.AiName = yaGptSettings.AiName;
-            s.Instruction = yaGptSettings.Instruction;
-        });
-
+        services.Configure<YaGptSettings>(config.GetSection(nameof(YaGptSettings)));
         services.AddSingleton<IAiProvider, YaGptProvider>();
 
         return services;

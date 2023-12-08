@@ -4,16 +4,24 @@ namespace Botticelli.AI.Message.YaGpt;
 
 public class YaGptInputMessage
 {
-    [JsonPropertyName("model")] public string Model { get; set; }
-
-    [JsonPropertyName("instruction_text")] public string InstructionText { get; set; }
-    [JsonPropertyName("request_text")] public string RequestText { get; set; }
-    [JsonPropertyName("generation_options")] public GenerationOptions GenerationOptions { get; set; }
-
+    [JsonPropertyName("modelUri")] public string ModelUri { get; set; }
+    [JsonPropertyName("completion_options")] public CompletionOptions CompletionOptions { get; set; }
+    [JsonPropertyName("messages")] public IEnumerable<YaGptMessage> Messages { get; set; }
 }
 
-public class GenerationOptions
+public class CompletionOptions
 {
+    [JsonPropertyName("stream")] public bool Stream { get; set; }
     [JsonPropertyName("temperature")] public double Temperature { get; set; }
     [JsonPropertyName("max_tokens")] public int MaxTokens { get; set; }
 }
+
+public class YaGptMessage
+{
+    [JsonPropertyName("role")]
+    public string Role { get; set; }
+
+    [JsonPropertyName("text")]
+    public string Text { get; set; }
+}
+
