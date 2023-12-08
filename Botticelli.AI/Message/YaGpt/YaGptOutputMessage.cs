@@ -3,17 +3,51 @@ using Botticelli.AI.Message.ChatGpt;
 
 namespace Botticelli.AI.Message.YaGpt;
 
+public class Alternative
+{
+    [JsonPropertyName("message")]
+    public Message Message { get; set; }
+
+    [JsonPropertyName("status")]
+    public string Status { get; set; }
+}
+
+public class Message
+{
+    [JsonPropertyName("role")]
+    public string Role { get; set; }
+
+    [JsonPropertyName("text")]
+    public string Text { get; set; }
+}
+
+public class Result
+{
+    [JsonPropertyName("alternatives")]
+    public List<Alternative> Alternatives { get; set; }
+
+    [JsonPropertyName("usage")]
+    public Usage Usage { get; set; }
+
+    [JsonPropertyName("modelVersion")]
+    public string ModelVersion { get; set; }
+}
+
 public class YaGptOutputMessage
 {
-    [JsonPropertyName("id")] public string Id { get; set; }
-
-    [JsonPropertyName("object")] public string Object { get; set; }
-
-    [JsonPropertyName("created")] public int Created { get; set; }
-
-    [JsonPropertyName("model")] public string Model { get; set; }
-
-    [JsonPropertyName("usage")] public Usage Usage { get; set; }
-
-    [JsonPropertyName("choices")] public List<Choice> Choices { get; set; }
+    [JsonPropertyName("result")]
+    public Result Result { get; set; }
 }
+
+public class Usage
+{
+    [JsonPropertyName("inputTextTokens")]
+    public string InputTextTokens { get; set; }
+
+    [JsonPropertyName("completionTokens")]
+    public string CompletionTokens { get; set; }
+
+    [JsonPropertyName("totalTokens")]
+    public string TotalTokens { get; set; }
+}
+

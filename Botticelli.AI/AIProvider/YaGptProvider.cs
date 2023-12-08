@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text;
 using Botticelli.AI.Message;
 using Botticelli.AI.Message.ChatGpt;
+using Botticelli.AI.Message.YaGpt;
 using Botticelli.AI.Settings;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Shared.API.Client.Responses;
@@ -64,21 +65,34 @@ public class YaGptProvider : GenericAiProvider
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
 
-            var content = JsonContent.Create(new ChatGptInputMessage
+            var yaGptMessage = new YaGptInputMessage
             {
-                Model = _gptSettings.CurrentValue.Model,
-                Messages = new List<ChatGptMessage>
+                ModelUri = _gptSettings.CurrentValue.Model,
+                Messages = new List<YaGptMessage>
                 {
                     new()
                     {
-                        Role = "user",
-                        Content = message.Body
+                        Role = message.Role ?? _gptSettings.CurrentValue.Role,
+                        Text = message.Body
                     }
                 },
-                Temperature = _gptSettings?.CurrentValue?.Temperature ??
-                              (_temperatureRandom.Next(0, 900) + 100) / 1000.0
+                CompletionOptions = new CompletionOptions()
+                {
+                    MaxTokens = _gptSettings.CurrentValue.MaxTokens,
+                    Stream = false,
+                    Temperature = _gptSettings?.CurrentValue?.Temperature ??
+                                  (_temperatureRandom.Next(0, 900) + 100) / 1000.0
+                }
+            };
+
+            yaGptMessage.Messages = message.AdditionalMessages.Select(m => new  YaGptMessage()
+            {
+                Role = m.Role ?? "user",
+                Text = m.Body
             });
 
+            var content = JsonContent.Create(yaGptMessage);
+            
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
             var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", "completions"),
@@ -87,13 +101,14 @@ public class YaGptProvider : GenericAiProvider
 
             if (response.IsSuccessStatusCode)
             {
-                var outMessage = await response.Content.ReadFromJsonAsync<ChatGptOutputMessage>();
+                var outMessage = await response.Content.ReadFromJsonAsync<YaGptOutputMessage>();
 
                 var text = new StringBuilder();
                 text.AppendJoin(' ',
                     outMessage?
-                        .Choices?
-                        .Select(c => c.Message.Content));
+                            .Result?
+                            .Alternatives?
+                            .Select(c => c.Message.Text));
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
