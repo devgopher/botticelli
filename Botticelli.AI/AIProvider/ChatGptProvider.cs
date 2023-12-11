@@ -93,7 +93,7 @@ public class ChatGptProvider : GenericAiProvider
                 text.AppendJoin(' ',
                     outMessage?
                         .Choices?
-                        .Select(c => c.Message.Content));
+                        .Select(c => c.Message.Content) ?? Array.Empty<string>());
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {

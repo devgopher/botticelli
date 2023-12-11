@@ -10,6 +10,7 @@
         <PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
         <PackageIcon>logo.jpg</PackageIcon>
         <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+        <RootNamespace>VkAiChatGptSample</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
