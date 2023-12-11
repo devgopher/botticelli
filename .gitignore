@@ -379,3 +379,4 @@ FodyWeavers.xsd
 *.odg#
 /VkAiChatGptSample/appsettings.json
 /Botticelli/Properties/launchSettings.json
+/TelegramAiYaGptSample/Properties/launchSettings.json

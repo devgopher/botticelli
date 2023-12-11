@@ -176,6 +176,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "analytics_back", "analytics
 		run_standalone.sh = run_standalone.sh
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramAiYaGptSample", "TelegramAiYaGptSample\TelegramAiYaGptSample.csproj", "{C3401ADF-6CA6-48E0-A994-96BD74F26924}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -330,6 +332,10 @@ Global
 		{17C89EE6-7845-4895-B945-05FC1134D680}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17C89EE6-7845-4895-B945-05FC1134D680}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17C89EE6-7845-4895-B945-05FC1134D680}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3401ADF-6CA6-48E0-A994-96BD74F26924}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3401ADF-6CA6-48E0-A994-96BD74F26924}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3401ADF-6CA6-48E0-A994-96BD74F26924}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3401ADF-6CA6-48E0-A994-96BD74F26924}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -394,6 +400,7 @@ Global
 		{255BE0A1-C453-466B-9BEF-11AFF0DBD2CF} = {346A18CA-EB1F-483B-8BC3-EDF250DA72E6}
 		{17C89EE6-7845-4895-B945-05FC1134D680} = {255BE0A1-C453-466B-9BEF-11AFF0DBD2CF}
 		{F3D3569B-39C7-427C-B123-EF268F0CB895} = {9B590747-74F6-41C8-8733-B5B77A8FCAC1}
+		{C3401ADF-6CA6-48E0-A994-96BD74F26924} = {2AD59714-541D-4794-9216-6EAB25F271DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
