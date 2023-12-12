@@ -70,4 +70,9 @@ public class Message
     ///     GeoLocation
     /// </summary>
     public GeoLocation Location { get; set; }
+
+    /// <summary>
+    /// If message is last in a series
+    /// </summary>
+    public bool IsFinal { get; set; }
 }

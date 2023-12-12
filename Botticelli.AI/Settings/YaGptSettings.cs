@@ -7,4 +7,5 @@ public class YaGptSettings : AiSettings
     public double Temperature { get; set; }
     public string Role { get; set; }
     public int MaxTokens { get; set; }
+    public bool StreamGeneration { get; set; }
 }

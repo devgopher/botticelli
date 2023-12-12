@@ -10,6 +10,7 @@ using Botticelli.Shared.API.Client.Responses;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace Botticelli.AI.AIProvider;
 
@@ -79,7 +80,7 @@ public class YaGptProvider : GenericAiProvider
                 CompletionOptions = new CompletionOptions()
                 {
                     MaxTokens = _gptSettings.CurrentValue.MaxTokens,
-                    Stream = false,
+                    Stream = _gptSettings.CurrentValue.StreamGeneration,
                     Temperature = _gptSettings?.CurrentValue?.Temperature ??
                                   (_temperatureRandom.Next(0, 900) + 100) / 1000.0
                 }
@@ -101,29 +102,73 @@ public class YaGptProvider : GenericAiProvider
 
             if (response.IsSuccessStatusCode)
             {
-                var outMessage = await response.Content.ReadFromJsonAsync<YaGptOutputMessage>(cancellationToken: token);
+                // var outMessage = await response.Content.ReadFromJsonAsync<YaGptOutputMessage>(cancellationToken: token);
 
                 var text = new StringBuilder();
-                text.AppendJoin(' ',
-                    outMessage?
-                        .Result?
-                        .Alternatives?
-                        .Select(c => c.Message.Text) ?? Array.Empty<string>());
-
-                await Bus.SendResponse(new SendMessageResponse(message.Uid)
+                
+                var outStream = await response.Content.ReadAsStreamAsync(cancellationToken: token);
+                var serializer = new JsonSerializer();
+                using (var sr = new StreamReader(outStream))
+                await using (var reader = new JsonTextReader(sr)
+                             {
+                                 SupportMultipleContent = true
+                             })
+                {
+                    while (await reader.ReadAsync(token))
                     {
-                        Message = new Shared.ValueObjects.Message(message.Uid)
+
+                        if (reader.TokenType == JsonToken.StartObject)
                         {
-                            ChatIds = message.ChatIds,
-                            Subject = message.Subject,
-                            Body = text.ToString(),
-                            Attachments = null,
-                            From = null,
-                            ForwardedFrom = null,
-                            ReplyToMessageUid = message.ReplyToMessageUid
+                            var pp = serializer.Deserialize<YaGptOutputMessage>(reader);
+                            
+                            
+                            text.AppendJoin(' ',
+                                pp?.Result?
+                                    .Alternatives?
+                                    .Select(c => c.Message.Text) ?? Array.Empty<string>());
+
+                                await Bus.SendResponse(new SendMessageResponse(message.Uid)
+                                    {
+                                        Message = new Shared.ValueObjects.Message(message.Uid)
+                                        {
+                                            ChatIds = message.ChatIds,
+                                            Subject = message.Subject,
+                                            Body = text.ToString(),
+                                            Attachments = null,
+                                            From = null,
+                                            ForwardedFrom = null,
+                                            ReplyToMessageUid = message.ReplyToMessageUid
+                                        }
+                                    },
+                                    token);
+
+                                if (pp.Result?.Alternatives?.Any(c => c.Message.Text.Contains("ALTERNATIVE_STATUS_FINAL")) == true)
+                                    break;
                         }
-                    },
-                    token);
+                    }
+                }
+                
+                
+                // text.AppendJoin(' ',
+                //     outMessage?
+                //         .Result?
+                //         .Alternatives?
+                //         .Select(c => c.Message.Text) ?? Array.Empty<string>());
+
+                // await Bus.SendResponse(new SendMessageResponse(message.Uid)
+                //     {
+                //         Message = new Shared.ValueObjects.Message(message.Uid)
+                //         {
+                //             ChatIds = message.ChatIds,
+                //             Subject = message.Subject,
+                //             Body = text.ToString(),
+                //             Attachments = null,
+                //             From = null,
+                //             ForwardedFrom = null,
+                //             ReplyToMessageUid = message.ReplyToMessageUid
+                //         }
+                //     },
+                //     token);
             }
             else
             {
