@@ -65,7 +65,7 @@ public class GptJProvider : GenericAiProvider
 
             if (response.IsSuccessStatusCode)
             {
-                var outMessage = await response.Content.ReadFromJsonAsync<GptJOutputMessage>();
+                var outMessage = await response.Content.ReadFromJsonAsync<GptJOutputMessage>(cancellationToken: token);
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {

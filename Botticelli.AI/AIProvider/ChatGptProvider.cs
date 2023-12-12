@@ -87,7 +87,7 @@ public class ChatGptProvider : GenericAiProvider
 
             if (response.IsSuccessStatusCode)
             {
-                var outMessage = await response.Content.ReadFromJsonAsync<ChatGptOutputMessage>();
+                var outMessage = await response.Content.ReadFromJsonAsync<ChatGptOutputMessage>(cancellationToken: token);
 
                 var text = new StringBuilder();
                 text.AppendJoin(' ',
@@ -112,7 +112,7 @@ public class ChatGptProvider : GenericAiProvider
             }
             else
             {
-                var reason = await response.Content.ReadAsStringAsync();
+                var reason = await response.Content.ReadAsStringAsync(token);
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
