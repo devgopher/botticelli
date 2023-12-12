@@ -72,7 +72,7 @@ public class YaGptProvider : GenericAiProvider
                 {
                     new()
                     {
-                        Role = message.Role ?? _gptSettings.CurrentValue.Role,
+                        Role = message.Role ?? _gptSettings.CurrentValue.Role ?? "user",
                         Text = message.Body
                     }
                 },
@@ -85,17 +85,17 @@ public class YaGptProvider : GenericAiProvider
                 }
             };
 
-            yaGptMessage.Messages = message.AdditionalMessages.Select(m => new  YaGptMessage()
+            yaGptMessage.Messages.AddRange(message.AdditionalMessages?.Select(m => new  YaGptMessage()
             {
                 Role = m.Role ?? "user",
                 Text = m.Body
-            });
+            }) ?? new List<YaGptMessage>());
 
             var content = JsonContent.Create(yaGptMessage);
             
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
-            var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", "completions"),
+            var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", "completion"),
                 content,
                 token);
 
