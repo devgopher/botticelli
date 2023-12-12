@@ -101,14 +101,14 @@ public class YaGptProvider : GenericAiProvider
 
             if (response.IsSuccessStatusCode)
             {
-                var outMessage = await response.Content.ReadFromJsonAsync<YaGptOutputMessage>();
+                var outMessage = await response.Content.ReadFromJsonAsync<YaGptOutputMessage>(cancellationToken: token);
 
                 var text = new StringBuilder();
                 text.AppendJoin(' ',
                     outMessage?
-                            .Result?
-                            .Alternatives?
-                            .Select(c => c.Message.Text));
+                        .Result?
+                        .Alternatives?
+                        .Select(c => c.Message.Text) ?? Array.Empty<string>());
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
@@ -127,7 +127,7 @@ public class YaGptProvider : GenericAiProvider
             }
             else
             {
-                var reason = await response.Content.ReadAsStringAsync();
+                var reason = await response.Content.ReadAsStringAsync(token);
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
@@ -135,7 +135,7 @@ public class YaGptProvider : GenericAiProvider
                         {
                             ChatIds = message.ChatIds,
                             Subject = message.Subject,
-                            Body = "Error getting a response from ChatGpt!",
+                            Body = "Error getting a response from YaGpt!",
                             Attachments = null,
                             From = null,
                             ForwardedFrom = null,
