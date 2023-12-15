@@ -10,9 +10,5 @@ public interface IBusClient
 {
     public Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request,
         CancellationToken token);
-
-    public Task<IEnumerable<SendMessageResponse>> SendAndGetResponseSeries(SendMessageRequest request,
-        CancellationToken token);
-    
     public Task SendResponse(SendMessageResponse response, CancellationToken token);
 }

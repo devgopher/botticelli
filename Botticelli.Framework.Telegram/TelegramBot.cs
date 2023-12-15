@@ -35,7 +35,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="client"></param>
     /// <param name="handler"></param>
     /// <param name="logger"></param>
-    /// <param name="mediator"></param>
+    /// <param name="metrics"></param>
     /// <param name="secureStorage"></param>
     public TelegramBot(ITelegramBotClient client,
         IBotUpdateHandler handler,
