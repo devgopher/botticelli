@@ -1,4 +1,5 @@
-﻿using Botticelli.Bot.Interfaces.Client;
+﻿using System.ComponentModel;
+using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Bus.None.Bus;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
@@ -15,10 +16,10 @@ public class PassClient : IBusClient
     {
         NoneBus.SendMessageRequests.Enqueue(request);
 
+        const int pause = 50;
         var waitTask = Task.Run(() =>
             {
                 var period = 0;
-                var delta = 50;
 
                 while (period < Timeout.TotalMilliseconds)
                 {
@@ -29,8 +30,8 @@ public class PassClient : IBusClient
                         if (response.Uid == request.Uid) return response;
                     }
 
-                    Task.Delay(delta, token).Wait(token);
-                    period += delta;
+                    Task.Delay(pause, token).Wait(token);
+                    period += pause;
                 }
 
                 return new SendMessageResponse(request.Uid, "Timeout")

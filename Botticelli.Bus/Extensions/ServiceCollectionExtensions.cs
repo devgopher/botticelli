@@ -22,6 +22,16 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IBusClient, PassClient>();
 
     /// <summary>
+    ///     Uses an event-based-no-bus scheme
+    /// </summary>
+    /// <typeparam name="TBot"></typeparam>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection UsePassEventBusClient<TBot>(this IServiceCollection services)
+        where TBot : IBot =>
+        services.AddSingleton<IEventBusClient, PassEventClient>();
+    
+    /// <summary>
     ///     Uses a no-bus scheme
     /// </summary>
     /// <typeparam name="TBot"></typeparam>
