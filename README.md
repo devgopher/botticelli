@@ -1,6 +1,8 @@
 # Botticelli
 Botticelli framework: a chat bot development platform for .NET 
 
+![](./ai-7786589_1920.png)
+
 There are several reasons to choose Botticelli:
 - cross-platform
 - reliable
