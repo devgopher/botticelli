@@ -14,9 +14,9 @@ There are several reasons to choose Botticelli:
 - easy to integrate with queue brokers for highload systems (Botticelli.Bus)
 - easy to schedule (Botticelli.Scheduler)
 
-[![NuGet]](https://www.nuget.org/profiles/Botticelli) 
-[![Telegram]](https://t.me/botticelli_bots) 
-[![X]](https://twitter.com/botticellibots) 
+[![NuGet](nuget_logo.png)](https://www.nuget.org/profiles/Botticelli) 
+[![Telegram](telegram_logo.png)](https://t.me/botticelli_bots) 
+[![X](twitter_logo.png)](https://twitter.com/botticellibots) 
 
 # Getting Started
 
