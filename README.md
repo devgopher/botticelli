@@ -1,8 +1,16 @@
 # Botticelli
-A framework for creation/deployment and administration of Telegram/WhatsApp/WhatEverElse bots
+Botticelli framework: a chat bot development platform for .NET 
 
-This framework simplifies bot construction for wide range of purposes
-
+There are several reasons to choose Botticelli:
+- cross-platform
+- reliable
+- easy to use
+- easy to deploy(docker support)
+- easy to integrate with databases
+- easy to integrate with AI solutions (Botticelli.AI)
+- easy to integrate with speech synthesizers (Botticelli.Talks)
+- easy to integrate with queue brokers for highload systems (Botticelli.Bus)
+- easy to schedule (Botticelli.Scheduler)
 
 # Getting Started
 
@@ -15,7 +23,7 @@ On server side we can add new bots, change and check their state (active/non-act
 On a bot side we can implement any business logic we want.
 
 ## Requirements
-1. .Net Core 6
+1. .Net Core 7
 2. Visual Studio 2022 and higher/Rider
 
 ## Building from source
