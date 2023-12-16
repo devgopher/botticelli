@@ -1,5 +1,5 @@
 # Botticelli
-Botticelli framework: a chat bot development platform for .NET 
+**Botticelli** framework: a chat bot development platform for .NET 
 
 [![NuGet](nuget_logo.png)](https://www.nuget.org/profiles/Botticelli)
 [![Telegram](telegram_logo.png)](https://t.me/botticelli_bots) 
@@ -19,7 +19,7 @@ There are several reasons to choose Botticelli:
 # Getting Started
 
 ## Short summary
-Botticelli consists of 2 parts: 
+**Botticelli** consists of 2 parts: 
 - Bots
 - Server
 
