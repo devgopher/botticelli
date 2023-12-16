@@ -1,7 +1,9 @@
 # Botticelli
 Botticelli framework: a chat bot development platform for .NET 
 
-![](./ai-7786589_1920.png)
+[![NuGet](nuget_logo.png)](https://www.nuget.org/profiles/Botticelli)
+[![Telegram](telegram_logo.png)](https://t.me/botticelli_bots) 
+[![X](x_logo.png)](https://twitter.com/botticellibots) 
 
 There are several reasons to choose Botticelli:
 - cross-platform
@@ -13,10 +15,6 @@ There are several reasons to choose Botticelli:
 - easy to integrate with speech synthesizers (Botticelli.Talks)
 - easy to integrate with queue brokers for highload systems (Botticelli.Bus)
 - easy to schedule (Botticelli.Scheduler)
-
-[![NuGet](nuget_logo.png)](https://www.nuget.org/profiles/Botticelli) 
-[![Telegram](telegram_logo.png)](https://t.me/botticelli_bots) 
-[![X](twitter_logo.png)](https://twitter.com/botticellibots) 
 
 # Getting Started
 
