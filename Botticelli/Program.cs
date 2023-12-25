@@ -136,16 +136,15 @@ builder.Services.Configure<IdentityOptions>(options =>
 #endif
 
 builder.Services.AddControllers();
-builder.Services.AddCors(options =>
+builder.Services.AddCors(o => o.AddDefaultPolicy(builder =>
 {
-    options.AddPolicy("AllowCorsPolicy",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-        });
-});
+    builder.SetIsOriginAllowed(_ => true)
+        .AllowCredentials()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithExposedHeaders("Content-Disposition");
+}));
+
 
 builder.ApplyMigrations<BotInfoContext>();
 
@@ -162,7 +161,8 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("AllowCorsPolicy");
+app.UseCors();
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
