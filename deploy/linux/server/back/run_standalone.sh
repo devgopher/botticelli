@@ -3,8 +3,8 @@ function check_and_setup()
   read -p "Enter $1 $2: " $1
 }
 
-sudo apt-get update  
-sudo apt-get install -y dotnet-sdk-7.0
+sudo apt-get update
+sudo apt-get install -y dotnet-sdk-7.0 dotnet-runtime-7.0 aspnetcore-runtime-7.0
 
 rm -rf botticelli``/
 git clone https://github.com/devgopher/botticelli.git
@@ -27,7 +27,7 @@ check_and_setup requires_authentification "(true/false)"
 export ASPNETCORE_ENVIRONMENT=Release
 export ASPNETCORE_URLS="https://0.0.0.0:$https_port;http://0.0.0.0:$http_port"
 
-export SecureStorageSettings__ConnectionString=Filename=database.db;Connection=shared;Password=$db_password
+export SecureStorageSettings__ConnectionString="Filename=database.db;Connection=shared;Password=$db_password"
 export ServerSettings__TokenLifetimeMin=1000
 export ServerSettings__SmtpClientOptions__Server=$email_smtp_server
 export ServerSettings__SmtpClientOptions__Port=$email_smtp_port

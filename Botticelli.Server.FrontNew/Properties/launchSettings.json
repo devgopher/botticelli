@@ -7,7 +7,7 @@
       "launchUrl": "http://0.0.0.0:5042",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "BackSettings__BackUrl": "http://localhost:50365/v1/",
+        "BackSettings__BackUrl": "http://localhost:53635/v1/",
         "BackSettings__AnalyticsUrl": "http://localhost:5251/v1/"
       },
       "dotnetRunMessages": true,
