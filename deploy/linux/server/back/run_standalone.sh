@@ -27,7 +27,7 @@ check_and_setup requires_authentification "(true/false)"
 export ASPNETCORE_ENVIRONMENT=Release
 export ASPNETCORE_URLS="https://0.0.0.0:$https_port;http://0.0.0.0:$http_port"
 
-export SecureStorageSettings__ConnectionString=Filename=database.db;Connection=shared;Password=$db_password
+export SecureStorageSettings__ConnectionString="Filename=database.db;Connection=shared;Password=$db_password"
 export ServerSettings__TokenLifetimeMin=1000
 export ServerSettings__SmtpClientOptions__Server=$email_smtp_server
 export ServerSettings__SmtpClientOptions__Port=$email_smtp_port
