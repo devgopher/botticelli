@@ -151,7 +151,7 @@ builder.ApplyMigrations<BotInfoContext>();
 
 var app = builder.Build();
 
-app.UseCors("AllowCorsPolicy");
+// app.UseCors("AllowCorsPolicy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
