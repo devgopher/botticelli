@@ -3,8 +3,8 @@ function check_and_setup()
   read -p "Enter $1 $2: " $1
 }
 
-sudo apt-get update  
-sudo apt-get install -y dotnet-sdk-7.0
+sudo apt-get update
+sudo apt-get install -y dotnet-sdk-7.0 dotnet-runtime-7.0 aspnetcore-runtime-7.0
 
 rm -rf botticelli``/
 git clone https://github.com/devgopher/botticelli.git

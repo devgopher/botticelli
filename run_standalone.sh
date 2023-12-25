@@ -1,4 +1,5 @@
-sudo apt-get update && \  sudo apt-get install -y dotnet-sdk-7.0
+sudo apt-get update
+sudo apt-get install -y dotnet-sdk-7.0 dotnet-runtime-7.0 aspnetcore-runtime-7.0
 
 check_and_setup http_port "(example:80)"
 check_and_setup https_port "(example:8080)"

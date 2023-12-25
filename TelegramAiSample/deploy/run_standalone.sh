@@ -1,5 +1,6 @@
-sudo apt-get update 
-sudo apt-get install -y dotnet-sdk-7.0
+sudo apt-get update
+sudo apt-get install -y dotnet-sdk-7.0 dotnet-runtime-7.0 aspnetcore-runtime-7.0
+
 
 rm -rf botticelli/
 git clone https://github.com/devgopher/botticelli.git
@@ -16,7 +17,7 @@ echo "API key : $ChatGptSettings__ApiKey"
 
 sed -i 's/chatgpt-api-key-placeholder/'$ChatGptSettings__ApiKey'/g' Properties/launchSettings.json
 
-dotnet run TelegramAiChatGptSample.csproj &
+nohup dotnet run TelegramAiChatGptSample.csproj &
 
 echo "BOT ID:"
 cat Data/botId
