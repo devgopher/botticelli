@@ -19,6 +19,16 @@ using NLog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(o => o.AddDefaultPolicy(builder =>
+{
+    builder.SetIsOriginAllowed(_ => true)
+        .AllowCredentials()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithExposedHeaders("Content-Disposition");
+}));
+
+
 builder.Configuration
     .AddJsonFile("appsettings.json")
     .AddEnvironmentVariables();
@@ -136,14 +146,6 @@ builder.Services.Configure<IdentityOptions>(options =>
 #endif
 
 builder.Services.AddControllers();
-builder.Services.AddCors(o => o.AddDefaultPolicy(builder =>
-{
-    builder.SetIsOriginAllowed(_ => true)
-        .AllowCredentials()
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .WithExposedHeaders("Content-Disposition");
-}));
 
 
 builder.ApplyMigrations<BotInfoContext>();
@@ -161,10 +163,10 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
+app.UseCors();
 app.Run();
