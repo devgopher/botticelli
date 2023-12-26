@@ -112,8 +112,7 @@ public class ChatGptProvider : GenericAiProvider
             }
             else
             {
-                var reason = await response.Content.ReadAsStringAsync();
-
+                Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) fail: {response.StatusCode} {response.ReasonPhrase}");
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
                         Message = new Shared.ValueObjects.Message(message.Uid)
