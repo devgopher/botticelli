@@ -75,8 +75,4 @@
         <_ContentIncludedByDefault Remove="Pages\BotMetrics.razor" />
     </ItemGroup>
 
-    <ItemGroup>
-        <None Include="Botticelli.Analytics.Shared.csproj" />
-    </ItemGroup>
-
 </Project>
