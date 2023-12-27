@@ -28,7 +28,7 @@ public class CookieStorageAccessor
             .Replace(";", string.Empty)
             .Replace("\n", string.Empty)
             .Replace("\r", string.Empty);
-        result = result.Substring(0, result.Contains(' ') ? result.IndexOf(' ') : result.Length);
+        result = result[..(result.Contains(' ') ? result.IndexOf(' ') : result.Length)];
 
         return result.Trim();
     }

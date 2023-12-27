@@ -19,6 +19,16 @@ using NLog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(o => o.AddDefaultPolicy(builder =>
+{
+    builder.SetIsOriginAllowed(_ => true)
+        .AllowCredentials()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithExposedHeaders("Content-Disposition");
+}));
+
+
 builder.Configuration
     .AddJsonFile("appsettings.json")
     .AddEnvironmentVariables();
@@ -136,22 +146,13 @@ builder.Services.Configure<IdentityOptions>(options =>
 #endif
 
 builder.Services.AddControllers();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowCorsPolicy",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-        });
-});
+
 
 builder.ApplyMigrations<BotInfoContext>();
 
 var app = builder.Build();
 
-app.UseCors("AllowCorsPolicy");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -161,11 +162,11 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
+app.UseRouting();
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-app.UseCors(builder => builder.AllowAnyMethod()
-    .AllowAnyOrigin()
-    .AllowAnyHeader());
+app.UseCors();
 app.Run();
