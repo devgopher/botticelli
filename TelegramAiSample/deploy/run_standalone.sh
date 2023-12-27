@@ -1,5 +1,5 @@
 sudo apt-get update
-sudo apt-get install -y dotnet-sdk-7.0 dotnet-runtime-7.0 aspnetcore-runtime-7.0
+sudo apt-get install -y dotnet-sdk-7.0 dotnet-runtime-7.0 aspnetcore-runtime-7.0  dotnet-apphost-pack-7.0
 
 
 rm -rf botticelli/

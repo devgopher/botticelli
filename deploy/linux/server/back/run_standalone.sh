@@ -42,6 +42,6 @@ export ServerSettings__SmtpClientOptions__SocketOptions=2
 export ServerSettings__ServerEmail=$email
 export ServerSettings__ServerUrl=$email_smtp_server
 
-nohup dotnet run Botticelli.Server.csproj &
+nohup dotnet run Botticelli.Server.csproj & >/dev/null 2>&1
 
 popd

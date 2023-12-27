@@ -112,8 +112,6 @@ public class ChatGptProvider : GenericAiProvider
             }
             else
             {
-                var reason = await response.Content.ReadAsStringAsync(token);
-
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
                         Message = new Shared.ValueObjects.Message(message.Uid)

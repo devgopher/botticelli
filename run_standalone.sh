@@ -15,6 +15,6 @@ git pull
 
 pushd Botticelli.Server.Analytics
 
-nohup dotnet run Botticelli.Server.Analytics.csproj &
+nohup dotnet run Botticelli.Server.Analytics.csproj >/dev/null 2>&1
 
 popd
