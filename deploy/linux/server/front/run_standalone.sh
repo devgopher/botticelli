@@ -25,7 +25,7 @@ export BackSettings__BackUrl=$backend_url/v1/
 export BackSettings__AnalyticsUrl=$analytics_url/v1/
 
 
-nohup dotnet run Botticelli.Server.FrontNew.csproj &
+nohup dotnet run Botticelli.Server.FrontNew.csproj >/dev/null 2>&1
 
 popd
 
