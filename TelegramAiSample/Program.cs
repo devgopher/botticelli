@@ -27,6 +27,7 @@ builder.Services.AddTelegramBot(builder.Configuration,
                 ConnectionString = settings.SecureStorageConnectionString
             })
             .Set(s => s.Name = "test_bot"))
+    .AddLogging(cfg => cfg.AddNLog())
     .AddChatGptProvider(builder.Configuration)
     .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
     .AddSingleton<AiHandler>()

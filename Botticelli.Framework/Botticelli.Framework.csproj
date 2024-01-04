@@ -56,11 +56,4 @@
             <PackagePath>\</PackagePath>
         </None>
     </ItemGroup>
-    <ItemGroup>
-      <None Include="nlog.config">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </None>
-    </ItemGroup>
 </Project>

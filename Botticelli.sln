@@ -20,6 +20,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Scheduler.Interfaces", "Botticelli.Scheduler.Interfaces\Botticelli.Scheduler.Interfaces.csproj", "{FAD007A0-8A2C-4871-A030-CE2442711243}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{35480478-646E-45F1-96A3-EE7AC498ACE3}"
+	ProjectSection(SolutionItems) = preProject
+		nlog.config = nlog.config
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{346A18CA-EB1F-483B-8BC3-EDF250DA72E6}"
 EndProject

@@ -20,4 +20,11 @@
       <Folder Include="Data\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="..\nlog.config">
+        <Link>nlog.config</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

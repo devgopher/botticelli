@@ -13,16 +13,12 @@ namespace Botticelli.Framework.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddBotticelliFramework(this IServiceCollection services, IConfiguration config)
-    {
-        services.AddLogging(cfg => cfg.AddNLog(cc => cc.))
-            .AddSingleton<ChatMessageProcessor>()
+    
+    public static IServiceCollection AddBotticelliFramework(this IServiceCollection services, IConfiguration config) =>
+        services.AddSingleton<ChatMessageProcessor>()
             .AddSingleton<ClientProcessorFactory>()
             .AddSingleton<CommandProcessorFactory>()
             .AddMetrics(config);
-
-        return services;
-    }
 
     public static IServiceCollection AddBotCommand<TCommand,
         TCommandProcessor,
