@@ -102,73 +102,45 @@ public class YaGptProvider : GenericAiProvider
 
             if (response.IsSuccessStatusCode)
             {
-                // var outMessage = await response.Content.ReadFromJsonAsync<YaGptOutputMessage>(cancellationToken: token);
-
                 var text = new StringBuilder();
                 
                 var outStream = await response.Content.ReadAsStreamAsync(cancellationToken: token);
                 var serializer = new JsonSerializer();
-                using (var sr = new StreamReader(outStream))
-                await using (var reader = new JsonTextReader(sr)
-                             {
-                                 SupportMultipleContent = true
-                             })
+                using var sr = new StreamReader(outStream);
+                await using var reader = new JsonTextReader(sr)
                 {
-                    while (await reader.ReadAsync(token))
-                    {
+                    SupportMultipleContent = true
+                };
+                
+                while (await reader.ReadAsync(token))
+                {
+                    if (reader.TokenType != JsonToken.StartObject) 
+                        continue;
+                    var part = serializer.Deserialize<YaGptOutputMessage>(reader);
+                    
+                    text.AppendJoin(' ',
+                        part?.Result?
+                            .Alternatives?
+                            .Select(c => c.Message.Text) ?? Array.Empty<string>());
 
-                        if (reader.TokenType == JsonToken.StartObject)
+                    await Bus.SendResponse(new SendMessageResponse(message.Uid)
                         {
-                            var pp = serializer.Deserialize<YaGptOutputMessage>(reader);
-                            
-                            
-                            text.AppendJoin(' ',
-                                pp?.Result?
-                                    .Alternatives?
-                                    .Select(c => c.Message.Text) ?? Array.Empty<string>());
+                            Message = new Shared.ValueObjects.Message(message.Uid)
+                            {
+                                ChatIds = message.ChatIds,
+                                Subject = message.Subject,
+                                Body = text.ToString(),
+                                Attachments = null,
+                                From = null,
+                                ForwardedFrom = null,
+                                ReplyToMessageUid = message.ReplyToMessageUid
+                            }
+                        },
+                        token);
 
-                                await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                    {
-                                        Message = new Shared.ValueObjects.Message(message.Uid)
-                                        {
-                                            ChatIds = message.ChatIds,
-                                            Subject = message.Subject,
-                                            Body = text.ToString(),
-                                            Attachments = null,
-                                            From = null,
-                                            ForwardedFrom = null,
-                                            ReplyToMessageUid = message.ReplyToMessageUid
-                                        }
-                                    },
-                                    token);
-
-                                if (pp.Result?.Alternatives?.Any(c => c.Message.Text.Contains("ALTERNATIVE_STATUS_FINAL")) == true)
-                                    break;
-                        }
-                    }
+                    if (part.Result?.Alternatives?.Any(c => c.Message.Text.Contains("ALTERNATIVE_STATUS_FINAL")) == true)
+                        break;
                 }
-                
-                
-                // text.AppendJoin(' ',
-                //     outMessage?
-                //         .Result?
-                //         .Alternatives?
-                //         .Select(c => c.Message.Text) ?? Array.Empty<string>());
-
-                // await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                //     {
-                //         Message = new Shared.ValueObjects.Message(message.Uid)
-                //         {
-                //             ChatIds = message.ChatIds,
-                //             Subject = message.Subject,
-                //             Body = text.ToString(),
-                //             Attachments = null,
-                //             From = null,
-                //             ForwardedFrom = null,
-                //             ReplyToMessageUid = message.ReplyToMessageUid
-                //         }
-                //     },
-                //     token);
             }
             else
             {
@@ -180,7 +152,7 @@ public class YaGptProvider : GenericAiProvider
                         {
                             ChatIds = message.ChatIds,
                             Subject = message.Subject,
-                            Body = "Error getting a response from YaGpt!",
+                            Body = $"Error getting a response from YaGpt: {reason}!",
                             Attachments = null,
                             From = null,
                             ForwardedFrom = null,

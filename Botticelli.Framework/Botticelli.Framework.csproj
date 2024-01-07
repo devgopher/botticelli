@@ -48,18 +48,12 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+        <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
     </ItemGroup>
     <ItemGroup>
         <None Include="..\logo.jpg">
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
         </None>
-    </ItemGroup>
-    <ItemGroup>
-      <None Include="nlog.config">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </None>
     </ItemGroup>
 </Project>

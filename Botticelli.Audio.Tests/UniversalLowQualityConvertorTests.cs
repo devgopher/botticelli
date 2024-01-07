@@ -29,8 +29,8 @@ public class UniversalLowQualityConvertorTests
 
     private static void AssertOutcome(byte[] outcome)
     {
-        Assert.NotNull(outcome);
-        Assert.IsNotEmpty(outcome);
+        Assert.That(outcome != null);
+        Assert.That(outcome.Any());
     }
 
     private byte[] GetOutcome(AudioInfo audioInfo)
