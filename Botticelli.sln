@@ -20,9 +20,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Scheduler.Interfaces", "Botticelli.Scheduler.Interfaces\Botticelli.Scheduler.Interfaces.csproj", "{FAD007A0-8A2C-4871-A030-CE2442711243}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{35480478-646E-45F1-96A3-EE7AC498ACE3}"
-	ProjectSection(SolutionItems) = preProject
-		nlog.config = nlog.config
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{346A18CA-EB1F-483B-8BC3-EDF250DA72E6}"
 EndProject
@@ -179,6 +176,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiChatGptSample", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramMessagingSample", "TelegramMessagingSample\TelegramMessagingSample.csproj", "{195344A3-DE14-4283-B7FB-3A5822C5C0FC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiYaGptSample", "TelegramAiYaGptSample\TelegramAiYaGptSample.csproj", "{D44E775F-7474-4F49-8633-384DC87BE40B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -333,6 +332,10 @@ Global
 		{195344A3-DE14-4283-B7FB-3A5822C5C0FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{195344A3-DE14-4283-B7FB-3A5822C5C0FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{195344A3-DE14-4283-B7FB-3A5822C5C0FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D44E775F-7474-4F49-8633-384DC87BE40B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D44E775F-7474-4F49-8633-384DC87BE40B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D44E775F-7474-4F49-8633-384DC87BE40B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D44E775F-7474-4F49-8633-384DC87BE40B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -397,6 +400,7 @@ Global
 		{F3D3569B-39C7-427C-B123-EF268F0CB895} = {9B590747-74F6-41C8-8733-B5B77A8FCAC1}
 		{ECCC27F2-F7ED-406C-90B8-BD53A8A59B47} = {2AD59714-541D-4794-9216-6EAB25F271DA}
 		{195344A3-DE14-4283-B7FB-3A5822C5C0FC} = {2AD59714-541D-4794-9216-6EAB25F271DA}
+		{D44E775F-7474-4F49-8633-384DC87BE40B} = {2AD59714-541D-4794-9216-6EAB25F271DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
