@@ -8,7 +8,11 @@ namespace Botticelli.Bot.Interfaces.Client;
 /// </summary>
 public interface IBusClient
 {
+    public IAsyncEnumerable<SendMessageResponse> SendAndGetResponseSeries(SendMessageRequest request,
+                                                                          CancellationToken token);
+
     public Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request,
-        CancellationToken token);
+                                                        CancellationToken token);
+
     public Task SendResponse(SendMessageResponse response, CancellationToken token);
 }

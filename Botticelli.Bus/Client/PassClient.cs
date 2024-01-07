@@ -45,16 +45,18 @@ public class PassClient : IBusClient
         return waitTask.Result;
     }
 
-    public async Task<IEnumerable<SendMessageResponse>> SendAndGetResponseSeries(SendMessageRequest request,
+    public async IAsyncEnumerable<SendMessageResponse> SendAndGetResponseSeries(SendMessageRequest request,
                                                                                  CancellationToken token)
     {
+        NoneBus.SendMessageRequests.Enqueue(request);
+
         var period = 0;
         var delta = 50;
 
         while (period < Timeout.TotalMilliseconds)
         {
             if (token.CanBeCanceled || token.IsCancellationRequested) 
-                return new List<SendMessageResponse>();
+                yield break;
             
             var element = NoneBus.SendMessageResponses.Dequeue();
             if (element.MessageUid != request.Uid)
@@ -70,6 +72,8 @@ public class PassClient : IBusClient
             Task.Delay(delta, token).Wait(token);
             period += delta;
         }
+
+        yield break;
     }
 
     public async Task SendResponse(SendMessageResponse response, CancellationToken tokens)
