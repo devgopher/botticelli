@@ -3,6 +3,7 @@ using Botticelli.Bus.None.Bus;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using System.Xml.Linq;
 
 namespace Botticelli.Bus.None.Client;
 
@@ -41,6 +42,33 @@ public class PassClient : IBusClient
             token);
 
         return waitTask.Result;
+    }
+
+    public async Task<IEnumerable<SendMessageResponse>> SendAndGetResponseSeries(SendMessageRequest request,
+                                                                                 CancellationToken token)
+    {
+        var period = 0;
+        var delta = 50;
+
+        while (period < Timeout.TotalMilliseconds)
+        {
+            if (token.CanBeCanceled || token.IsCancellationRequested) 
+                return new List<SendMessageResponse>();
+            
+            var element = NoneBus.SendMessageResponses.Dequeue();
+            if (element.MessageUid != request.Uid)
+                continue;
+
+            if (element.MessageUid == request.Uid)
+            {
+                yield return element;
+                if (element.IsPartial && element.isLastPart)
+                    break;
+            }
+
+            Task.Delay(delta, token).Wait(token);
+            period += delta;
+        }
     }
 
     public async Task SendResponse(SendMessageResponse response, CancellationToken tokens)
