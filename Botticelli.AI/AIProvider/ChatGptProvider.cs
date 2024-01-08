@@ -38,6 +38,7 @@ public class ChatGptProvider : GenericAiProvider
 
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
                 {
+                    IsPartial = _gptSettings.CurrentValue.ExpectPartialResponses,
                     Message = new Shared.ValueObjects.Message(message.Uid)
                     {
                         ChatIds = message.ChatIds,
@@ -97,6 +98,7 @@ public class ChatGptProvider : GenericAiProvider
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
+                        IsPartial = _gptSettings?.CurrentValue.ExpectPartialResponses,
                         Message = new Shared.ValueObjects.Message(message.Uid)
                         {
                             ChatIds = message.ChatIds,
@@ -114,6 +116,7 @@ public class ChatGptProvider : GenericAiProvider
             {
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
+                        IsPartial = _gptSettings?.CurrentValue.ExpectPartialResponses,
                         Message = new Shared.ValueObjects.Message(message.Uid)
                         {
                             ChatIds = message.ChatIds,
@@ -135,6 +138,7 @@ public class ChatGptProvider : GenericAiProvider
             Logger.LogError(ex, ex.Message);
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
                 {
+                    IsPartial = _gptSettings?.CurrentValue.ExpectPartialResponses,
                     Message = new Shared.ValueObjects.Message(message.Uid)
                     {
                         ChatIds = message.ChatIds,

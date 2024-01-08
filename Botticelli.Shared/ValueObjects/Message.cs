@@ -37,7 +37,7 @@ public class Message
     public string? Body { get; set; }
 
     /// <summary>
-    ///     Message attachmentsя
+    ///     Message attachments
     /// </summary>
     public ICollection<IAttachment>? Attachments { get; set; }
 
@@ -70,9 +70,4 @@ public class Message
     ///     GeoLocation
     /// </summary>
     public GeoLocation Location { get; set; }
-
-    /// <summary>
-    /// If message is last in a series
-    /// </summary>
-    public bool IsFinal { get; set; }
 }

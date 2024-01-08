@@ -20,7 +20,7 @@ public class SendMessageResponse : BaseResponse<SendMessageResponse>
     /// <summary>
     /// Is this a partial response?
     /// </summary>
-    public bool IsPartial { get; set; }
+    public bool? IsPartial { get; set; }
     /// <summary>
     /// Sub-id for a partial response.
     /// Example: {MessageUid}:{SequenceNumber}
@@ -30,7 +30,7 @@ public class SendMessageResponse : BaseResponse<SendMessageResponse>
     /// <summary>
     /// Is it a last part of a partial response?
     /// </summary>
-    public bool isLastPart { get; set; }
+    public bool IsFinal { get; set; }
 
     #endregion
 

@@ -36,9 +36,28 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
     }
 
     public async IAsyncEnumerable<SendMessageResponse> SendAndGetResponseSeries(SendMessageRequest request,
-                                                                                CancellationToken token)
+        CancellationToken token)
     {
-        throw new NotImplementedException();
+        using var connection = _rabbitConnectionFactory.CreateConnection();
+        using var channel = connection.CreateModel();
+
+        Send(request, channel, GetRequestQueueName());
+
+        if (!_responses.TryGetValue(request.Message.Uid, out var prevValue))
+            yield break;
+        
+        while (prevValue.IsPartial == true && prevValue.IsFinal)
+            if (_responses.TryGetValue(request.Message.Uid, out var value))
+            {
+                if (value.IsFinal)
+                    yield return value;
+                
+                if (value.SequenceNumber > prevValue.SequenceNumber)
+                    continue;
+                
+                prevValue = value;
+                yield return value;
+            }
     }
 
     public async Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request,
@@ -57,13 +76,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
 
             var combined = Policy.WrapAsync(timeoutPolicy, resultPolicy);
 
-            var result = await combined.ExecuteAndCaptureAsync(async () =>
-            {
-                if (!_responses.ContainsKey(request.Message.Uid)) return default;
-
-                return _responses[request.Message.Uid];
-            });
-
+            var result = await combined.ExecuteAndCaptureAsync(async () => !_responses.TryGetValue(request.Message.Uid, out var value) ? default : value);
 
             if (result.FinalHandledResult != default)
                 throw new RabbitBusException($"Error getting a response: {result.FinalException.Message}",
@@ -85,7 +98,6 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
         {
             using var connection = _rabbitConnectionFactory.CreateConnection();
             using var channel = connection.CreateModel();
-
 
             Send(response, channel, GetResponseQueueName());
         }

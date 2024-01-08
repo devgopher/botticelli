@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Commands.Processors;
 
-public abstract class CommandProcessor<TCommand> : ICommandProcessor
+public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     where TCommand : class, ICommand
 {
     private const string SimpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
@@ -53,9 +53,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
             message.Body ??= string.Empty;
 
-            if (Regex.IsMatch(message.Body, SimpleCommandPattern))
+            if (SimpleCommandRegex().IsMatch(message.Body))
             {
-                var match = Regex.Matches(message.Body, SimpleCommandPattern)
+                var match = SimpleCommandRegex().Matches(message.Body)
                     .FirstOrDefault();
 
                 if (match == default) return;
@@ -71,9 +71,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
                 SendMetric(MetricNames.CommandReceived);
             }
-            else if (Regex.IsMatch(message.Body, ArgsCommandPattern))
+            else if (ArgsCommandRegex().IsMatch(message.Body))
             {
-                var match = Regex.Matches(message.Body, ArgsCommandPattern)
+                var match = ArgsCommandRegex().Matches(message.Body)
                     .FirstOrDefault();
 
                 if (match == default) return;
@@ -112,10 +112,10 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
     private void SendMetric(string metricName) => _metricsProcessor.Process(metricName, BotDataUtils.GetBotId());
 
-    protected void SendMetric() => _metricsProcessor.Process(GetCommandName(
+    private void SendMetric() => _metricsProcessor.Process(GetCommandName(
         $"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId());
 
-    public string GetCommandName(string fullCommand)
+    private string GetCommandName(string fullCommand)
         => fullCommand.ToLowerInvariant().Replace("command", "");
 
     private async Task ValidateAndProcess(Message message,
@@ -140,4 +140,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     protected abstract Task InnerProcessPoll(Message message, string args, CancellationToken token);
     protected abstract Task InnerProcessLocation(Message message, string args, CancellationToken token);
     protected abstract Task InnerProcess(Message message, string args, CancellationToken token);
+   
+    [GeneratedRegex("\\/([a-zA-Z0-9]*)$")]
+    private static partial Regex SimpleCommandRegex();
+    [GeneratedRegex("\\/([a-zA-Z0-9]*) (.*)")]
+    private static partial Regex ArgsCommandRegex();
 }

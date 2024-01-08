@@ -65,7 +65,7 @@ public class PassClient : IBusClient
             if (element.MessageUid == request.Uid)
             {
                 yield return element;
-                if (element.IsPartial && element.isLastPart)
+                if (element.IsPartial == true && element.IsFinal)
                     break;
             }
 

@@ -1,6 +1,6 @@
 ﻿namespace Botticelli.AI.Settings;
 
-public class AiSettings
+public class AiSettings : ProviderSettings
 {
     public string Url { get; set; }
     public string AiName { get; set; }
