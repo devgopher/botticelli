@@ -1,22 +1,13 @@
 ﻿using Botticelli.Framework.Commands.Processors;
-using Botticelli.Framework.Events;
 using Botticelli.Framework.MessageProcessors;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
-using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Message = Botticelli.Shared.ValueObjects.Message;
 using User = Botticelli.Shared.ValueObjects.User;
 
 namespace Botticelli.Framework.Telegram.Handlers;
-
-public interface IBotUpdateHandler : IUpdateHandler
-{
-    public delegate void MsgReceivedEventHandler(object sender, MessageReceivedBotEventArgs e);
-
-    public event MsgReceivedEventHandler MessageReceived;
-}
 
 public class BotUpdateHandler : IBotUpdateHandler
 {
@@ -29,10 +20,13 @@ public class BotUpdateHandler : IBotUpdateHandler
         _processorFactory = processorFactory;
     }
 
-    public async Task HandlePollingErrorAsync(ITelegramBotClient botClient,
+    public Task HandlePollingErrorAsync(ITelegramBotClient botClient,
         Exception exception,
-        CancellationToken cancellationToken) =>
+        CancellationToken cancellationToken)
+    {
         _logger.LogError($"{nameof(HandlePollingErrorAsync)}() error: {exception.Message}", exception);
+        return Task.CompletedTask;
+    }
 
     public async Task HandleUpdateAsync(ITelegramBotClient botClient,
         Update update,
@@ -98,20 +92,21 @@ public class BotUpdateHandler : IBotUpdateHandler
     /// </summary>
     /// <param name="request"></param>
     /// <param name="token"></param>
-    protected async Task Process(Message request, CancellationToken token)
+    protected Task Process(Message request, CancellationToken token)
     {
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) started...");
 
-        if (token is { CanBeCanceled: true, IsCancellationRequested: true }) return;
+        if (token is { CanBeCanceled: true, IsCancellationRequested: true })
+            return Task.CompletedTask;
 
         var clientTasks = _processorFactory
             .GetProcessors()
             .Where(p => p.GetType() != typeof(ChatMessageProcessor))
             .Select(p => p.ProcessAsync(request, token));
 
-
         Task.WaitAll(clientTasks.ToArray(), token);
-
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
+
+        return Task.CompletedTask;
     }
 }
