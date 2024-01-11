@@ -32,10 +32,6 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1"/>
         <PackageReference Include="Telegram.Bot" Version="19.0.0"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="MessageProcessors\"/>
-    </ItemGroup>
     <ItemGroup>
         <None Include="..\logo.jpg">
             <Pack>True</Pack>

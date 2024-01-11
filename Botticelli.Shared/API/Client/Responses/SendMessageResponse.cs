@@ -10,7 +10,7 @@ public class SendMessageResponse : BaseResponse<SendMessageResponse>
     }
 
     public string? MessageUid { get; set; }
-    
+
     public MessageSentStatus MessageSentStatus { get; set; }
 
     public Message Message { get; set; }
@@ -21,6 +21,7 @@ public class SendMessageResponse : BaseResponse<SendMessageResponse>
     /// Is this a partial response?
     /// </summary>
     public bool? IsPartial { get; set; }
+    
     /// <summary>
     /// Sub-id for a partial response.
     /// Example: {MessageUid}:{SequenceNumber}

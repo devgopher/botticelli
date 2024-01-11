@@ -28,6 +28,7 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
                     ChatIds = input.Message.ChatIds,
                     Body = input.Message.Body,
                     Subject = input.Message.Subject,
+                    ChatIdInnerIdLinks = input.Message.ChatIdInnerIdLinks,
                     ReplyToMessageUid = input.Uid
                 },
                 token);

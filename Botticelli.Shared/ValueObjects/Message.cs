@@ -22,6 +22,11 @@ public class Message
     public string? Uid { get; set; }
 
     /// <summary>
+    /// Chat Id <=> Inner message id links
+    /// </summary>
+    public Dictionary<string, List<string>> ChatIdInnerIdLinks { get; init; } = new();
+    
+    /// <summary>
     ///     Chat ids
     /// </summary>
     public List<string> ChatIds { get; set; }

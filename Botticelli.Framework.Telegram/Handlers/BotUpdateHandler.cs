@@ -48,6 +48,8 @@ public class BotUpdateHandler : IBotUpdateHandler
 
             var botticelliMessage = new Message(botMessage.MessageId.ToString())
             {
+                ChatIdInnerIdLinks = new Dictionary<string, List<string>>
+                    { { botMessage.Chat.Id.ToString(), new List<string> { botMessage.MessageId.ToString() } } },
                 ChatIds = new List<string> { botMessage.Chat.Id.ToString() },
                 Subject = string.Empty,
                 Body = botMessage.Text,
@@ -85,7 +87,7 @@ public class BotUpdateHandler : IBotUpdateHandler
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(HandleUpdateAsync)}() error", ex);
+            _logger.LogError(ex, $"{nameof(HandleUpdateAsync)}() error");
         }
     }
 
@@ -108,7 +110,7 @@ public class BotUpdateHandler : IBotUpdateHandler
             .Select(p => p.ProcessAsync(request, token));
 
 
-        Task.WaitAll(clientTasks.ToArray());
+        Task.WaitAll(clientTasks.ToArray(), token);
 
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
     }
