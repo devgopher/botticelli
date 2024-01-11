@@ -7,6 +7,7 @@ using Botticelli.AI.Message.YaGpt;
 using Botticelli.AI.Settings;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.ValueObjects;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,9 @@ public class YaGptProvider : GenericAiProvider
 {
     private readonly IOptionsMonitor<YaGptSettings> _gptSettings;
     private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
+    private const string SystemRole = "system";
+    private const string UserRole = "user";
+    private const string Completion = "completion";
 
     public YaGptProvider(IOptionsMonitor<YaGptSettings> gptSettings,
         IHttpClientFactory factory,
@@ -74,7 +78,12 @@ public class YaGptProvider : GenericAiProvider
                 {
                     new()
                     {
-                        Role = message.Role ?? _gptSettings.CurrentValue.Role ?? "user",
+                        Role = SystemRole,
+                        Text = _gptSettings.CurrentValue.Instruction
+                    },
+                    new()
+                    {
+                        Role = UserRole,
                         Text = message.Body
                     }
                 },
@@ -89,7 +98,7 @@ public class YaGptProvider : GenericAiProvider
 
             yaGptMessage.Messages.AddRange(message.AdditionalMessages?.Select(m => new  YaGptMessage()
             {
-                Role = m.Role ?? "user",
+                Role = UserRole,
                 Text = m.Body
             }) ?? new List<YaGptMessage>());
 
@@ -97,7 +106,7 @@ public class YaGptProvider : GenericAiProvider
             
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
-            var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", "completion"),
+            var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", Completion),
                 content,
                 token);
 
@@ -139,7 +148,7 @@ public class YaGptProvider : GenericAiProvider
                         },
                         token);
 
-                    if (part.Result?.Alternatives?.Any(c => c.Message.Text.Contains("ALTERNATIVE_STATUS_FINAL")) == true)
+                    if (part?.Result?.Alternatives?.Any(c => c.Message.Text.Contains("ALTERNATIVE_STATUS_FINAL")) == true)
                         break;
                 }
             }

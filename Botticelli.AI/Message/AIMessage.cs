@@ -6,7 +6,7 @@ public class AiMessage : Shared.ValueObjects.Message
     {
     }
 
-    public string Role { get; set; }
+    public string Instruction { get; set; }
 
     public List<AiMessage> AdditionalMessages { get; set; }
 
