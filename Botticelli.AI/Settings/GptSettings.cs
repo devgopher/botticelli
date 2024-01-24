@@ -1,6 +1,6 @@
 ﻿namespace Botticelli.AI.Settings;
 
-public class ChatGptSettings : AiSettings
+public class GptSettings : AiSettings
 {
     public string ApiKey { get; set; }
     public string Model { get; set; }

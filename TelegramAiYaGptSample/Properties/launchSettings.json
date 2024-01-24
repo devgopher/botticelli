@@ -1,7 +1,7 @@
 ﻿{
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "TelegramAiChatGptSample": {
+    "TelegramAiYaGptSample": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
@@ -10,14 +10,14 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "SampleSettings__SecureStorageConnectionString": "Filename=database.db;Password=123;Connection=Shared",
-        "GptSettings__AiName": "gpt",
-        "GptSettings__ApiKey": "gpt-api-key-placeholder",
-        "GptSettings__GenerateTokensLimit": "800",
-        "GptSettings__TopP": "0.45",
-        "GptSettings__TopK": "0",
-        "GptSettings__Temperature": "0.8",
-        "GptSettings__Url": "https://api.openai.com/v1/",
-        "GptSettings__Model": "gpt-3.5-turbo",
+        "YaGptSettings__ApiKey": "gpt-api-key-placeholder",
+        "YaGptSettings__Model": "gpt://<>/yandexgpt-lite",
+        "YaGptSettings__Temperature": "0.8",
+        "YaGptSettings__Instruction": "",
+        "YaGptSettings__MaxTokens": "5000",
+        "YaGptSettings__StreamGeneration": "true",
+        "YaGptSettings__Url": "https://llm.api.cloud.yandex.net/foundationModels/v1/completion",
+        "YaGptSettings__AiName": "yagpt",
         "ServerSettings__ServerUri": "http://localhost:5050",
         "AnalyticsSettings__ServerUri": "http://localhost:5251/v1/"
       }

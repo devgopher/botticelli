@@ -45,12 +45,12 @@ public static class ServiceCollectionExtensions
     /// <param name="config"></param>
     /// <returns></returns>
     /// <exception cref="AiException"></exception>
-    public static IServiceCollection AddChatGptProvider(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddAiProvider(this IServiceCollection services, IConfiguration config)
     {
-        var chatGptSettings = new ChatGptSettings();
-        config.Bind(nameof(ChatGptSettings), chatGptSettings);
+        var chatGptSettings = new GptSettings();
+        config.Bind(nameof(GptSettings), chatGptSettings);
 
-        services.Configure<ChatGptSettings>(s =>
+        services.Configure<GptSettings>(s =>
         {
             s.Model = chatGptSettings.Model;
             s.Temperature = chatGptSettings.Temperature;

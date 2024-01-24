@@ -10,6 +10,7 @@
         <PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
         <PackageIcon>logo.jpg</PackageIcon>
         <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
     <ItemGroup>
         <None Include="..\logo.jpg">

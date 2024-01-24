@@ -28,11 +28,12 @@ builder.Services.AddTelegramBot(builder.Configuration,
             })
             .Set(s => s.Name = "test_bot"))
     .AddLogging(cfg => cfg.AddNLog())
-    .AddChatGptProvider(builder.Configuration)
+    .AddAiProvider(builder.Configuration)
     .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
     .AddSingleton<AiHandler>()
     .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
     .UsePassBusClient<IBot<TelegramBot>>()
+    .UsePassEventBusClient<IBot<TelegramBot>>()
     .AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>();
 
 var app = builder.Build();
