@@ -1,4 +1,4 @@
-﻿using AiSample.Common;
+using AiSample.Common;
 using AiSample.Common.Commands;
 using AiSample.Common.Handlers;
 using AiSample.Common.Settings;
@@ -28,7 +28,7 @@ builder.Services.AddVkBot(builder.Configuration,
             })
             .Set(s => s.Name = "test_bot"))
     .AddLogging(cfg => cfg.AddNLog())
-    .AddChatGptProvider(builder.Configuration)
+    .AddYaGptProvider(builder.Configuration)
     .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
     .AddSingleton<AiHandler>()
     .UsePassBusAgent<IBot<VkBot>, AiHandler>()

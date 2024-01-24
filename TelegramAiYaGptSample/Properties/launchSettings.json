@@ -11,7 +11,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "SampleSettings__SecureStorageConnectionString": "Filename=database.db;Password=123;Connection=Shared",
         "YaGptSettings__ApiKey": "gpt-api-key-placeholder",
-        "YaGptSettings__Model": "gpt://<>/yandexgpt-lite",
+        "YaGptSettings__Model": "gpt://b1gfmi89k27q1f42i9qh/yandexgpt-lite",
         "YaGptSettings__Temperature": "0.8",
         "YaGptSettings__Instruction": "",
         "YaGptSettings__MaxTokens": "5000",

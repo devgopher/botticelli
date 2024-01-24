@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
     /// <param name="config"></param>
     /// <returns></returns>
     /// <exception cref="AiException"></exception>
-    public static IServiceCollection AddAiProvider(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddChatGptProvider(this IServiceCollection services, IConfiguration config)
     {
         var chatGptSettings = new GptSettings();
         config.Bind(nameof(GptSettings), chatGptSettings);
