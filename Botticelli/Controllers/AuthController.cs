@@ -24,16 +24,4 @@ public class AuthController
     [HttpPost("[action]")]
     public IActionResult GetToken(UserLoginRequest request)
         => new OkObjectResult(_adminAuthService.GenerateToken(request));
-
-    [AllowAnonymous]
-    [HttpPost("[action]")]
-    [Obsolete($"Use {nameof(UserController)}.{nameof(UserController.AddUserAsync)}()!")]
-    public async Task Register(UserAddRequest request)
-        => await _adminAuthService.RegisterAsync(request);
-
-    [AllowAnonymous]
-    [HttpGet("[action]")]
-    [Obsolete($"Use {nameof(UserController)}.{nameof(UserController.HasUsersAsync)}()!")]
-    public async Task<bool> HasUsersAsync()
-        => await _adminAuthService.HasUsersAsync();
 }

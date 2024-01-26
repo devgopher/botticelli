@@ -28,7 +28,7 @@
                 <RadzenLabel Text="Messenger type:" Component="MessengerType" style="width: 100%;"/>
             </div>
             <div class="col-md-9">
-                <RadzenDropDown MaxLength="255" style="display: block; width: 100%;" Data="@Enum.GetNames<BotType>()" @bind-Value="@_model.BotType" Name="MessengerType"/>
+                <RadzenDropDown MaxLength="255" style="display: block; width: 100%;" Data="@_messengerNames" @bind-Value="@_model.BotType" Name="MessengerType"/>
                 <RadzenRequiredValidator Component="MessengerType" Text="MessengerType shouldn't be empty!" style="position: absolute;"/>
             </div>
         </div>
@@ -59,6 +59,7 @@
 
 @code {
     readonly BotModel _model = new();
+    readonly string[] _messengerNames = Enum.GetNames<BotType>();
 
     private async Task OnSubmit(BotModel model)
     {
@@ -82,5 +83,4 @@
 
         UriHelper.NavigateTo("/your_bots", true);
     }
-
 }

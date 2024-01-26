@@ -12,11 +12,11 @@ public class UserService : IUserService
     private readonly IConfiguration _config;
     private readonly IConfirmationService _confirmationService;
     private readonly BotInfoContext _context;
-    private readonly ILogger<AdminAuthService> _logger;
+    private readonly ILogger<UserService> _logger;
 
     public UserService(IConfiguration config,
         BotInfoContext context,
-        ILogger<AdminAuthService> logger,
+        ILogger<UserService> logger,
         IConfirmationService confirmationService)
     {
         _config = config;
