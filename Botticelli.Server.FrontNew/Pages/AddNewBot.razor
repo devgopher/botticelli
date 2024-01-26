@@ -25,6 +25,15 @@
         </div>
         <div style="margin-bottom: 1rem;" class="row">
             <div class="col-md-3">
+                <RadzenLabel Text="Messenger type:" Component="MessengerType" style="width: 100%;"/>
+            </div>
+            <div class="col-md-9">
+                <RadzenDropDown MaxLength="255" style="display: block; width: 100%;" Data="@Enum.GetNames<BotType>()" @bind-Value="@_model.BotType" Name="MessengerType"/>
+                <RadzenRequiredValidator Component="MessengerType" Text="MessengerType shouldn't be empty!" style="position: absolute;"/>
+            </div>
+        </div>
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
                 <RadzenLabel Text="Bot key:" Component="BotKey" style="width: 100%;"/>
             </div>
             <div class="col-md-9">
@@ -43,7 +52,7 @@
             </div>
         </div>
         <div style="margin-bottom: 1rem;" class="row">
-            <RadzenButton ButtonType="ButtonType.Submit" Text="Save"/>
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Save11"/>
         </div>
     </ChildContent>
 </RadzenTemplateForm>
@@ -58,7 +67,7 @@
             BotId = model.BotId,
             BotKey = model.BotKey,
             BotName = model.BotName,
-            Type = BotType.Telegram
+            Type = Enum.Parse<BotType>(model.BotType)
         };
 
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
