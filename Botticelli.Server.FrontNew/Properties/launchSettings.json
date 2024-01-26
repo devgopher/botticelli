@@ -4,10 +4,10 @@
     "Botticelli.Server.FrontNew": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://0.0.0.0:5042",
+      "launchUrl": "http://0.0.0.0:7247",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "BackSettings__BackUrl": "http://localhost:53635/v1/",
+        "BackSettings__BackUrl": "https://localhost:53636/v1/",
         "BackSettings__AnalyticsUrl": "http://localhost:5251/v1/"
       },
       "dotnetRunMessages": true,

@@ -77,6 +77,7 @@ public class UserController : Controller
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> AddUserAsync(UserAddRequest request, CancellationToken token)
     {
         try

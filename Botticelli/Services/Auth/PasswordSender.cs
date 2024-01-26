@@ -20,6 +20,7 @@ public class PasswordSender : IPasswordSender
     public async Task SendPassword(string email, string password, CancellationToken ct)
     {
         _logger.LogInformation($"Sending a password message to : {email}");
+        
         var message = Email.From(_serverSettings.ServerEmail, "BotticelliBots Admin Service")
             .To(email)
             .Subject("BotticelliBots user credentials")

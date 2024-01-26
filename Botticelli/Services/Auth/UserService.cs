@@ -73,6 +73,18 @@ public class UserService : IUserService
                 NormalizedEmail = GetNormalized(request.Email),
                 PasswordHash = HashUtils.GetHash(request.Password, _config["Authorization:Salt"])
             };
+            
+            #if DEBUG
+            if (request.Email == "test@test.com")
+            {
+                _logger.LogInformation("Test login password: {password}", request.Password);
+
+                user.EmailConfirmed = true;
+
+                needConfirmation = false;
+            }
+            #endif
+
 
             // Temporary - because now we assume, that we've only a single role - "admin"! 
             var appRole = new IdentityUserRole<string>

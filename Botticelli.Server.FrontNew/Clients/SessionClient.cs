@@ -56,7 +56,7 @@ public class SessionClient
         };
 
         var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                "/user/AddUser"),
+                "/user"),
             request);
 
         if (!response.IsSuccessStatusCode)
