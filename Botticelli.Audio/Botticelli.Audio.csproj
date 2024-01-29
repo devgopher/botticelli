@@ -15,7 +15,7 @@
         <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
         <PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <None Include="..\new_logo_compact.png">
             <Pack>True</Pack>

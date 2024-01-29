@@ -7,13 +7,11 @@ using Botticelli.Framework.MessageProcessors;
 using Botticelli.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NLog.Extensions.Logging;
 
 namespace Botticelli.Framework.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    
     public static IServiceCollection AddBotticelliFramework(this IServiceCollection services, IConfiguration config) =>
         services.AddSingleton<ChatMessageProcessor>()
             .AddSingleton<ClientProcessorFactory>()

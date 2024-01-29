@@ -268,10 +268,9 @@ public class VkStorageUploader
                         v = ApiVersion
                     }));
             request.Content = ApiUtils.GetMethodMultipartFormContent(new
-                {
-                    photo = uploadedPhoto.Photo
-                },
-                true);
+            {
+                photo = uploadedPhoto.Photo
+            });
 
             var response = await httpClient.SendAsync(request, token);
             var resultString = await response.Content.ReadAsStringAsync();
@@ -319,10 +318,9 @@ public class VkStorageUploader
                         v = ApiVersion
                     }));
             request.Content = ApiUtils.GetMethodMultipartFormContent(new
-                {
-                    audio = uploadedAudio.File
-                },
-                true);
+            {
+                audio = uploadedAudio.File
+            });
 
             var response = await httpClient.SendAsync(request, token);
             var resultString = await response.Content.ReadAsStringAsync();
@@ -362,10 +360,9 @@ public class VkStorageUploader
                         v = ApiVersion
                     }));
             request.Content = ApiUtils.GetMethodMultipartFormContent(new
-                {
-                    doc = uploadedDoc.File
-                },
-                true);
+            {
+                doc = uploadedDoc.File
+            });
 
             var response = await httpClient.SendAsync(request, token);
             var resultString = await response.Content.ReadAsStringAsync();

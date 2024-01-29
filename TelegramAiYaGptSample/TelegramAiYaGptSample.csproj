@@ -7,24 +7,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj" />
-      <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
-      <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
+        <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
+        <ProjectReference Include="..\Botticelli.AI.YaGpt\Botticelli.AI.YaGpt.csproj" />
+        <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
+        <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
+        <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data\" />
+        <Folder Include="Data\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="..\nlog.config">
-        <Link>nlog.config</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Include="..\nlog.config">
+            <Link>nlog.config</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

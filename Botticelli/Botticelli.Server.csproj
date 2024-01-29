@@ -24,7 +24,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Remove="appsettings.json" />
+        <Content Remove="appsettings.json"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -32,45 +32,45 @@
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
         </None>
-        <Content Remove="nlog.config" />
+        <Content Remove="nlog.config"/>
         <None Include="..\new_logo_compact.png">
-          <Pack>True</Pack>
-          <PackagePath></PackagePath>
-          <Link>new_logo_compact.png</Link>
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+            <Link>new_logo_compact.png</Link>
         </None>
         <None Include="nlog.config">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentEmail.MailKit" Version="3.0.2" />
-        <PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
-        <PackageReference Include="Flurl" Version="4.0.0" />
-        <PackageReference Include="Mapster" Version="7.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.14" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.14" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.14" />
+        <PackageReference Include="FluentEmail.MailKit" Version="3.0.2"/>
+        <PackageReference Include="FluentEmail.Smtp" Version="3.0.2"/>
+        <PackageReference Include="Flurl" Version="4.0.0"/>
+        <PackageReference Include="Mapster" Version="7.4.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.14"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.14"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.14"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.14">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.14" />
-        <PackageReference Include="NLog" Version="5.2.8" />
-        <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
-        <PackageReference Include="PasswordGenerator" Version="2.1.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.14"/>
+        <PackageReference Include="NLog" Version="5.2.8"/>
+        <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8"/>
+        <PackageReference Include="PasswordGenerator" Version="2.1.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj" />
-        <ProjectReference Include="..\Botticelli.Server.Data.Entities\Botticelli.Server.Data.Entities.csproj" />
-        <ProjectReference Include="..\Botticelli.Server.Data\Botticelli.Server.Data.csproj" />
-        <ProjectReference Include="..\Botticelli.Server.Models\Botticelli.Server.Models.csproj" />
+        <ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj"/>
+        <ProjectReference Include="..\Botticelli.Server.Data.Entities\Botticelli.Server.Data.Entities.csproj"/>
+        <ProjectReference Include="..\Botticelli.Server.Data\Botticelli.Server.Data.csproj"/>
+        <ProjectReference Include="..\Botticelli.Server.Models\Botticelli.Server.Models.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="appsettings.json" />
+        <Resource Include="appsettings.json"/>
     </ItemGroup>
 
     <ItemGroup>

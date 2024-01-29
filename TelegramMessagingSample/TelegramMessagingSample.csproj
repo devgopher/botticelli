@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
+        <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -32,8 +32,8 @@
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </None>
         <None Include="..\nlog.config">
-          <Link>nlog.config</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>nlog.config</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 

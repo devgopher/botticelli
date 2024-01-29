@@ -14,18 +14,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Include="..\nlog.config">
-        <Link>nlog.config</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Include="..\nlog.config">
+            <Link>nlog.config</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj" />
+        <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj" />
+        <ProjectReference Include="..\Botticelli.AI.YaGpt\Botticelli.AI.YaGpt.csproj" />
+        <ProjectReference Include="..\Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj"/>
     </ItemGroup>
 
 

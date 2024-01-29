@@ -1,14 +1,14 @@
-﻿using Botticelli.Analytics.Shared.Requests;
+﻿using System.Collections.Concurrent;
+using Botticelli.Analytics.Shared.Requests;
 using Botticelli.Analytics.Shared.Responses;
 using Botticelli.Server.Analytics.Models;
 using Botticelli.Server.Analytics.Utils;
 using Polly;
-using System.Collections.Concurrent;
 
 namespace Botticelli.Server.Analytics.Cache;
 
 /// <summary>
-/// Local-based memory cache with auto-cleaning
+///     Local-based memory cache with auto-cleaning
 /// </summary>
 public class LocalCacheAccessor : ICacheAccessor
 {
@@ -18,45 +18,6 @@ public class LocalCacheAccessor : ICacheAccessor
     private static CancellationTokenSource _cancellationTokenSource = new();
     private static CancellationToken _ct = _cancellationTokenSource.Token;
 
-    private static void InitCacheCleaning()
-    {
-        if (_cacheCleaningTask != null)
-            return;
-
-        _cacheCleaningTask = Policy.HandleResult<bool>(r => true)
-            .WaitAndRetryForeverAsync(_ => TimeSpan.FromMinutes(1))
-            .ExecuteAndCaptureAsync(async ct =>
-            {
-                int size = _memoryCache.Count;
-
-                while (size >= _maxCacheSize)
-                {
-                    if (_ct.CanBeCanceled && _ct.IsCancellationRequested)
-                        break;
-                    
-                    var oldest = _memoryCache
-                        .Values
-                        .OrderBy(c => c.Timestamp)
-                        .FirstOrDefault();
-
-                    if (oldest == null)
-                        break;
-
-                    _memoryCache.TryRemove(oldest.Id, out var _);
-
-                    size = _memoryCache.Count;
-                }
-
-                return true;
-            }, _ct);
-    }
-
-    private static void RefreshCancellationToken()
-    {
-        _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(new CancellationToken());
-        _ct = _cancellationTokenSource.Token;
-    }
-
     public LocalCacheAccessor(long maxCacheSize)
     {
         _maxCacheSize = maxCacheSize;
@@ -64,7 +25,6 @@ public class LocalCacheAccessor : ICacheAccessor
     }
 
 
-    
     public int ReadCount(Func<MetricModel, bool> func)
         => _memoryCache
             .Values
@@ -104,7 +64,7 @@ public class LocalCacheAccessor : ICacheAccessor
     {
         var toRemove = _memoryCache.Where(c => c.Value.Timestamp < until)
             .Select(kvp => kvp.Key).ToArray();
-        
+
         foreach (var c in toRemove)
             _memoryCache.TryRemove(c, out var _);
     }
@@ -112,6 +72,45 @@ public class LocalCacheAccessor : ICacheAccessor
     public void Remove(MetricModel request)
     {
         _memoryCache.TryRemove(request.Id, out var _);
+    }
+
+    private static void InitCacheCleaning()
+    {
+        if (_cacheCleaningTask != null)
+            return;
+
+        _cacheCleaningTask = Policy.HandleResult<bool>(r => true)
+            .WaitAndRetryForeverAsync(_ => TimeSpan.FromMinutes(1))
+            .ExecuteAndCaptureAsync(async ct =>
+            {
+                var size = _memoryCache.Count;
+
+                while (size >= _maxCacheSize)
+                {
+                    if (_ct.CanBeCanceled && _ct.IsCancellationRequested)
+                        break;
+
+                    var oldest = _memoryCache
+                        .Values
+                        .OrderBy(c => c.Timestamp)
+                        .FirstOrDefault();
+
+                    if (oldest == null)
+                        break;
+
+                    _memoryCache.TryRemove(oldest.Id, out var _);
+
+                    size = _memoryCache.Count;
+                }
+
+                return true;
+            }, _ct);
+    }
+
+    private static void RefreshCancellationToken()
+    {
+        _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(new CancellationToken());
+        _ct = _cancellationTokenSource.Token;
     }
 
     public GetMetricsResponse Get(GetMetricsForIntervalsRequest request) =>

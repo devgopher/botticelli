@@ -14,11 +14,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
+        <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
+        <ProjectReference Include="..\Botticelli.AI.ChatGpt\Botticelli.AI.ChatGpt.csproj" />
         <ProjectReference Include="..\Botticelli.AI\Botticelli.AI.csproj"/>
         <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
     </ItemGroup>
@@ -34,10 +35,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="..\nlog.config">
-        <Link>nlog.config</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Include="..\nlog.config">
+            <Link>nlog.config</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

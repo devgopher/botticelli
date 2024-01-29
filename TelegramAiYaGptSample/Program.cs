@@ -3,7 +3,7 @@ using AiSample.Common.Commands;
 using AiSample.Common.Handlers;
 using AiSample.Common.Settings;
 using BotDataSecureStorage.Settings;
-using Botticelli.AI.Extensions;
+using Botticelli.AI.YaGpt.Extensions;
 using Botticelli.Bus.None.Extensions;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
