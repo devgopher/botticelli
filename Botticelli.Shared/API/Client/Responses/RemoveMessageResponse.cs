@@ -13,7 +13,7 @@ public class RemoveMessageResponse : BaseResponse<RemoveMessageResponse>
     public MessageRemovedStatus MessageRemovedStatus { get; set; }
 
     public static RemoveMessageResponse GetInstance(string? techMessage) =>
-        new(BotIdUtils.GenerateShortBotId(), techMessage);
+            new(BotIdUtils.GenerateShortBotId(), techMessage);
 
     public static RemoveMessageResponse GetInstance(string uid, string? techMessage) => new(uid, techMessage);
 }

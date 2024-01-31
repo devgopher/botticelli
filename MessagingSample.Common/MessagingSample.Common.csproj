@@ -1,36 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <Nullable>disable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Version>0.3</Version>
-        <Company>Botticelli</Company>
-        <Copyright>Igor Evdokimov</Copyright>
-        <PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
-        <PackageIcon>logo.jpg</PackageIcon>
-        <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Version>0.3</Version>
+		<Company>Botticelli</Company>
+		<Copyright>Igor Evdokimov</Copyright>
+		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
+		<PackageIcon>logo.jpg</PackageIcon>
+		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
-        <ProjectReference Include="..\Botticelli.Scheduler\Botticelli.Scheduler.csproj"/>
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
+		<ProjectReference Include="..\Botticelli.Scheduler\Botticelli.Scheduler.csproj"/>
+	</ItemGroup>
 
 
-    <ItemGroup>
-        <None Update="Media\document.odt">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Media\testpic.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Media\video.mp4">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Media\voice.mp3">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
+	<ItemGroup>
+		<None Update="Media\document.odt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Media\testpic.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Media\video.mp4">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Media\voice.mp3">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

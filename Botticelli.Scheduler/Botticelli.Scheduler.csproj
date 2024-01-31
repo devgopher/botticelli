@@ -1,46 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <Version>0.3.0</Version>
-        <Title>Botticelli.Scheduler</Title>
-        <Authors>BotticelliBots</Authors>
-        <PackageIcon>new_logo_compact.png</PackageIcon>
-        <Description>Botticelli scheduling features</Description>
-        <Copyright>BotticelliBots</Copyright>
-        <PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-        <PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Version>0.3.0</Version>
+		<Title>Botticelli.Scheduler</Title>
+		<Authors>BotticelliBots</Authors>
+		<PackageIcon>new_logo_compact.png</PackageIcon>
+		<Description>Botticelli scheduling features</Description>
+		<Copyright>BotticelliBots</Copyright>
+		<PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+		<PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <None Include="..\new_logo_compact.png">
-            <Pack>True</Pack>
-            <PackagePath></PackagePath>
-            <Link>new_logo_compact.png</Link>
-        </None>
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="..\new_logo_compact.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+			<Link>new_logo_compact.png</Link>
+		</None>
+	</ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Hangfire" Version="1.8.6"/>
-        <PackageReference Include="Hangfire.LiteDB" Version="0.4.1"/>
-        <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.0"/>
-        <PackageReference Include="NLog" Version="5.2.8"/>
-        <PackageReference Include="Polly" Version="8.2.0"/>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Hangfire" Version="1.8.6"/>
+		<PackageReference Include="Hangfire.LiteDB" Version="0.4.1"/>
+		<PackageReference Include="Hangfire.MemoryStorage" Version="1.8.0"/>
+		<PackageReference Include="NLog" Version="5.2.8"/>
+		<PackageReference Include="Polly" Version="8.2.0"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
-        <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
-        <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="..\logo.jpg">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
+		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
+		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\logo.jpg">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 </Project>

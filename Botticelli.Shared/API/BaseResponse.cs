@@ -14,10 +14,10 @@ public abstract class BaseResponse
 }
 
 public abstract class BaseResponse<T> : BaseResponse
-    where T : BaseResponse
+        where T : BaseResponse
 {
     protected BaseResponse(string uid, string? techMessage)
-        : base(uid, techMessage)
+            : base(uid, techMessage)
     {
     }
 }

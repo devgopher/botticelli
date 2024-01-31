@@ -10,28 +10,24 @@ using Botticelli.Shared.API.Client.Responses;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
 namespace Botticelli.AI.DeepSeekGpt.Provider;
 
 public class DeepSeekGptProvider : GenericAiProvider
 {
-    private readonly IOptionsMonitor<DeepSeekGptSettings> _gptSettings;
-    private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
     private const string SystemRole = "system";
     private const string UserRole = "user";
     private const string Completion = "completion";
+    private readonly IOptionsMonitor<DeepSeekGptSettings> _gptSettings;
 
     public DeepSeekGptProvider(IOptionsMonitor<DeepSeekGptSettings> gptSettings,
-        IHttpClientFactory factory,
-        ILogger<DeepSeekGptProvider> logger,
-        IBusClient bus) : base(gptSettings,
-        factory,
-        logger,
-        bus)
-    {
-        _gptSettings = gptSettings;
-    }
+                               IHttpClientFactory factory,
+                               ILogger<DeepSeekGptProvider> logger,
+                               IBusClient bus) : base(gptSettings,
+                                                      factory,
+                                                      logger,
+                                                      bus)
+        => _gptSettings = gptSettings;
 
     public override string AiName => "deepseek";
 
@@ -42,20 +38,20 @@ public class DeepSeekGptProvider : GenericAiProvider
             Logger.LogError($"{nameof(SendAsync)}() body is null or empty!");
 
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                {
-                    IsPartial = _gptSettings.CurrentValue.ExpectPartialResponses,
-                    Message = new Shared.ValueObjects.Message(message.Uid)
-                    {
-                        ChatIds = message.ChatIds,
-                        Subject = message.Subject,
-                        Body = "Body is null or empty!",
-                        Attachments = null,
-                        From = null,
-                        ForwardedFrom = null,
-                        ReplyToMessageUid = message.ReplyToMessageUid
-                    }
-                },
-                token);
+                                   {
+                                       IsPartial = _gptSettings.CurrentValue.ExpectPartialResponses,
+                                       Message = new Shared.ValueObjects.Message(message.Uid)
+                                       {
+                                           ChatIds = message.ChatIds,
+                                           Subject = message.Subject,
+                                           Body = "Body is null or empty!",
+                                           Attachments = null,
+                                           From = null,
+                                           ForwardedFrom = null,
+                                           ReplyToMessageUid = message.ReplyToMessageUid
+                                       }
+                                   },
+                                   token);
 
             return;
         }
@@ -68,17 +64,16 @@ public class DeepSeekGptProvider : GenericAiProvider
 
             client.BaseAddress = new Uri(Settings.CurrentValue.Url);
             client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
+                    new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
 
-            var yaGptMessage = new DeepSeekInputMessage()
+            var deepSeekGptMessage = new DeepSeekInputMessage
             {
                 Model = _gptSettings.CurrentValue.Model,
-                Messages = new List<DeepSeekInnerInputMessage>()
+                Messages = new List<DeepSeekInnerInputMessage>
                 {
                     new()
                     {
                         Role = SystemRole,
-                        
                         Content = _gptSettings.CurrentValue.Instruction
                     },
                     new()
@@ -86,90 +81,63 @@ public class DeepSeekGptProvider : GenericAiProvider
                         Role = UserRole,
                         Content = message.Body
                     }
-                },
-                // CompletionOptions = new CompletionOptions()
-                // {
-                //     MaxTokens = _gptSettings.CurrentValue.MaxTokens,
-                //     Stream = _gptSettings.CurrentValue.StreamGeneration,
-                //     Temperature = _gptSettings?.CurrentValue?.Temperature ??
-                //                   (_temperatureRandom.Next(0, 900) + 100) / 1000.0
-                // }
+                }
             };
 
-            yaGptMessage.Messages.AddRange(message.AdditionalMessages?.Select(m => new DeepSeekInnerInputMessage()
-            {
-                Role = UserRole,
-                Content = m.Body
-            }) ?? new List<DeepSeekInnerInputMessage>());
+            deepSeekGptMessage.Messages.AddRange(message.AdditionalMessages?.Select(m => new DeepSeekInnerInputMessage
+                                                 {
+                                                     Role = UserRole,
+                                                     Content = m.Body ?? string.Empty
+                                                 }) ??
+                                                 new List<DeepSeekInnerInputMessage>());
 
-            var content = JsonContent.Create(yaGptMessage);
-            
+            var content = JsonContent.Create(deepSeekGptMessage);
+
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
             var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", Completion),
-                content,
-                token);
+                                                  content,
+                                                  token);
 
             if (response.IsSuccessStatusCode)
             {
                 var text = new StringBuilder();
-                
-                var outStream = await response.Content.ReadAsStreamAsync(cancellationToken: token);
-                var serializer = new JsonSerializer();
-                using var sr = new StreamReader(outStream);
-                await using var reader = new JsonTextReader(sr)
-                {
-                    SupportMultipleContent = true
-                };
-                
-                while (await reader.ReadAsync(token))
-                {
-                    if (reader.TokenType != JsonToken.StartObject) 
-                        continue;
-                    var part = serializer.Deserialize<DeepSeekInnerOutputMessage>(reader);
-                    
-                    text.AppendJoin(' ',
-                        part?.Result?
-                            .Alternatives?
-                            .Select(c => c.Message.Text) ?? Array.Empty<string>());
 
-                    await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                        {
-                            Message = new Shared.ValueObjects.Message(message.Uid)
-                            {
-                                ChatIds = message.ChatIds,
-                                Subject = message.Subject,
-                                Body = text.ToString(),
-                                Attachments = null,
-                                From = null,
-                                ForwardedFrom = null,
-                                ReplyToMessageUid = message.ReplyToMessageUid
-                            }
-                        },
-                        token);
+                var outMessage = await response.Content.ReadFromJsonAsync<DeepSeekInnerOutputMessage>(cancellationToken: token);
 
-                    if (part?.Result?.Alternatives?.Any(c => c.Message.Text.Contains("ALTERNATIVE_STATUS_FINAL")) == true)
-                        break;
-                }
+                await Bus.SendResponse(new SendMessageResponse(message.Uid)
+                                       {
+                                           Message = new Shared.ValueObjects.Message(message.Uid)
+                                           {
+                                               ChatIds = message.ChatIds,
+                                               Subject = message.Subject,
+                                               Body = outMessage.Content,
+                                               Attachments = null,
+                                               From = null,
+                                               ForwardedFrom = null,
+                                               ReplyToMessageUid = message.ReplyToMessageUid
+                                           }
+                                       },
+                                       token);
             }
             else
             {
                 var reason = await response.Content.ReadAsStringAsync(token);
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                    {
-                        Message = new Shared.ValueObjects.Message(message.Uid)
-                        {
-                            ChatIds = message.ChatIds,
-                            Subject = message.Subject,
-                            Body = $"Error getting a response from YaGpt: {reason}!",
-                            Attachments = null,
-                            From = null,
-                            ForwardedFrom = null,
-                            ReplyToMessageUid = message.ReplyToMessageUid
-                        }
-                    },
-                    token);
+                                       {
+                                           Message = new Shared.ValueObjects.Message(message.Uid)
+                                           {
+                                               ChatIds = message.ChatIds,
+                                               Subject = message.Subject,
+                                               Body = $"Error getting a response from YaGpt: {reason}!",
+                                               Attachments = null,
+                                               From = null,
+                                               ForwardedFrom = null,
+                                               ReplyToMessageUid = message.ReplyToMessageUid
+                                           }
+                                       },
+                                       token);
             }
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) finished");
@@ -178,18 +146,18 @@ public class DeepSeekGptProvider : GenericAiProvider
         {
             Logger.LogError(ex, ex.Message);
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                {
-                    Message = new Shared.ValueObjects.Message(message.Uid)
-                    {
-                        ChatIds = message.ChatIds,
-                        Subject = message.Subject,
-                        Body = "Error getting a response from YaGpt!",
-                        Attachments = null,
-                        From = null,
-                        ForwardedFrom = null
-                    }
-                },
-                token);
+                                   {
+                                       Message = new Shared.ValueObjects.Message(message.Uid)
+                                       {
+                                           ChatIds = message.ChatIds,
+                                           Subject = message.Subject,
+                                           Body = "Error getting a response from YaGpt!",
+                                           Attachments = null,
+                                           From = null,
+                                           ForwardedFrom = null
+                                       }
+                                   },
+                                   token);
         }
     }
 }

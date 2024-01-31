@@ -2,7 +2,6 @@
 using Botticelli.AI.DeepSeekGpt.Provider;
 using Botticelli.AI.DeepSeekGpt.Settings;
 using Botticelli.AI.Exceptions;
-using Botticelli.AI.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

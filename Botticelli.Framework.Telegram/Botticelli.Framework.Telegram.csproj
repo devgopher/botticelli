@@ -1,41 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <Version>0.3.0</Version>
-        <Title>Botticelli.Framework.Telegram</Title>
-        <Authors>BotticelliBots</Authors>
-        <PackageIcon>new_logo_compact.png</PackageIcon>
-        <Description>Botticelli Telegram messenger integration</Description>
-        <Copyright>BotticelliBots</Copyright>
-        <PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-        <PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Version>0.3.0</Version>
+		<Title>Botticelli.Framework.Telegram</Title>
+		<Authors>BotticelliBots</Authors>
+		<PackageIcon>new_logo_compact.png</PackageIcon>
+		<Description>Botticelli Telegram messenger integration</Description>
+		<Copyright>BotticelliBots</Copyright>
+		<PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+		<PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <None Include="..\new_logo_compact.png">
-            <Pack>True</Pack>
-            <PackagePath></PackagePath>
-            <Link>new_logo_compact.png</Link>
-        </None>
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj"/>
-        <ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj"/>
-        <ProjectReference Include="..\Botticelli.Bot.Utils\Botticelli.Bot.Utils.csproj"/>
-        <ProjectReference Include="..\Botticelli.Framework.Common\Botticelli.Framework.Events.csproj"/>
-        <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1"/>
-        <PackageReference Include="Telegram.Bot" Version="19.0.0"/>
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="..\logo.jpg">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="..\new_logo_compact.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+			<Link>new_logo_compact.png</Link>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj"/>
+		<ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj"/>
+		<ProjectReference Include="..\Botticelli.Bot.Utils\Botticelli.Bot.Utils.csproj"/>
+		<ProjectReference Include="..\Botticelli.Framework.Common\Botticelli.Framework.Events.csproj"/>
+		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1"/>
+		<PackageReference Include="Telegram.Bot" Version="19.0.0"/>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\logo.jpg">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 </Project>

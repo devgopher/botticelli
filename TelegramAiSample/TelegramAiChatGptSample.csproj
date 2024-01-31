@@ -1,44 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <Nullable>disable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Version>0.3</Version>
-        <Company>Botticelli</Company>
-        <Copyright>Igor Evdokimov</Copyright>
-        <PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
-        <PackageIcon>logo.jpg</PackageIcon>
-        <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-        <RootNamespace>TelegramAiChatGptSample</RootNamespace>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Version>0.3</Version>
+		<Company>Botticelli</Company>
+		<Copyright>Igor Evdokimov</Copyright>
+		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
+		<PackageIcon>logo.jpg</PackageIcon>
+		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+		<RootNamespace>TelegramAiChatGptSample</RootNamespace>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8"/>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="NLog.Extensions.Logging" Version="5.3.8"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
-        <ProjectReference Include="..\Botticelli.AI.ChatGpt\Botticelli.AI.ChatGpt.csproj" />
-        <ProjectReference Include="..\Botticelli.AI\Botticelli.AI.csproj"/>
-        <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
+		<ProjectReference Include="..\Botticelli.AI.ChatGpt\Botticelli.AI.ChatGpt.csproj"/>
+		<ProjectReference Include="..\Botticelli.AI\Botticelli.AI.csproj"/>
+		<ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Data\"/>
-    </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Data\"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <Content Update="appsettings.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
+	<ItemGroup>
+		<Content Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
-    <ItemGroup>
-        <None Include="..\nlog.config">
-            <Link>nlog.config</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="..\nlog.config">
+			<Link>nlog.config</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>
