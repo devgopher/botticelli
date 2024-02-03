@@ -148,13 +148,14 @@ public class TelegramBot : BaseBot<TelegramBot>
             var text = new StringBuilder($"{request.Message.Subject} {request.Message.Body}");
 
             var retText = Escape(text).ToString();
-            List<(string chatId, string innerId)> pairs = new List<(string, string)>();
+            List<(string chatId, string innerId)> pairs = new();
 
             foreach (var link in request.Message.ChatIdInnerIdLinks)
-            {
                 pairs.AddRange(link.Value.Select(innerId => (innerId, link.Key)));
-            }
-           
+
+            var chatIdOnly = request.Message.ChatIds.Where(c => !request.Message.ChatIdInnerIdLinks.ContainsKey(c));
+            pairs.AddRange(chatIdOnly.Select(c => (c, string.Empty)));
+
             if (!string.IsNullOrWhiteSpace(retText))
                 foreach (var link in pairs)
                 {

@@ -190,6 +190,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.DeepSeekGpt",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.GptJ", "Botticelli.AI.GptJ\Botticelli.AI.GptJ.csproj", "{1BC0B4EF-7C35-4BB7-B207-180FBC55681D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramAiDeepSeekSample", "TelegramAiDeepSeekSample\TelegramAiDeepSeekSample.csproj", "{3D52F777-3A84-4238-974F-A5969085B472}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -368,6 +370,10 @@ Global
 		{1BC0B4EF-7C35-4BB7-B207-180FBC55681D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BC0B4EF-7C35-4BB7-B207-180FBC55681D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BC0B4EF-7C35-4BB7-B207-180FBC55681D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D52F777-3A84-4238-974F-A5969085B472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D52F777-3A84-4238-974F-A5969085B472}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D52F777-3A84-4238-974F-A5969085B472}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D52F777-3A84-4238-974F-A5969085B472}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -439,6 +445,7 @@ Global
 		{80F461AA-3C96-4AEA-90CA-48C1B878D97F} = {3B5A6BD8-2B94-42F9-B122-06D92C470B31}
 		{252B974D-7725-44F5-BE69-330B85731B08} = {3B5A6BD8-2B94-42F9-B122-06D92C470B31}
 		{1BC0B4EF-7C35-4BB7-B207-180FBC55681D} = {3B5A6BD8-2B94-42F9-B122-06D92C470B31}
+		{3D52F777-3A84-4238-974F-A5969085B472} = {2AD59714-541D-4794-9216-6EAB25F271DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

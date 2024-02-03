@@ -24,13 +24,13 @@ public static class ServiceCollectionExtensions
 
         services.Configure<DeepSeekGptSettings>(s =>
         {
-            // s.GenerateTokensLimit = deepSeekGptSettings.GenerateTokensLimit;
             s.Temperature = deepSeekGptSettings.Temperature;
-            // s.TopK = deepSeekGptSettings.TopK;
-            // s.TopP = deepSeekGptSettings.TopP;
             s.AiName = deepSeekGptSettings.AiName;
             s.ApiKey = deepSeekGptSettings.ApiKey;
             s.Url = deepSeekGptSettings.Url;
+            s.Model = deepSeekGptSettings.Model;
+            s.MaxTokens = deepSeekGptSettings.MaxTokens;
+            s.Instruction = deepSeekGptSettings.Instruction;
         });
 
         services.AddSingleton<IAiProvider, DeepSeekGptProvider>();

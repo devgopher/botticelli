@@ -17,7 +17,7 @@ public class DeepSeekGptProvider : GenericAiProvider
 {
     private const string SystemRole = "system";
     private const string UserRole = "user";
-    private const string Completion = "completion";
+    private const string Completion = "completions";
     private readonly IOptionsMonitor<DeepSeekGptSettings> _gptSettings;
 
     public DeepSeekGptProvider(IOptionsMonitor<DeepSeekGptSettings> gptSettings,
@@ -65,10 +65,11 @@ public class DeepSeekGptProvider : GenericAiProvider
             client.BaseAddress = new Uri(Settings.CurrentValue.Url);
             client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
-
+            
             var deepSeekGptMessage = new DeepSeekInputMessage
             {
                 Model = _gptSettings.CurrentValue.Model,
+                MaxTokens = _gptSettings.CurrentValue.MaxTokens,
                 Messages = new List<DeepSeekInnerInputMessage>
                 {
                     new()
@@ -95,7 +96,7 @@ public class DeepSeekGptProvider : GenericAiProvider
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
-            var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", Completion),
+            var response = await client.PostAsync(Completion,
                                                   content,
                                                   token);
 
@@ -103,7 +104,7 @@ public class DeepSeekGptProvider : GenericAiProvider
             {
                 var text = new StringBuilder();
 
-                var outMessage = await response.Content.ReadFromJsonAsync<DeepSeekInnerOutputMessage>(cancellationToken: token);
+                var outMessage = await response.Content.ReadFromJsonAsync<DeepSeekOutputMessage>(cancellationToken: token);
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                                        {
@@ -111,7 +112,7 @@ public class DeepSeekGptProvider : GenericAiProvider
                                            {
                                                ChatIds = message.ChatIds,
                                                Subject = message.Subject,
-                                               Body = outMessage.Content,
+                                               Body = outMessage.Choices.FirstOrDefault()?.DeepSeekMessage?.Content ?? string.Empty,
                                                Attachments = null,
                                                From = null,
                                                ForwardedFrom = null,
@@ -160,4 +161,4 @@ public class DeepSeekGptProvider : GenericAiProvider
                                    token);
         }
     }
-}
+} 
