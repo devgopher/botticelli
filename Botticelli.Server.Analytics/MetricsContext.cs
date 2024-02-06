@@ -8,7 +8,7 @@ namespace Botticelli.Server.Analytics;
 public class MetricsContext : DbContext
 {
     private readonly ICacheAccessor _cacheAccessor;
-
+    
     public MetricsContext(DbContextOptions options, ICacheAccessor cacheAccessor) : base(options)
     {
         _cacheAccessor = cacheAccessor;

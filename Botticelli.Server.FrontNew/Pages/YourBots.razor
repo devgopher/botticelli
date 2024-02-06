@@ -42,12 +42,12 @@ else
                             <RadzenText TextStyle="TextStyle.Overline" Text="@bot.BotName"/>
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsAlive(bot.LastKeepAlive)"/>
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsActive(bot.Status)"/>
-                            <RadzenButton Click="@e => SendStartStop(bot.BotId, bot.Status)" Text="Lock/Unlock"/>
-                            <RadzenButton Click="@e => UriHelper.NavigateTo($"/update_bot/{bot.BotId}", true)"
+                            <RadzenButton Click="@(e => SendStartStop(bot.BotId, bot.Status))" Text="Lock/Unlock"/>
+                            <RadzenButton Click="@(e => UriHelper.NavigateTo($"/update_bot/{bot.BotId}", true))"
                                           ButtonStyle="ButtonStyle.Primary"
                                           Style="width: 100%"
                                           Text="Update"/>
-                            <RadzenButton Click="@e => UriHelper.NavigateTo($"/bot_metrics/{bot.BotId}", true)"
+                            <RadzenButton Click="@(e => UriHelper.NavigateTo($"/bot_metrics/{bot.BotId}", true))"
                                           ButtonStyle="ButtonStyle.Primary"
                                           Style="width: 100%"
                                           Text="See metrics"/>
@@ -61,7 +61,7 @@ else
 
    @*<RadzenLabel @bind-text="@_error" Style="color: red; font-weight: bold" />*@
 
-    <RadzenButton Click="@e => UriHelper.NavigateTo("/add_bot", true)"
+    <RadzenButton Click="@(e => UriHelper.NavigateTo("/add_bot", true))"
                   ButtonStyle="ButtonStyle.Primary"
                   Style="width: 100%"
                   Text="Add bot"/>

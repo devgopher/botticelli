@@ -1,20 +1,21 @@
 ﻿using System.Globalization;
 
-namespace Botticelli.Server.FrontNew.Utils;
-
-public static class StringUtils
+namespace Botticelli.Server.FrontNew.Utils
 {
-    public static DateTime? ToDateTime(this string dt, string format, CultureInfo culture)
+    public static class StringUtils
     {
-        try
+        public static DateTime? ToDateTime(this string dt, string format, CultureInfo culture)
         {
-            if (string.IsNullOrWhiteSpace(dt)) return default;
+            try
+            {
+                if (string.IsNullOrWhiteSpace(dt)) return default;
 
-            return DateTime.ParseExact(dt, format, culture);
-        }
-        catch (Exception ex)
-        {
-            return default;
+                return DateTime.ParseExact(dt, format, culture);
+            }
+            catch (Exception ex)
+            {
+                return default;
+            }
         }
     }
 }

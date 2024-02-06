@@ -46,7 +46,7 @@ public class PassClient : IBusClient
     }
 
     public async IAsyncEnumerable<SendMessageResponse> SendAndGetResponseSeries(SendMessageRequest request,
-        CancellationToken token)
+                                                                                 CancellationToken token)
     {
         NoneBus.SendMessageRequests.Enqueue(request);
 
@@ -55,9 +55,9 @@ public class PassClient : IBusClient
 
         while (period < Timeout.TotalMilliseconds)
         {
-            if (token.CanBeCanceled || token.IsCancellationRequested)
+            if (token.CanBeCanceled || token.IsCancellationRequested) 
                 yield break;
-
+            
             var element = NoneBus.SendMessageResponses.Dequeue();
             if (element.MessageUid != request.Uid)
                 continue;

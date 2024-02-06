@@ -8,10 +8,7 @@ public class TelegramBotHostedService : IHostedService
 {
     private readonly IBot<TelegramBot> _bot;
 
-    public TelegramBotHostedService(IBot<TelegramBot> bot)
-    {
-        _bot = bot;
-    }
+    public TelegramBotHostedService(IBot<TelegramBot> bot) => _bot = bot;
 
     public async Task StartAsync(CancellationToken cancellationToken)
         => await _bot.StartBotAsync(StartBotRequest.GetInstance(), CancellationToken.None);

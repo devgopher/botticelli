@@ -11,8 +11,7 @@ public abstract class BotSettings
     ///     Bot name
     /// </summary>
     public string Name { get; set; }
-
     public SecureStorageSettings SecureStorageSettings { get; set; }
-
+    
     public LogTargetSettings LogTargetSettings { get; set; }
 }
