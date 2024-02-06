@@ -1,13 +1,12 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
 using Botticelli.AI.AIProvider;
 using Botticelli.AI.DeepSeekGpt.Message.DeepSeek;
 using Botticelli.AI.DeepSeekGpt.Settings;
+using Botticelli.AI.Exceptions;
 using Botticelli.AI.Message;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Shared.API.Client.Responses;
-using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -102,17 +101,18 @@ public class DeepSeekGptProvider : GenericAiProvider
 
             if (response.IsSuccessStatusCode)
             {
-                var text = new StringBuilder();
-
                 var outMessage = await response.Content.ReadFromJsonAsync<DeepSeekOutputMessage>(cancellationToken: token);
 
+                if (outMessage == null)
+                    throw new AiException($"{nameof(outMessage)} = null!");
+                
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                                        {
                                            Message = new Shared.ValueObjects.Message(message.Uid)
                                            {
                                                ChatIds = message.ChatIds,
                                                Subject = message.Subject,
-                                               Body = outMessage.Choices.FirstOrDefault()?.DeepSeekMessage?.Content ?? string.Empty,
+                                               Body = string.Join(" ", outMessage.Choices.Select(c => c.DeepSeekMessage?.Content ?? string.Empty)),
                                                Attachments = null,
                                                From = null,
                                                ForwardedFrom = null,
