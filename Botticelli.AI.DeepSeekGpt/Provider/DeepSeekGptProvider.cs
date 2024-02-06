@@ -20,13 +20,15 @@ public class DeepSeekGptProvider : GenericAiProvider
     private readonly IOptionsMonitor<DeepSeekGptSettings> _gptSettings;
 
     public DeepSeekGptProvider(IOptionsMonitor<DeepSeekGptSettings> gptSettings,
-                               IHttpClientFactory factory,
-                               ILogger<DeepSeekGptProvider> logger,
-                               IBusClient bus) : base(gptSettings,
-                                                      factory,
-                                                      logger,
-                                                      bus)
-        => _gptSettings = gptSettings;
+        IHttpClientFactory factory,
+        ILogger<DeepSeekGptProvider> logger,
+        IBusClient bus) : base(gptSettings,
+        factory,
+        logger,
+        bus)
+    {
+        _gptSettings = gptSettings;
+    }
 
     public override string AiName => "deepseek";
 
@@ -37,20 +39,20 @@ public class DeepSeekGptProvider : GenericAiProvider
             Logger.LogError($"{nameof(SendAsync)}() body is null or empty!");
 
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                   {
-                                       IsPartial = _gptSettings.CurrentValue.ExpectPartialResponses,
-                                       Message = new Shared.ValueObjects.Message(message.Uid)
-                                       {
-                                           ChatIds = message.ChatIds,
-                                           Subject = message.Subject,
-                                           Body = "Body is null or empty!",
-                                           Attachments = null,
-                                           From = null,
-                                           ForwardedFrom = null,
-                                           ReplyToMessageUid = message.ReplyToMessageUid
-                                       }
-                                   },
-                                   token);
+                {
+                    IsPartial = _gptSettings.CurrentValue.ExpectPartialResponses,
+                    Message = new Shared.ValueObjects.Message(message.Uid)
+                    {
+                        ChatIds = message.ChatIds,
+                        Subject = message.Subject,
+                        Body = "Body is null or empty!",
+                        Attachments = null,
+                        From = null,
+                        ForwardedFrom = null,
+                        ReplyToMessageUid = message.ReplyToMessageUid
+                    }
+                },
+                token);
 
             return;
         }
@@ -63,8 +65,8 @@ public class DeepSeekGptProvider : GenericAiProvider
 
             client.BaseAddress = new Uri(Settings.CurrentValue.Url);
             client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
-            
+                new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
+
             var deepSeekGptMessage = new DeepSeekInputMessage
             {
                 Model = _gptSettings.CurrentValue.Model,
@@ -96,49 +98,51 @@ public class DeepSeekGptProvider : GenericAiProvider
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
             var response = await client.PostAsync(Completion,
-                                                  content,
-                                                  token);
+                content,
+                token);
 
             if (response.IsSuccessStatusCode)
             {
-                var outMessage = await response.Content.ReadFromJsonAsync<DeepSeekOutputMessage>(cancellationToken: token);
+                var outMessage =
+                    await response.Content.ReadFromJsonAsync<DeepSeekOutputMessage>(cancellationToken: token);
 
                 if (outMessage == null)
                     throw new AiException($"{nameof(outMessage)} = null!");
-                
+
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                       {
-                                           Message = new Shared.ValueObjects.Message(message.Uid)
-                                           {
-                                               ChatIds = message.ChatIds,
-                                               Subject = message.Subject,
-                                               Body = string.Join(" ", outMessage.Choices.Select(c => c.DeepSeekMessage?.Content ?? string.Empty)),
-                                               Attachments = null,
-                                               From = null,
-                                               ForwardedFrom = null,
-                                               ReplyToMessageUid = message.ReplyToMessageUid
-                                           }
-                                       },
-                                       token);
+                    {
+                        Message = new Shared.ValueObjects.Message(message.Uid)
+                        {
+                            ChatIds = message.ChatIds,
+                            Subject = message.Subject,
+                            Body = string.Join(" ",
+                                outMessage.Choices.Select(c => c.DeepSeekMessage?.Content ?? string.Empty)),
+                            Attachments = null,
+                            From = null,
+                            ForwardedFrom = null,
+                            ReplyToMessageUid = message.ReplyToMessageUid
+                        }
+                    },
+                    token);
             }
             else
             {
                 var reason = await response.Content.ReadAsStringAsync(token);
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                       {
-                                           Message = new Shared.ValueObjects.Message(message.Uid)
-                                           {
-                                               ChatIds = message.ChatIds,
-                                               Subject = message.Subject,
-                                               Body = $"Error getting a response from YaGpt: {reason}!",
-                                               Attachments = null,
-                                               From = null,
-                                               ForwardedFrom = null,
-                                               ReplyToMessageUid = message.ReplyToMessageUid
-                                           }
-                                       },
-                                       token);
+                    {
+                        Message = new Shared.ValueObjects.Message(message.Uid)
+                        {
+                            ChatIds = message.ChatIds,
+                            Subject = message.Subject,
+                            Body = $"Error getting a response from YaGpt: {reason}!",
+                            Attachments = null,
+                            From = null,
+                            ForwardedFrom = null,
+                            ReplyToMessageUid = message.ReplyToMessageUid
+                        }
+                    },
+                    token);
             }
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) finished");
@@ -147,18 +151,18 @@ public class DeepSeekGptProvider : GenericAiProvider
         {
             Logger.LogError(ex, ex.Message);
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                                   {
-                                       Message = new Shared.ValueObjects.Message(message.Uid)
-                                       {
-                                           ChatIds = message.ChatIds,
-                                           Subject = message.Subject,
-                                           Body = "Error getting a response from YaGpt!",
-                                           Attachments = null,
-                                           From = null,
-                                           ForwardedFrom = null
-                                       }
-                                   },
-                                   token);
+                {
+                    Message = new Shared.ValueObjects.Message(message.Uid)
+                    {
+                        ChatIds = message.ChatIds,
+                        Subject = message.Subject,
+                        Body = "Error getting a response from YaGpt!",
+                        Attachments = null,
+                        From = null,
+                        ForwardedFrom = null
+                    }
+                },
+                token);
         }
     }
-} 
+}
