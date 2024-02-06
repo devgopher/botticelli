@@ -140,9 +140,10 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     protected abstract Task InnerProcessPoll(Message message, string args, CancellationToken token);
     protected abstract Task InnerProcessLocation(Message message, string args, CancellationToken token);
     protected abstract Task InnerProcess(Message message, string args, CancellationToken token);
-   
+
     [GeneratedRegex("\\/([a-zA-Z0-9]*)$")]
     private static partial Regex SimpleCommandRegex();
+
     [GeneratedRegex("\\/([a-zA-Z0-9]*) (.*)")]
     private static partial Regex ArgsCommandRegex();
 }

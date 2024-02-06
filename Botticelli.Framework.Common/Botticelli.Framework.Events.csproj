@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
-		<ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj"/>
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
+        <ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj"/>
+    </ItemGroup>
 
 </Project>

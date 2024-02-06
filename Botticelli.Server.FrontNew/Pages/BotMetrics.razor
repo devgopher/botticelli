@@ -18,7 +18,7 @@
     private string _error = string.Empty;
     private DateTime _from;
     private DateTime _to;
-    private const string dateFormat = "yyyy-MM-dd HH:mm:ss";
+        private const string dateFormat = "yyyy-MM-dd HH:mm:ss";
 }
 
 <PageTitle>Bot metrics</PageTitle>
@@ -50,11 +50,8 @@ else
                     <RadzenText TextStyle="TextStyle.Overline" Text="@metricName"/>
                     <RadzenChart>
                         <RadzenLegend Position="LegendPosition.Left"/>
-                        <RadzenColumnOptions Radius="3" Width="10.0" />
-                        <RadzenColumnSeries Data="@_metrics[metricName].Select(x => new 
-                                                  {
-                                                      DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), x.Value
-                                                  })"
+                        <RadzenColumnOptions Radius="3" Width="10.0"/>
+                        <RadzenColumnSeries Data="@_metrics[metricName].Select(x => new { DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), x.Value })"
                                             CategoryProperty="DateTime"
                                             Title="Count"
                                             LineType="LineType.Dashed"
@@ -131,7 +128,7 @@ else
                 BotId = BotId,
                 From = _from,
                 To = _to + interval,
-                Interval = (int) interval.TotalSeconds,
+                Interval = (int)interval.TotalSeconds,
                 Name = metricName
             };
 
@@ -144,8 +141,8 @@ else
     {
         using var http = HttpClientFactory.Create();
         var botStatusResponse = await http.GetAsync(Url.Combine(BackSettings.CurrentValue.AnalyticsUrl,
-                                                                "/metrics/getter/GetMetricsForInterval?")
-                                                       .SetQueryParams(request));
+            "/metrics/getter/GetMetricsForInterval?")
+            .SetQueryParams(request));
         var metrics = await botStatusResponse.Content.ReadFromJsonAsync<GetMetricsIntervalsResponse>();
         var output = metrics.MetricsForIntervals.Select(m => new MetricsModel
         {
@@ -179,4 +176,5 @@ else
     {
         UriHelper.NavigateTo($"/bot_metrics/{BotId}/{_from.ToString(dateFormat)}/{_to.ToString(dateFormat)}", true);
     }
+
 }

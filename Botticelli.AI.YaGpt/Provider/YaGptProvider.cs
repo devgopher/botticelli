@@ -95,14 +95,14 @@ public class YaGptProvider : GenericAiProvider
                 }
             };
 
-            yaGptMessage.Messages.AddRange(message.AdditionalMessages?.Select(m => new  YaGptMessage()
+            yaGptMessage.Messages.AddRange(message.AdditionalMessages?.Select(m => new YaGptMessage()
             {
                 Role = UserRole,
                 Text = m.Body
             }) ?? new List<YaGptMessage>());
 
             var content = JsonContent.Create(yaGptMessage);
-            
+
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
             var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", Completion),
@@ -112,21 +112,21 @@ public class YaGptProvider : GenericAiProvider
             if (response.IsSuccessStatusCode)
             {
                 var text = new StringBuilder();
-                
-                var outStream = await response.Content.ReadAsStreamAsync(cancellationToken: token);
+
+                var outStream = await response.Content.ReadAsStreamAsync(token);
                 var serializer = new JsonSerializer();
                 using var sr = new StreamReader(outStream);
                 await using var reader = new JsonTextReader(sr)
                 {
                     SupportMultipleContent = true
                 };
-                
+
                 while (await reader.ReadAsync(token))
                 {
-                    if (reader.TokenType != JsonToken.StartObject) 
+                    if (reader.TokenType != JsonToken.StartObject)
                         continue;
                     var part = serializer.Deserialize<YaGptOutputMessage>(reader);
-                    
+
                     text.AppendJoin(' ',
                         part?.Result?
                             .Alternatives?
@@ -147,7 +147,8 @@ public class YaGptProvider : GenericAiProvider
                         },
                         token);
 
-                    if (part?.Result?.Alternatives?.Any(c => c.Message.Text.Contains("ALTERNATIVE_STATUS_FINAL")) == true)
+                    if (part?.Result?.Alternatives?.Any(c => c.Message.Text.Contains("ALTERNATIVE_STATUS_FINAL")) ==
+                        true)
                         break;
                 }
             }

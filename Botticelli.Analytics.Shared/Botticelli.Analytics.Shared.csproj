@@ -1,24 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>0.3</Version>
-		<PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
-		<PackageIcon>new_logo_compact.png</PackageIcon>
-		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-		<PackageTags>bot, telegram, vk, whatsapp</PackageTags>
-		<Copyright>BotticelliBots</Copyright>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>0.3</Version>
+        <PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
+        <PackageIcon>new_logo_compact.png</PackageIcon>
+        <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+        <PackageTags>bot, telegram, vk, whatsapp</PackageTags>
+        <Copyright>BotticelliBots</Copyright>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<None Include="..\new_logo_compact.png">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-			<Link>new_logo_compact.png</Link>
-		</None>
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="..\new_logo_compact.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+            <Link>new_logo_compact.png</Link>
+        </None>
+    </ItemGroup>
 
 </Project>

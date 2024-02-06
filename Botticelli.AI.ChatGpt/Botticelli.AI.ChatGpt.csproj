@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Botticelli.AI\Botticelli.AI.csproj"/>
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Botticelli.AI\Botticelli.AI.csproj"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Message\"/>
-	</ItemGroup>
+    <ItemGroup>
+        <Folder Include="Message\"/>
+    </ItemGroup>
 
 </Project>

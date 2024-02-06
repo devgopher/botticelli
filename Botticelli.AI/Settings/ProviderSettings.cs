@@ -2,5 +2,5 @@
 
 public class ProviderSettings
 {
-    public bool? ExpectPartialResponses { get; set; } 
+    public bool? ExpectPartialResponses { get; set; }
 }

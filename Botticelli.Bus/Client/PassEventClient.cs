@@ -8,17 +8,17 @@ public class PassEventClient : IEventBusClient
 {
     private bool _startedFlag = true;
     private readonly Task _workerTask;
-    
+
     public event IEventBusClient.BusEventHandler OnReceived;
 
     public PassEventClient()
     {
         _workerTask = Task.Run(Process);
     }
-    
+
     public void Send(SendMessageRequest request)
         => NoneBus.SendMessageRequests.Enqueue(request);
-    
+
     private void Process()
     {
         const int pause = 50;
@@ -29,7 +29,7 @@ public class PassEventClient : IEventBusClient
 
             Thread.Sleep(pause);
         }
-    } 
+    }
 
     public void Dispose()
     {

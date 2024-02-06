@@ -46,7 +46,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                     CancellationToken.None);
         };
     }
-    
+
     protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
     {
     }
@@ -63,8 +63,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
     }
 
 
-    protected override async Task InnerProcess(Message message, string args, CancellationToken token)
-    {
+    protected override async Task InnerProcess(Message message, string args, CancellationToken token) =>
         _bus.Send(new SendMessageRequest(message.Uid)
         {
             Message = new AiMessage(message.Uid)
@@ -79,5 +78,4 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                 ForwardedFrom = message.ForwardedFrom
             }
         });
-    }
 }
