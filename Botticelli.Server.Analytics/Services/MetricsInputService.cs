@@ -1,4 +1,5 @@
-﻿using Botticelli.Analytics.Shared.Requests;
+﻿using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.Analytics.Shared.Requests;
 
 namespace Botticelli.Server.Analytics.Services;
 
@@ -11,8 +12,8 @@ public class MetricsInputService : IMetricsInputService
         _rw = rw;
     }
 
-    public async Task PushMetricAsync(PushMetricRequest request, CancellationToken token)
+    public async Task PushMetricAsync(PushMetricRequest<IMetricObject> request, CancellationToken token)
     {
-        await _rw.WriteAsync(request, token);
+        await _rw.WriteAsync(request.Object, token);
     }
 }

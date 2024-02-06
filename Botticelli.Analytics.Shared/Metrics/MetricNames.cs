@@ -14,7 +14,9 @@ public static class MetricNames
     public const string BotStopped = "BotStopped";
     public const string CommandReceived = "CommandReceived";
     public const string BotError = "BotError";
-
+    public const string UserDefined = "UserDefined";
+    
+    
     public static string[] Names =
     {
         MessageReceived,
@@ -25,6 +27,7 @@ public static class MetricNames
         NewSubscription,
         UnSubscription,
         CommandReceived,
-        BotError
+        BotError,
+        UserDefined
     };
 }

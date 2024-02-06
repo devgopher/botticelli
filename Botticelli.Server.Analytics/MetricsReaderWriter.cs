@@ -13,7 +13,7 @@ public class MetricsReaderWriter
         _context = context;
     }
 
-    public async Task WriteAsync(MetricObject input, CancellationToken token)
+    public async Task WriteAsync(IMetricObject input, CancellationToken token)
     {
         await _context.MetricModels.AddAsync(new MetricModel
         {

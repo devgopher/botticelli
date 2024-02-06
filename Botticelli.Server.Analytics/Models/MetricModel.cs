@@ -12,6 +12,7 @@ public class MetricModel : IMetricModel, INotifyPropertyChanging, INotifyPropert
     public string BotId { get; set; }
     public DateTime Timestamp { get; set; }
     public string InternalValue { get; set; }
+    public Dictionary<string, string> AdditionalParameters { get; set; }
     public event PropertyChangingEventHandler? PropertyChanging;
     public event PropertyChangedEventHandler? PropertyChanged;
 }

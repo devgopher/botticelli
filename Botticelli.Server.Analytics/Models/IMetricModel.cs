@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Server.Analytics.Models;
+﻿using System.Runtime.InteropServices;
+
+namespace Botticelli.Server.Analytics.Models;
 
 public interface IMetricModel
 {
@@ -6,4 +8,5 @@ public interface IMetricModel
     string BotId { get; set; }
     DateTime Timestamp { get; set; }
     public string InternalValue { get; set; }
+    public Dictionary<string, string> AdditionalParameters { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using Botticelli.Analytics.Shared.Requests;
+﻿using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.Analytics.Shared.Requests;
 using Botticelli.Server.Analytics.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,7 @@ public class MetricsInputController : Controller
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> ReceiveMetric([FromQuery] PushMetricRequest request, CancellationToken token)
+    public async Task<IActionResult> ReceiveMetric([FromQuery] PushMetricRequest<IMetricObject> request, CancellationToken token)
     {
         try
         {

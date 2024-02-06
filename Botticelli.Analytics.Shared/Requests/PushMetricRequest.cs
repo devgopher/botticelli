@@ -2,6 +2,8 @@
 
 namespace Botticelli.Analytics.Shared.Requests;
 
-public class PushMetricRequest : MetricObject
+public class PushMetricRequest<TMetricObject>
+where TMetricObject : IMetricObject
 {
+    public TMetricObject Object { get; set; }
 }
