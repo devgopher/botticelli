@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.MessageProcessors;
 
-public sealed class ChatMessageProcessor : IClientMessageProcessor
+public sealed partial class ChatMessageProcessor : IClientMessageProcessor
 {
     private const string SimpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
     private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
@@ -31,41 +31,38 @@ public sealed class ChatMessageProcessor : IClientMessageProcessor
     {
         _logger.LogDebug($"{nameof(ProcessAsync)}({message.Uid}) started...");
 
-        _metrics.Process(MetricNames.MessageReceived, BotDataUtils.GetBotId());
+        _metrics.Process(MetricNames.MessageReceived, BotDataUtils.GetBotId()!);
 
         try
         {
-            string command;
+            string command = string.Empty;
 
-            if (Regex.IsMatch(message.Body, SimpleCommandPattern))
+            if (SimpleCommandRegex().IsMatch(message.Body!))
             {
-                var match = Regex.Matches(message.Body, SimpleCommandPattern)
-                    .FirstOrDefault();
+                var match = SimpleCommandRegex().Matches(message.Body)
+                                                .FirstOrDefault();
 
                 if (match == default) return;
 
                 command = match.Groups[1]
                     .Value;
-
-                await _cpFactory.Get(command)
-                    .ProcessAsync(message, token);
             }
-            else if (Regex.IsMatch(message.Body, ArgsCommandPattern))
+            else if (ArgsCommandRegex().IsMatch(message.Body))
             {
-                var match = Regex.Matches(message.Body, ArgsCommandPattern)
-                    .FirstOrDefault();
+                var match = ArgsCommandRegex().Matches(message.Body)
+                                              .FirstOrDefault();
 
-                command = match.Groups[1].Value;
+                command = match!.Groups[1].Value;
 
                 var argsString = match.Groups[2].Value;
 
-                var args = Array.Empty<string>();
-
-                if (!string.IsNullOrWhiteSpace(argsString)) args = argsString.Split(" ");
-
-                await _cpFactory.Get(command)
-                    .ProcessAsync(message, token);
+                if (!string.IsNullOrWhiteSpace(argsString)) 
+                    argsString.Split(" ");
             }
+            
+            if (command != string.Empty)
+                await _cpFactory.Get(command)!
+                                .ProcessAsync(message, token);
 
             _logger.LogDebug($"{nameof(ProcessAsync)}({message.Uid}) finished...");
         }
@@ -83,4 +80,10 @@ public sealed class ChatMessageProcessor : IClientMessageProcessor
     {
         throw new NotImplementedException();
     }
+
+    [GeneratedRegex("\\/([a-zA-Z0-9]*) (.*)")]
+    private static partial Regex ArgsCommandRegex();
+    
+    [GeneratedRegex("\\/([a-zA-Z0-9]*)$")]
+    private static partial Regex SimpleCommandRegex();
 }
