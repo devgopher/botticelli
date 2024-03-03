@@ -1,22 +1,12 @@
-﻿using Botticelli.Framework.Telegram;
-using Botticelli.Interfaces;
-using Microsoft.Extensions.Options;
-using TelegramMessagingSample.Settings;
-
-namespace TelegramMessagingSample;
+﻿namespace TelegramMessagingSample;
 
 /// <summary>
 ///     This hosted service intended for sending messages according to a schedule
 /// </summary>
 public class TestBotHostedService : IHostedService
 {
-    private readonly IOptionsMonitor<SampleSettings> _settings;
-    private readonly IBot<TelegramBot> _telegramBot;
-
-    public TestBotHostedService(IBot<TelegramBot> telegramBot, IOptionsMonitor<SampleSettings> settings)
+    public TestBotHostedService()
     {
-        _telegramBot = telegramBot;
-        _settings = settings;
     }
 
     public Task StartAsync(CancellationToken token)
