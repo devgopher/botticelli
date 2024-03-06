@@ -13,12 +13,11 @@ using Microsoft.Extensions.Options;
 
 namespace Botticelli.AI.GptJ.Provider;
 
-public class GptJProvider : GenericAiProvider
+public class GptJProvider : GenericAiProvider<AiGptSettings>
 {
-    private readonly IOptionsMonitor<AiGptSettings> _gptSettings;
     private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
 
-    public GptJProvider(IOptionsMonitor<AiGptSettings> gptSettings,
+    public GptJProvider(IOptionsSnapshot<AiGptSettings> gptSettings,
         IHttpClientFactory factory,
         ILogger<GptJProvider> logger,
         IBusClient bus) : base(gptSettings,
@@ -26,7 +25,6 @@ public class GptJProvider : GenericAiProvider
         logger,
         bus)
     {
-        _gptSettings = gptSettings;
     }
 
     public override string AiName => "gptj";
@@ -42,25 +40,24 @@ public class GptJProvider : GenericAiProvider
 
             using var client = Factory.CreateClient();
 
-            client.BaseAddress = new Uri(Settings.CurrentValue.Url);
+            client.BaseAddress = new Uri(Settings.Value.Url);
 
-            if (!string.IsNullOrWhiteSpace(_gptSettings.CurrentValue.ApiKey))
+            if (!string.IsNullOrWhiteSpace(Settings.Value.ApiKey))
                 client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
+                    new AuthenticationHeaderValue("Bearer", Settings.Value.ApiKey);
 
             var content = JsonContent.Create(new GptJInputMessage
             {
                 Text = message.Body,
-                GenerateTokensLimit = _gptSettings?.CurrentValue?.GenerateTokensLimit ?? 300,
-                TopP = _gptSettings?.CurrentValue?.TopP ?? 0.5,
-                TopK = _gptSettings?.CurrentValue?.TopK ?? 0,
-                Temperature = _gptSettings?.CurrentValue?.Temperature ??
-                              (_temperatureRandom.Next(0, 900) + 100) / 1000.0
+                GenerateTokensLimit = Settings.Value.GenerateTokensLimit,
+                TopP = Settings.Value.TopP,
+                TopK = Settings.Value.TopK,
+                Temperature = Settings.Value.Temperature
             });
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
-            var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", "generate"),
+            var response = await client.PostAsync(Url.Combine($"{Settings.Value.Url}", "generate"),
                 content,
                 token);
 
@@ -70,7 +67,7 @@ public class GptJProvider : GenericAiProvider
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
-                        IsPartial = _gptSettings.CurrentValue.ExpectPartialResponses,
+                        IsPartial = Settings.Value.ExpectPartialResponses,
                         Message = new Shared.ValueObjects.Message(message.Uid)
                         {
                             ChatIds = message.ChatIds,

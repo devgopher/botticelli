@@ -13,12 +13,11 @@ using Microsoft.Extensions.Options;
 
 namespace Botticelli.AI.ChatGpt.Provider;
 
-public class ChatGptProvider : GenericAiProvider
+public class ChatGptProvider : GenericAiProvider<GptSettings>
 {
-    private readonly IOptionsMonitor<GptSettings> _gptSettings;
-    private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
+ private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
 
-    public ChatGptProvider(IOptionsMonitor<GptSettings> gptSettings,
+    public ChatGptProvider(IOptionsSnapshot<GptSettings> gptSettings,
         IHttpClientFactory factory,
         ILogger<ChatGptProvider> logger,
         IBusClient bus) : base(gptSettings,
@@ -26,7 +25,6 @@ public class ChatGptProvider : GenericAiProvider
         logger,
         bus)
     {
-        _gptSettings = gptSettings;
     }
 
     public override string AiName => "chatgpt";
@@ -39,7 +37,7 @@ public class ChatGptProvider : GenericAiProvider
 
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
                 {
-                    IsPartial = _gptSettings.CurrentValue.ExpectPartialResponses,
+                    IsPartial = Settings.Value.ExpectPartialResponses,
                     Message = new Shared.ValueObjects.Message(message.Uid)
                     {
                         ChatIds = message.ChatIds,
@@ -62,13 +60,13 @@ public class ChatGptProvider : GenericAiProvider
 
             using var client = Factory.CreateClient();
 
-            client.BaseAddress = new Uri(Settings.CurrentValue.Url);
+            client.BaseAddress = new Uri(Settings.Value.Url);
             client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
+                new AuthenticationHeaderValue("Bearer", Settings.Value.ApiKey);
 
             var content = JsonContent.Create(new ChatGptInputMessage
             {
-                Model = _gptSettings.CurrentValue.Model,
+                Model = Settings.Value.Model,
                 Messages = new List<ChatGptMessage>
                 {
                     new()
@@ -77,13 +75,12 @@ public class ChatGptProvider : GenericAiProvider
                         Content = message.Body
                     }
                 },
-                Temperature = _gptSettings?.CurrentValue?.Temperature ??
-                              (_temperatureRandom.Next(0, 900) + 100) / 1000.0
+                Temperature = Settings.Value.Temperature
             });
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
-            var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", "completions"),
+            var response = await client.PostAsync(Url.Combine($"{Settings.Value.Url}", "completions"),
                 content,
                 token);
 
@@ -100,7 +97,7 @@ public class ChatGptProvider : GenericAiProvider
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
-                        IsPartial = _gptSettings?.CurrentValue.ExpectPartialResponses,
+                        IsPartial = Settings.Value.ExpectPartialResponses,
                         Message = new Shared.ValueObjects.Message(message.Uid)
                         {
                             ChatIds = message.ChatIds,
@@ -118,7 +115,7 @@ public class ChatGptProvider : GenericAiProvider
             {
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
-                        IsPartial = _gptSettings?.CurrentValue.ExpectPartialResponses,
+                        IsPartial = Settings.Value.ExpectPartialResponses,
                         Message = new Shared.ValueObjects.Message(message.Uid)
                         {
                             ChatIds = message.ChatIds,
@@ -140,7 +137,7 @@ public class ChatGptProvider : GenericAiProvider
             Logger.LogError(ex, ex.Message);
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
                 {
-                    IsPartial = _gptSettings?.CurrentValue.ExpectPartialResponses,
+                    IsPartial = Settings.Value.ExpectPartialResponses,
                     Message = new Shared.ValueObjects.Message(message.Uid)
                     {
                         ChatIds = message.ChatIds,

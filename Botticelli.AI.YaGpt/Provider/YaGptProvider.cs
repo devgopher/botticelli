@@ -14,15 +14,13 @@ using Newtonsoft.Json;
 
 namespace Botticelli.AI.YaGpt.Provider;
 
-public class YaGptProvider : GenericAiProvider
+public class YaGptProvider : GenericAiProvider<YaGptSettings>
 {
-    private readonly IOptionsMonitor<YaGptSettings> _gptSettings;
-    private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
     private const string SystemRole = "system";
     private const string UserRole = "user";
     private const string Completion = "completion";
 
-    public YaGptProvider(IOptionsMonitor<YaGptSettings> gptSettings,
+    public YaGptProvider(IOptionsSnapshot<YaGptSettings> gptSettings,
         IHttpClientFactory factory,
         ILogger<YaGptProvider> logger,
         IBusClient bus) : base(gptSettings,
@@ -30,7 +28,6 @@ public class YaGptProvider : GenericAiProvider
         logger,
         bus)
     {
-        _gptSettings = gptSettings;
     }
 
     public override string AiName => "yagpt";
@@ -43,7 +40,7 @@ public class YaGptProvider : GenericAiProvider
 
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
                 {
-                    IsPartial = _gptSettings.CurrentValue.ExpectPartialResponses,
+                    IsPartial = Settings.Value.ExpectPartialResponses,
                     Message = new Shared.ValueObjects.Message(message.Uid)
                     {
                         ChatIds = message.ChatIds,
@@ -66,19 +63,19 @@ public class YaGptProvider : GenericAiProvider
 
             using var client = Factory.CreateClient();
 
-            client.BaseAddress = new Uri(Settings.CurrentValue.Url);
+            client.BaseAddress = new Uri(Settings.Value.Url);
             client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
+                new AuthenticationHeaderValue("Bearer", Settings.Value.ApiKey);
 
             var yaGptMessage = new YaGptInputMessage
             {
-                ModelUri = _gptSettings.CurrentValue.Model,
+                ModelUri = Settings.Value.Model,
                 Messages = new List<YaGptMessage>
                 {
                     new()
                     {
                         Role = SystemRole,
-                        Text = _gptSettings.CurrentValue.Instruction
+                        Text = Settings.Value.Instruction
                     },
                     new()
                     {
@@ -88,10 +85,9 @@ public class YaGptProvider : GenericAiProvider
                 },
                 CompletionOptions = new CompletionOptions()
                 {
-                    MaxTokens = _gptSettings.CurrentValue.MaxTokens,
-                    Stream = _gptSettings.CurrentValue.StreamGeneration,
-                    Temperature = _gptSettings?.CurrentValue?.Temperature ??
-                                  (_temperatureRandom.Next(0, 900) + 100) / 1000.0
+                    MaxTokens = Settings.Value.MaxTokens,
+                    Stream = Settings.Value.StreamGeneration,
+                    Temperature = Settings.Value.Temperature
                 }
             };
 
@@ -105,7 +101,7 @@ public class YaGptProvider : GenericAiProvider
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
-            var response = await client.PostAsync(Url.Combine($"{Settings.CurrentValue.Url}", Completion),
+            var response = await client.PostAsync(Url.Combine($"{Settings.Value.Url}", Completion),
                 content,
                 token);
 

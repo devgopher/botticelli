@@ -12,14 +12,13 @@ using Microsoft.Extensions.Options;
 
 namespace Botticelli.AI.DeepSeekGpt.Provider;
 
-public class DeepSeekGptProvider : GenericAiProvider
+public class DeepSeekGptProvider : GenericAiProvider<DeepSeekGptSettings>
 {
     private const string SystemRole = "system";
     private const string UserRole = "user";
     private const string Completion = "completions";
-    private readonly IOptionsMonitor<DeepSeekGptSettings> _gptSettings;
 
-    public DeepSeekGptProvider(IOptionsMonitor<DeepSeekGptSettings> gptSettings,
+    public DeepSeekGptProvider(IOptionsSnapshot<DeepSeekGptSettings> gptSettings,
         IHttpClientFactory factory,
         ILogger<DeepSeekGptProvider> logger,
         IBusClient bus) : base(gptSettings,
@@ -27,7 +26,6 @@ public class DeepSeekGptProvider : GenericAiProvider
         logger,
         bus)
     {
-        _gptSettings = gptSettings;
     }
 
     public override string AiName => "deepseek";
@@ -40,7 +38,7 @@ public class DeepSeekGptProvider : GenericAiProvider
 
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
                 {
-                    IsPartial = _gptSettings.CurrentValue.ExpectPartialResponses,
+                    IsPartial = Settings.Value.ExpectPartialResponses,
                     Message = new Shared.ValueObjects.Message(message.Uid)
                     {
                         ChatIds = message.ChatIds,
@@ -63,20 +61,20 @@ public class DeepSeekGptProvider : GenericAiProvider
 
             using var client = Factory.CreateClient();
 
-            client.BaseAddress = new Uri(Settings.CurrentValue.Url);
+            client.BaseAddress = new Uri(Settings.Value.Url);
             client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", _gptSettings.CurrentValue.ApiKey);
+                new AuthenticationHeaderValue("Bearer", Settings.Value.ApiKey);
 
             var deepSeekGptMessage = new DeepSeekInputMessage
             {
-                Model = _gptSettings.CurrentValue.Model,
-                MaxTokens = _gptSettings.CurrentValue.MaxTokens,
+                Model = Settings.Value.Model,
+                MaxTokens = Settings.Value.MaxTokens,
                 Messages = new List<DeepSeekInnerInputMessage>
                 {
                     new()
                     {
                         Role = SystemRole,
-                        Content = _gptSettings.CurrentValue.Instruction
+                        Content = Settings.Value.Instruction
                     },
                     new()
                     {

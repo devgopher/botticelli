@@ -6,14 +6,15 @@ using Microsoft.Extensions.Options;
 
 namespace Botticelli.AI.AIProvider;
 
-public abstract class GenericAiProvider : IAiProvider
+public abstract class GenericAiProvider<TSettings> : IAiProvider 
+    where TSettings : class
 {
     protected readonly IBusClient Bus;
     protected readonly IHttpClientFactory Factory;
     protected readonly ILogger Logger;
-    protected readonly IOptionsMonitor<AiSettings> Settings;
+    protected readonly IOptionsSnapshot<TSettings> Settings;
 
-    public GenericAiProvider(IOptionsMonitor<AiSettings> settings,
+    public GenericAiProvider(IOptionsSnapshot<TSettings> settings,
         IHttpClientFactory factory,
         ILogger logger,
         IBusClient bus)
