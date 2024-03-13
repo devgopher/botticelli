@@ -91,22 +91,20 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                 var outStream = await response.Content.ReadAsStreamAsync(token);
                 var serializer = new JsonSerializer();
                 using var sr = new StreamReader(outStream);
-                await using var reader = new JsonTextReader(sr)
-                {
-                    SupportMultipleContent = true
-                };
 
-                while (await reader.ReadAsync(token))
+                using var reader = TextReader.Synchronized(sr);
+                var partText = await reader.ReadLineAsync(token);
+                
+                while (partText != null)
                 {
-                    if (reader.TokenType != JsonToken.StartObject)
-                        continue;
-                    var part = serializer.Deserialize<ChatGptOutputMessage>(reader);
+                    Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) text pt: {partText}");
+                    partText = partText.Replace("data: ", string.Empty);
+                    
+                    var part = JsonConvert.DeserializeObject<ChatGptOutputMessage>(partText);
 
                     text.AppendJoin(' ',
                         part?.Choices?
                              .Select(c => c.Message.Content) ?? Array.Empty<string>());
-                    
-                    Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) text pt: {text}");
                     
                     await Bus.SendResponse(new SendMessageResponse(message.Uid)
                         {
@@ -126,6 +124,8 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                     if (part?.Choices?.Any(c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
                         true)
                         break;
+
+                    partText = await reader.ReadLineAsync(token);
                 }
             }
             else
