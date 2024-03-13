@@ -12,9 +12,9 @@ public abstract class GenericAiProvider<TSettings> : IAiProvider
     protected readonly IBusClient Bus;
     protected readonly IHttpClientFactory Factory;
     protected readonly ILogger Logger;
-    protected readonly IOptionsSnapshot<TSettings> Settings;
+    protected readonly IOptions<TSettings> Settings;
 
-    public GenericAiProvider(IOptionsSnapshot<TSettings> settings,
+    public GenericAiProvider(IOptions<TSettings> settings,
         IHttpClientFactory factory,
         ILogger logger,
         IBusClient bus)

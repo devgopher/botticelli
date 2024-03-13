@@ -18,7 +18,7 @@ public class DeepSeekGptProvider : GenericAiProvider<DeepSeekGptSettings>
     private const string UserRole = "user";
     private const string Completion = "completions";
 
-    public DeepSeekGptProvider(IOptionsSnapshot<DeepSeekGptSettings> gptSettings,
+    public DeepSeekGptProvider(IOptions<DeepSeekGptSettings> gptSettings,
         IHttpClientFactory factory,
         ILogger<DeepSeekGptProvider> logger,
         IBusClient bus) : base(gptSettings,
