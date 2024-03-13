@@ -20,7 +20,7 @@ public class YaGptProvider : GenericAiProvider<YaGptSettings>
     private const string UserRole = "user";
     private const string Completion = "completion";
 
-    public YaGptProvider(IOptionsSnapshot<YaGptSettings> gptSettings,
+    public YaGptProvider(IOptions<YaGptSettings> gptSettings,
         IHttpClientFactory factory,
         ILogger<YaGptProvider> logger,
         IBusClient bus) : base(gptSettings,

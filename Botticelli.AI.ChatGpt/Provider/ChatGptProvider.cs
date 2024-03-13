@@ -15,9 +15,7 @@ namespace Botticelli.AI.ChatGpt.Provider;
 
 public class ChatGptProvider : GenericAiProvider<GptSettings>
 {
- private readonly Random _temperatureRandom = new(DateTime.Now.Millisecond);
-
-    public ChatGptProvider(IOptionsSnapshot<GptSettings> gptSettings,
+    public ChatGptProvider(IOptions<GptSettings> gptSettings,
         IHttpClientFactory factory,
         ILogger<ChatGptProvider> logger,
         IBusClient bus) : base(gptSettings,
