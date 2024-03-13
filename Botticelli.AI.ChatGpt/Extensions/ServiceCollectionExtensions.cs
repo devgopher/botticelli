@@ -29,6 +29,7 @@ public static class ServiceCollectionExtensions
             s.ApiKey = chatGptSettings.ApiKey;
             s.Url = chatGptSettings.Url;
             s.AiName = chatGptSettings.AiName;
+            s.StreamGeneration = chatGptSettings.StreamGeneration;
         });
 
         services.AddSingleton<IAiProvider, ChatGptProvider>();

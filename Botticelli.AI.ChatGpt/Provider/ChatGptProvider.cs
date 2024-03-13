@@ -10,6 +10,7 @@ using Botticelli.Shared.API.Client.Responses;
 using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace Botticelli.AI.ChatGpt.Provider;
 
@@ -73,7 +74,8 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                         Content = message.Body
                     }
                 },
-                Temperature = Settings.Value.Temperature
+                Temperature = Settings.Value.Temperature,
+                Stream = Settings.Value.StreamGeneration
             });
 
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
@@ -84,30 +86,45 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
 
             if (response.IsSuccessStatusCode)
             {
-                var outMessage =
-                    await response.Content.ReadFromJsonAsync<ChatGptOutputMessage>(cancellationToken: token);
-
                 var text = new StringBuilder();
-                text.AppendJoin(' ',
-                    outMessage?
-                        .Choices?
-                        .Select(c => c.Message.Content) ?? Array.Empty<string>());
 
-                await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                    {
-                        IsPartial = Settings.Value.ExpectPartialResponses,
-                        Message = new Shared.ValueObjects.Message(message.Uid)
+                var outStream = await response.Content.ReadAsStreamAsync(token);
+                var serializer = new JsonSerializer();
+                using var sr = new StreamReader(outStream);
+                await using var reader = new JsonTextReader(sr)
+                {
+                    SupportMultipleContent = true
+                };
+
+                while (await reader.ReadAsync(token))
+                {
+                    if (reader.TokenType != JsonToken.StartObject)
+                        continue;
+                    var part = serializer.Deserialize<ChatGptOutputMessage>(reader);
+
+                    text.AppendJoin(' ',
+                        part?.Choices?
+                            .Select(c => c.Message.Content) ?? Array.Empty<string>());
+
+                    await Bus.SendResponse(new SendMessageResponse(message.Uid)
                         {
-                            ChatIds = message.ChatIds,
-                            Subject = message.Subject,
-                            Body = text.ToString(),
-                            Attachments = null,
-                            From = null,
-                            ForwardedFrom = null,
-                            ReplyToMessageUid = message.ReplyToMessageUid
-                        }
-                    },
-                    token);
+                            Message = new Shared.ValueObjects.Message(message.Uid)
+                            {
+                                ChatIds = message.ChatIds,
+                                Subject = message.Subject,
+                                Body = text.ToString(),
+                                Attachments = null,
+                                From = null,
+                                ForwardedFrom = null,
+                                ReplyToMessageUid = message.ReplyToMessageUid
+                            }
+                        },
+                        token);
+
+                    if (part?.Choices?.Any(c => c.FinishReason.Contains("stop")) ==
+                        true)
+                        break;
+                }
             }
             else
             {

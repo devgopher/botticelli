@@ -9,4 +9,5 @@ public class ChatGptInputMessage
     [JsonPropertyName("messages")] public List<ChatGptMessage> Messages { get; set; }
 
     [JsonPropertyName("temperature")] public double Temperature { get; set; }
+    [JsonPropertyName("stream")] public bool Stream { get; set; }
 }
