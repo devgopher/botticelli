@@ -104,7 +104,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
 
                     text.AppendJoin(' ',
                         part?.Choices?
-                             .Select(c => c.Message.Content) ?? Array.Empty<string>());
+                             .Select(c => (c.Message ?? c.Delta)?.Content) ?? Array.Empty<string>());
                     
                     await Bus.SendResponse(new SendMessageResponse(message.Uid)
                         {
