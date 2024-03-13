@@ -105,7 +105,9 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                     text.AppendJoin(' ',
                         part?.Choices?
                             .Select(c => c.Message.Content) ?? Array.Empty<string>());
-
+                    
+                    Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) text pt: {text}");
+                    
                     await Bus.SendResponse(new SendMessageResponse(message.Uid)
                         {
                             Message = new Shared.ValueObjects.Message(message.Uid)
