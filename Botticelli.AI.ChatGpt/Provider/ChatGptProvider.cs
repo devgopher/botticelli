@@ -121,7 +121,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                         },
                         token);
 
-                    if (part?.Choices?.Any(c => c.FinishReason.Contains("stop")) ==
+                    if (part?.Choices?.Any(c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
                         true)
                         break;
                 }
