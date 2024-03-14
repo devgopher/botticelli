@@ -24,10 +24,10 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
     {
         _bus = bus;
 
-        _bus.OnReceived += (sender, response) =>
+        _bus.OnReceived += async (sender, response) =>
         {
             if (response != null)
-                _bot.SendMessageAsync(new SendMessageRequest(response.Uid)
+                await _bot.SendMessageAsync(new SendMessageRequest(response.Uid)
                     {
                         Message = response.Message,
                         ExpectPartialResponse = response.IsPartial
