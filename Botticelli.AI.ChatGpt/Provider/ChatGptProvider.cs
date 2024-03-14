@@ -94,14 +94,13 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                 using var sr = new StreamReader(outStream);
 
                 using var reader = TextReader.Synchronized(sr);
-                var prevText = new StringBuilder();
+                var prevText = string.Empty;
                 var partText = await reader.ReadLineAsync(token);
                 var seqNumber = 0;
                 while (partText != null)
                 {
                     try
                     {
-                        Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) text pt: {partText}");
                         partText = partText.Replace("data: ", string.Empty);
 
                         var part = JsonConvert.DeserializeObject<ChatGptOutputMessage>(partText);
@@ -120,7 +119,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                             {
                                 ChatIds = message.ChatIds,
                                 Subject = message.Subject,
-                                Body = "SS" + text.ToString(),
+                                Body = text.ToString(),
                                 Attachments = null,
                                 From = null,
                                 ForwardedFrom = null,
@@ -128,7 +127,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                             }
                         };
 
-                        prevText = text;
+                        prevText = responseMessage.Message.Body;
                         
                         await Bus.SendResponse(responseMessage,
                             token);
