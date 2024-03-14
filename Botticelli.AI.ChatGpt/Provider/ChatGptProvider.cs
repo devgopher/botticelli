@@ -90,27 +90,24 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                 var text = new StringBuilder();
 
                 var outStream = await response.Content.ReadAsStreamAsync(token);
-                var serializer = new JsonSerializer();
                 using var sr = new StreamReader(outStream);
 
                 using var reader = TextReader.Synchronized(sr);
-                var prevText = string.Empty;
                 var partText = await reader.ReadLineAsync(token);
                 var seqNumber = 0;
                 while (partText != null)
                 {
                     try
                     {
-                        partText = partText.Replace("data: ", string.Empty);
+                        if (Settings.Value.StreamGeneration)
+                            partText = partText.Replace("data: ", string.Empty);
 
                         var part = JsonConvert.DeserializeObject<ChatGptOutputMessage>(partText);
 
                         text.AppendJoin(' ',
                             part?.Choices?
                                 .Select(c => (c.Message ?? c.Delta)?.Content) ?? Array.Empty<string>());
-
-                        text = text.Remove(0, prevText.Length); // cleans already posted text
-                        
+                       
                         var responseMessage = new SendMessageResponse(message.Uid)
                         {
                             IsPartial = Settings.Value.StreamGeneration,
@@ -126,8 +123,6 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                                 ReplyToMessageUid = message.ReplyToMessageUid
                             }
                         };
-
-                        prevText = responseMessage.Message.Body;
                         
                         await Bus.SendResponse(responseMessage,
                             token);
