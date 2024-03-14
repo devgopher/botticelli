@@ -439,33 +439,33 @@ public class TelegramBot : BaseBot<TelegramBot>
         return response;
     }
 
-    private async Task<Message> SendMessage<TSendOptions>(SendMessageRequest request, CancellationToken token,
-        (string chatId, string innerId) link, string retText, IReplyMarkup replyMarkup,
-        MessageSequenceStates messagesSequence)
-    {
-        Message message;
-        Logger.LogInformation(
-            $"Message sequence number: {request.SequenceNumber}: sending a first message");
-        message = await _client.SendTextMessageAsync(link.chatId,
-            retText,
-            parseMode: ParseMode.MarkdownV2,
-            replyToMessageId: request.Message.ReplyToMessageUid != default
-                ? int.Parse(request.Message.ReplyToMessageUid)
-                : default,
-            replyMarkup: replyMarkup,
-            cancellationToken: token);
-
-        Logger.LogInformation(
-            $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: saving state in a cache. Inner message id {message.MessageId}");
-
-        messagesSequence.States.Add(new MessageSequenceState
-        {
-            Request = request,
-            InnerMessageId = message.MessageId,
-            IsSent = true
-        });
-        return message;
-    }
+    // private async Task<Message> SendMessage<TSendOptions>(SendMessageRequest request, CancellationToken token,
+    //     (string chatId, string innerId) link, string retText, IReplyMarkup replyMarkup,
+    //     MessageSequenceStates messagesSequence)
+    // {
+    //     Message message;
+    //     Logger.LogInformation(
+    //         $"Message sequence number: {request.SequenceNumber}: sending a first message");
+    //     message = await _client.SendTextMessageAsync(link.chatId,
+    //         retText,
+    //         parseMode: ParseMode.MarkdownV2,
+    //         replyToMessageId: request.Message.ReplyToMessageUid != default
+    //             ? int.Parse(request.Message.ReplyToMessageUid)
+    //             : default,
+    //         replyMarkup: replyMarkup,
+    //         cancellationToken: token);
+    //
+    //     Logger.LogInformation(
+    //         $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: saving state in a cache. Inner message id {message.MessageId}");
+    //
+    //     messagesSequence.States.Add(new MessageSequenceState
+    //     {
+    //         Request = request,
+    //         InnerMessageId = message.MessageId,
+    //         IsSent = true
+    //     });
+    //     return message;
+    // }
 
     private static void AddChatIdInnerIdLink(SendMessageResponse response, string chatId, Message message)
     {
