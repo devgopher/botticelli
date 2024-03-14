@@ -262,13 +262,21 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 Logger.LogInformation($"Trying to replace a message '{request.Uid}': {innerMessageId}");
                                 
                                 // clean previous
-                                
+
                                 foreach (var innerMsgId in messagesSequence.States?.Select(s => s.InnerMessageId))
                                 {
-                                    await _client.DeleteMessageAsync(link.chatId, innerMsgId.Value!, token);                                    
+                                    try
+                                    {
+                                        await _client.DeleteMessageAsync(link.chatId, innerMsgId.Value!, token);
+                                    }
+                                    catch
+                                    {
+                                        
+                                    }
+                                    
                                 }
 
-                                
+
                                 message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
                                 messagesSequence.States.Add(new MessageSequenceState
                                 {
