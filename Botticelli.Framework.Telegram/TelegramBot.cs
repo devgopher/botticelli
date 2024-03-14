@@ -265,7 +265,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 
                                 // clean previous
 
-                                foreach (var innerMsgId in messagesSequence.States?.Where(s => s.InnerMessageId < request.SequenceNumber).Select(s => s.InnerMessageId))
+                                foreach (var innerMsgId in messagesSequence.States?.Where(s => s.Request?.SequenceNumber < request.SequenceNumber).Select(s => s.InnerMessageId))
                                 {
                                     try
                                     {
