@@ -94,40 +94,45 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
 
                 using var reader = TextReader.Synchronized(sr);
                 var partText = await reader.ReadLineAsync(token);
-                
+
                 while (partText != null)
-                {
-                    Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) text pt: {partText}");
-                    partText = partText.Replace("data: ", string.Empty);
-                    
-                    var part = JsonConvert.DeserializeObject<ChatGptOutputMessage>(partText);
+                    try
+                    {
+                        Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) text pt: {partText}");
+                        partText = partText.Replace("data: ", string.Empty);
 
-                    text.AppendJoin(' ',
-                        part?.Choices?
-                             .Select(c => (c.Message ?? c.Delta)?.Content) ?? Array.Empty<string>());
-                    
-                    await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                        {
-                            IsPartial = Settings.Value.StreamGeneration,
-                            Message = new Shared.ValueObjects.Message(message.Uid)
+                        var part = JsonConvert.DeserializeObject<ChatGptOutputMessage>(partText);
+
+                        text.AppendJoin(' ',
+                            part?.Choices?
+                                .Select(c => (c.Message ?? c.Delta)?.Content) ?? Array.Empty<string>());
+
+                        await Bus.SendResponse(new SendMessageResponse(message.Uid)
                             {
-                                ChatIds = message.ChatIds,
-                                Subject = message.Subject,
-                                Body = text.ToString(),
-                                Attachments = null,
-                                From = null,
-                                ForwardedFrom = null,
-                                ReplyToMessageUid = message.ReplyToMessageUid
-                            }
-                        },
-                        token);
+                                IsPartial = Settings.Value.StreamGeneration,
+                                Message = new Shared.ValueObjects.Message(message.Uid)
+                                {
+                                    ChatIds = message.ChatIds,
+                                    Subject = message.Subject,
+                                    Body = text.ToString(),
+                                    Attachments = null,
+                                    From = null,
+                                    ForwardedFrom = null,
+                                    ReplyToMessageUid = message.ReplyToMessageUid
+                                }
+                            },
+                            token);
 
-                    if (part?.Choices?.Any(c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
-                        true)
-                        break;
+                        if (part?.Choices?.Any(c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
+                            true)
+                            break;
 
-                    partText = await reader.ReadLineAsync(token);
-                }
+                        partText = await reader.ReadLineAsync(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex, ex.Message);
+                    }
             }
             else
             {
