@@ -78,9 +78,6 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                 Stream = Settings.Value.StreamGeneration
             });
 
-            Logger.LogDebug(
-                $"{nameof(SendAsync)}({message.ChatIds}) content: {JsonConvert.SerializeObject(content.Value)}");
-
             var response = await client.PostAsync(Url.Combine($"{Settings.Value.Url}", "completions"),
                 content,
                 token);
@@ -106,7 +103,6 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                             $"{nameof(SendAsync)}({message.ChatIds}) part text: {partText}");
                         
                         var part = JsonConvert.DeserializeObject<ChatGptOutputMessage>(partText);
-
                         
                         text.AppendJoin(' ',
                             part?.Choices?
@@ -130,9 +126,6 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                         
                         await Bus.SendResponse(responseMessage,
                             token);
-
-                        Logger.LogInformation(
-                            $"{nameof(SendAsync)}({message.ChatIds}) sent a response message uid '{responseMessage.Uid}', seq number: {responseMessage.SequenceNumber}");
 
                         if (Settings.Value.StreamGeneration)
                             if (part?.Choices?.Any(
