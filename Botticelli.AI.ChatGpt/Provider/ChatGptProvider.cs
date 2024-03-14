@@ -108,6 +108,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                     
                     await Bus.SendResponse(new SendMessageResponse(message.Uid)
                         {
+                            IsPartial = Settings.Value.StreamGeneration,
                             Message = new Shared.ValueObjects.Message(message.Uid)
                             {
                                 ChatIds = message.ChatIds,
