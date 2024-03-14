@@ -160,20 +160,25 @@ public class TelegramBot : BaseBot<TelegramBot>
             {
                 Message message = null;
                 if (!string.IsNullOrWhiteSpace(retText))
-                    message = (request.ExpectPartialResponse ?? false) ?
-                            await _client.EditMessageTextAsync(link.chatId,
-                                                               int.Parse(link.innerId),
-                                                               retText,
-                                                               ParseMode.MarkdownV2,
-                                                               cancellationToken: token) :
-                            await _client.SendTextMessageAsync(link.chatId,
-                                                               retText,
-                                                               parseMode: ParseMode.MarkdownV2,
-                                                               replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
-                                                               replyMarkup: replyMarkup,
-                                                               cancellationToken: token);
-            
-                
+                {
+                    message = (request.ExpectPartialResponse ?? false)
+                        ? await _client.EditMessageTextAsync(link.chatId,
+                            int.Parse(link.innerId),
+                            retText,
+                            ParseMode.MarkdownV2,
+                            cancellationToken: token)
+                        : await _client.SendTextMessageAsync(link.chatId,
+                            retText,
+                            parseMode: ParseMode.MarkdownV2,
+                            replyToMessageId: request.Message.ReplyToMessageUid != default
+                                ? int.Parse(request.Message.ReplyToMessageUid)
+                                : default,
+                            replyMarkup: replyMarkup,
+                            cancellationToken: token);
+
+                    AddChatIdInnerIdLink(response, link.chatId, message);
+                }
+
                 if (request.Message?.Poll != default)
                 {
                     var type = request.Message.Poll?.Type switch
