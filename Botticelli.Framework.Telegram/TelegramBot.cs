@@ -54,7 +54,8 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         Cache = new MemoryCache(new MemoryDistributedCacheOptions
         {
-            ExpirationScanFrequency = TimeSpan.FromMinutes(1)
+            ExpirationScanFrequency = TimeSpan.FromMinutes(1),
+            SizeLimit = null
         });
     }
     
