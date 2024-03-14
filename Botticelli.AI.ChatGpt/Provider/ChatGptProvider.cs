@@ -108,7 +108,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                             part?.Choices?
                                 .Select(c => (c.Message ?? c.Delta)?.Content) ?? Array.Empty<string>());
 
-                        await Bus.SendResponse(new SendMessageResponse(message.Uid)
+                            await Bus.SendResponse(new SendMessageResponse(message.Uid)
                             {
                                 IsPartial = Settings.Value.StreamGeneration,
                                 SequenceNumber = seqNumber++,
@@ -124,6 +124,8 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                                 }
                             },
                             token);
+
+                            Logger.LogInformation($"{nameof(SendAsync)}({message.ChatIds}) sent a response message uid '{message.Uid}', seq number: {seqNumber}");
 
                         if (part?.Choices?.Any(c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
                             true)
