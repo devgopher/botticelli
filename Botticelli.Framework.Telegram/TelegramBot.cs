@@ -179,7 +179,8 @@ public class TelegramBot : BaseBot<TelegramBot>
                                  : default,
                              replyMarkup: replyMarkup,
                              cancellationToken: token);
-
+                     
+                     Logger.LogInformation($"Message: {message.MessageId}");
                     AddChatIdInnerIdLink(response, link.chatId, message);
                 }
 
