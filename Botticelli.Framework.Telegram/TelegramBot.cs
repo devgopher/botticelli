@@ -37,10 +37,11 @@ public class MessageSequenceStates
     public MessageSequenceStates(string uid)
     {
         Uid = uid;
+        States = new List<MessageSequenceState>();
     }
 
     public string Uid { get; set; }
-    public List<MessageSequenceState> States { get; set; } = new();
+    public List<MessageSequenceState> States { get; set; }
 }
 
 public class TelegramBot : BaseBot<TelegramBot>
@@ -215,7 +216,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 return Task.FromResult(new MessageSequenceStates(request.Uid));
                             });
 
-
+                        Logger.LogInformation($"Message '{request.Uid}' sequence number: {request.SequenceNumber}");
                         Logger.LogInformation($"Message '{request.Uid}' sequence number: {request.SequenceNumber}");
                         if (!messagesSequence.States.Any())
                         {
