@@ -130,16 +130,19 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                         Logger.LogInformation(
                             $"{nameof(SendAsync)}({message.ChatIds}) sent a response message uid '{responseMessage.Uid}', seq number: {responseMessage.SequenceNumber}");
 
-                        if (part?.Choices?.Any(c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
-                            true)
-                            break;
+                        if (Settings.Value.StreamGeneration)
+                            if (part?.Choices?.Any(
+                                    c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
+                                true)
+                                break;
                     }
                     catch (Exception ex)
                     {
                         Logger.LogError(ex, ex.Message);
                     }
-
-                    partText = await reader.ReadLineAsync(token);
+                    
+                    if (Settings.Value.StreamGeneration)
+                        partText = await reader.ReadLineAsync(token);
                 }
             }
             else
