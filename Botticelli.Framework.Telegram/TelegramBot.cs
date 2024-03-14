@@ -261,6 +261,8 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 
                                 Logger.LogInformation($"Trying to replace a message '{request.Uid}': {innerMessageId}");
                                 
+                                Thread.Sleep(500);
+                                
                                 // clean previous
 
                                 foreach (var innerMsgId in messagesSequence.States?.Where(s => s.InnerMessageId < request.SequenceNumber).Select(s => s.InnerMessageId))
@@ -273,7 +275,6 @@ public class TelegramBot : BaseBot<TelegramBot>
                                     {
                                         Logger.LogError(ex, $"Error deleting a message '{request.Uid}': {innerMessageId}");
                                     }
-                                    
                                 }
 
 
