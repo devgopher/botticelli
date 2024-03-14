@@ -181,6 +181,8 @@ public class BotStatusService<TBot> : IHostedService
 
             var content = JsonContent.Create(request);
 
+            _logger.LogDebug($"InnerSend request: {JsonConvert.SerializeObject(request)}");
+            
             var response = await httpClient.PostAsync(Url.Combine(_serverSettings.ServerUri, funcName), content,
                 cancellationToken);
 
