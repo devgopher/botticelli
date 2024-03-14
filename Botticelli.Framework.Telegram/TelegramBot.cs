@@ -25,39 +25,39 @@ using Poll = Botticelli.Shared.ValueObjects.Poll;
 
 namespace Botticelli.Framework.Telegram;
 
-public class MessageSequenceState
-{
-    public SendMessageRequest Request { get; init; }
-    public int? InnerMessageId { get; set; }
-    public bool IsSent { get; set; }
-}
-
-public class MessageSequenceStates
-{
-    public MessageSequenceStates(string uid)
-    {
-        Uid = uid;
-        States = new List<MessageSequenceState>();
-    }
-
-    public string Uid { get; set; }
-    public List<MessageSequenceState> States { get; set; }
-}
+// public class MessageSequenceState
+// {
+//     public SendMessageRequest Request { get; init; }
+//     public int? InnerMessageId { get; set; }
+//     public bool IsSent { get; set; }
+// }
+//
+// public class MessageSequenceStates
+// {
+//     public MessageSequenceStates(string uid)
+//     {
+//         Uid = uid;
+//         States = new List<MessageSequenceState>();
+//     }
+//
+//     public string Uid { get; set; }
+//     public List<MessageSequenceState> States { get; set; }
+// }
 
 public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly IBotUpdateHandler _handler;
     private readonly SecureStorage _secureStorage;
-    private static readonly IMemoryCache Cache;
+    // private static readonly IMemoryCache Cache;
     private ITelegramBotClient _client;
 
     static TelegramBot()
     {
-        Cache = new MemoryCache(new MemoryDistributedCacheOptions
-        {
-            ExpirationScanFrequency = TimeSpan.FromMinutes(1),
-            SizeLimit = null
-        });
+        // Cache = new MemoryCache(new MemoryDistributedCacheOptions
+        // {
+        //     ExpirationScanFrequency = TimeSpan.FromMinutes(1),
+        //     SizeLimit = null
+        // });
     }
     
     /// <summary>
@@ -208,7 +208,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     else
                     {
                         await _client.SendTextMessageAsync(link.chatId,
-                            "Sorry, but streaming output isn't supported for Telegram now!s",
+                            @"Sorry, but streaming output isn't supported for Telegram now\!",
                             parseMode: ParseMode.MarkdownV2,
                             replyToMessageId: request.Message.ReplyToMessageUid != default
                                 ? int.Parse(request.Message.ReplyToMessageUid)
