@@ -20,7 +20,9 @@ public static class BotDataUtils
         }
         else
         {
-            _botId ??= File.ReadAllText(GetPath()!);
+            _botId ??= File.ReadAllText(GetPath()!)
+                .Replace("\r", string.Empty)
+                .Replace("\n", string.Empty);
         }
 
         return _botId;

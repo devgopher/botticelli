@@ -31,5 +31,7 @@ public static class BotIdUtils
         => Regex.Replace(Convert.ToBase64String(BitWiseSum(Guid.NewGuid().ToByteArray(),
                 GenerateSalt(32))),
             "[/+=]",
-            string.Empty);
+            string.Empty)
+            .Replace("\r",string.Empty)
+            .Replace("\n", string.Empty);
 }
