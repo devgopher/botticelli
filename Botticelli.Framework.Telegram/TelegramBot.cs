@@ -261,7 +261,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 
                                 Logger.LogInformation($"Trying to replace a message '{request.Uid}': {innerMessageId}");
                                 
-                                Thread.Sleep(500);
+                                Thread.Sleep(10);
                                 
                                 // clean previous
 
