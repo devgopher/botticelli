@@ -155,7 +155,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             var chatIdOnly = request.Message.ChatIds.Where(c => !request.Message.ChatIdInnerIdLinks.ContainsKey(c));
             pairs.AddRange(chatIdOnly.Select(c => (c, string.Empty)));
 
-
+            Logger.LogDebug($"Pairs count: {pairs.Count}");
             foreach (var link in pairs)
             {
                 Message message = null;
