@@ -169,7 +169,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     Logger.LogInformation($"RetText: {retText} InnerId: {link.innerId}");
                     Logger.LogInformation($"ExpectPartialResponse: {request.ExpectPartialResponse}");
 
-                    _cache.TryGetValue(request.Uid, out int cachedInnerMessageId);
+                    _cache.TryGetValue(request.Message.Uid, out int cachedInnerMessageId);
                     
                     Logger.LogInformation($"cachedInnerMessageId: {cachedInnerMessageId}");
                     
@@ -189,7 +189,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                              cancellationToken: token);
                      
                     await Task.Delay(500, token);
-                     _cache.Set(request.Uid, message.MessageId, TimeSpan.FromMinutes(30));
+                     _cache.Set(request.Message.Uid, message.MessageId, TimeSpan.FromMinutes(30));
                     
                      Logger.LogInformation($"Message: {message.MessageId}");
                 }
