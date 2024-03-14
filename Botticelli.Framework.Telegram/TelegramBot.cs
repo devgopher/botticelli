@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Concurrent;
+using System.Text;
 using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
@@ -29,7 +30,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly IBotUpdateHandler _handler;
     private readonly SecureStorage _secureStorage;
-    private readonly IMemoryCache _cache;
+    private readonly BlockingCollection<(string?, int)> _cache = new();
     private ITelegramBotClient _client;
 
     /// <summary>
@@ -44,14 +45,12 @@ public class TelegramBot : BaseBot<TelegramBot>
                        IBotUpdateHandler handler,
                        ILogger<TelegramBot> logger,
                        MetricsProcessor metrics,
-                       SecureStorage secureStorage, 
-                       IMemoryCache cache) : base(logger, metrics)
+                       SecureStorage secureStorage) : base(logger, metrics)
     {
         IsStarted = false;
         _client = client;
         _handler = handler;
         _secureStorage = secureStorage;
-        _cache = cache;
 
         // Migration to a bot context instead of simple bot key
         _secureStorage.MigrateToBotContext(BotDataUtils.GetBotId());
@@ -170,11 +169,11 @@ public class TelegramBot : BaseBot<TelegramBot>
                     Logger.LogInformation($"RetText: {retText} InnerId: {link.innerId}");
                     Logger.LogInformation($"ExpectPartialResponse: {request.ExpectPartialResponse}");
 
-                    _cache.TryGetValue(request.Message.Uid, out int cachedInnerMessageId);
+                    var cachedInnerMessageId = _cache.FirstOrDefault( t => t.Item1 == request.Message.Uid).Item2;
                     
                     Logger.LogInformation($"cachedInnerMessageId: {cachedInnerMessageId}");
                     
-                    message = (request.ExpectPartialResponse ?? false) && cachedInnerMessageId != 0
+                    message = (request.ExpectPartialResponse ?? false) && cachedInnerMessageId != default
                          ? await _client.EditMessageTextAsync(link.chatId,
                              cachedInnerMessageId,
                              retText,
@@ -189,8 +188,8 @@ public class TelegramBot : BaseBot<TelegramBot>
                              replyMarkup: replyMarkup,
                              cancellationToken: token);
                      
-                    if (cachedInnerMessageId == 0)
-                        _cache.Set(request.Message.Uid, message.MessageId, TimeSpan.FromMinutes(30));
+                    if (cachedInnerMessageId == default)
+                        _cache.Add(new (request.Message.Uid, message.MessageId), token);
                   
                     await Task.Delay(500, token);
                     
