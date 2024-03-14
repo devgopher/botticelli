@@ -78,7 +78,8 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                 Stream = Settings.Value.StreamGeneration
             });
 
-            Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {JsonConvert.SerializeObject(content.Value)}");
+            Logger.LogDebug(
+                $"{nameof(SendAsync)}({message.ChatIds}) content: {JsonConvert.SerializeObject(content.Value)}");
 
             var response = await client.PostAsync(Url.Combine($"{Settings.Value.Url}", "completions"),
                 content,
@@ -93,8 +94,9 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                 using var sr = new StreamReader(outStream);
 
                 using var reader = TextReader.Synchronized(sr);
+                var prevText = string.Empty;
                 var partText = await reader.ReadLineAsync(token);
-                int seqNumber = 0;
+                var seqNumber = 0;
                 while (partText != null)
                 {
                     try
@@ -107,6 +109,8 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                         text.AppendJoin(' ',
                             part?.Choices?
                                 .Select(c => (c.Message ?? c.Delta)?.Content) ?? Array.Empty<string>());
+
+                        text = text.Remove(0, prevText.Length); // cleans already posted text
 
                         var responseMessage = new SendMessageResponse(message.Uid)
                         {
@@ -123,11 +127,12 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                                 ReplyToMessageUid = message.ReplyToMessageUid
                             }
                         };
-                        
-                            await Bus.SendResponse(responseMessage,
+
+                        await Bus.SendResponse(responseMessage,
                             token);
 
-                            Logger.LogInformation($"{nameof(SendAsync)}({message.ChatIds}) sent a response message uid '{responseMessage.Uid}', seq number: {responseMessage.SequenceNumber}");
+                        Logger.LogInformation(
+                            $"{nameof(SendAsync)}({message.ChatIds}) sent a response message uid '{responseMessage.Uid}', seq number: {responseMessage.SequenceNumber}");
 
                         if (part?.Choices?.Any(c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
                             true)

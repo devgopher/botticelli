@@ -260,13 +260,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 // });
                                 
                                 Logger.LogInformation($"Trying to replace a message '{request.Uid}': {innerMessageId}");
-                                
-                                Thread.Sleep(10);
-                                
-                                // clean previous
-
-                                retText = retText.Replace(lastCachedState.Request.Message?.Body, string.Empty);
-                             
+                            
                                 message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
                                 messagesSequence.States.Add(new MessageSequenceState
                                 {
