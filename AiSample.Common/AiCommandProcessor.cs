@@ -31,7 +31,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                     {
                         Message = response.Message,
                         ExpectPartialResponse = response.IsPartial,
-                        SequenceNumber = 0
+                        SequenceNumber = response.SequenceNumber
                     },
                     SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(new ReplyKeyboardMarkup(new[]
                     {
