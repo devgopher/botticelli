@@ -210,7 +210,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 
 
                         Logger.LogInformation($"Message '{request.Uid}' sequence number: {request.SequenceNumber}");
-                        if (request.SequenceNumber == 0)
+                        if (!messagesSequence.States.Any())
                         {
                             Logger.LogInformation(
                                 $"Message sequence number: {request.SequenceNumber}: sending a first message");
@@ -238,7 +238,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                             Logger.LogInformation(
                                 $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: trying to edit a first message");
                             var innerMessageId =
-                                messagesSequence.States.FirstOrDefault(s => s.Request?.SequenceNumber == 0)
+                                messagesSequence.States.FirstOrDefault(s => s.Request?.SequenceNumber == messagesSequence.States.Min(s => s.Request?.SequenceNumber))
                                     ?.InnerMessageId;
                             Logger.LogInformation($"Inner message '{request.Uid}' id {innerMessageId}");
 
