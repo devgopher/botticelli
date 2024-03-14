@@ -159,6 +159,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             foreach (var link in pairs)
             {
                 Message message = null;
+                Logger.LogDebug($"Link chatId: {link.chatId} InnerId: {link.innerId}");
                 if (!string.IsNullOrWhiteSpace(retText))
                 {
                     Logger.LogDebug($"RetText: {retText} InnerId: {link.innerId}");
