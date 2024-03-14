@@ -165,22 +165,22 @@ public class TelegramBot : BaseBot<TelegramBot>
                     Logger.LogDebug($"RetText: {retText} InnerId: {link.innerId}");
                     Logger.LogDebug($"ExpectPartialResponse: {request.ExpectPartialResponse}");
                     
-                    // message = (request.ExpectPartialResponse ?? false)
-                    //     ? await _client.EditMessageTextAsync(link.chatId,
-                    //         int.Parse(link.innerId),
-                    //         retText,
-                    //         ParseMode.MarkdownV2,
-                    //         cancellationToken: token)
-                    //     : await _client.SendTextMessageAsync(link.chatId,
-                    //         retText,
-                    //         parseMode: ParseMode.MarkdownV2,
-                    //         replyToMessageId: request.Message.ReplyToMessageUid != default
-                    //             ? int.Parse(request.Message.ReplyToMessageUid)
-                    //             : default,
-                    //         replyMarkup: replyMarkup,
-                    //         cancellationToken: token);
+                     message = (request.ExpectPartialResponse ?? false) && !string.IsNullOrWhiteSpace(link.innerId)
+                         ? await _client.EditMessageTextAsync(link.chatId,
+                             int.Parse(link.innerId),
+                             retText,
+                             ParseMode.MarkdownV2,
+                             cancellationToken: token)
+                         : await _client.SendTextMessageAsync(link.chatId,
+                             retText,
+                             parseMode: ParseMode.MarkdownV2,
+                             replyToMessageId: request.Message.ReplyToMessageUid != default
+                                 ? int.Parse(request.Message.ReplyToMessageUid)
+                                 : default,
+                             replyMarkup: replyMarkup,
+                             cancellationToken: token);
 
-                    //AddChatIdInnerIdLink(response, link.chatId, message);
+                    AddChatIdInnerIdLink(response, link.chatId, message);
                 }
 
                 if (request.Message?.Poll != default)
