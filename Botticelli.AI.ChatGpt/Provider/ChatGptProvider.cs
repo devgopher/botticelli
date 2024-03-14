@@ -140,9 +140,11 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                     {
                         Logger.LogError(ex, ex.Message);
                     }
-                    
+
                     if (Settings.Value.StreamGeneration)
                         partText = await reader.ReadLineAsync(token);
+                    else 
+                        break;
                 }
             }
             else
