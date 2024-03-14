@@ -10,6 +10,7 @@ using Botticelli.Framework.Telegram.HostedService;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -53,7 +54,7 @@ public static class ServiceCollectionExtensions
 
         var serverConfig = new ServerSettings();
         config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
-
+        services.AddMemoryCache();
         services.AddSingleton(serverConfig)
             .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
             .AddBotticelliFramework(config);
@@ -64,7 +65,8 @@ public static class ServiceCollectionExtensions
             sp.GetRequiredService<IBotUpdateHandler>(),
             sp.GetRequiredService<ILogger<TelegramBot>>(),
             sp.GetRequiredService<MetricsProcessor>(),
-            secureStorage);
+            secureStorage,
+            sp.GetRequiredService<IMemoryCache>());
 
         return services.AddSingleton<IBot<TelegramBot>>(bot)
             .AddHostedService<BotStatusService<IBot<TelegramBot>>>()

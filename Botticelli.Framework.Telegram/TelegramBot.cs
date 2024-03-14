@@ -14,6 +14,7 @@ using Botticelli.Shared.API.Client.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -28,6 +29,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly IBotUpdateHandler _handler;
     private readonly SecureStorage _secureStorage;
+    private readonly IMemoryCache _cache;
     private ITelegramBotClient _client;
 
     /// <summary>
@@ -42,12 +44,14 @@ public class TelegramBot : BaseBot<TelegramBot>
                        IBotUpdateHandler handler,
                        ILogger<TelegramBot> logger,
                        MetricsProcessor metrics,
-                       SecureStorage secureStorage) : base(logger, metrics)
+                       SecureStorage secureStorage, 
+                       IMemoryCache cache) : base(logger, metrics)
     {
         IsStarted = false;
         _client = client;
         _handler = handler;
         _secureStorage = secureStorage;
+        _cache = cache;
 
         // Migration to a bot context instead of simple bot key
         _secureStorage.MigrateToBotContext(BotDataUtils.GetBotId());
@@ -164,10 +168,12 @@ public class TelegramBot : BaseBot<TelegramBot>
                 {
                     Logger.LogInformation($"RetText: {retText} InnerId: {link.innerId}");
                     Logger.LogInformation($"ExpectPartialResponse: {request.ExpectPartialResponse}");
+
+                    _cache.TryGetValue(request.Uid, out int? cachedInnerMessageId);
                     
-                     message = (request.ExpectPartialResponse ?? false) && !string.IsNullOrWhiteSpace(link.innerId)
+                    message = (request.ExpectPartialResponse ?? false) && cachedInnerMessageId != null
                          ? await _client.EditMessageTextAsync(link.chatId,
-                             int.Parse(link.innerId),
+                             cachedInnerMessageId.Value!,
                              retText,
                              ParseMode.MarkdownV2,
                              cancellationToken: token)
@@ -179,9 +185,10 @@ public class TelegramBot : BaseBot<TelegramBot>
                                  : default,
                              replyMarkup: replyMarkup,
                              cancellationToken: token);
-                     
+
+                     _cache.CreateEntry(request.Uid).Value = message.MessageId;
+                    
                      Logger.LogInformation($"Message: {message.MessageId}");
-                    AddChatIdInnerIdLink(response, link.chatId, message);
                 }
 
                 if (request.Message?.Poll != default)
