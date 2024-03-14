@@ -265,19 +265,8 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 
                                 // clean previous
 
-                                foreach (var innerMsgId in messagesSequence.States?.Where(s => s.Request?.SequenceNumber < request.SequenceNumber).Select(s => s.InnerMessageId))
-                                {
-                                    try
-                                    {
-                                        await _client.DeleteMessageAsync(link.chatId, innerMsgId.Value!, token);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Logger.LogError(ex, $"Error deleting a message '{request.Uid}': {innerMessageId}");
-                                    }
-                                }
-
-
+                                retText = retText.Replace(lastCachedState.Request.Message?.Body, string.Empty);
+                             
                                 message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
                                 messagesSequence.States.Add(new MessageSequenceState
                                 {
