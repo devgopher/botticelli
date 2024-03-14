@@ -93,7 +93,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                 using var sr = new StreamReader(outStream);
 
                 using var reader = TextReader.Synchronized(sr);
-                var partText = await reader.ReadLineAsync(token);
+                var partText = Settings.Value.StreamGeneration ? await reader.ReadLineAsync(token) : await reader.ReadToEndAsync(token);
                 var seqNumber = 0;
                 while (partText != null)
                 {
