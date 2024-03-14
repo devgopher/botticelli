@@ -180,7 +180,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     //         replyMarkup: replyMarkup,
                     //         cancellationToken: token);
 
-                    AddChatIdInnerIdLink(response, link.chatId, message);
+                    //AddChatIdInnerIdLink(response, link.chatId, message);
                 }
 
                 if (request.Message?.Poll != default)
