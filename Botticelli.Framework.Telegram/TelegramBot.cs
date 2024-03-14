@@ -217,7 +217,6 @@ public class TelegramBot : BaseBot<TelegramBot>
                             });
 
                         Logger.LogInformation($"Message '{request.Uid}' sequence number: {request.SequenceNumber}");
-                        Logger.LogInformation($"Message '{request.Uid}' sequence number: {request.SequenceNumber}");
                         if (!messagesSequence.States.Any())
                         {
                             Logger.LogInformation(

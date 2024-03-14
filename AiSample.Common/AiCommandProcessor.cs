@@ -33,18 +33,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                         ExpectPartialResponse = response.IsPartial,
                         SequenceNumber = response.SequenceNumber
                     },
-                    SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(new ReplyKeyboardMarkup(new[]
-                    {
-                        new KeyboardButton[]
-                        {
-                            "/ai Thank you!",
-                            "/ai Good bye!",
-                            "/ai Tell me smth interesting"
-                        }
-                    })
-                    {
-                        ResizeKeyboard = true
-                    }),
+                    SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(),
                     CancellationToken.None);
         };
     }
