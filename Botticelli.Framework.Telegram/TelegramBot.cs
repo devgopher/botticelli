@@ -169,12 +169,12 @@ public class TelegramBot : BaseBot<TelegramBot>
                     Logger.LogInformation($"RetText: {retText} InnerId: {link.innerId}");
                     Logger.LogInformation($"ExpectPartialResponse: {request.ExpectPartialResponse}");
 
-                    _cache.TryGetValue(request.Uid, out int? cachedInnerMessageId);
+                    _cache.TryGetValue(request.Uid, out int cachedInnerMessageId);
                     Logger.LogInformation($"cachedInnerMessageId: {cachedInnerMessageId}");
                     
-                    message = (request.ExpectPartialResponse ?? false) && cachedInnerMessageId != null
+                    message = (request.ExpectPartialResponse ?? false) && cachedInnerMessageId != default
                          ? await _client.EditMessageTextAsync(link.chatId,
-                             cachedInnerMessageId.Value!,
+                             cachedInnerMessageId,
                              retText,
                              ParseMode.MarkdownV2,
                              cancellationToken: token)
