@@ -191,7 +191,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     await Task.Delay(500, token);
                      _cache.Set(request.Message.Uid, message.MessageId, TimeSpan.FromMinutes(30));
                     
-                     Logger.LogInformation($"Message: {message.MessageId}");
+                     Logger.LogInformation($"uid: {request.Message.Uid}, message: {message.MessageId}");
                 }
 
                 if (request.Message?.Poll != default)
