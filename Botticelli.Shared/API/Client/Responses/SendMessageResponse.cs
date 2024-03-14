@@ -7,6 +7,7 @@ public class SendMessageResponse : BaseResponse<SendMessageResponse>
 {
     public SendMessageResponse(string uid, string? techMessage = null) : base(uid, techMessage)
     {
+        Message = new Message();
     }
 
     public string? MessageUid { get; set; }
