@@ -94,7 +94,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                 using var sr = new StreamReader(outStream);
 
                 using var reader = TextReader.Synchronized(sr);
-                var prevText = string.Empty;
+                var prevText = new StringBuilder();
                 var partText = await reader.ReadLineAsync(token);
                 var seqNumber = 0;
                 while (partText != null)
@@ -111,7 +111,8 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                                 .Select(c => (c.Message ?? c.Delta)?.Content) ?? Array.Empty<string>());
 
                         text = text.Remove(0, prevText.Length); // cleans already posted text
-
+                        prevText = text;
+                        
                         var responseMessage = new SendMessageResponse(message.Uid)
                         {
                             IsPartial = Settings.Value.StreamGeneration,
