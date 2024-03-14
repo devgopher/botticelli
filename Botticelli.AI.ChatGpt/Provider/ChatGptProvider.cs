@@ -108,24 +108,26 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                             part?.Choices?
                                 .Select(c => (c.Message ?? c.Delta)?.Content) ?? Array.Empty<string>());
 
-                            await Bus.SendResponse(new SendMessageResponse(message.Uid)
+                        var responseMessage = new SendMessageResponse(message.Uid)
+                        {
+                            IsPartial = Settings.Value.StreamGeneration,
+                            SequenceNumber = seqNumber++,
+                            Message = new Shared.ValueObjects.Message(message.Uid)
                             {
-                                IsPartial = Settings.Value.StreamGeneration,
-                                SequenceNumber = seqNumber++,
-                                Message = new Shared.ValueObjects.Message(message.Uid)
-                                {
-                                    ChatIds = message.ChatIds,
-                                    Subject = message.Subject,
-                                    Body = text.ToString(),
-                                    Attachments = null,
-                                    From = null,
-                                    ForwardedFrom = null,
-                                    ReplyToMessageUid = message.ReplyToMessageUid
-                                }
-                            },
+                                ChatIds = message.ChatIds,
+                                Subject = message.Subject,
+                                Body = text.ToString(),
+                                Attachments = null,
+                                From = null,
+                                ForwardedFrom = null,
+                                ReplyToMessageUid = message.ReplyToMessageUid
+                            }
+                        };
+                        
+                            await Bus.SendResponse(responseMessage,
                             token);
 
-                            Logger.LogInformation($"{nameof(SendAsync)}({message.ChatIds}) sent a response message uid '{message.Uid}', seq number: {seqNumber}");
+                            Logger.LogInformation($"{nameof(SendAsync)}({message.ChatIds}) sent a response message uid '{responseMessage.Uid}', seq number: {responseMessage.SequenceNumber}");
 
                         if (part?.Choices?.Any(c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
                             true)
