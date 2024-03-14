@@ -121,7 +121,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                             {
                                 ChatIds = message.ChatIds,
                                 Subject = message.Subject,
-                                Body = text.ToString(),
+                                Body = "SS" + text.ToString(),
                                 Attachments = null,
                                 From = null,
                                 ForwardedFrom = null,
