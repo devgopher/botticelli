@@ -25,6 +25,7 @@ public class BotUpdateHandler : IBotUpdateHandler
         CancellationToken cancellationToken)
     {
         _logger.LogError($"{nameof(HandlePollingErrorAsync)}() error: {exception.Message}", exception);
+        Thread.Sleep(500);
         return Task.CompletedTask;
     }
 
