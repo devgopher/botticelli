@@ -199,7 +199,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     }
                     else
                     {
-                        Logger.LogInformation($"No streaming response - sending a message!");
+                        Logger.LogInformation($"Streaming response - getting a message sequence!");
                         var messagesSequence = await _cache.GetOrCreateAsync(
                             request.Uid,
                             cacheEntry =>
@@ -240,7 +240,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                             var innerMessageId =
                                 messagesSequence.States.FirstOrDefault(s => s.Request?.SequenceNumber == 0)
                                     ?.InnerMessageId;
-                            Logger.LogInformation($"Inner message '{request.Uid}' id {message.MessageId}");
+                            Logger.LogInformation($"Inner message '{request.Uid}' id {innerMessageId}");
 
                             if (innerMessageId == default)
                             {
