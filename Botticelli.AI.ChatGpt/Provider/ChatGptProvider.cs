@@ -96,6 +96,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                 var partText = await reader.ReadLineAsync(token);
 
                 while (partText != null)
+                {
                     try
                     {
                         Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) text pt: {partText}");
@@ -126,13 +127,14 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                         if (part?.Choices?.Any(c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
                             true)
                             break;
-
-                        partText = await reader.ReadLineAsync(token);
                     }
                     catch (Exception ex)
                     {
                         Logger.LogError(ex, ex.Message);
                     }
+
+                    partText = await reader.ReadLineAsync(token);
+                }
             }
             else
             {
