@@ -155,15 +155,15 @@ public class TelegramBot : BaseBot<TelegramBot>
             var chatIdOnly = request.Message.ChatIds.Where(c => !request.Message.ChatIdInnerIdLinks.ContainsKey(c));
             pairs.AddRange(chatIdOnly.Select(c => (c, string.Empty)));
 
-            Logger.LogDebug($"Pairs count: {pairs.Count}");
+            Logger.LogInformation($"Pairs count: {pairs.Count}");
             foreach (var link in pairs)
             {
                 Message message = null;
-                Logger.LogDebug($"Link chatId: {link.chatId} InnerId: {link.innerId}");
+                Logger.LogInformation($"Link chatId: {link.chatId} InnerId: {link.innerId}");
                 if (!string.IsNullOrWhiteSpace(retText))
                 {
-                    Logger.LogDebug($"RetText: {retText} InnerId: {link.innerId}");
-                    Logger.LogDebug($"ExpectPartialResponse: {request.ExpectPartialResponse}");
+                    Logger.LogInformation($"RetText: {retText} InnerId: {link.innerId}");
+                    Logger.LogInformation($"ExpectPartialResponse: {request.ExpectPartialResponse}");
                     
                      message = (request.ExpectPartialResponse ?? false) && !string.IsNullOrWhiteSpace(link.innerId)
                          ? await _client.EditMessageTextAsync(link.chatId,
