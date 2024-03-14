@@ -160,6 +160,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             pairs.AddRange(chatIdOnly.Select(c => (c, string.Empty)));
 
             Logger.LogInformation($"Pairs count: {pairs.Count}");
+            
             foreach (var link in pairs)
             {
                 Message message = null;
@@ -173,7 +174,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     
                     Logger.LogInformation($"cachedInnerMessageId: {cachedInnerMessageId}");
                     
-                    message = (request.ExpectPartialResponse ?? false) && cachedInnerMessageId != default
+                    message = (request.ExpectPartialResponse ?? false) && cachedInnerMessageId != 0
                          ? await _client.EditMessageTextAsync(link.chatId,
                              cachedInnerMessageId,
                              retText,
@@ -188,9 +189,10 @@ public class TelegramBot : BaseBot<TelegramBot>
                              replyMarkup: replyMarkup,
                              cancellationToken: token);
                      
-                    await Task.Delay(500, token);
-                    if (cachedInnerMessageId == default)
+                    if (cachedInnerMessageId == 0)
                         _cache.Set(request.Message.Uid, message.MessageId, TimeSpan.FromMinutes(30));
+                  
+                    await Task.Delay(500, token);
                     
                     Logger.LogInformation($"uid: {request.Message.Uid}, message: {cachedInnerMessageId}");
                 }
