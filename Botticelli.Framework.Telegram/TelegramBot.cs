@@ -207,70 +207,81 @@ public class TelegramBot : BaseBot<TelegramBot>
                     }
                     else
                     {
-                        Logger.LogInformation($"Streaming response - getting a message sequence!");
-                        var messagesSequence = await Cache.GetOrCreateAsync(
-                            request.Uid,
-                            cacheEntry =>
-                            {
-                                cacheEntry.SlidingExpiration = TimeSpan.FromMinutes(30);
-                                return Task.FromResult(new MessageSequenceStates(request.Uid));
-                            });
-
-                        Logger.LogInformation($"Message '{request.Uid}' sequence number: {request.SequenceNumber}");
-                        if (!messagesSequence.States.Any())
-                        {
-                            message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
-                        }
-                        else
-                        {
-                            Logger.LogInformation(
-                                $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: trying to edit a first message");
-                            var innerMessageId =
-                                messagesSequence.States.FirstOrDefault(s => s.Request?.SequenceNumber == messagesSequence.States.Min(s => s.Request?.SequenceNumber))
-                                    ?.InnerMessageId;
-                            Logger.LogInformation($"Inner message '{request.Uid}' id {innerMessageId}");
-
-                            if (innerMessageId == default)
-                            {
-                                Logger.LogInformation($"No inner message '{request.Uid}' id found in a cache!");
-                                continue;
-                            }
-
-
-                            var lastCachedState = messagesSequence.States?.MaxBy(s => s.Request.SequenceNumber);
-                            
-                            if (request.SequenceNumber > lastCachedState.Request.SequenceNumber)
-                            {
-                                /*
-                                    Since, there're some problems with editing a message in telegram (especially, messages with reply markup),
-                                    editing is commented out - replacing messages
-                                 */
-                                // Logger.LogInformation($"Trying to edit a message '{request.Uid}': {innerMessageId}");
-                                // message = await _client.EditMessageTextAsync(link.chatId,
-                                //     innerMessageId.Value!,
-                                //     retText,
-                                //     ParseMode.MarkdownV2,
-                                //     cancellationToken: token);
-                                //
-                                // messagesSequence.States.Add(new MessageSequenceState
-                                // {
-                                //     Request = request,
-                                //     InnerMessageId = message.MessageId,
-                                //     IsSent = true
-                                // });
-                                
-                                Logger.LogInformation($"Trying to replace a message '{request.Uid}': {innerMessageId}");
-                            
-                                message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
-                                messagesSequence.States.Add(new MessageSequenceState
-                                {
-                                    Request = request,
-                                    InnerMessageId = message.MessageId,
-                                    IsSent = true
-                                });
-                            }
-                        }
+                        await _client.SendTextMessageAsync(link.chatId,
+                            "Sorry, but streaming output isn't supported for Telegram now!s",
+                            parseMode: ParseMode.MarkdownV2,
+                            replyToMessageId: request.Message.ReplyToMessageUid != default
+                                ? int.Parse(request.Message.ReplyToMessageUid)
+                                : default,
+                            replyMarkup: replyMarkup,
+                            cancellationToken: token);
                     }
+                    // else
+                    // {
+                    //     Logger.LogInformation($"Streaming response - getting a message sequence!");
+                    //     var messagesSequence = await Cache.GetOrCreateAsync(
+                    //         request.Uid,
+                    //         cacheEntry =>
+                    //         {
+                    //             cacheEntry.SlidingExpiration = TimeSpan.FromMinutes(30);
+                    //             return Task.FromResult(new MessageSequenceStates(request.Uid));
+                    //         });
+                    //
+                    //     Logger.LogInformation($"Message '{request.Uid}' sequence number: {request.SequenceNumber}");
+                    //     if (!messagesSequence.States.Any())
+                    //     {
+                    //         message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
+                    //     }
+                    //     else
+                    //     {
+                    //         Logger.LogInformation(
+                    //             $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: trying to edit a first message");
+                    //         var innerMessageId =
+                    //             messagesSequence.States.FirstOrDefault(s => s.Request?.SequenceNumber == messagesSequence.States.Min(s => s.Request?.SequenceNumber))
+                    //                 ?.InnerMessageId;
+                    //         Logger.LogInformation($"Inner message '{request.Uid}' id {innerMessageId}");
+                    //
+                    //         if (innerMessageId == default)
+                    //         {
+                    //             Logger.LogInformation($"No inner message '{request.Uid}' id found in a cache!");
+                    //             continue;
+                    //         }
+                    //
+                    //
+                    //         var lastCachedState = messagesSequence.States?.MaxBy(s => s.Request.SequenceNumber);
+                    //         
+                    //         if (request.SequenceNumber > lastCachedState.Request.SequenceNumber)
+                    //         {
+                    //             /*
+                    //                 Since, there're some problems with editing a message in telegram (especially, messages with reply markup),
+                    //                 editing is commented out - replacing messages
+                    //              */
+                    //             // Logger.LogInformation($"Trying to edit a message '{request.Uid}': {innerMessageId}");
+                    //             // message = await _client.EditMessageTextAsync(link.chatId,
+                    //             //     innerMessageId.Value!,
+                    //             //     retText,
+                    //             //     ParseMode.MarkdownV2,
+                    //             //     cancellationToken: token);
+                    //             //
+                    //             // messagesSequence.States.Add(new MessageSequenceState
+                    //             // {
+                    //             //     Request = request,
+                    //             //     InnerMessageId = message.MessageId,
+                    //             //     IsSent = true
+                    //             // });
+                    //             
+                    //             Logger.LogInformation($"Trying to replace a message '{request.Uid}': {innerMessageId}");
+                    //         
+                    //             message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
+                    //             messagesSequence.States.Add(new MessageSequenceState
+                    //             {
+                    //                 Request = request,
+                    //                 InnerMessageId = message.MessageId,
+                    //                 IsSent = true
+                    //             });
+                    //         }
+                    //     }
+                    // }
                 }
 
 
