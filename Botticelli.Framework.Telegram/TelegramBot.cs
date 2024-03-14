@@ -187,7 +187,8 @@ public class TelegramBot : BaseBot<TelegramBot>
                                  : default,
                              replyMarkup: replyMarkup,
                              cancellationToken: token);
-
+                     
+                    await Task.Delay(500, token);
                      _cache.Set(request.Uid, message.MessageId, TimeSpan.FromMinutes(30));
                     
                      Logger.LogInformation($"Message: {message.MessageId}");
