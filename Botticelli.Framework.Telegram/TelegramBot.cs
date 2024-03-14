@@ -219,26 +219,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                         Logger.LogInformation($"Message '{request.Uid}' sequence number: {request.SequenceNumber}");
                         if (!messagesSequence.States.Any())
                         {
-                            Logger.LogInformation(
-                                $"Message sequence number: {request.SequenceNumber}: sending a first message");
-                            message = await _client.SendTextMessageAsync(link.chatId,
-                                retText,
-                                parseMode: ParseMode.MarkdownV2,
-                                replyToMessageId: request.Message.ReplyToMessageUid != default
-                                    ? int.Parse(request.Message.ReplyToMessageUid)
-                                    : default,
-                                replyMarkup: replyMarkup,
-                                cancellationToken: token);
-
-                            Logger.LogInformation(
-                                $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: saving state in a cache. Inner message id {message.MessageId}");
-
-                            messagesSequence.States.Add(new MessageSequenceState
-                            {
-                                Request = request,
-                                InnerMessageId = message.MessageId,
-                                IsSent = true
-                            });
+                            message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
                         }
                         else
                         {
@@ -257,13 +238,28 @@ public class TelegramBot : BaseBot<TelegramBot>
 
                             if (request.SequenceNumber > messagesSequence.States?.Max(s => s.Request.SequenceNumber))
                             {
-                                Logger.LogInformation($"Trying to edit a message '{request.Uid}': {innerMessageId}");
-                                message = await _client.EditMessageTextAsync(link.chatId,
-                                    innerMessageId.Value!,
-                                    retText,
-                                    ParseMode.MarkdownV2,
-                                    cancellationToken: token);
-
+                                /*
+                                    Since, there're some problems with editing a message in telegram (especially, messages with reply markup),
+                                    editing is commented out - replacing messages
+                                 */
+                                // Logger.LogInformation($"Trying to edit a message '{request.Uid}': {innerMessageId}");
+                                // message = await _client.EditMessageTextAsync(link.chatId,
+                                //     innerMessageId.Value!,
+                                //     retText,
+                                //     ParseMode.MarkdownV2,
+                                //     cancellationToken: token);
+                                //
+                                // messagesSequence.States.Add(new MessageSequenceState
+                                // {
+                                //     Request = request,
+                                //     InnerMessageId = message.MessageId,
+                                //     IsSent = true
+                                // });
+                                
+                                Logger.LogInformation($"Trying to replace a message '{request.Uid}': {innerMessageId}");
+                                await _client.DeleteMessageAsync(link.chatId, innerMessageId.Value!, token);
+                                
+                                message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
                                 messagesSequence.States.Add(new MessageSequenceState
                                 {
                                     Request = request,
@@ -428,6 +424,34 @@ public class TelegramBot : BaseBot<TelegramBot>
         }
 
         return response;
+    }
+
+    private async Task<Message> SendMessage<TSendOptions>(SendMessageRequest request, CancellationToken token,
+        (string chatId, string innerId) link, string retText, IReplyMarkup replyMarkup,
+        MessageSequenceStates messagesSequence)
+    {
+        Message message;
+        Logger.LogInformation(
+            $"Message sequence number: {request.SequenceNumber}: sending a first message");
+        message = await _client.SendTextMessageAsync(link.chatId,
+            retText,
+            parseMode: ParseMode.MarkdownV2,
+            replyToMessageId: request.Message.ReplyToMessageUid != default
+                ? int.Parse(request.Message.ReplyToMessageUid)
+                : default,
+            replyMarkup: replyMarkup,
+            cancellationToken: token);
+
+        Logger.LogInformation(
+            $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: saving state in a cache. Inner message id {message.MessageId}");
+
+        messagesSequence.States.Add(new MessageSequenceState
+        {
+            Request = request,
+            InnerMessageId = message.MessageId,
+            IsSent = true
+        });
+        return message;
     }
 
     private static void AddChatIdInnerIdLink(SendMessageResponse response, string chatId, Message message)
