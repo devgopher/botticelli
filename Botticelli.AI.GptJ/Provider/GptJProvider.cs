@@ -67,7 +67,7 @@ public class GptJProvider : GenericAiProvider<AiGptSettings>
 
                 await Bus.SendResponse(new SendMessageResponse(message.Uid)
                     {
-                        IsPartial = Settings.Value.ExpectPartialResponses,
+                        IsPartial = false,
                         Message = new Shared.ValueObjects.Message(message.Uid)
                         {
                             ChatIds = message.ChatIds,

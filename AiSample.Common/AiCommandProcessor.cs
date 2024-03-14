@@ -29,7 +29,8 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
             if (response != null)
                 _bot.SendMessageAsync(new SendMessageRequest(response.Uid)
                     {
-                        Message = response.Message
+                        Message = response.Message,
+                        ExpectPartialResponse = response.IsPartial
                     },
                     SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(new ReplyKeyboardMarkup(new[]
                     {
