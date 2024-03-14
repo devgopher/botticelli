@@ -99,7 +99,7 @@ public abstract class BaseBot<T> : IBot<T>
     {
         _metrics.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
 
-        return await InnerSendMessageAsync(request, optionsBuilder, false, token);
+        return await InnerSendMessageAsync(request, optionsBuilder, token);
     }
 
     public virtual async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request,
@@ -123,7 +123,7 @@ public abstract class BaseBot<T> : IBot<T>
 
     protected abstract Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
         ISendOptionsBuilder<TSendOptions> optionsBuilder,
-        bool update, CancellationToken token)
+        CancellationToken token)
         where TSendOptions : class;
 
     protected abstract Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,

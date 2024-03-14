@@ -111,14 +111,14 @@ public class TelegramBot : BaseBot<TelegramBot>
     ///     Sends a message as a telegram bot
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="optionsBuilder"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     protected override async Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
-                                                                                           ISendOptionsBuilder<TSendOptions> optionsBuilder,
-                                                                                           bool update,
-                                                                                           CancellationToken token)
+        ISendOptionsBuilder<TSendOptions> optionsBuilder,
+        CancellationToken token)
     {
         if (!IsStarted)
         {
@@ -160,7 +160,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             {
                 Message message = null;
                 if (!string.IsNullOrWhiteSpace(retText))
-                    message = update ?
+                    message = (request.ExpectPartialResponse ?? false) ?
                             await _client.EditMessageTextAsync(link.chatId,
                                                                int.Parse(link.innerId),
                                                                retText,

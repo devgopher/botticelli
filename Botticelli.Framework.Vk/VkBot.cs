@@ -167,7 +167,6 @@ public class VkBot : BaseBot<VkBot>
 
     protected override async Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
         ISendOptionsBuilder<TSendOptions> optionsBuilder,
-        bool update,
         CancellationToken token)
     {
         foreach (var userId in request.Message.ChatIds)
