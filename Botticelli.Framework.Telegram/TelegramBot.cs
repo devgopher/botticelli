@@ -189,7 +189,8 @@ public class TelegramBot : BaseBot<TelegramBot>
                              cancellationToken: token);
                      
                     await Task.Delay(500, token);
-                     _cache.Set(request.Message.Uid, message.MessageId, TimeSpan.FromMinutes(30));
+                    if (cachedInnerMessageId == default)
+                        _cache.Set(request.Message.Uid, message.MessageId, TimeSpan.FromMinutes(30));
                     
                      Logger.LogInformation($"uid: {request.Message.Uid}, message: {message.MessageId}");
                 }
