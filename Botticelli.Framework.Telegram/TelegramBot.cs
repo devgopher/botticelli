@@ -192,7 +192,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     if (cachedInnerMessageId == default)
                         _cache.Set(request.Message.Uid, message.MessageId, TimeSpan.FromMinutes(30));
                     
-                     Logger.LogInformation($"uid: {request.Message.Uid}, message: {message.MessageId}");
+                    Logger.LogInformation($"uid: {request.Message.Uid}, message: {cachedInnerMessageId}");
                 }
 
                 if (request.Message?.Poll != default)
