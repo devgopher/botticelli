@@ -78,10 +78,18 @@ public class BotStatusService<TBot> : IHostedService
         
         _keepAliveTask = Policy.HandleResult<KeepAliveNotificationResponse>(_ => true)
             .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(PausePeriod))
-            .ExecuteAndCaptureAsync(ct => InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(
-                    request,
-                    "/bot/client/KeepAlive",
-                    ct),
+            .ExecuteAndCaptureAsync(ct =>
+                {
+
+                    var response = InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(
+                        request,
+                        "/bot/client/KeepAlive",
+                        ct);
+
+                    _logger.LogDebug($"KeepAlive botId: {_botId} response: {response.Result.BotId}, {response.Result.IsSuccess}");
+                    
+                    return response;
+                },
                 cancellationToken);
 
         if (!_keepAliveTask.IsFaulted)
@@ -177,7 +185,8 @@ public class BotStatusService<TBot> : IHostedService
                 cancellationToken);
 
             var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
-
+            _logger.LogDebug($"InnerSend response {responseJson}");
+            
             return JsonConvert.DeserializeObject<TResp>(responseJson);
         }
         catch (Exception ex)
