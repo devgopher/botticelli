@@ -236,7 +236,10 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 continue;
                             }
 
-                            if (request.SequenceNumber > messagesSequence.States?.Max(s => s.Request.SequenceNumber))
+
+                            var lastCachedState = messagesSequence.States?.MaxBy(s => s.Request.SequenceNumber);
+                            
+                            if (request.SequenceNumber > lastCachedState.Request.SequenceNumber)
                             {
                                 /*
                                     Since, there're some problems with editing a message in telegram (especially, messages with reply markup),
@@ -257,7 +260,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 // });
                                 
                                 Logger.LogInformation($"Trying to replace a message '{request.Uid}': {innerMessageId}");
-                                await _client.DeleteMessageAsync(link.chatId, innerMessageId.Value!, token);
+                                await _client.DeleteMessageAsync(link.chatId, lastCachedState.InnerMessageId.Value!, token);
                                 
                                 message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
                                 messagesSequence.States.Add(new MessageSequenceState
