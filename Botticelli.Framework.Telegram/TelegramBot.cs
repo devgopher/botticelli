@@ -269,9 +269,9 @@ public class TelegramBot : BaseBot<TelegramBot>
                                     {
                                         await _client.DeleteMessageAsync(link.chatId, innerMsgId.Value!, token);
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
-                                        
+                                        Logger.LogError(ex, $"Error deleting a message '{request.Uid}': {innerMessageId}");
                                     }
                                     
                                 }
