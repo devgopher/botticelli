@@ -170,6 +170,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     Logger.LogInformation($"ExpectPartialResponse: {request.ExpectPartialResponse}");
 
                     _cache.TryGetValue(request.Uid, out int cachedInnerMessageId);
+                    
                     Logger.LogInformation($"cachedInnerMessageId: {cachedInnerMessageId}");
                     
                     message = (request.ExpectPartialResponse ?? false) && cachedInnerMessageId != default
@@ -187,7 +188,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                              replyMarkup: replyMarkup,
                              cancellationToken: token);
 
-                     _cache.CreateEntry(request.Uid).Value = message.MessageId;
+                     _cache.Set(request.Uid, message.MessageId, TimeSpan.FromMinutes(30));
                     
                      Logger.LogInformation($"Message: {message.MessageId}");
                 }
