@@ -183,12 +183,8 @@ public class TelegramBot : BaseBot<TelegramBot>
             foreach (var link in pairs)
             {
                 Message message = null;
-                Logger.LogInformation($"Link chatId: {link.chatId} InnerId: {link.innerId}");
                 if (!string.IsNullOrWhiteSpace(retText))
                 {
-                    Logger.LogInformation($"RetText: {retText} InnerId: {link.innerId}");
-                    Logger.LogInformation($"ExpectPartialResponse: {request.ExpectPartialResponse}");
-
                     if (!(request.ExpectPartialResponse ?? false))
                     {
                         Logger.LogInformation($"No streaming response - sending a message!");
@@ -213,7 +209,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                             });
 
 
-                        Logger.LogInformation($"Message sequence number: {request.SequenceNumber}");
+                        Logger.LogInformation($"Message '{request.Uid}' sequence number: {request.SequenceNumber}");
                         if (request.SequenceNumber == 0)
                         {
                             Logger.LogInformation(
@@ -228,7 +224,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                 cancellationToken: token);
 
                             Logger.LogInformation(
-                                $"Message sequence number: {request.SequenceNumber}: saving state in a cache. Inner message id {message.MessageId}");
+                                $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: saving state in a cache. Inner message id {message.MessageId}");
 
                             messagesSequence.States.Add(new MessageSequenceState
                             {
@@ -240,21 +236,21 @@ public class TelegramBot : BaseBot<TelegramBot>
                         else
                         {
                             Logger.LogInformation(
-                                $"Message sequence number: {request.SequenceNumber}: trying to edit a first message");
+                                $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: trying to edit a first message");
                             var innerMessageId =
                                 messagesSequence.States.FirstOrDefault(s => s.Request?.SequenceNumber == 0)
                                     ?.InnerMessageId;
-                            Logger.LogInformation($"Inner message id {message.MessageId}");
+                            Logger.LogInformation($"Inner message '{request.Uid}' id {message.MessageId}");
 
                             if (innerMessageId == default)
                             {
-                                Logger.LogInformation($"No inner message id found in a cache!");
+                                Logger.LogInformation($"No inner message '{request.Uid}' id found in a cache!");
                                 continue;
                             }
 
                             if (request.SequenceNumber > messagesSequence.States?.Max(s => s.Request.SequenceNumber))
                             {
-                                Logger.LogInformation($"Trying to edit a message: {innerMessageId}");
+                                Logger.LogInformation($"Trying to edit a message '{request.Uid}': {innerMessageId}");
                                 message = await _client.EditMessageTextAsync(link.chatId,
                                     innerMessageId.Value!,
                                     retText,
