@@ -30,7 +30,8 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                 await _bot.SendMessageAsync(new SendMessageRequest(response.Uid)
                     {
                         Message = response.Message,
-                        ExpectPartialResponse = response.IsPartial
+                        ExpectPartialResponse = response.IsPartial,
+                        SequenceNumber = 0
                     },
                     SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(new ReplyKeyboardMarkup(new[]
                     {

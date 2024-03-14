@@ -94,7 +94,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
 
                 using var reader = TextReader.Synchronized(sr);
                 var partText = await reader.ReadLineAsync(token);
-
+                int seqNumber = 0;
                 while (partText != null)
                 {
                     try
@@ -111,6 +111,7 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                         await Bus.SendResponse(new SendMessageResponse(message.Uid)
                             {
                                 IsPartial = Settings.Value.StreamGeneration,
+                                SequenceNumber = seqNumber++,
                                 Message = new Shared.ValueObjects.Message(message.Uid)
                                 {
                                     ChatIds = message.ChatIds,
