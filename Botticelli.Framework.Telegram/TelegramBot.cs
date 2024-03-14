@@ -161,6 +161,9 @@ public class TelegramBot : BaseBot<TelegramBot>
                 Message message = null;
                 if (!string.IsNullOrWhiteSpace(retText))
                 {
+                    Logger.LogDebug($"RetText: {retText} InnerId: {link.innerId}");
+                    Logger.LogDebug($"ExpectPartialResponse: {request.ExpectPartialResponse}");
+                    
                     message = (request.ExpectPartialResponse ?? false)
                         ? await _client.EditMessageTextAsync(link.chatId,
                             int.Parse(link.innerId),
