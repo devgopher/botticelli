@@ -102,8 +102,12 @@ public class ChatGptProvider : GenericAiProvider<GptSettings>
                         if (Settings.Value.StreamGeneration)
                             partText = partText.Replace("data: ", string.Empty);
 
+                        Logger.LogDebug(
+                            $"{nameof(SendAsync)}({message.ChatIds}) part text: {partText}");
+                        
                         var part = JsonConvert.DeserializeObject<ChatGptOutputMessage>(partText);
 
+                        
                         text.AppendJoin(' ',
                             part?.Choices?
                                 .Select(c => (c.Message ?? c.Delta)?.Content) ?? Array.Empty<string>());
