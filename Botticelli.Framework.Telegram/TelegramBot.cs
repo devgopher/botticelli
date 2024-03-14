@@ -47,9 +47,17 @@ public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly IBotUpdateHandler _handler;
     private readonly SecureStorage _secureStorage;
-    private readonly IMemoryCache _cache;
+    private static readonly IMemoryCache Cache;
     private ITelegramBotClient _client;
 
+    static TelegramBot()
+    {
+        Cache = new MemoryCache(new MemoryDistributedCacheOptions
+        {
+            ExpirationScanFrequency = TimeSpan.FromMinutes(1)
+        });
+    }
+    
     /// <summary>
     ///     ctor
     /// </summary>
@@ -62,14 +70,12 @@ public class TelegramBot : BaseBot<TelegramBot>
         IBotUpdateHandler handler,
         ILogger<TelegramBot> logger,
         MetricsProcessor metrics,
-        SecureStorage secureStorage,
-        IMemoryCache cache) : base(logger, metrics)
+        SecureStorage secureStorage) : base(logger, metrics)
     {
         IsStarted = false;
         _client = client;
         _handler = handler;
         _secureStorage = secureStorage;
-        _cache = cache;
 
         // Migration to a bot context instead of simple bot key
         _secureStorage.MigrateToBotContext(BotDataUtils.GetBotId());
@@ -200,7 +206,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     else
                     {
                         Logger.LogInformation($"Streaming response - getting a message sequence!");
-                        var messagesSequence = await _cache.GetOrCreateAsync(
+                        var messagesSequence = await Cache.GetOrCreateAsync(
                             request.Uid,
                             cacheEntry =>
                             {
