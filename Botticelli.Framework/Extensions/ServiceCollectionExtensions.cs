@@ -5,6 +5,7 @@ using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.MessageProcessors;
 using Botticelli.Interfaces;
+using Botticelli.Shared.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ChatMessageProcessor>()
             .AddSingleton<ClientProcessorFactory>()
             .AddSingleton<CommandProcessorFactory>()
+            .AddSharedValidation()
             .AddMetrics(config);
 
     public static IServiceCollection AddBotCommand<TCommand,
