@@ -39,7 +39,7 @@ public abstract class GenericAiProvider<TSettings> : IAiProvider
         {
             Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) started");
 
-            var client = GetClient();
+            using var client = GetClient();
 
             var response = await GetGptResponse(message, token, client);
 
@@ -89,7 +89,7 @@ public abstract class GenericAiProvider<TSettings> : IAiProvider
 
     private HttpClient GetClient()
     {
-        using var client = Factory.CreateClient();
+        var client = Factory.CreateClient();
 
         client.BaseAddress = new Uri(Settings.Value.Url);
         client.DefaultRequestHeaders.Authorization =
