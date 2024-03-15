@@ -4,6 +4,7 @@ using AiSample.Common.Handlers;
 using AiSample.Common.Settings;
 using BotDataSecureStorage.Settings;
 using Botticelli.AI.DeepSeekGpt.Extensions;
+using Botticelli.AI.Extensions;
 using Botticelli.Bus.None.Extensions;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
@@ -29,6 +30,7 @@ builder.Services.AddTelegramBot(builder.Configuration,
             .Set(s => s.Name = "test_bot"))
     .AddLogging(cfg => cfg.AddNLog())
     .AddDeepSeekProvider(builder.Configuration)
+    .AddAiValidation()
     .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
     .AddSingleton<AiHandler>()
     .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()

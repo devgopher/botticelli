@@ -6,7 +6,7 @@ namespace Botticelli.AI.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddSharedValidation(this IServiceCollection services)
+    public static IServiceCollection AddAiValidation(this IServiceCollection services)
     {
         return services.AddValidatorsFromAssemblyContaining<AiMessage>();
     }
