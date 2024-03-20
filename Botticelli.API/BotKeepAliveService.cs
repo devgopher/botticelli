@@ -62,16 +62,7 @@ public class BotKeepAliveService<TBot> : BotActualizationService<TBot> where TBo
 
         _keepAliveTask = Policy.HandleResult<KeepAliveNotificationResponse>(_ => true)
                                .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(KeepAlivePeriod))
-                               .ExecuteAndCaptureAsync(ct =>
-                                                       {
-                                                           var response = InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(request,
-                                                                                                                                                 "/bot/client/KeepAlive",
-                                                                                                                                                 ct);
-
-                                                           Logger.LogDebug($"KeepAlive botId: {BotId} response: {response.Result.BotId}, {response.Result.IsSuccess}");
-
-                                                           return response;
-                                                       },
+                               .ExecuteAndCaptureAsync(ct => Process(request, ct),
                                                        cancellationToken);
 
         if (!_keepAliveTask.IsFaulted)
@@ -85,5 +76,16 @@ public class BotKeepAliveService<TBot> : BotActualizationService<TBot> where TBo
 
         throw new BotException($"{nameof(KeepAlive)} exception: {_keepAliveTask.Exception?.Message}",
                                _keepAliveTask.Exception);
+    }
+
+    private Task<KeepAliveNotificationResponse> Process(KeepAliveNotificationRequest request, CancellationToken ct)
+    {
+        var response = InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(request,
+                                                                                              "/bot/client/KeepAlive",
+                                                                                              ct);
+
+        Logger.LogDebug($"KeepAlive botId: {BotId} response: {response.Result.BotId}, {response.Result.IsSuccess}");
+
+        return response;
     }
 }

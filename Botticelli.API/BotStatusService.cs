@@ -59,40 +59,42 @@ public class BotStatusService<TBot> : BotActualizationService<TBot> where TBot :
 
         _getRequiredStatusEventTask = Policy.HandleResult<GetRequiredStatusFromServerResponse>(r => true)
                                             .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(GetStatusPeriod))
-                                            .ExecuteAndCaptureAsync(ct =>
-                                                                    {
-                                                                        var task = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
-                                                                                                                                                                      "/bot/client/GetRequiredBotStatus",
-                                                                                                                                                                      ct);
-
-                                                                        task.Wait(cancellationToken);
-                                                                        Bot.SetBotContext(task.Result?.BotContext, ct);
-
-                                                                        if (task.Exception != default)
-                                                                        {
-                                                                            Logger.LogError($"GetRequiredStatus task error: {task.Exception?.Message}");
-                                                                            Bot.StopBotAsync(StopBotRequest.GetInstance(), ct);
-
-                                                                            return task;
-                                                                        }
-
-                                                                        switch (task.Result?.Status)
-                                                                        {
-                                                                            case BotStatus.Unlocked:
-                                                                                Bot.StartBotAsync(StartBotRequest.GetInstance(), ct);
-
-                                                                                break;
-                                                                            case BotStatus.Locked:
-                                                                            case BotStatus.Unknown:
-                                                                            case null:
-                                                                                Bot.StopBotAsync(StopBotRequest.GetInstance(), ct);
-
-                                                                                break;
-                                                                            default: throw new ArgumentOutOfRangeException();
-                                                                        }
-
-                                                                        return task;
-                                                                    },
+                                            .ExecuteAndCaptureAsync(ct => Process(cancellationToken, request, ct),
                                                                     cancellationToken);
+    }
+
+    private Task<GetRequiredStatusFromServerResponse> Process(CancellationToken cancellationToken, GetRequiredStatusFromServerRequest request, CancellationToken ct)
+    {
+        var task = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
+                                                                                                      "/bot/client/GetRequiredBotStatus",
+                                                                                                      ct);
+
+        task.Wait(cancellationToken);
+        Bot.SetBotContext(task.Result?.BotContext, ct);
+
+        if (task.Exception != default)
+        {
+            Logger.LogError($"GetRequiredStatus task error: {task.Exception?.Message}");
+            Bot.StopBotAsync(StopBotRequest.GetInstance(), ct);
+
+            return task;
+        }
+
+        switch (task.Result?.Status)
+        {
+            case BotStatus.Unlocked:
+                Bot.StartBotAsync(StartBotRequest.GetInstance(), ct);
+
+                break;
+            case BotStatus.Locked:
+            case BotStatus.Unknown:
+            case null:
+                Bot.StopBotAsync(StopBotRequest.GetInstance(), ct);
+
+                break;
+            default: throw new ArgumentOutOfRangeException();
+        }
+
+        return task;
     }
 }
