@@ -17,6 +17,6 @@ public class MetricsProcessor
             BotId = botId
         }, CancellationToken.None));
     
-    public void Process(string name, IMetricObject metricObject, string botId)
+    public void Process(IMetricObject metricObject)
         => Task.Run(() => _publisher.Publish(metricObject, CancellationToken.None));
 }
