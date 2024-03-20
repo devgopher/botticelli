@@ -16,11 +16,16 @@ public class BotStatusService<TBot> : BotActualizationService<TBot> where TBot :
     private readonly ManualResetEventSlim _getRequiredStatusEvent = new(false);
     private Task _getRequiredStatusEventTask;
 
-    public BotStatusService(IHttpClientFactory httpClientFactory, ServerSettings serverSettings, TBot bot,
-                            ILogger<BotActualizationService<TBot>> logger) : base(httpClientFactory, serverSettings, bot,
+    public BotStatusService(IHttpClientFactory httpClientFactory,
+                            ServerSettings serverSettings,
+                            TBot bot,
+                            ILogger<BotActualizationService<TBot>> logger) : base(httpClientFactory,
+                                                                                  serverSettings,
+                                                                                  bot,
                                                                                   logger)
     {
     }
+
     public override Task StartAsync(CancellationToken cancellationToken)
     {
         GetRequiredStatus(cancellationToken);
@@ -56,8 +61,7 @@ public class BotStatusService<TBot> : BotActualizationService<TBot> where TBot :
                                             .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(GetStatusPeriod))
                                             .ExecuteAndCaptureAsync(ct =>
                                                                     {
-                                                                        var task = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(
-                                                                                                                                                                      request,
+                                                                        var task = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
                                                                                                                                                                       "/bot/client/GetRequiredBotStatus",
                                                                                                                                                                       ct);
 
@@ -91,5 +95,4 @@ public class BotStatusService<TBot> : BotActualizationService<TBot> where TBot :
                                                                     },
                                                                     cancellationToken);
     }
-
 }

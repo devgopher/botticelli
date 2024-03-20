@@ -14,12 +14,12 @@ namespace Botticelli.BotBase;
 ///     to Botticelli Admin server and receiving status messages from it
 /// </summary>
 public abstract class BotActualizationService<TBot> : IHostedService
-    where TBot : IBot
+        where TBot : IBot
 {
-    protected readonly string? BotId;
     private readonly IHttpClientFactory _httpClientFactory;
-    protected readonly ILogger Logger;
     private readonly ServerSettings _serverSettings;
+    protected readonly string? BotId;
+    protected readonly ILogger Logger;
     protected TBot Bot;
 
     protected BotActualizationService(IHttpClientFactory httpClientFactory,
@@ -49,8 +49,8 @@ public abstract class BotActualizationService<TBot> : IHostedService
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns></returns>
     protected async Task<TResp> InnerSend<TReq, TResp>(TReq request,
-        string funcName,
-        CancellationToken cancellationToken)
+                                                       string funcName,
+                                                       CancellationToken cancellationToken)
     {
         try
         {
@@ -59,13 +59,14 @@ public abstract class BotActualizationService<TBot> : IHostedService
             var content = JsonContent.Create(request);
 
             Logger.LogDebug($"InnerSend request: {JsonConvert.SerializeObject(request)}");
-            
-            var response = await httpClient.PostAsync(Url.Combine(_serverSettings.ServerUri, funcName), content,
-                cancellationToken);
+
+            var response = await httpClient.PostAsync(Url.Combine(_serverSettings.ServerUri, funcName),
+                                                      content,
+                                                      cancellationToken);
 
             var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
             Logger.LogDebug($"InnerSend response {responseJson}");
-            
+
             return JsonConvert.DeserializeObject<TResp>(responseJson);
         }
         catch (Exception ex)

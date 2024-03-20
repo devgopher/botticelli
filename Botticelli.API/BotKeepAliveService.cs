@@ -28,7 +28,7 @@ public class BotKeepAliveService<TBot> : BotActualizationService<TBot> where TBo
         _getRequiredStatusEvent.Reset();
     }
 
-    
+
     public override Task StartAsync(CancellationToken cancellationToken)
     {
         KeepAlive(cancellationToken);
@@ -57,21 +57,19 @@ public class BotKeepAliveService<TBot> : BotActualizationService<TBot> where TBo
         {
             BotId = BotId
         };
- 
+
         Logger.LogDebug($"KeepAlive botId: {BotId}");
-        
+
         _keepAliveTask = Policy.HandleResult<KeepAliveNotificationResponse>(_ => true)
                                .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(KeepAlivePeriod))
                                .ExecuteAndCaptureAsync(ct =>
                                                        {
-
-                                                           var response = InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(
-                                                                                                                                                 request,
+                                                           var response = InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(request,
                                                                                                                                                  "/bot/client/KeepAlive",
                                                                                                                                                  ct);
 
                                                            Logger.LogDebug($"KeepAlive botId: {BotId} response: {response.Result.BotId}, {response.Result.IsSuccess}");
-                    
+
                                                            return response;
                                                        },
                                                        cancellationToken);
@@ -88,5 +86,4 @@ public class BotKeepAliveService<TBot> : BotActualizationService<TBot> where TBo
         throw new BotException($"{nameof(KeepAlive)} exception: {_keepAliveTask.Exception?.Message}",
                                _keepAliveTask.Exception);
     }
-
 }
