@@ -48,10 +48,9 @@ public static class ServiceCollectionExtensions
             secureStorage.SetBotContext(botContext);
         }
 
-        var token = botContext.BotKey ?? string.Empty;
-
         services.AddHttpClient<BotStatusService<VkBot>>();
-
+        services.AddHttpClient<BotActualizationService<VkBot>>();
+        
         var serverConfig = new ServerSettings();
         config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
 
@@ -96,6 +95,7 @@ public static class ServiceCollectionExtensions
             sp.GetRequiredService<ILogger<VkBot>>());
 
         return services.AddSingleton<IBot<VkBot>>(bot)
-            .AddHostedService<BotStatusService<IBot<VkBot>>>();
+            .AddHostedService<BotStatusService<IBot<VkBot>>>()
+            .AddHostedService<BotKeepAliveService<IBot<VkBot>>>();
     }
 }

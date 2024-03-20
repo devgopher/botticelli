@@ -51,7 +51,8 @@ public static class ServiceCollectionExtensions
         var token = botContext.BotKey ?? string.Empty;
 
         services.AddHttpClient<BotStatusService<TelegramBot>>();
-
+        services.AddHttpClient<BotKeepAliveService<TelegramBot>>();
+        
         var serverConfig = new ServerSettings();
         config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
         services.AddSingleton(serverConfig)
@@ -68,6 +69,7 @@ public static class ServiceCollectionExtensions
 
         return services.AddSingleton<IBot<TelegramBot>>(bot)
             .AddHostedService<BotStatusService<IBot<TelegramBot>>>()
+            .AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>()
             .AddHostedService<TelegramBotHostedService>();
     }
 }
