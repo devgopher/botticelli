@@ -9,23 +9,23 @@ using Microsoft.Extensions.Options;
 
 namespace Botticelli.AI.AIProvider;
 
-public abstract class GenericAiProvider<TSettings> : IAiProvider 
+public abstract class GenericAiProvider<TSettings> : IAiProvider
     where TSettings : AiSettings
 {
     protected readonly IBusClient Bus;
-    protected readonly IHttpClientFactory Factory;
+    private readonly IHttpClientFactory _factory;
     protected readonly ILogger Logger;
     protected readonly IOptions<TSettings> Settings;
     private readonly IValidator<AiMessage> _messageValidator;
 
-    public GenericAiProvider(IOptions<TSettings> settings,
+    protected GenericAiProvider(IOptions<TSettings> settings,
         IHttpClientFactory factory,
         ILogger logger,
-        IBusClient bus, 
+        IBusClient bus,
         IValidator<AiMessage> messageValidator)
     {
         Settings = settings;
-        Factory = factory;
+        _factory = factory;
         Logger = logger;
         Bus = bus;
         _messageValidator = messageValidator;
@@ -89,12 +89,12 @@ public abstract class GenericAiProvider<TSettings> : IAiProvider
 
     private HttpClient GetClient()
     {
-        var client = Factory.CreateClient();
+        var client = _factory.CreateClient();
 
         client.BaseAddress = new Uri(Settings.Value.Url);
         client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", Settings.Value.ApiKey);
-        
+
         return client;
     }
 
@@ -121,6 +121,6 @@ public abstract class GenericAiProvider<TSettings> : IAiProvider
 
     protected abstract Task<HttpResponseMessage> GetGptResponse(AiMessage message, CancellationToken token,
         HttpClient client);
-    
+
     public abstract string AiName { get; }
 }

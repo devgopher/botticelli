@@ -3,7 +3,7 @@
 public class PassValidator<TCommand> : ICommandValidator<TCommand>
     where TCommand : ICommand
 {
-    public async Task<bool> Validate(List<string> chatId, string args) => true;
+    public Task<bool> Validate(List<string> chatId, string args) => Task.FromResult(true);
 
     public string Help() => string.Empty;
 }

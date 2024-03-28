@@ -77,11 +77,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "back", "back", "{05922003-7445-47CF-8496-7224F44E7768}"
 	ProjectSection(SolutionItems) = preProject
 		deploy\linux\server\back\run_standalone.sh = deploy\linux\server\back\run_standalone.sh
+		deploy\linux\server\back\Dockerfile = deploy\linux\server\back\Dockerfile
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{7FF17C87-CC2B-4CD6-B667-18B7BED78850}"
 	ProjectSection(SolutionItems) = preProject
 		deploy\linux\server\front\run_standalone.sh = deploy\linux\server\front\run_standalone.sh
+		deploy\linux\server\front\Dockerfile = deploy\linux\server\front\Dockerfile
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{5961DAF1-951C-4140-AEC1-648539E4D487}"
@@ -169,7 +171,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsRandomGenerator", "M
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "analytics_back", "analytics_back", "{F3D3569B-39C7-427C-B123-EF268F0CB895}"
 	ProjectSection(SolutionItems) = preProject
-		run_standalone.sh = run_standalone.sh
+		deploy\linux\server\analytics_back\run_standalone.sh = deploy\linux\server\analytics_back\run_standalone.sh
+		deploy\linux\server\analytics_back\Dockerfile = deploy\linux\server\analytics_back\Dockerfile
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiChatGptSample", "TelegramAiSample\TelegramAiChatGptSample.csproj", "{ECCC27F2-F7ED-406C-90B8-BD53A8A59B47}"
@@ -191,6 +194,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.GptJ", "Botticelli.AI.GptJ\Botticelli.AI.GptJ.csproj", "{1BC0B4EF-7C35-4BB7-B207-180FBC55681D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramAiDeepSeekSample", "TelegramAiDeepSeekSample\TelegramAiDeepSeekSample.csproj", "{3D52F777-3A84-4238-974F-A5969085B472}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.WeChat", "Botticelli.WeChat\Botticelli.WeChat.csproj", "{B8EE61E9-F029-49EA-81E5-D0BCBA265418}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -374,6 +379,10 @@ Global
 		{3D52F777-3A84-4238-974F-A5969085B472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D52F777-3A84-4238-974F-A5969085B472}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D52F777-3A84-4238-974F-A5969085B472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8EE61E9-F029-49EA-81E5-D0BCBA265418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8EE61E9-F029-49EA-81E5-D0BCBA265418}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8EE61E9-F029-49EA-81E5-D0BCBA265418}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8EE61E9-F029-49EA-81E5-D0BCBA265418}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -446,6 +455,7 @@ Global
 		{252B974D-7725-44F5-BE69-330B85731B08} = {3B5A6BD8-2B94-42F9-B122-06D92C470B31}
 		{1BC0B4EF-7C35-4BB7-B207-180FBC55681D} = {3B5A6BD8-2B94-42F9-B122-06D92C470B31}
 		{3D52F777-3A84-4238-974F-A5969085B472} = {2AD59714-541D-4794-9216-6EAB25F271DA}
+		{B8EE61E9-F029-49EA-81E5-D0BCBA265418} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

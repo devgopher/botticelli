@@ -36,7 +36,7 @@ builder.Services
     .AddBotCommand<StopCommand, StopCommandProcessor, PassValidator<StopCommand>>();
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor, TelegramBot>();
-app.Services.RegisterBotCommand<StopCommand, StopCommandProcessor, TelegramBot>();
+app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor, TelegramBot>()
+            .RegisterBotCommand<StopCommand, StopCommandProcessor, TelegramBot>();
 
 app.Run();
