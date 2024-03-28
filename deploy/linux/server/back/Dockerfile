@@ -6,6 +6,7 @@ RUN git clone https://github.com/devgopher/botticelli.git
 WORKDIR /app/botticelli/Botticelli
 RUN git fetch --all
 RUN git switch dev/0.4
+RUN git pull
 
 COPY . ./
 
@@ -21,3 +22,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "Botticelli.Server.dll"]
+CMD ["agent", "--verbose", "--onetime", "--no-daemonize", "--summarize" ]
