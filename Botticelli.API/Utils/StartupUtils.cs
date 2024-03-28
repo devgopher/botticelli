@@ -6,7 +6,7 @@ namespace Botticelli.BotBase.Utils;
 public static class StartupUtils
 {
     public static void ApplyMigrations<TContext>(this IServiceCollection services)
-        where TContext : DbContext
+            where TContext : DbContext
     {
         using var scope = services.BuildServiceProvider().CreateScope();
 

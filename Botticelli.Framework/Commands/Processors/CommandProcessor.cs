@@ -110,10 +110,10 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     {
     }
 
-    private void SendMetric(string metricName) => _metricsProcessor.Process(metricName, BotDataUtils.GetBotId());
+    private void SendMetric(string metricName) => _metricsProcessor.Process(metricName, BotDataUtils.GetBotId()!);
 
     private void SendMetric() => _metricsProcessor.Process(GetCommandName(
-        $"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId());
+        $"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId()!);
 
     private string GetCommandName(string fullCommand)
         => fullCommand.ToLowerInvariant().Replace("command", "");

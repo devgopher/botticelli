@@ -9,10 +9,7 @@ public class MetricsPublisher
 {
     private readonly AnalyticsSettings _settings;
 
-    public MetricsPublisher(AnalyticsSettings settings)
-    {
-        _settings = settings;
-    }
+    public MetricsPublisher(AnalyticsSettings settings) => _settings = settings;
 
     public async Task Publish(IMetricObject metric, CancellationToken token)
         => await Url.Combine(_settings.TargetUrl, "/metrics/receiver/ReceiveMetric")
