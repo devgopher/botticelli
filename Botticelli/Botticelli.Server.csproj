@@ -70,7 +70,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="appsettings.json"/>
+        <Resource Include="appsettings.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Resource>
     </ItemGroup>
 
     <ItemGroup>
