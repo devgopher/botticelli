@@ -197,6 +197,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramAiDeepSeekSample", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.WeChat", "Botticelli.WeChat\Botticelli.WeChat.csproj", "{B8EE61E9-F029-49EA-81E5-D0BCBA265418}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{1BBE72D9-3509-4750-B79E-766B3122B999}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{94539590-4B6F-4500-B010-DED4D4A30529}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\linux\bot_sample\Dockerfile = deploy\linux\bot_sample\Dockerfile
+		deploy\linux\bot_sample\push_docker.sh = deploy\linux\bot_sample\push_docker.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -456,6 +464,8 @@ Global
 		{1BC0B4EF-7C35-4BB7-B207-180FBC55681D} = {3B5A6BD8-2B94-42F9-B122-06D92C470B31}
 		{3D52F777-3A84-4238-974F-A5969085B472} = {2AD59714-541D-4794-9216-6EAB25F271DA}
 		{B8EE61E9-F029-49EA-81E5-D0BCBA265418} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
+		{1BBE72D9-3509-4750-B79E-766B3122B999} = {35480478-646E-45F1-96A3-EE7AC498ACE3}
+		{94539590-4B6F-4500-B010-DED4D4A30529} = {1BBE72D9-3509-4750-B79E-766B3122B999}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
