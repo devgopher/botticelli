@@ -68,7 +68,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="appsettings.json"/>
+        <None Include="appsettings.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
