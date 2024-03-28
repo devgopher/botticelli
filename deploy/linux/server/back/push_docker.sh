@@ -24,6 +24,7 @@ sed -i "s/\$http_port/$http_port/g" /tmp/tmp_docker_botticelli/Dockerfile
 sed -i "s/\$https_port/$https_port/g" /tmp/tmp_docker_botticelli/Dockerfile
 sed -i "s/\$db_password/$db_password/g" /tmp/tmp_docker_botticelli/Dockerfile
 sed -i "s/\$email_addr/$email_addr/g" /tmp/tmp_docker_botticelli/Dockerfile
+sed -i "s/\$email_smtp_server/$email_smtp_server/g" /tmp/tmp_docker_botticelli/Dockerfile
 sed -i "s/\$email_smtp_port/$email_smtp_port/g" /tmp/tmp_docker_botticelli/Dockerfile
 sed -i "s/\$email_smtp_pwd/$email_smtp_pwd/g" /tmp/tmp_docker_botticelli/Dockerfile
 sed -i "s/\$email_use_ssl/$email_use_ssl/g" /tmp/tmp_docker_botticelli/Dockerfile

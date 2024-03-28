@@ -39,7 +39,7 @@ ENV ServerSettings__smtpClientOptions__PreferredEncoding null
 ENV ServerSettings__SmtpClientOptions__UsePickupDirectory false
 ENV ServerSettings__SmtpClientOptions__MailPickupDirectory C:\\Temp
 ENV ServerSettings__SmtpClientOptions__SocketOptions 2
-ENV ServerSettings__ServerEmail $email
+ENV ServerSettings__ServerEmail $email_addr
 ENV ServerSettings__ServerUrl $email_smtp_server
 
 
