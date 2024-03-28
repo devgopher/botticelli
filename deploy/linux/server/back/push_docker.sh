@@ -30,7 +30,6 @@ sed -i "s/\$email_smtp_pwd/$email_smtp_pwd/g" /tmp/tmp_docker_botticelli/Dockerf
 sed -i "s/\$email_use_ssl/$email_use_ssl/g" /tmp/tmp_docker_botticelli/Dockerfile
 sed -i "s/\$requires_authentification/$requires_authentification/g" /tmp/tmp_docker_botticelli/Dockerfile
 
-
 docker build --tag "botticelli_server_back_dev:0.4" . --no-cache
 
 #docker image push --all-tags <registry-host:5000/myname/myimage>

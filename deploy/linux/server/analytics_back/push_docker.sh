@@ -24,7 +24,6 @@ sed -i "s/\$db_port/$db_port/g" /tmp/tmp_docker_botticelli/Dockerfile
 sed -i "s/\$db_user/$db_user/g" /tmp/tmp_docker_botticelli/Dockerfile
 sed -i "s/\$db_password/$db_password/g" /tmp/tmp_docker_botticelli/Dockerfile
 
-
-docker build --tag "botticelli_server_back_dev:0.4" . --no-cache
+docker build --tag "botticelli_server_analytics_dev:0.4" . --no-cache
 
 #docker image push --all-tags <registry-host:5000/myname/myimage>

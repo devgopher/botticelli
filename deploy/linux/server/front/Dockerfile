@@ -2,16 +2,32 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /app
 
 # Copy everything
-COPY ./../../../../Botticelli.Server.FrontNew ./
+RUN git clone https://github.com/devgopher/botticelli.git
+WORKDIR /app/botticelli/Botticelli.Server.FrontNew 
+RUN git fetch --all
+RUN git switch dev/0.4
+RUN git pull
+
+COPY . ./
 
 # Restore as distinct layers
-RUN dotnet restore
+# RUN dotnet restore
 
 # Build and publish a release
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o /app/out
+RUN ls .
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "Botticelli.Server.FrontNew.dll"]
+
+EXPOSE $http_port
+EXPOSE $https_port
+
+ENV ASPNETCORE_URLS https://0.0.0.0:$https_port;http://0.0.0.0:$http_port
+ENV ASPNETCORE_ENVIRONMENT=Release
+ENV BackSettings__BackUrl=$backend_url/v1/
+ENV BackSettings__AnalyticsUrl=$analytics_url/v1/
+
+ENTRYPOINT ["dotnet", "Botticelli.Server.FrontNew .dll"]
