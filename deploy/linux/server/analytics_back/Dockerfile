@@ -22,8 +22,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 
-EXPOSE 5251
-EXPOSE 5252
+EXPOSE $http_port
+EXPOSE $https_port
 
 ENV ASPNETCORE_URLS https://0.0.0.0:$https_port;http://0.0.0.0:$http_port
 ENV ASPNETCORE_ENVIRONMENT Release

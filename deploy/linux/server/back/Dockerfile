@@ -22,10 +22,10 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 
-EXPOSE 53635
-EXPOSE 53636
+EXPOSE $http_port
+EXPOSE $https_port
 
-ENV ASPNETCORE_URLS https://0.0.0.0:53636;http://0.0.0.0:53635
+ENV ASPNETCORE_URLS https://0.0.0.0:$https_port;http://0.0.0.0:$http_port
 ENV ASPNETCORE_ENVIRONMENT=Release
 ENV SecureStorageSettings__ConnectionString="Filename=database.db;Connection=shared;Password=$db_password"
 ENV ServerSettings__TokenLifetimeMin=1000
