@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Bus.Rabbit.Exceptions;
 using Botticelli.Bus.Rabbit.Settings;
@@ -36,7 +37,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
     }
 
     public async IAsyncEnumerable<SendMessageResponse> SendAndGetResponseSeries(SendMessageRequest request,
-        CancellationToken token)
+        [EnumeratorCancellation] CancellationToken token)
     {
         using var connection = _rabbitConnectionFactory.CreateConnection();
         using var channel = connection.CreateModel();

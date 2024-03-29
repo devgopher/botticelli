@@ -103,9 +103,10 @@ public class BotUpdateHandler : IBotUpdateHandler
         var clientTasks = _processorFactory
             .GetProcessors()
             .Where(p => p.GetType() != typeof(ChatMessageProcessor))
-            .Select(p => p.ProcessAsync(request, token));
+            .Select(async p => await p.ProcessAsync(request, token));
 
-        Task.WaitAll(clientTasks.ToArray(), token);
+        
+        Parallel.ForEach(clientTasks, async task => await task.WaitAsync(token));
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
 
         return Task.CompletedTask;

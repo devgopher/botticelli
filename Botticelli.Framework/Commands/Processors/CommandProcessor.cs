@@ -20,7 +20,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     private readonly ILogger _logger;
     private readonly MetricsProcessor _metricsProcessor;
     private readonly ICommandValidator<TCommand> _validator;
-    protected IBot _bot;
+    protected IBot Bot;
 
 
     protected CommandProcessor(ILogger logger,
@@ -104,7 +104,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     }
 
     public void SetBot(IBot bot)
-        => _bot = bot;
+        => Bot = bot;
 
     public void SetServiceProvider(IServiceProvider sp)
     {
@@ -132,7 +132,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         {
             request.Message.Body = _validator.Help();
 
-            await _bot.SendMessageAsync(request, token);
+            await Bot.SendMessageAsync(request, token);
         }
     }
 
