@@ -43,10 +43,10 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
             }
         };
 
-        await _bot.SendMessageAsync(greetingMessageRequest, token);
+        await Bot.SendMessageAsync(greetingMessageRequest, token);
 
         var assemblyPath = Path.GetDirectoryName(typeof(StartCommandProcessor).Assembly.Location);
-        JobManager.AddJob(_bot,
+        JobManager.AddJob(Bot,
             new Reliability
             {
                 IsEnabled = false,

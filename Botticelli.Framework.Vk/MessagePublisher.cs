@@ -38,7 +38,7 @@ public class MessagePublisher
             if (response.StatusCode != HttpStatusCode.OK)
                 _logger.LogError($"Error sending a message: {response.StatusCode} {response.ReasonPhrase}!");
 
-            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync(token);
 
             if (string.IsNullOrEmpty(responseContent)) _logger.LogError($"Error sending a message {responseContent}");
         }

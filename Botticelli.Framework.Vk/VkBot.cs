@@ -169,11 +169,11 @@ public class VkBot : BaseBot<VkBot>
         ISendOptionsBuilder<TSendOptions> optionsBuilder,
         CancellationToken token)
     {
-        foreach (var userId in request.Message.ChatIds)
+        foreach (var peerId in request.Message.ChatIds)
             try
             {
                 var requests = await CreateRequestsWithAttachments(request,
-                    userId,
+                    peerId,
                     token);
 
                 foreach (var vkRequest in requests)
@@ -196,7 +196,7 @@ public class VkBot : BaseBot<VkBot>
         CancellationToken token) => throw new NotImplementedException();
 
     private async Task<IEnumerable<VkSendMessageRequest>> CreateRequestsWithAttachments(SendMessageRequest request,
-        string userId,
+        string peerId,
         CancellationToken token)
     {
         var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
@@ -208,7 +208,7 @@ public class VkBot : BaseBot<VkBot>
             var vkRequest = new VkSendMessageRequest
             {
                 AccessToken = currentContext.BotKey,
-                UserId = userId,
+                PeerId = peerId,
                 Body = first ? request.Message.Body : string.Empty,
                 Lat = request?.Message.Location?.Latitude,
                 Long = request?.Message.Location?.Longitude,
@@ -226,12 +226,12 @@ public class VkBot : BaseBot<VkBot>
                 var vkRequest = new VkSendMessageRequest
                 {
                     AccessToken = currentContext.BotKey,
-                    UserId = userId,
+                    //UserId = peerId,
                     Body = first ? request.Message.Body : string.Empty,
                     Lat = request?.Message.Location?.Latitude,
                     Long = request?.Message.Location?.Longitude,
                     ReplyTo = request?.Message.ReplyToMessageUid,
-                    PeerId = request?.Message.ChatIds.FirstOrDefault(),
+                    PeerId = peerId,
                     Attachment = null
                 };
 

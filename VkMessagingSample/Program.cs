@@ -17,6 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 var settings = builder.Configuration
     .GetSection(nameof(SampleSettings))
     .Get<SampleSettings>();
+var vkSettings = builder.Configuration
+    .GetSection(nameof(VkBotSettings))
+    .Get<VkBotSettings>();
 
 builder.Services
     .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
@@ -30,7 +33,7 @@ builder.Services
             {
                 s.Name = settings.BotName;
                 s.PollIntervalMs = 100;
-                s.GroupId = 222602273;
+                s.GroupId = vkSettings.GroupId;
             }))
     .AddLogging(cfg => cfg.AddNLog())
     .AddHangfireScheduler(builder.Configuration)

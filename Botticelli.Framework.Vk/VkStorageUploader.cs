@@ -273,7 +273,7 @@ public class VkStorageUploader
             });
 
             var response = await httpClient.SendAsync(request, token);
-            var resultString = await response.Content.ReadAsStringAsync();
+            var resultString = await response.Content.ReadAsStringAsync(token);
 
             return JsonSerializer.Deserialize<VkSendPhotoResponse>(resultString);
         }

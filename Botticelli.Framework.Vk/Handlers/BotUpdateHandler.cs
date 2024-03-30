@@ -31,16 +31,17 @@ public class BotUpdateHandler : IBotUpdateHandler
 
             try
             {
-                var val = botMessage.Object["message"];
+                var val = botMessage.Object.TryGetValue("message", out var value) ?  value : string.Empty;
                 var peerId = botMessage.Object.ContainsKey("peer_id")
-                    ? val.ToString()
-                    : val.AsObject()["peer_id"].ToString();
+                    ? 
+                    botMessage.Object["peer_id"].ToString()
+                    : val?.ToString();
 
-                var text = botMessage.Object.ContainsKey("text") ? val.ToString() : val.AsObject()["text"].ToString();
+                var text = botMessage.Object.ContainsKey("text") ? botMessage.Object["text"].ToString() : val.ToString();
 
                 var fromId = botMessage.Object.ContainsKey("from_id")
                     ? val.ToString()
-                    : val.AsObject()["from_id"].ToString();
+                    : peerId;
 
                 var botticelliMessage = new Message(botMessage.EventId)
                 {
