@@ -99,16 +99,15 @@ public class BotUpdateHandler : IBotUpdateHandler
 
         if (token is { CanBeCanceled: true, IsCancellationRequested: true })
             return Task.CompletedTask;
-
+        
         var clientTasks = _processorFactory
             .GetProcessors()
             .Where(p => p.GetType() != typeof(ChatMessageProcessor))
-            .Select(async p => await p.ProcessAsync(request, token));
+            .Select(p => p.ProcessAsync(request, token));
 
+        Parallel.ForEachAsync(clientTasks, token, async (t, ct) => await t.WaitAsync(ct));
         
-        Parallel.ForEach(clientTasks, async task => await task.WaitAsync(token));
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
-
         return Task.CompletedTask;
     }
 }
