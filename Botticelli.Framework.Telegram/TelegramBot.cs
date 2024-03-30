@@ -25,49 +25,15 @@ using Poll = Botticelli.Shared.ValueObjects.Poll;
 
 namespace Botticelli.Framework.Telegram;
 
-// public class MessageSequenceState
-// {
-//     public SendMessageRequest Request { get; init; }
-//     public int? InnerMessageId { get; set; }
-//     public bool IsSent { get; set; }
-// }
-//
-// public class MessageSequenceStates
-// {
-//     public MessageSequenceStates(string uid)
-//     {
-//         Uid = uid;
-//         States = new List<MessageSequenceState>();
-//     }
-//
-//     public string Uid { get; set; }
-//     public List<MessageSequenceState> States { get; set; }
-// }
-
 public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly IBotUpdateHandler _handler;
+
     private readonly SecureStorage _secureStorage;
+
     // private static readonly IMemoryCache Cache;
     private ITelegramBotClient _client;
 
-    static TelegramBot()
-    {
-        // Cache = new MemoryCache(new MemoryDistributedCacheOptions
-        // {
-        //     ExpirationScanFrequency = TimeSpan.FromMinutes(1),
-        //     SizeLimit = null
-        // });
-    }
-    
-    /// <summary>
-    ///     ctor
-    /// </summary>
-    /// <param name="client"></param>
-    /// <param name="handler"></param>
-    /// <param name="logger"></param>
-    /// <param name="metrics"></param>
-    /// <param name="secureStorage"></param>
     public TelegramBot(ITelegramBotClient client,
         IBotUpdateHandler handler,
         ILogger<TelegramBot> logger,
@@ -196,19 +162,19 @@ public class TelegramBot : BaseBot<TelegramBot>
                     if (!(request.ExpectPartialResponse ?? false))
                     {
                         Logger.LogInformation($"No streaming response - sending a message!");
-                        await _client.SendTextMessageAsync(link.chatId,
-                            retText,
-                            parseMode: ParseMode.MarkdownV2,
-                            replyToMessageId: request.Message.ReplyToMessageUid != default
-                                ? int.Parse(request.Message.ReplyToMessageUid)
-                                : default,
-                            replyMarkup: replyMarkup,
-                            cancellationToken: token);
+                        await SendText(retText);
                     }
                     else
                     {
+                        Logger.LogWarning(@"Streaming output isn't supported for Telegram now!");
+                        
+                        await SendText(@"Sorry, but streaming output isn't supported for Telegram now\!");
+                    }
+
+                    async Task SendText(string sendText)
+                    {
                         await _client.SendTextMessageAsync(link.chatId,
-                            @"Sorry, but streaming output isn't supported for Telegram now\!",
+                            sendText,
                             parseMode: ParseMode.MarkdownV2,
                             replyToMessageId: request.Message.ReplyToMessageUid != default
                                 ? int.Parse(request.Message.ReplyToMessageUid)
@@ -216,74 +182,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                             replyMarkup: replyMarkup,
                             cancellationToken: token);
                     }
-                    // else
-                    // {
-                    //     Logger.LogInformation($"Streaming response - getting a message sequence!");
-                    //     var messagesSequence = await Cache.GetOrCreateAsync(
-                    //         request.Uid,
-                    //         cacheEntry =>
-                    //         {
-                    //             cacheEntry.SlidingExpiration = TimeSpan.FromMinutes(30);
-                    //             return Task.FromResult(new MessageSequenceStates(request.Uid));
-                    //         });
-                    //
-                    //     Logger.LogInformation($"Message '{request.Uid}' sequence number: {request.SequenceNumber}");
-                    //     if (!messagesSequence.States.Any())
-                    //     {
-                    //         message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
-                    //     }
-                    //     else
-                    //     {
-                    //         Logger.LogInformation(
-                    //             $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: trying to edit a first message");
-                    //         var innerMessageId =
-                    //             messagesSequence.States.FirstOrDefault(s => s.Request?.SequenceNumber == messagesSequence.States.Min(s => s.Request?.SequenceNumber))
-                    //                 ?.InnerMessageId;
-                    //         Logger.LogInformation($"Inner message '{request.Uid}' id {innerMessageId}");
-                    //
-                    //         if (innerMessageId == default)
-                    //         {
-                    //             Logger.LogInformation($"No inner message '{request.Uid}' id found in a cache!");
-                    //             continue;
-                    //         }
-                    //
-                    //
-                    //         var lastCachedState = messagesSequence.States?.MaxBy(s => s.Request.SequenceNumber);
-                    //         
-                    //         if (request.SequenceNumber > lastCachedState.Request.SequenceNumber)
-                    //         {
-                    //             /*
-                    //                 Since, there're some problems with editing a message in telegram (especially, messages with reply markup),
-                    //                 editing is commented out - replacing messages
-                    //              */
-                    //             // Logger.LogInformation($"Trying to edit a message '{request.Uid}': {innerMessageId}");
-                    //             // message = await _client.EditMessageTextAsync(link.chatId,
-                    //             //     innerMessageId.Value!,
-                    //             //     retText,
-                    //             //     ParseMode.MarkdownV2,
-                    //             //     cancellationToken: token);
-                    //             //
-                    //             // messagesSequence.States.Add(new MessageSequenceState
-                    //             // {
-                    //             //     Request = request,
-                    //             //     InnerMessageId = message.MessageId,
-                    //             //     IsSent = true
-                    //             // });
-                    //             
-                    //             Logger.LogInformation($"Trying to replace a message '{request.Uid}': {innerMessageId}");
-                    //         
-                    //             message = await SendMessage<TSendOptions>(request, token, link, retText, replyMarkup, messagesSequence);
-                    //             messagesSequence.States.Add(new MessageSequenceState
-                    //             {
-                    //                 Request = request,
-                    //                 InnerMessageId = message.MessageId,
-                    //                 IsSent = true
-                    //             });
-                    //         }
-                    //     }
-                    // }
                 }
-
 
                 if (request.Message?.Poll != default)
                 {
@@ -315,12 +214,11 @@ public class TelegramBot : BaseBot<TelegramBot>
 
                 if (request.Message?.Attachments == null) continue;
 
-                foreach (var genAttach in request.Message
+                foreach (var attachment in request.Message
                              .Attachments
-                             .Where(a => a is BinaryAttachment))
+                             .Where(a => a is BinaryAttachment)
+                             .Cast<BinaryAttachment>())
                 {
-                    var attachment = (BinaryAttachment)genAttach;
-
                     switch (attachment.MediaType)
                     {
                         case MediaType.Audio:
@@ -438,34 +336,6 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         return response;
     }
-
-    // private async Task<Message> SendMessage<TSendOptions>(SendMessageRequest request, CancellationToken token,
-    //     (string chatId, string innerId) link, string retText, IReplyMarkup replyMarkup,
-    //     MessageSequenceStates messagesSequence)
-    // {
-    //     Message message;
-    //     Logger.LogInformation(
-    //         $"Message sequence number: {request.SequenceNumber}: sending a first message");
-    //     message = await _client.SendTextMessageAsync(link.chatId,
-    //         retText,
-    //         parseMode: ParseMode.MarkdownV2,
-    //         replyToMessageId: request.Message.ReplyToMessageUid != default
-    //             ? int.Parse(request.Message.ReplyToMessageUid)
-    //             : default,
-    //         replyMarkup: replyMarkup,
-    //         cancellationToken: token);
-    //
-    //     Logger.LogInformation(
-    //         $"Message '{request.Uid}' sequence number: {request.SequenceNumber}: saving state in a cache. Inner message id {message.MessageId}");
-    //
-    //     messagesSequence.States.Add(new MessageSequenceState
-    //     {
-    //         Request = request,
-    //         InnerMessageId = message.MessageId,
-    //         IsSent = true
-    //     });
-    //     return message;
-    // }
 
     private static void AddChatIdInnerIdLink(SendMessageResponse response, string chatId, Message message)
     {
@@ -604,16 +474,30 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         if (currentKey?.Key != key)
         {
-            var stopRequest = StopBotRequest.GetInstance();
-            var startRequest = StartBotRequest.GetInstance();
-
-            await StopBotAsync(stopRequest, token);
+            await StopBot(token);
 
             _secureStorage.SetBotKey(currentKey?.Id, key);
-            _client = new TelegramBotClient(key);
+            RecreateClient(key);
 
-            await StartBotAsync(startRequest, token);
+            await StartBot(token);
         }
+    }
+
+    private void RecreateClient(string key)
+    {
+        _client = new TelegramBotClient(key);
+    }
+
+    private async Task StartBot(CancellationToken token)
+    {
+        var startRequest = StartBotRequest.GetInstance();
+        await StartBotAsync(startRequest, token);
+    }
+
+    private async Task StopBot(CancellationToken token)
+    {
+        var stopRequest = StopBotRequest.GetInstance();
+        await StopBotAsync(stopRequest, token);
     }
 
     public override async Task SetBotContext(BotContext context, CancellationToken token)
@@ -624,14 +508,13 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         if (currentContext?.BotKey != context.BotKey)
         {
-            var stopRequest = StopBotRequest.GetInstance();
-            var startRequest = StartBotRequest.GetInstance();
-            await StopBotAsync(stopRequest, token);
+            await StopBot(token);
 
             _secureStorage.SetBotContext(context);
-            _client = new TelegramBotClient(context.BotKey);
+            RecreateClient(context.BotKey);
 
-            await StartBotAsync(startRequest, token);
+
+            await StartBot(token);
         }
     }
 }
