@@ -46,7 +46,7 @@ public class LongPollMessagesProvider : IDisposable
         _groupId = settings.CurrentValue.GroupId;
     }
 
-    private string ApiVersion => "5.81";
+    private string ApiVersion => "5.199";
 
     public void Dispose()
     {

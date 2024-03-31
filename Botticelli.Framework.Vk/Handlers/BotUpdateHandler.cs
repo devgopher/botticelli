@@ -1,4 +1,5 @@
-﻿using Botticelli.Framework.Commands.Processors;
+﻿using System.Text.Json.Nodes;
+using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.MessageProcessors;
 using Botticelli.Framework.Vk.Messages.API.Responses;
 using Botticelli.Shared.ValueObjects;
@@ -25,25 +26,25 @@ public class BotUpdateHandler : IBotUpdateHandler
             .Where(x => x.Type == "message_new")
             .ToList();
 
-        foreach (var botMessage in botMessages)
+        var messagesText = botMessages.Select(bm =>
+            new
+            {
+                eventId = bm.EventId,
+                message = bm.Object["message"]
+            }); 
+        
+        foreach (var botMessage in messagesText)
         {
             if (botMessage == default) continue;
 
             try
             {
-                var val = botMessage.Object.TryGetValue("message", out var value) ?  value : string.Empty;
-                var peerId = botMessage.Object.ContainsKey("peer_id")
-                    ? 
-                    botMessage.Object["peer_id"].ToString()
-                    : val?.ToString();
+                var eventId = botMessage.eventId;
+                var peerId = botMessage.message["peer_id"]?.ToString();
+                var text = botMessage.message["text"]?.ToString();
+                var fromId = botMessage.message["from_id"]?.ToString();
 
-                var text = botMessage.Object.ContainsKey("text") ? botMessage.Object["text"].ToString() : val.ToString();
-
-                var fromId = botMessage.Object.ContainsKey("from_id")
-                    ? val.ToString()
-                    : peerId;
-
-                var botticelliMessage = new Message(botMessage.EventId)
+                var botticelliMessage = new Message(eventId)
                 {
                     ChatIds = new List<string>
                     {

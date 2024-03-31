@@ -27,7 +27,7 @@ public class VkStorageUploader
         _logger = logger;
     }
 
-    private string ApiVersion => "5.131";
+    private string ApiVersion => "5.199";
 
     public void SetApiKey(string key) => _apiKey = key;
 
@@ -158,7 +158,7 @@ public class VkStorageUploader
         var content = new MultipartFormDataContent { { new StreamContent(memoryContentStream), "photo", name } };
 
         var response = await httpClient.PostAsync(uploadUrl, content, token);
-        var resultString = await response.Content.ReadAsStringAsync();
+        var resultString = await response.Content.ReadAsStringAsync(token);
 
         return JsonSerializer.Deserialize<UploadPhotoResult>(resultString);
     }
@@ -197,7 +197,7 @@ public class VkStorageUploader
         };
 
         var response = await httpClient.PostAsync(uploadUrl, content, token);
-        var resultString = await response.Content.ReadAsStringAsync();
+        var resultString = await response.Content.ReadAsStringAsync(token);
 
         return JsonSerializer.Deserialize<TResult>(resultString);
     }
@@ -313,7 +313,10 @@ public class VkStorageUploader
                     "docs.save",
                     new
                     {
+                        title = "voice",
+                        tags = "string.Empty",
                         file = uploadedAudio.File,
+                        // audio = uploadedAudio.File,
                         access_token = _apiKey,
                         v = ApiVersion
                     }));
@@ -323,7 +326,7 @@ public class VkStorageUploader
             });
 
             var response = await httpClient.SendAsync(request, token);
-            var resultString = await response.Content.ReadAsStringAsync();
+            var resultString = await response.Content.ReadAsStringAsync(token);
 
             return JsonSerializer.Deserialize<VkSendAudioResponse>(resultString);
         }
@@ -365,7 +368,7 @@ public class VkStorageUploader
             });
 
             var response = await httpClient.SendAsync(request, token);
-            var resultString = await response.Content.ReadAsStringAsync();
+            var resultString = await response.Content.ReadAsStringAsync(token);
 
             return JsonSerializer.Deserialize<VkSendDocumentResponse>(resultString);
         }
