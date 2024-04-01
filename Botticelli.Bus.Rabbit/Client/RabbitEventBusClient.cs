@@ -15,9 +15,7 @@ public class RabbitEventBusClient<TBot> : BasicFunctions<TBot>, IEventBusClient
 {
     private readonly ILogger<RabbitEventBusClient<TBot>> _logger;
     private readonly IConnectionFactory _rabbitConnectionFactory;
-    private readonly Dictionary<string, SendMessageResponse> _responses = new(100);
     private readonly RabbitBusSettings _settings;
-    private readonly TimeSpan _timeout;
     private EventingBasicConsumer _consumer;
 
     public RabbitEventBusClient(IConnectionFactory rabbitConnectionFactory,
@@ -27,7 +25,6 @@ public class RabbitEventBusClient<TBot> : BasicFunctions<TBot>, IEventBusClient
         _rabbitConnectionFactory = rabbitConnectionFactory;
         _settings = settings;
         _logger = logger;
-        _timeout = settings.Timeout;
 
         Init();
     }
