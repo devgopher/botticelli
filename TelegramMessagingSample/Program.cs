@@ -6,6 +6,7 @@ using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Scheduler.Extensions;
+using Botticelli.Talks.Extensions;
 using MessagingSample.Common.Commands;
 using MessagingSample.Common.Commands.Processors;
 using NLog.Extensions.Logging;
@@ -32,6 +33,7 @@ builder.Services
     .AddHostedService<TestBotHostedService>()
     .AddScoped<StartCommandProcessor>()
     .AddScoped<StopCommandProcessor>()
+    .AddOpenTtsTalks(builder.Configuration)
     .AddBotCommand<StartCommand, StartCommandProcessor, PassValidator<StartCommand>>()
     .AddBotCommand<StopCommand, StopCommandProcessor, PassValidator<StopCommand>>();
 
