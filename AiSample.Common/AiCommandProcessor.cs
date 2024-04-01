@@ -27,7 +27,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
         _bus.OnReceived += async (sender, response) =>
         {
             if (response != null)
-                await _bot.SendMessageAsync(new SendMessageRequest(response.Uid)
+                await Bot.SendMessageAsync(new SendMessageRequest(response.Uid)
                     {
                         Message = response.Message,
                         ExpectPartialResponse = response.IsPartial,
@@ -56,7 +56,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
 
 
     protected override async Task InnerProcess(Message message, string args, CancellationToken token) =>
-        _bus.Send(new SendMessageRequest(message.Uid)
+        await _bus.Send(new SendMessageRequest(message.Uid)
         {
             Message = new AiMessage(message.Uid)
             {
@@ -69,5 +69,5 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                 From = message.From,
                 ForwardedFrom = message.ForwardedFrom
             }
-        });
+        }, token);
 }
