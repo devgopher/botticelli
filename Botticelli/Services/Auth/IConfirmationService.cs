@@ -12,7 +12,6 @@ public interface IConfirmationService
     /// </summary>
     /// <param name="user"></param>
     /// <param name="token"></param>
-    /// <param name="email"></param>
     /// <returns></returns>
     Task SendConfirmationCode(IdentityUser<string> user, CancellationToken token);
 
@@ -22,7 +21,6 @@ public interface IConfirmationService
     /// <param name="srcToken"></param>
     /// <param name="user"></param>
     /// <param name="ct"></param>
-    /// <param name="request"></param>
     /// <returns></returns>
     Task<bool> ConfirmCodeAsync(string srcToken, IdentityUser<string> user, CancellationToken ct);
 }
