@@ -121,7 +121,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
         var exchange = _settings.Exchange;
 
         if (_settings.QueueSettings.TryCreate)
-            channel.ExchangeDeclare(exchange, "direct");
+            channel.ExchangeDeclare(exchange, _settings.ExchangeType);
         else
             channel.ExchangeDeclarePassive(exchange);
 

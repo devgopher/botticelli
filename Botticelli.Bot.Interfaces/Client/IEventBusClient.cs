@@ -12,5 +12,5 @@ public interface IEventBusClient : IDisposable
 
     public event BusEventHandler OnReceived;
 
-    public void Send(SendMessageRequest request);
+    public Task Send(SendMessageRequest request, CancellationToken token);
 }

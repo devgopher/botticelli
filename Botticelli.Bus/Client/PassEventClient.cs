@@ -8,32 +8,33 @@ public class PassEventClient : IEventBusClient
 {
     private bool _startedFlag = true;
     private readonly Task _workerTask;
-
+    private const int Pause = 5;
+    
     public event IEventBusClient.BusEventHandler OnReceived;
 
-    public PassEventClient()
-    {
-        _workerTask = Task.Run(Process);
-    }
+    public PassEventClient() => _workerTask = Task.Run(Process);
 
-    public void Send(SendMessageRequest request)
-        => NoneBus.SendMessageRequests.Enqueue(request);
+    public Task Send(SendMessageRequest request, CancellationToken token)
+    {
+        NoneBus.SendMessageRequests.Enqueue(request);
+
+        return Task.CompletedTask;
+    }
 
     private void Process()
     {
-        const int pause = 50;
         while (_startedFlag)
         {
             if (NoneBus.SendMessageResponses.TryDequeue(out var message))
                 OnReceived?.Invoke(this, message);
 
-            Thread.Sleep(pause);
+            Thread.Sleep(Pause);
         }
     }
 
     public void Dispose()
     {
         _startedFlag = false;
-        _workerTask.Wait(5000);
+        _workerTask.Wait(500);
     }
 }
