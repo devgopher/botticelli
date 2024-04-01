@@ -47,22 +47,25 @@
         <Content Update="wwwroot\js\CookieStorageAccessor.js">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Update="wwwroot\Logos\RocketChat.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Update="wwwroot\Logos\Signal.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
         <Content Update="wwwroot\Logos\Telegram.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Update="wwwroot\Logos\Unknown.png">
+        <Content Update="wwwroot\Signal.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Update="wwwroot\Logos\Viber.png">
+        <Content Update="wwwroot\telegram.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Update="wwwroot\Logos\Whatsapp.png">
+        <Content Update="wwwroot\Unknown.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Update="wwwroot\Viber.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Update="wwwroot\Whatsapp.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Update="wwwroot\RocketChat.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
@@ -74,5 +77,4 @@
     <ItemGroup>
         <_ContentIncludedByDefault Remove="Pages\BotMetrics.razor"/>
     </ItemGroup>
-
 </Project>
