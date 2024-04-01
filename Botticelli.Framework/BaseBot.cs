@@ -40,16 +40,13 @@ public abstract class BaseBot<T> : IBot<T>
     {
         Logger = logger;
         _metrics = metrics;
-        IsStarted = false;
     }
-
-    protected bool IsStarted { get; set; }
 
     public async Task<PingResponse> PingAsync(PingRequest request) => PingResponse.GetInstance(request.Uid);
 
     public virtual async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
     {
-        if (IsStarted)
+        if (BotStatusKeeper.IsStarted)
             return StartBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
 
         _metrics.Process(MetricNames.BotStarted, BotDataUtils.GetBotId());
@@ -65,8 +62,11 @@ public abstract class BaseBot<T> : IBot<T>
     {
         _metrics.Process(MetricNames.BotStopped, BotDataUtils.GetBotId());
 
+        if (!BotStatusKeeper.IsStarted)
+            return StopBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
+        
         var result = await InnerStopBotAsync(request, token);
-
+        
         Stopped?.Invoke(this, new StoppedBotEventArgs());
 
         return result;

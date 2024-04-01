@@ -40,7 +40,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         MetricsProcessor metrics,
         SecureStorage secureStorage) : base(logger, metrics)
     {
-        IsStarted = false;
+        BotStatusKeeper.IsStarted = false;
         _client = client;
         _handler = handler;
         _secureStorage = secureStorage;
@@ -65,7 +65,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     protected override async Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
         CancellationToken token)
     {
-        if (!IsStarted)
+        if (!BotStatusKeeper.IsStarted)
         {
             Logger.LogInformation("Bot wasn't started!");
 
@@ -116,7 +116,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         ISendOptionsBuilder<TSendOptions> optionsBuilder,
         CancellationToken token)
     {
-        if (!IsStarted)
+        if (!BotStatusKeeper.IsStarted)
         {
             Logger.LogInformation("Bot wasn't started!");
 
@@ -406,15 +406,15 @@ public class TelegramBot : BaseBot<TelegramBot>
             Logger.LogInformation($"{nameof(StartBotAsync)}...");
             var response = StartBotResponse.GetInstance(AdminCommandStatus.Ok, "");
 
-            if (IsStarted)
+            if (BotStatusKeeper.IsStarted)
             {
                 Logger.LogInformation($"{nameof(StartBotAsync)}: already started");
 
                 return response;
             }
 
-            if (response.Status != AdminCommandStatus.Ok || IsStarted) return response;
-
+            BotStatusKeeper.IsStarted = true;
+            
             // Rethrowing an event from BotUpdateHandler
             _handler.MessageReceived += (sender, e)
                 =>
@@ -424,7 +424,6 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             _client.StartReceiving(_handler, cancellationToken: token);
 
-            IsStarted = true;
             Logger.LogInformation($"{nameof(StartBotAsync)}: started");
 
             return response;
@@ -450,11 +449,12 @@ public class TelegramBot : BaseBot<TelegramBot>
             Logger.LogInformation($"{nameof(InnerStopBotAsync)}...");
             var response = StopBotResponse.GetInstance(request.Uid, "", AdminCommandStatus.Ok);
 
-            if (response.Status != AdminCommandStatus.Ok || !IsStarted) return response;
+            if (!BotStatusKeeper.IsStarted) return response;
 
+            BotStatusKeeper.IsStarted = false;
+            
             await _client.CloseAsync(token);
 
-            IsStarted = false;
             Logger.LogInformation($"{nameof(StopBotAsync)}: stopped");
 
             return response;
