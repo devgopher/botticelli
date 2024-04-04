@@ -72,14 +72,14 @@ public class VkBot : BaseBot<VkBot>
             Logger.LogInformation($"{nameof(StartBotAsync)}...");
             var response = StartBotResponse.GetInstance(AdminCommandStatus.Ok, "");
 
-            if (IsStarted)
+            if (BotStatusKeeper.IsStarted)
             {
                 Logger.LogInformation($"{nameof(StartBotAsync)}: already started");
 
                 return response;
             }
 
-            if (response.Status != AdminCommandStatus.Ok || IsStarted) return response;
+            if (response.Status != AdminCommandStatus.Ok || BotStatusKeeper.IsStarted) return response;
 
             if (!_eventsAttached)
             {
@@ -97,7 +97,7 @@ public class VkBot : BaseBot<VkBot>
 
             await _messagesProvider.Start(token);
 
-            IsStarted = true;
+            BotStatusKeeper.IsStarted = true;
             Logger.LogInformation($"{nameof(StartBotAsync)}: started");
 
             return response;
