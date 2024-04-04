@@ -22,12 +22,14 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 
-EXPOSE $http_port
-EXPOSE $https_port
+RUN dotnet dev-certs https --trust
 
-ENV ASPNETCORE_URLS https://0.0.0.0:$https_port;http://0.0.0.0:$http_port
-ENV ASPNETCORE_ENVIRONMENT=Release
-ENV BackSettings__BackUrl=$backend_url/v1/
-ENV BackSettings__AnalyticsUrl=$analytics_url/v1/
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /app
+COPY --from=build-env /app/out .
 
-ENTRYPOINT ["dotnet", "Botticelli.Server.FrontNew .dll"]
+EXPOSE 5000
+EXPOSE 5001
+
+ENTRYPOINT ["dotnet", "Botticelli.Server.FrontNew.dll"]
