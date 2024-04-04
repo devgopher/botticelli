@@ -78,6 +78,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "back", "back", "{05922003-7
 	ProjectSection(SolutionItems) = preProject
 		deploy\linux\server\back\run_standalone.sh = deploy\linux\server\back\run_standalone.sh
 		deploy\linux\server\back\Dockerfile = deploy\linux\server\back\Dockerfile
+		deploy\linux\server\back\run_docker.sh = deploy\linux\server\back\run_docker.sh
+		deploy\linux\server\back\build_docker.sh = deploy\linux\server\back\build_docker.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{7FF17C87-CC2B-4CD6-B667-18B7BED78850}"

@@ -22,25 +22,25 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 
-EXPOSE $http_port
-EXPOSE $https_port
+EXPOSE 5000
+EXPOSE 5001
 
-ENV ASPNETCORE_URLS https://0.0.0.0:$https_port;http://0.0.0.0:$http_port
-ENV ASPNETCORE_ENVIRONMENT=Release
-ENV SecureStorageSettings__ConnectionString="Filename=database.db;Connection=shared;Password=$db_password"
-ENV ServerSettings__TokenLifetimeMin=1000
-ENV ServerSettings__SmtpClientOptions__Server $email_smtp_server
-ENV ServerSettings__SmtpClientOptions__Port $email_smtp_port
-ENV ServerSettings__SmtpClientOptions__User $email_addr
-ENV ServerSettings__SmtpClientOptions__Password $email_smtp_pwd
-ENV ServerSettings__SmtpClientOptions__UseSsl $email_use_ssl
-ENV ServerSettings__SmtpClientOptions__RequiresAuthentication $requires_authentification
-ENV ServerSettings__smtpClientOptions__PreferredEncoding null
-ENV ServerSettings__SmtpClientOptions__UsePickupDirectory false
-ENV ServerSettings__SmtpClientOptions__MailPickupDirectory C:\\Temp
-ENV ServerSettings__SmtpClientOptions__SocketOptions 2
-ENV ServerSettings__ServerEmail $email_addr
-ENV ServerSettings__ServerUrl $email_smtp_server
+#ENV ASPNETCORE_URLS https://0.0.0.0:$https_port;http://0.0.0.0:$http_port
+#ENV ASPNETCORE_ENVIRONMENT=Release
+#ENV SecureStorageSettings__ConnectionString="Filename=database.db;Connection=shared;Password=$db_password"
+#ENV ServerSettings__TokenLifetimeMin=1000
+#ENV ServerSettings__SmtpClientOptions__Server $email_smtp_server
+#ENV ServerSettings__SmtpClientOptions__Port $email_smtp_port
+#ENV ServerSettings__SmtpClientOptions__User $email_addr
+#ENV ServerSettings__SmtpClientOptions__Password $email_smtp_pwd
+#ENV ServerSettings__SmtpClientOptions__UseSsl $email_use_ssl
+#ENV ServerSettings__SmtpClientOptions__RequiresAuthentication $requires_authentification
+#ENV ServerSettings__smtpClientOptions__PreferredEncoding null
+#ENV ServerSettings__SmtpClientOptions__UsePickupDirectory false
+#ENV ServerSettings__SmtpClientOptions__MailPickupDirectory C:\\Temp
+#ENV ServerSettings__SmtpClientOptions__SocketOptions 2
+#ENV ServerSettings__ServerEmail $email_addr
+#ENV ServerSettings__ServerUrl $email_smtp_server
 
 
 ENTRYPOINT ["dotnet", "Botticelli.Server.dll"]
