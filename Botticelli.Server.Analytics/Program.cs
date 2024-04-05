@@ -16,24 +16,24 @@ var analyticsSettings = builder.Configuration
     .GetSection(nameof(AnalyticsSettings))
     .Get<AnalyticsSettings>();
 
-builder.Services.AddEndpointsApiExplorer()
-    .AddSwaggerGen(options =>
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
+            new OpenApiSecurityScheme
             {
-                new OpenApiSecurityScheme
+                Reference = new OpenApiReference
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                Array.Empty<string>()
-            }
-        });
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
+});
 
 builder.Services
     .AddSingleton<IMapper, Mapper>()
