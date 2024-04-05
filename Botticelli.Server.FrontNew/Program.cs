@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+builder.Configuration
+       .AddJsonFile("appsettings.json")
+       .AddEnvironmentVariables();
+
+
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<SessionClient>();
