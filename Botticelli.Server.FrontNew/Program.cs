@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Configuration
-       .AddJsonFile("appsettings.json")
+       .AddJsonFile("appsettings.json", true)
        .AddEnvironmentVariables();
 
 builder.RootComponents.Add<App>("#app");
