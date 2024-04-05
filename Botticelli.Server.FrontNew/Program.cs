@@ -12,7 +12,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<SessionClient>();
-builder.Services.Configure<BackSettings>(nameof(BackSettings), builder.Configuration.GetSection(nameof(BackSettings)));
+builder.Services.Configure<BackSettings>(builder.Configuration.GetSection(nameof(BackSettings)));
 builder.Services.AddScoped<AuthDelegatingHandler>();
 builder.Services.AddScoped<CookieStorageAccessor>();
 builder.Services.AddHttpClient<YourBots>(c =>
