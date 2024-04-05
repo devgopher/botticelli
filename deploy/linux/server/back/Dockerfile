@@ -10,19 +10,17 @@ RUN git pull
 
 COPY . ./
 
-# Restore as distinct layers
-# RUN dotnet restore
 
 # Build and publish a release
 RUN dotnet publish -c Release -o /app/out
-RUN ls .
-
 RUN dotnet dev-certs https --trust
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build-env /app/out .
+
+
 
 EXPOSE 5000
 EXPOSE 5001

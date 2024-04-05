@@ -2,13 +2,16 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
+		<RuntimeIdentifiers>win10-x64;win7-x86;linux-musl-x64</RuntimeIdentifiers>
         <Nullable>disable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <Version>0.4</Version>
         <Company>Botticelli</Company>
         <Copyright>Igor Evdokimov</Copyright>
         <PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
-        <PackageIcon>logo.jpg</PackageIcon>
+		<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+		<GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
+		<PackageIcon>logo.jpg</PackageIcon>
         <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
     </PropertyGroup>
 

@@ -9,7 +9,7 @@ sudo apt-get install -y dotnet-sdk-7.0 dotnet-runtime-7.0 aspnetcore-runtime-7.0
 rm -rf botticelli/
 git clone https://github.com/devgopher/botticelli.git
 pushd botticelli/
-git checkout release/0.3
+git checkout dev/0.4
 git pull
 
 pushd Botticelli.Server.FrontNew
@@ -25,6 +25,6 @@ export BackSettings__BackUrl=$backend_url/v1/
 export BackSettings__AnalyticsUrl=$analytics_url/v1/
 
 
-nohup dotnet run Botticelli.Server.FrontNew.csproj >/dev/null 2>&1
+nohup dotnet run Botticelli.Server.FrontNew.csproj >/dev/null 2>&1 &
 
 popd
