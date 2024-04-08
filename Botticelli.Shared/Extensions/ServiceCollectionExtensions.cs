@@ -8,6 +8,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSharedValidation(this IServiceCollection services)
     {
-        return services.AddValidatorsFromAssemblyContaining<Message>();
+        return services.AddValidatorsFromAssemblyContaining<Message>(ServiceLifetime.Singleton);
     }
 }
