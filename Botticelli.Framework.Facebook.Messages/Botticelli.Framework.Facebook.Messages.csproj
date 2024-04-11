@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <InvariantGlobalization>true</InvariantGlobalization>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Deveel.Webhooks.Receiver.Facebook" Version="2.2.0" />
+        <PackageReference Include="Flurl" Version="4.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0"/>
+        <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj" />
+      <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj" />
+      <ProjectReference Include="..\Botticelli.Audio\Botticelli.Audio.csproj" />
+      <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
+    </ItemGroup>
+
+</Project>

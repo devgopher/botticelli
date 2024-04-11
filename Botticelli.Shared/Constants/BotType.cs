@@ -4,6 +4,7 @@ public enum BotType
 {
     Telegram,
     WhatsApp,
+    Facebook,
     Viber,
     RocketChat,
     Signal,
