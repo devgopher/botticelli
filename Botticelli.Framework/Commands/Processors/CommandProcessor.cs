@@ -14,14 +14,11 @@ namespace Botticelli.Framework.Commands.Processors;
 public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     where TCommand : class, ICommand
 {
-    private const string SimpleCommandPattern = @"\/([a-zA-Z0-9]*)$";
-    private const string ArgsCommandPattern = @"\/([a-zA-Z0-9]*) (.*)";
     private readonly string _commandName;
     private readonly ILogger _logger;
     private readonly MetricsProcessor _metricsProcessor;
     private readonly ICommandValidator<TCommand> _validator;
     protected IBot Bot;
-
 
     protected CommandProcessor(ILogger logger,
         ICommandValidator<TCommand> validator,
