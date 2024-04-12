@@ -381,3 +381,5 @@ FodyWeavers.xsd
 /Botticelli/Properties/launchSettings.json
 /TelegramAiYaGptSample/Properties/launchSettings.json
 /TelegramAiSample/Data/botId
+/deploy/linux/server/back/build_docker.sh
+/deploy/linux/server/front/build_docker.sh
