@@ -27,13 +27,13 @@ public class LongPollMessagesProvider : IDisposable
     private readonly ILogger<LongPollMessagesProvider> _logger;
     private readonly IOptionsMonitor<VkBotSettings> _settings;
     private readonly CancellationTokenSource _tokenSource;
-    private readonly object syncObj = new();
+    private readonly object _syncObj = new();
     private string _apiKey;
     private HttpClient _client;
     private string _key;
     private int? _lastTs = 0;
     private string _server;
-    private bool isStarted;
+    private bool _isStarted;
 
     public LongPollMessagesProvider(IOptionsMonitor<VkBotSettings> settings,
         IHttpClientFactory httpClientFactory,
@@ -66,9 +66,9 @@ public class LongPollMessagesProvider : IDisposable
     {
         try
         {
-            lock (syncObj)
+            lock (_syncObj)
             {
-                if (isStarted &&
+                if (_isStarted &&
                     !string.IsNullOrWhiteSpace(_key) &&
                     !string.IsNullOrWhiteSpace(_server) &&
                     !string.IsNullOrWhiteSpace(_apiKey))
@@ -117,7 +117,7 @@ public class LongPollMessagesProvider : IDisposable
                                 mode = 2,
                                 v = ApiVersion
                             })
-                            .GetStringAsync(_tokenSource.Token);
+                            .GetStringAsync(cancellationToken: _tokenSource.Token);
 
                         var updates = JsonSerializer.Deserialize<UpdatesResponse>(updatesResponse);
 
@@ -148,7 +148,7 @@ public class LongPollMessagesProvider : IDisposable
                     return default;
                 });
 
-            isStarted = true;
+            _isStarted = true;
             await pollingTask;
         }
         catch (Exception ex) when (ex is not BotException)
@@ -184,6 +184,6 @@ public class LongPollMessagesProvider : IDisposable
         _tokenSource.Cancel(false);
         _key = string.Empty;
         _server = string.Empty;
-        isStarted = false;
+        _isStarted = false;
     }
 }
