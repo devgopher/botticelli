@@ -27,4 +27,4 @@ On server side we can add new bots, change and check their state (active/non-act
 On a bot side we can implement any business logic we want.
 
 ## Making a simple Telegram bot
-[![See here]](https://dev.to/botticellibots/making-a-telegram-bot-with-botticellibots-2jmi)
+[See here](https://dev.to/botticellibots/making-a-telegram-bot-with-botticellibots-2jmi)
