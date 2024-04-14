@@ -33,4 +33,4 @@ On a bot side we can implement any business logic we want.
 
 
 ## Application examples
-[See here](https://t.me/air_quality_info_bot) - this Telegram bot gets an air quality for your location 
+[Air quality info bot](https://t.me/air_quality_info_bot) - this Telegram bot gets an air quality for your location 
