@@ -30,3 +30,7 @@ On a bot side we can implement any business logic we want.
 
 ## Making a simple Telegram bot
 [See here](https://dev.to/botticellibots/making-a-telegram-bot-with-botticellibots-2jmi)
+
+
+## Application examples
+[See here](https://t.me/air_quality_info_bot) - this Telegram bot gets an air quality for your location 
