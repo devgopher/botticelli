@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Schedule.Hangfire;
+﻿namespace Botticelli.Scheduler;
 
 public class Schedule
 {

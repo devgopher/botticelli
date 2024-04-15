@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>6</LangVersion>
+        <RootNamespace>Botticelli.Schedule.Quartz</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Quartz" Version="3.8.1" />
+    </ItemGroup>
+
+</Project>

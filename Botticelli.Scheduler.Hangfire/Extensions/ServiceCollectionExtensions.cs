@@ -1,10 +1,10 @@
-﻿using Botticelli.Schedule.Hangfire.Settings;
+﻿using Botticelli.Scheduler.Settings;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Botticelli.Schedule.Hangfire.Extensions;
+namespace Botticelli.Scheduler.Hangfire.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -14,7 +14,8 @@ public static class ServiceCollectionExtensions
     /// <param name="services">Service collection</param>
     /// <param name="config">Settings</param>
     /// <returns></returns>
-    public static IServiceCollection AddHangfireScheduler(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddHangfireScheduler(this IServiceCollection services, 
+        IConfiguration config)
     {
         var settings = new SchedulerSettings();
         config.GetSection(nameof(SchedulerSettings)).Bind(settings);

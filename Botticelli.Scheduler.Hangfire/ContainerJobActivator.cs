@@ -4,7 +4,7 @@ using Botticelli.Shared.Utils;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Botticelli.Schedule.Hangfire;
+namespace Botticelli.Scheduler.Hangfire;
 
 public class ContainerJobActivator(IServiceCollection services) : JobActivator
 {

@@ -16,13 +16,6 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
-    <ItemGroup>
-        <None Include="..\new_logo_compact.png">
-            <Pack>True</Pack>
-            <PackagePath></PackagePath>
-            <Link>new_logo_compact.png</Link>
-        </None>
-    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="NLog" Version="5.2.8"/>
@@ -33,7 +26,13 @@
         <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
         <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
         <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
-        <ProjectReference Include="..\Botticelli.Schedule.Hangfire\Botticelli.Schedule.Hangfire.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="..\new_logo_compact.png">
+            <Pack>True</Pack>
+            <PackagePath/>
+            <Link>new_logo_compact.png</Link>
+        </None>
     </ItemGroup>
     <ItemGroup>
         <None Include="..\logo.jpg">

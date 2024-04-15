@@ -7,7 +7,7 @@ using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using Hangfire;
 
-namespace Botticelli.Schedule.Hangfire;
+namespace Botticelli.Scheduler.Hangfire;
 
 public static class JobManager
 {
@@ -16,7 +16,7 @@ public static class JobManager
     public static string AddJob(IBot bot,
         Reliability reliability,
         Message message,
-        Schedule schedule,
+        Scheduler.Schedule schedule,
         Action<Message> preprocessFunc = default)
     {
         var jobId = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
