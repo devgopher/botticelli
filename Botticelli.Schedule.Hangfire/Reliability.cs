@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Scheduler;
+﻿using System;
+
+namespace Botticelli.Schedule.Hangfire;
 
 public class Reliability
 {

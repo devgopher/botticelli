@@ -1,9 +1,13 @@
-﻿using Botticelli.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using Hangfire;
 
-namespace Botticelli.Scheduler;
+namespace Botticelli.Schedule.Hangfire;
 
 public static class JobManager
 {

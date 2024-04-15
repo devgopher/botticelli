@@ -5,7 +5,7 @@ using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
-using Botticelli.Scheduler.Extensions;
+using Botticelli.Schedule.Hangfire.Extensions;
 using Botticelli.Talks.Extensions;
 using MessagingSample.Common.Commands;
 using MessagingSample.Common.Commands.Processors;

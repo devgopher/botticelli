@@ -1,4 +1,7 @@
-﻿namespace Botticelli.Scheduler;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace Botticelli.Schedule.Hangfire;
 
 public interface IJob
 {

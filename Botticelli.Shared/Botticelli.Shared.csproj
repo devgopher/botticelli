@@ -18,10 +18,10 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="11.9.0" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
-        <PackageReference Include="LiteDB" Version="5.0.19" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+        <PackageReference Include="FluentValidation" Version="11.9.0"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0"/>
+        <PackageReference Include="LiteDB" Version="5.0.19"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4"/>
     </ItemGroup>
 
 </Project>

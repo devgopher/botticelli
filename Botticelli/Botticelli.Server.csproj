@@ -47,19 +47,19 @@
         <PackageReference Include="FluentEmail.MailKit" Version="3.0.2"/>
         <PackageReference Include="FluentEmail.Smtp" Version="3.0.2"/>
         <PackageReference Include="Flurl" Version="4.0.0"/>
-        <PackageReference Include="Mapster" Version="7.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.18" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
+        <PackageReference Include="Mapster" Version="7.4.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.18"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.4"/>
         <PackageReference Include="NLog" Version="5.2.8"/>
         <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8"/>
         <PackageReference Include="PasswordGenerator" Version="2.1.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -69,11 +69,11 @@
         <ProjectReference Include="..\Botticelli.Server.Models\Botticelli.Server.Models.csproj"/>
     </ItemGroup>
 
-<ItemGroup>
-    <None Include="./appsettings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-</ItemGroup>
+    <ItemGroup>
+        <None Include="./appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
     <ItemGroup>
         <None Update="Properties\launchSettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -1,10 +1,10 @@
-﻿using Botticelli.Scheduler.Settings;
+﻿using Botticelli.Schedule.Hangfire.Settings;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Botticelli.Scheduler.Extensions;
+namespace Botticelli.Schedule.Hangfire.Extensions;
 
 public static class ServiceCollectionExtensions
 {
