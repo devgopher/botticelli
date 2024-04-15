@@ -1,0 +1,22 @@
+﻿using System;
+using System.Threading.Tasks;
+using Botticelli.Interfaces;
+using Botticelli.Shared.API.Client.Requests;
+using Botticelli.Shared.ValueObjects;
+using Quartz;
+
+namespace Botticelli.Schedule.Quartz;
+
+[DisallowConcurrentExecution]
+public class SendMessageJob(IBot bot) : IJob
+{
+    public async Task Execute(IJobExecutionContext context)
+    {
+        var sendMessageRequest = context.Get("sendMessageRequest") as SendMessageRequest;
+
+        if (sendMessageRequest is null)
+            throw new NullReferenceException($"{nameof(sendMessageRequest)} is null!");
+        
+        await bot.SendMessageAsync(sendMessageRequest, context.CancellationToken);
+    }
+}

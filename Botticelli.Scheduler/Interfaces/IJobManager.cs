@@ -12,11 +12,6 @@ public interface IJobManager
         Scheduler.Schedule schedule,
         Action<Message> preprocessFunc = default);
 
-    void RemoveJob(string jobId);
+    void RemoveJob(string triggerId);
     void RemoveAllJobs();
-
-    Task SendWithReliability(IBot bot,
-        SendMessageRequest request,
-        Reliability reliability,
-        CancellationToken token);
 }

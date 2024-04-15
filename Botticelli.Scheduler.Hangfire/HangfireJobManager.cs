@@ -12,7 +12,7 @@ namespace Botticelli.Scheduler.Hangfire;
 
 public class HangfireJobManager : IJobManager
 {
-    private readonly List<string> JobIds = new(5);
+    private readonly List<string> _jobIds = new(5);
 
     public string AddJob(IBot bot,
         Reliability reliability,
@@ -34,7 +34,7 @@ public class HangfireJobManager : IJobManager
             RecurringJob.AddOrUpdate(jobId,
                 () => bot.SendMessageAsync(request, CancellationToken.None),
                 schedule.Cron);
-            JobIds.Add(jobId);
+            _jobIds.Add(jobId);
 
             return jobId;
         }
@@ -45,22 +45,22 @@ public class HangfireJobManager : IJobManager
                 reliability,
                 CancellationToken.None),
             schedule.Cron);
-        JobIds.Add(jobId);
+        _jobIds.Add(jobId);
 
         return jobId;
     }
 
-    public void RemoveJob(string jobId)
+    public void RemoveJob(string triggerId)
     {
-        RecurringJob.RemoveIfExists(jobId);
-        JobIds.Remove(jobId);
+        RecurringJob.RemoveIfExists(triggerId);
+        _jobIds.Remove(triggerId);
     }
 
     public void RemoveAllJobs()
     {
-        foreach (var jobId in JobIds) RecurringJob.RemoveIfExists(jobId);
+        foreach (var jobId in _jobIds) RecurringJob.RemoveIfExists(jobId);
 
-        JobIds.Clear();
+        _jobIds.Clear();
     }
 
     public async Task SendWithReliability(IBot bot,
