@@ -3,6 +3,7 @@ using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Scheduler;
 using Botticelli.Scheduler.Hangfire;
+using Botticelli.Scheduler.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
@@ -12,11 +13,14 @@ namespace MessagingSample.Common.Commands.Processors;
 
 public class StartCommandProcessor : CommandProcessor<StartCommand>
 {
+    private readonly IJobManager _jobManager;
+    
     public StartCommandProcessor(ILogger<StartCommandProcessor> logger,
         ICommandValidator<StartCommand> validator,
-        MetricsProcessor metricsProcessor)
+        MetricsProcessor metricsProcessor, IJobManager jobManager)
         : base(logger, validator, metricsProcessor)
     {
+        _jobManager = jobManager;
     }
 
     protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
@@ -47,7 +51,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
         await Bot.SendMessageAsync(greetingMessageRequest, token);
 
         var assemblyPath = Path.GetDirectoryName(typeof(StartCommandProcessor).Assembly.Location);
-        JobManager.AddJob(Bot,
+        _jobManager.AddJob(Bot,
             new Reliability
             {
                 IsEnabled = false,

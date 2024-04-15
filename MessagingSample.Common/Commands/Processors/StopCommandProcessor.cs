@@ -2,6 +2,7 @@
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Scheduler.Hangfire;
+using Botticelli.Scheduler.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -10,11 +11,14 @@ namespace MessagingSample.Common.Commands.Processors;
 
 public class StopCommandProcessor : CommandProcessor<StopCommand>
 {
+    private readonly IJobManager _jobManager;
+    
     public StopCommandProcessor(ILogger<StopCommandProcessor> logger,
         ICommandValidator<StopCommand> validator,
-        MetricsProcessor metricsProcessor)
+        MetricsProcessor metricsProcessor, IJobManager jobManager)
         : base(logger, validator, metricsProcessor)
     {
+        _jobManager = jobManager;
     }
 
     protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
@@ -32,7 +36,7 @@ public class StopCommandProcessor : CommandProcessor<StopCommand>
 
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
-        JobManager.RemoveAllJobs();
+        _jobManager.RemoveAllJobs();
 
         var farewellMessageRequest = new SendMessageRequest(Guid.NewGuid().ToString())
         {
