@@ -5,6 +5,7 @@ using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
+using Botticelli.Schedule.Quartz.Extensions;
 using Botticelli.Scheduler.Hangfire.Extensions;
 using Botticelli.Talks.Extensions;
 using MessagingSample.Common.Commands;
@@ -29,7 +30,8 @@ builder.Services
             })
             .Set(s => s.Name = settings?.BotName))
     .AddLogging(cfg => cfg.AddNLog())
-    .AddHangfireScheduler(builder.Configuration)
+    .AddQuartzScheduler(builder.Configuration)
+    //.AddHangfireScheduler(builder.Configuration)\
     .AddHostedService<TestBotHostedService>()
     .AddScoped<StartCommandProcessor>()
     .AddScoped<StopCommandProcessor>()

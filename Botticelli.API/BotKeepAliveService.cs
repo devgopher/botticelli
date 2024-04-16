@@ -78,14 +78,25 @@ public class BotKeepAliveService<TBot> : BotActualizationService<TBot> where TBo
                                _keepAliveTask.Exception);
     }
 
-    private Task<KeepAliveNotificationResponse> Process(KeepAliveNotificationRequest request, CancellationToken ct)
+    private async Task<KeepAliveNotificationResponse> Process(KeepAliveNotificationRequest request, CancellationToken ct)
     {
-        var response = InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(request,
-                                                                                              "/bot/client/KeepAlive",
-                                                                                              ct);
+        try
+        {
+            var response = await InnerSend<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(request,
+                "/bot/client/KeepAlive",
+                ct);
 
-        Logger.LogDebug($"KeepAlive botId: {BotId} response: {response.Result.BotId}, {response.Result.IsSuccess}");
+            Logger.LogDebug($"KeepAlive botId: {BotId} response: {response.BotId}, {response.IsSuccess}");
 
-        return response;
-    }
+            return response;
+        }
+        catch (Exception ex)
+        {
+            return new KeepAliveNotificationResponse
+            {
+                IsSuccess = false,
+                BotId = request.ToString()
+            };
+        }
+    } 
 }

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using Botticelli.Interfaces;
 using Botticelli.Scheduler;
@@ -15,13 +17,14 @@ namespace Botticelli.Schedule.Quartz;
 public class QuartzJobManager : IJobManager, IDisposable
 {
     private readonly ISchedulerFactory _schedulerFactory;
-    private readonly CancellationTokenSource _tokenSource = CancellationTokenSource.CreateLinkedTokenSource();
+    private readonly CancellationTokenSource _tokenSource;
     private readonly List<TriggerKey> _triggerKeys = new(5);
     private IScheduler _scheduler;
 
     public QuartzJobManager(ISchedulerFactory schedulerFactory)
     {
         _schedulerFactory = schedulerFactory;
+        _tokenSource = new CancellationTokenSource();
     }
 
     public void Dispose()
@@ -53,23 +56,28 @@ public class QuartzJobManager : IJobManager, IDisposable
         var job = !reliability.IsEnabled
             ? JobBuilder.Create<SendMessageJob>()
                 .WithIdentity(jobId, "sendMessageJobGroup")
+                .UsingJobData("sendMessageRequest", JsonSerializer.Serialize(request))
                 .Build()
             : JobBuilder.Create<ReliableSendMessageJob>()
                 .WithIdentity(jobId, "reliableSendMessageJobGroup")
+                .UsingJobData("sendMessageRequest", JsonSerializer.Serialize(request))
                 .Build();
 
+       
         var triggerId = GetTriggerIdentity();
 
         var trigger = TriggerBuilder.Create()
             .ForJob(job)
+            .StartNow()
+            // .WithSimpleSchedule(b => b.WithIntervalInSeconds(10).RepeatForever())
             .WithCronSchedule(schedule.Cron)
             .WithIdentity(triggerId)
             .StartNow()
             .Build();
 
-        var scheduleTask = _scheduler.ScheduleJob(job, trigger, _tokenSource.Token);
-        scheduleTask.Start();
-
+        _scheduler.ScheduleJob(job, trigger, _tokenSource.Token);
+        // _scheduler.TriggerJob(job.Key, _tokenSource.Token);
+        _scheduler.Start();
         _triggerKeys.Add(trigger.Key);
 
         return triggerId;

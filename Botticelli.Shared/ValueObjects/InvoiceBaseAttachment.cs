@@ -1,8 +1,8 @@
 ﻿namespace Botticelli.Shared.ValueObjects;
 
-public class InvoiceAttachment : IAttachment
+public class InvoiceBaseAttachment : BaseAttachment
 {
-    public InvoiceAttachment(string uid,
+    public InvoiceBaseAttachment(string uid,
         string name,
         string url,
         string title,
@@ -51,15 +51,15 @@ public class InvoiceAttachment : IAttachment
     /// <summary>
     ///     Id of an attachment
     /// </summary>
-    public string Uid { get; }
+    public override string Uid { get; }
 
     /// <summary>
     ///     Attachment name
     /// </summary>
-    public string Name { get; }
+    public override string Name { get; }
 
     /// <summary>
     ///     Attachment owner id
     /// </summary>
-    public string OwnerId { get; }
+    public override string OwnerId { get; }
 }

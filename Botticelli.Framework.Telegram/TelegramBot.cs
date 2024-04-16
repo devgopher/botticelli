@@ -216,8 +216,8 @@ public class TelegramBot : BaseBot<TelegramBot>
 
                 foreach (var attachment in request.Message
                              .Attachments
-                             .Where(a => a is BinaryAttachment)
-                             .Cast<BinaryAttachment>())
+                             .Where(a => a is BinaryBaseAttachment)
+                             .Cast<BinaryBaseAttachment>())
                 {
                     switch (attachment.MediaType)
                     {

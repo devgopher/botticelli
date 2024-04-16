@@ -68,6 +68,7 @@ public static class ServiceCollectionExtensions
             secureStorage);
 
         return services.AddSingleton<IBot<TelegramBot>>(bot)
+            .AddSingleton<IBot>(bot)
             .AddHostedService<BotStatusService<IBot<TelegramBot>>>()
             .AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>()
             .AddHostedService<TelegramBotHostedService>();

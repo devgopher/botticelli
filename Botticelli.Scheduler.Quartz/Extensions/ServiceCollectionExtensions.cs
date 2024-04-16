@@ -1,4 +1,5 @@
-﻿using Botticelli.Scheduler.Settings;
+﻿using Botticelli.Scheduler.Interfaces;
+using Botticelli.Scheduler.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
@@ -19,7 +20,8 @@ public static class ServiceCollectionExtensions
         var settings = new SchedulerSettings();
         config.GetSection(nameof(SchedulerSettings)).Bind(settings);
 
-        services.AddQuartz(opt => opt.UseSimpleTypeLoader());
+        services.AddQuartz(q => q.UseSimpleTypeLoader())
+            .AddSingleton<IJobManager, QuartzJobManager>();
 
         return services.AddQuartzHostedService(opt => opt.WaitForJobsToComplete = true);
     }

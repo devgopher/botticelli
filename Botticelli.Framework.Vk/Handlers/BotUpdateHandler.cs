@@ -53,7 +53,7 @@ public class BotUpdateHandler : IBotUpdateHandler
                     },
                     Subject = string.Empty,
                     Body = text,
-                    Attachments = new List<IAttachment>(5),
+                    Attachments = new List<BaseAttachment>(5),
                     From = new User
                     {
                         Id = fromId

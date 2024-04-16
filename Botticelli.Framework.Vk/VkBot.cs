@@ -237,7 +237,7 @@ public class VkBot : BaseBot<VkBot>
 
                 switch (attach)
                 {
-                    case BinaryAttachment ba:
+                    case BinaryBaseAttachment ba:
                     {
                         switch (ba)
                         {
@@ -285,7 +285,7 @@ public class VkBot : BaseBot<VkBot>
                     }
 
                         break;
-                    case InvoiceAttachment:
+                    case InvoiceBaseAttachment:
                         // Not implemented 
                         break;
                 }

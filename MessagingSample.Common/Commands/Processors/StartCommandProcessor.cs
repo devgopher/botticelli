@@ -62,34 +62,37 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
             new Message
             {
                 Body = "Now you see me!",
-                ChatIds = new List<string> { chatId },
-                Attachments = new List<IAttachment>
-                {
-                    new BinaryAttachment(Guid.NewGuid().ToString(),
+                ChatIds = [chatId],
+                Attachments =
+                [
+                    new BinaryBaseAttachment(Guid.NewGuid().ToString(),
                         "testpic.png",
                         MediaType.Image,
                         string.Empty,
                         await File.ReadAllBytesAsync(Path.Combine(assemblyPath, "Media/testpic.png"), token)),
-                    new BinaryAttachment(Guid.NewGuid().ToString(),
+
+                    new BinaryBaseAttachment(Guid.NewGuid().ToString(),
                         "voice.mp3",
                         MediaType.Voice,
                         string.Empty,
                         await File.ReadAllBytesAsync(Path.Combine(assemblyPath, "Media/voice.mp3"), token)),
-                    new BinaryAttachment(Guid.NewGuid().ToString(),
+
+                    new BinaryBaseAttachment(Guid.NewGuid().ToString(),
                         "video.mp4",
                         MediaType.Video,
                         string.Empty,
                         await File.ReadAllBytesAsync(Path.Combine(assemblyPath, "Media/video.mp4"), token)),
-                    new BinaryAttachment(Guid.NewGuid().ToString(),
+
+                    new BinaryBaseAttachment(Guid.NewGuid().ToString(),
                         "document.odt",
                         MediaType.Document,
                         string.Empty,
                         await File.ReadAllBytesAsync(Path.Combine(assemblyPath, "Media/document.odt"), token))
-                }
+                ]
             },
             new Schedule
             {
-                Cron = "*/30 * * * * *"
+                Cron = "*/15 * * ? * * *"//"*/30 * * * * *"
             });
     }
 }

@@ -6,15 +6,9 @@
 [Serializable]
 public class Message
 {
-    public Message()
-    {
-        Uid = Guid.NewGuid().ToString();
-    }
+    public Message() => Uid = Guid.NewGuid().ToString();
 
-    public Message(string uid)
-    {
-        Uid = uid;
-    }
+    public Message(string uid) => Uid = uid;
 
     /// <summary>
     ///     Message uid
@@ -44,7 +38,7 @@ public class Message
     /// <summary>
     ///     Message attachments
     /// </summary>
-    public ICollection<IAttachment>? Attachments { get; set; }
+    public List<BaseAttachment>? Attachments { get; set; }
 
     /// <summary>
     ///     From user

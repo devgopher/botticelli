@@ -22,6 +22,7 @@
         <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
         <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
         <ProjectReference Include="..\Botticelli.Scheduler.Hangfire\Botticelli.Scheduler.Hangfire.csproj" />
+        <ProjectReference Include="..\Botticelli.Scheduler.Quartz\Botticelli.Scheduler.Quartz.csproj" />
         <ProjectReference Include="..\Botticelli.Scheduler\Botticelli.Scheduler.csproj"/>
         <ProjectReference Include="..\Botticelli.Talks\Botticelli.Talks.csproj"/>
         <ProjectReference Include="..\MessagingSample.Common\MessagingSample.Common.csproj"/>
