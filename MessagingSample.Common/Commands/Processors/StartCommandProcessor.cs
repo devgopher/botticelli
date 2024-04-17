@@ -92,7 +92,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
             },
             new Schedule
             {
-                Cron = "*/15 * * ? * * *"//"*/30 * * * * *"
+                Cron = "*/15 * * ? * * *"
             });
     }
 }
