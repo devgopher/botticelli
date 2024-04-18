@@ -53,15 +53,14 @@ public sealed partial class ChatMessageProcessor : IClientMessageProcessor
                                               .FirstOrDefault();
 
                 command = match!.Groups[1].Value;
-
-                var argsString = match.Groups[2].Value;
-
-                if (!string.IsNullOrWhiteSpace(argsString)) 
-                    argsString.Split(" ");
+            }
+            else // fluent command
+            {
+                command = message.Body;
             }
             
             if (command != string.Empty)
-                await _cpFactory.Get(command)!
+                await _cpFactory.GetFluent(command)!
                                 .ProcessAsync(message, token);
 
             _logger.LogDebug($"{nameof(ProcessAsync)}({message.Uid}) finished...");

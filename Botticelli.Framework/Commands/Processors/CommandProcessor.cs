@@ -14,7 +14,7 @@ namespace Botticelli.Framework.Commands.Processors;
 public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     where TCommand : class, ICommand
 {
-    private readonly string _commandName;
+    private readonly string _command;
     private readonly ILogger _logger;
     private readonly MetricsProcessor _metricsProcessor;
     private readonly ICommandValidator<TCommand> _validator;
@@ -27,14 +27,11 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         _logger = logger;
         _validator = validator;
         _metricsProcessor = metricsProcessor;
-        _commandName = GetCommandName(typeof(TCommand).Name);
+        _command = GetOldFashionedCommandName(typeof(TCommand).Name);
     }
 
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
-        var request = SendMessageRequest.GetInstance();
-        request.Message = new Message(Guid.NewGuid().ToString());
-
         try
         {
             if (string.IsNullOrWhiteSpace(message.Body) &&
@@ -57,13 +54,12 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
 
                 if (match == default) return;
 
-                var commandName = GetCommandName(match.Groups[1].Value);
+                var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
-                if (commandName != _commandName) return;
+                if (commandName != _command) return;
 
                 await ValidateAndProcess(message,
                     string.Empty,
-                    request,
                     token);
 
                 SendMetric(MetricNames.CommandReceived);
@@ -77,13 +73,12 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
 
                 var argsString = match.Groups[2].Value;
 
-                var commandName = GetCommandName(match.Groups[1].Value);
+                var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
-                if (commandName != _commandName) return;
+                if (commandName != _command) return;
 
                 await ValidateAndProcess(message,
                     argsString,
-                    request,
                     token);
 
                 SendMetric(MetricNames.CommandReceived);
@@ -109,15 +104,14 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
 
     private void SendMetric(string metricName) => _metricsProcessor.Process(metricName, BotDataUtils.GetBotId()!);
 
-    private void SendMetric() => _metricsProcessor.Process(GetCommandName(
+    private void SendMetric() => _metricsProcessor.Process(GetOldFashionedCommandName(
         $"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId()!);
-
-    private string GetCommandName(string fullCommand)
+    
+    private string GetOldFashionedCommandName(string fullCommand)
         => fullCommand.ToLowerInvariant().Replace("command", "");
 
     private async Task ValidateAndProcess(Message message,
         string args,
-        SendMessageRequest request,
         CancellationToken token)
     {
         if (await _validator.Validate(message.ChatIds, message.Body))
@@ -127,9 +121,13 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         }
         else
         {
-            request.Message.Body = _validator.Help();
+            var errMessageRequest = SendMessageRequest.GetInstance();
+            errMessageRequest.Message = new Message(Guid.NewGuid().ToString())
+            {
+                Body = _validator.Help()
+            };
 
-            await Bot.SendMessageAsync(request, token);
+            await Bot.SendMessageAsync(errMessageRequest, token);
         }
     }
 
