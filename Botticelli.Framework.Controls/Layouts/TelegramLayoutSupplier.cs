@@ -5,7 +5,7 @@ namespace Botticelli.Framework.Controls.Layouts;
 
 public class TelegramLayoutSupplier : ITelegramLayoutSupplier
 {
-    public ReplyKeyboardMarkup GetOptions(ILayout layout)
+    public ReplyKeyboardMarkup GetMarkup(ILayout layout)
     {
         if (layout == default)
             throw new LayoutException("Layout = null!");

@@ -213,6 +213,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Scheduler.Quartz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Controls", "Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj", "{C556B6EE-DCE7-4ED2-85E1-5D5212E0C184}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Controls.Tests", "Botticelli.Framework.Controls.Tests\Botticelli.Framework.Controls.Tests.csproj", "{70EB3FE2-9EB5-4B62-9405-71D1A332B0FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -407,6 +409,10 @@ Global
 		{C556B6EE-DCE7-4ED2-85E1-5D5212E0C184}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C556B6EE-DCE7-4ED2-85E1-5D5212E0C184}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C556B6EE-DCE7-4ED2-85E1-5D5212E0C184}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70EB3FE2-9EB5-4B62-9405-71D1A332B0FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70EB3FE2-9EB5-4B62-9405-71D1A332B0FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70EB3FE2-9EB5-4B62-9405-71D1A332B0FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70EB3FE2-9EB5-4B62-9405-71D1A332B0FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -484,6 +490,7 @@ Global
 		{85C84F76-3730-4D17-923E-96B665544B57} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{F958B922-0418-4AB8-B5C6-86510DB52F38} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{C556B6EE-DCE7-4ED2-85E1-5D5212E0C184} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
+		{70EB3FE2-9EB5-4B62-9405-71D1A332B0FD} = {346A18CA-EB1F-483B-8BC3-EDF250DA72E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

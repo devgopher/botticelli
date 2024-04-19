@@ -7,5 +7,5 @@ namespace Botticelli.Framework.Controls.Layouts;
 /// </summary>
 public interface ILayoutSupplier<out TReplyOptions>
 {
-    public TReplyOptions GetOptions(ILayout layout);
+    public TReplyOptions GetMarkup(ILayout layout);
 }

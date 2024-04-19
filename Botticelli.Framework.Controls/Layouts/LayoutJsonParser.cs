@@ -6,20 +6,6 @@ namespace Botticelli.Framework.Controls.Layouts;
 
 public class LayoutJsonParser : ILayoutParser
 {
-    // SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(new ReplyKeyboardMarkup(new[]
-    // {
-    //     new[]
-    //     {
-    //         new KeyboardButton("/SetLocation")
-    //         {
-    //             RequestLocation = true
-    //         }
-    //     }
-    // })
-    // {
-    //     ResizeKeyboard = true
-    // });
-
     public ILayout ParseJson(string jsonText)
     {
         var jsonDoc = JsonSerializer.Deserialize<JsonElement>(jsonText);
@@ -63,7 +49,6 @@ public class LayoutJsonParser : ILayoutParser
                 row.AddItem(item);
             }
         }
-        
 
         return layout;
     }
