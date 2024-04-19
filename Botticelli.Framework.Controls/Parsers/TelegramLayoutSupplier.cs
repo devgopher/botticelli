@@ -16,9 +16,9 @@ public class TelegramLayoutSupplier : ITelegramLayoutSupplier
         foreach (var layoutRow in layout.Rows)
         {
             var keyboardElement = new List<KeyboardButton>();
-            elems.Add(keyboardElement);
-
             keyboardElement.AddRange(layoutRow.Items.Select(item => new KeyboardButton(item?.Control?.Content)));
+            
+            elems.Add(keyboardElement);
         }
         
         return new ReplyKeyboardMarkup(elems)

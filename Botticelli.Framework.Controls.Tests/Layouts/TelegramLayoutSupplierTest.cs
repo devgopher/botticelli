@@ -7,14 +7,14 @@ namespace Botticelli.Framework.Controls.Tests.Layouts;
 [TestOf(typeof(TelegramLayoutSupplier))]
 public class TelegramLayoutSupplierTest
 {
-    private readonly LayoutJsonParser _layoutJsonParser = new();
-    private readonly TelegramLayoutSupplier _supplier = new();
+    private readonly JsonLayoutParser _jsonLayoutParser = new();
+    private readonly ITelegramLayoutSupplier _supplier = new TelegramLayoutSupplier();
 
     [Test]
     public void GetMarkupTest()
     {
         var jsonText = File.ReadAllText("TestCases/CorrectLayout.json");
-        var layout = _layoutJsonParser.ParseJson(jsonText);
+        var layout = _jsonLayoutParser.ParseJson(jsonText);
         var markup = _supplier.GetMarkup(layout);
         
         Assert.IsNotNull(markup);

@@ -5,10 +5,10 @@ using Botticelli.Framework.Controls.Parsers;
 namespace Botticelli.Framework.Controls.Tests.Layouts;
 
 [TestFixture]
-[TestOf(typeof(LayoutJsonParser))]
-public class LayoutJsonParserTest
+[TestOf(typeof(JsonLayoutParser))]
+public class JsonLayoutParserTest
 {
-    private readonly LayoutJsonParser _layoutJsonParser = new();
+    private readonly JsonLayoutParser _jsonLayoutParser = new();
 
     [Test]
     [TestCase]
@@ -16,7 +16,7 @@ public class LayoutJsonParserTest
     {
         var jsonText = File.ReadAllText("TestCases/CorrectLayout.json");
 
-        var layout = _layoutJsonParser.ParseJson(jsonText);
+        var layout = _jsonLayoutParser.ParseJson(jsonText);
 
         Assert.That(layout, Is.Not.Null);
     }
@@ -27,6 +27,6 @@ public class LayoutJsonParserTest
     {
         var jsonText = File.ReadAllText("TestCases/InvalidLayout.json");
 
-        Assert.Throws<LayoutException>(() => _layoutJsonParser.ParseJson(jsonText));
+        Assert.Throws<LayoutException>(() => _jsonLayoutParser.ParseJson(jsonText));
     }
 }

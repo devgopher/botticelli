@@ -5,7 +5,7 @@ using Botticelli.Framework.Controls.Layouts;
 
 namespace Botticelli.Framework.Controls.Parsers;
 
-public class LayoutJsonParser : ILayoutParser
+public class JsonLayoutParser : ILayoutParser
 {
     public ILayout ParseJson(string jsonText)
     {

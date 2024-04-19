@@ -4,6 +4,8 @@ using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.Controls.Layouts;
+using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
@@ -19,11 +21,13 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
     public AiCommandProcessor(ILogger<AiCommandProcessor> logger,
         ICommandValidator<AiCommand> validator,
         MetricsProcessor metricsProcessor,
-        IEventBusClient bus)
+        IEventBusClient bus, 
+        ITelegramLayoutSupplier layoutSupplier)
         : base(logger, validator, metricsProcessor)
     {
         _bus = bus;
-
+        var options = SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(layoutSupplier.GetMarkup());
+        
         _bus.OnReceived += async (sender, response) =>
         {
             if (response != null)
@@ -34,9 +38,10 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                         SequenceNumber = response.SequenceNumber,
                         IsFinal = response.IsFinal
                     },
-                    SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(),
+                    options,
                     CancellationToken.None);
         };
+
     }
 
     protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)

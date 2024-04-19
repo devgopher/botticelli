@@ -7,6 +7,7 @@ using Botticelli.AI.DeepSeekGpt.Extensions;
 using Botticelli.AI.Extensions;
 using Botticelli.Bus.None.Extensions;
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.Controls.Extensions;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
@@ -36,7 +37,8 @@ builder.Services.AddTelegramBot(builder.Configuration,
     .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
     .UsePassBusClient<IBot<TelegramBot>>()
     .UsePassEventBusClient<IBot<TelegramBot>>()
-    .AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>();
+    .AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>()
+    .AddTelegramLayoutsSupport();
 
 var app = builder.Build();
 app.Services.RegisterBotCommand<AiCommand, AiCommandProcessor, TelegramBot>();
