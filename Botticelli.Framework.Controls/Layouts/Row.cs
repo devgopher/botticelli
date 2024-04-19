@@ -2,7 +2,7 @@
 
 public class Row
 {
-    private readonly List<Item> _cells = new(10);
-    
-    public void AddCell(Item item) => _cells.Add(item);
+    public List<Item> Items { get; init; } = new(10);
+
+    public void AddItem(Item item) => Items.Add(item);
 }

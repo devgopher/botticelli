@@ -59,6 +59,8 @@ public class LayoutJsonParser : ILayoutParser
                             : 1,
                     };
                 }
+                
+                row.AddItem(item);
             }
         }
         

@@ -3,4 +3,6 @@
 public interface ILayout
 {
     public void AddRow(Row row);
+    
+    public IEnumerable<Row> Rows { get; }
 }
