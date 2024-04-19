@@ -1,8 +1,9 @@
 ﻿using System.Text.Json;
 using Botticelli.Framework.Controls.BasicControls;
 using Botticelli.Framework.Controls.Exceptions;
+using Botticelli.Framework.Controls.Layouts;
 
-namespace Botticelli.Framework.Controls.Layouts;
+namespace Botticelli.Framework.Controls.Parsers;
 
 public class LayoutJsonParser : ILayoutParser
 {
