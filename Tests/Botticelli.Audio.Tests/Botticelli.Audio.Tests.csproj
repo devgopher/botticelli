@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Botticelli.Audio\Botticelli.Audio.csproj"/>
+        <ProjectReference Include="..\..\Botticelli.Audio\Botticelli.Audio.csproj" />
     </ItemGroup>
 
     <ItemGroup>

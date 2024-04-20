@@ -12,12 +12,6 @@
         <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
     </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
-        <ProjectReference Include="..\Botticelli.Scheduler.Hangfire\Botticelli.Scheduler.Hangfire.csproj" />
-        <ProjectReference Include="..\Botticelli.Scheduler\Botticelli.Scheduler.csproj"/>
-    </ItemGroup>
-
 
     <ItemGroup>
         <None Update="Media\document.odt">
@@ -32,6 +26,12 @@
         <None Update="Media\voice.mp3">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Botticelli.Framework\Botticelli.Framework.csproj" />
+      <ProjectReference Include="..\..\Botticelli.Scheduler\Botticelli.Scheduler.csproj" />
     </ItemGroup>
 
 </Project>

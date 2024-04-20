@@ -22,16 +22,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Update="TestCases\CorrectLayout.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="TestCases\InvalidLayout.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj" />
     </ItemGroup>
 
 </Project>

@@ -19,10 +19,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Botticelli.AI.ChatGpt\Botticelli.AI.ChatGpt.csproj" />
+        <ProjectReference Include="..\..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
+        <ProjectReference Include="..\..\Botticelli.Framework\Botticelli.Framework.csproj" />
         <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
-        <ProjectReference Include="..\Botticelli.AI.ChatGpt\Botticelli.AI.ChatGpt.csproj"/>
-        <ProjectReference Include="..\Botticelli.AI\Botticelli.AI.csproj"/>
-        <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
