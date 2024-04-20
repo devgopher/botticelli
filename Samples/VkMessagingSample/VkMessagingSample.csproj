@@ -19,9 +19,8 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.*"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1"/>
-        <ProjectReference Include="..\Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj"/>
-        <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
-        <ProjectReference Include="..\Botticelli.Scheduler\Botticelli.Scheduler.csproj"/>
+        <ProjectReference Include="..\..\Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj" />
+        <ProjectReference Include="..\..\Botticelli.Scheduler.Hangfire\Botticelli.Scheduler.Hangfire.csproj" />
         <ProjectReference Include="..\MessagingSample.Common\MessagingSample.Common.csproj"/>
     </ItemGroup>
 

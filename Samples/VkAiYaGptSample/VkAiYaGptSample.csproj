@@ -21,12 +21,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Botticelli.AI.YaGpt\Botticelli.AI.YaGpt.csproj" />
+        <ProjectReference Include="..\..\Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj" />
         <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Botticelli.AI.YaGpt\Botticelli.AI.YaGpt.csproj"/>
-        <ProjectReference Include="..\Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj"/>
     </ItemGroup>
 
 

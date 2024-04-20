@@ -18,10 +18,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Botticelli.AI.ChatGpt\Botticelli.AI.ChatGpt.csproj" />
+        <ProjectReference Include="..\..\Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj" />
         <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
-        <ProjectReference Include="..\Botticelli.AI.ChatGpt\Botticelli.AI.ChatGpt.csproj"/>
-        <ProjectReference Include="..\Botticelli.AI\Botticelli.AI.csproj"/>
-        <ProjectReference Include="..\Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
