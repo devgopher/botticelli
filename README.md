@@ -1,9 +1,8 @@
-# Botticelli
+# Summary
 **Botticelli** framework: a chat bot development platform for .NET 
 
 [![NuGet](nuget_logo.png)](https://www.nuget.org/profiles/Botticelli)
 [![Telegram](telegram_logo.png)](https://t.me/botticelli_bots) 
-[![X](x_logo.png)](https://twitter.com/botticellibots) 
 
 There are several reasons to choose Botticelli:
 - cross-platform
@@ -20,17 +19,20 @@ There are several reasons to choose Botticelli:
 
 # Getting Started
 
-## Short summary
+## Short introduction
 **Botticelli** consists of 2 parts: 
-- Bots
-- Server
+- Bots framework
+- Server part
 
 On server side we can add new bots, change and check their state (active/non-active).
 On a bot side we can implement any business logic we want.
 
+# Some examples
 ## Making a simple Telegram bot
 [See here](https://dev.to/botticellibots/making-a-telegram-bot-with-botticellibots-2jmi)
 
+# Documentation
+[See here](http://botticellibots.com/documentation)
 
 ## Application examples
 [Air quality info bot](https://t.me/air_quality_info_bot) - this Telegram bot gets an air quality for your location 
