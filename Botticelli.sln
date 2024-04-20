@@ -135,15 +135,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Scheduler", "Bot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Vk.Messages", "Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj", "{343922EC-2CF3-4C0E-B745-08F2B333B4E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Vk.Tests", "Botticelli.Framework.Vk.Tests\Botticelli.Framework.Vk.Tests.csproj", "{2EE26ED9-C949-48E8-BF48-93EEC9E51AF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Vk.Tests", "Tests\Botticelli.Framework.Vk.Tests\Botticelli.Framework.Vk.Tests.csproj", "{2EE26ED9-C949-48E8-BF48-93EEC9E51AF1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VK", "VK", "{5BB351E1-460B-48C1-912C-E13702968BB2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkMessagingSample", "VkMessagingSample\VkMessagingSample.csproj", "{B610D900-6713-4D8F-8E9D-23AA02F846FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkMessagingSample", "Samples\VkMessagingSample\VkMessagingSample.csproj", "{B610D900-6713-4D8F-8E9D-23AA02F846FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Audio", "Botticelli.Audio\Botticelli.Audio.csproj", "{0B5AB7F0-080D-49F3-A564-CE22F6F808AB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Audio.Tests", "Botticelli.Audio.Tests\Botticelli.Audio.Tests.csproj", "{868ED8BB-D451-42F3-AB3C-EE76AA9F483E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Audio.Tests", "Tests\Botticelli.Audio.Tests\Botticelli.Audio.Tests.csproj", "{868ED8BB-D451-42F3-AB3C-EE76AA9F483E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3dParty", "3dParty", "{8C52EB41-3815-4B12-9E40-C0D1472361CA}"
 EndProject
@@ -157,11 +157,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Analytics.Shared
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSignatures", "3dParty\FileSignatures\FileSignatures.csproj", "{6F38611B-7798-4514-91E3-B74A2FA228E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessagingSample.Common", "MessagingSample.Common\MessagingSample.Common.csproj", "{CB97DC2A-EE66-43A6-977F-6CB82C030D7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessagingSample.Common", "Samples\MessagingSample.Common\MessagingSample.Common.csproj", "{CB97DC2A-EE66-43A6-977F-6CB82C030D7A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AiSample.Common", "AiSample.Common\AiSample.Common.csproj", "{8A5ECE73-1529-4B53-8907-735ADA05C20A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AiSample.Common", "Samples\AiSample.Common\AiSample.Common.csproj", "{8A5ECE73-1529-4B53-8907-735ADA05C20A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAiChatGptSample", "VkAiChatGptSample\VkAiChatGptSample.csproj", "{AAD10628-7441-419D-8FE8-F37BF8FB4681}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAiChatGptSample", "Samples\VkAiChatGptSample\VkAiChatGptSample.csproj", "{AAD10628-7441-419D-8FE8-F37BF8FB4681}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Events", "Botticelli.Framework.Common\Botticelli.Framework.Events.csproj", "{B0863634-2EE0-4F24-898F-6FB0154E3EB5}"
 EndProject
@@ -177,13 +177,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "analytics_back", "analytics
 		deploy\linux\server\analytics_back\Dockerfile = deploy\linux\server\analytics_back\Dockerfile
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiChatGptSample", "TelegramAiSample\TelegramAiChatGptSample.csproj", "{ECCC27F2-F7ED-406C-90B8-BD53A8A59B47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiChatGptSample", "Samples\TelegramAiSample\TelegramAiChatGptSample.csproj", "{ECCC27F2-F7ED-406C-90B8-BD53A8A59B47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramMessagingSample", "TelegramMessagingSample\TelegramMessagingSample.csproj", "{195344A3-DE14-4283-B7FB-3A5822C5C0FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramMessagingSample", "Samples\TelegramMessagingSample\TelegramMessagingSample.csproj", "{195344A3-DE14-4283-B7FB-3A5822C5C0FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiYaGptSample", "TelegramAiYaGptSample\TelegramAiYaGptSample.csproj", "{D44E775F-7474-4F49-8633-384DC87BE40B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiYaGptSample", "Samples\TelegramAiYaGptSample\TelegramAiYaGptSample.csproj", "{D44E775F-7474-4F49-8633-384DC87BE40B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkAiYaGptSample", "VkAiYaGptSample\VkAiYaGptSample.csproj", "{20AE866A-89D1-4C72-ADAC-545E44AB1354}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkAiYaGptSample", "Samples\VkAiYaGptSample\VkAiYaGptSample.csproj", "{20AE866A-89D1-4C72-ADAC-545E44AB1354}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.AI", "Botticelli.AI", "{3B5A6BD8-2B94-42F9-B122-06D92C470B31}"
 EndProject
@@ -195,7 +195,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.DeepSeekGpt",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.GptJ", "Botticelli.AI.GptJ\Botticelli.AI.GptJ.csproj", "{1BC0B4EF-7C35-4BB7-B207-180FBC55681D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramAiDeepSeekSample", "TelegramAiDeepSeekSample\TelegramAiDeepSeekSample.csproj", "{3D52F777-3A84-4238-974F-A5969085B472}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramAiDeepSeekSample", "Samples\TelegramAiDeepSeekSample\TelegramAiDeepSeekSample.csproj", "{3D52F777-3A84-4238-974F-A5969085B472}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.WeChat", "Botticelli.WeChat\Botticelli.WeChat.csproj", "{B8EE61E9-F029-49EA-81E5-D0BCBA265418}"
 EndProject
@@ -213,7 +213,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Scheduler.Quartz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Controls", "Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj", "{C556B6EE-DCE7-4ED2-85E1-5D5212E0C184}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Controls.Tests", "Botticelli.Framework.Controls.Tests\Botticelli.Framework.Controls.Tests.csproj", "{70EB3FE2-9EB5-4B62-9405-71D1A332B0FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Controls.Tests", "Tests\Botticelli.Framework.Controls.Tests\Botticelli.Framework.Controls.Tests.csproj", "{70EB3FE2-9EB5-4B62-9405-71D1A332B0FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Testing.Platform.Logging;
 
 namespace Botticelli.Framework.Vk.Tests;
 
