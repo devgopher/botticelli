@@ -7,10 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Botticelli.AI.YaGpt\Botticelli.AI.YaGpt.csproj" />
+        <ProjectReference Include="..\..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
         <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
-        <ProjectReference Include="..\Botticelli.AI.YaGpt\Botticelli.AI.YaGpt.csproj"/>
-        <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
-        <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -19,13 +18,6 @@
 
     <ItemGroup>
         <Folder Include="Data\"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Include="..\nlog.config">
-            <Link>nlog.config</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
     </ItemGroup>
 
 </Project>
