@@ -2,6 +2,7 @@
 using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
+using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Handlers;
@@ -57,8 +58,9 @@ public static class ServiceCollectionExtensions
         var serverConfig = new ServerSettings();
         config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
         services.AddSingleton(serverConfig)
-            .AddScoped<IBotUpdateHandler, BotUpdateHandler>()
-            .AddBotticelliFramework(config);
+                .AddScoped<ITelegramLayoutSupplier, TelegramLayoutSupplier>()
+                .AddScoped<IBotUpdateHandler, BotUpdateHandler>()
+                .AddBotticelliFramework(config);
 
         var sp = services.BuildServiceProvider();
 

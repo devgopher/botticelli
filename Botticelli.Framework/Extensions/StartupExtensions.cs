@@ -18,10 +18,10 @@ public static class StartupExtensions
 {
     public static IServiceCollection AddBotticelliFramework(this IServiceCollection services, IConfiguration config) =>
         services.AddSingleton<ChatMessageProcessor>()
-            .AddSingleton<ClientProcessorFactory>()
-            .AddSingleton<CommandProcessorFactory>()
-            .AddSharedValidation()
-            .AddMetrics(config);
+                .AddSingleton<ClientProcessorFactory>()
+                .AddSingleton<CommandProcessorFactory>()
+                .AddSharedValidation()
+                .AddMetrics(config);
 
     public static IServiceCollection AddBotCommand<TCommand,
         TCommandProcessor,

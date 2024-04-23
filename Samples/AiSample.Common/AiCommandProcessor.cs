@@ -1,4 +1,5 @@
 ﻿using AiSample.Common.Commands;
+using AiSample.Common.Layouts;
 using Botticelli.AI.Message;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Client.Analytics;
@@ -26,7 +27,10 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
         : base(logger, validator, metricsProcessor)
     {
         _bus = bus;
-        var options = SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(layoutSupplier.GetMarkup());
+        var responseLayout = new AiLayout();
+        var responseMarkup = layoutSupplier.GetMarkup(responseLayout);
+        
+        var options = SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(responseMarkup);
         
         _bus.OnReceived += async (sender, response) =>
         {
@@ -41,7 +45,6 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
                     options,
                     CancellationToken.None);
         };
-
     }
 
     protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
@@ -67,8 +70,7 @@ public class AiCommandProcessor : CommandProcessor<AiCommand>
             {
                 ChatIds = message.ChatIds,
                 Subject = string.Empty,
-                Body = message.Body
-                    .Replace("/ai", string.Empty)
+                Body = message.Body?.Replace("/ai", string.Empty)
                     .Trim(),
                 Attachments = null,
                 From = message.From,
