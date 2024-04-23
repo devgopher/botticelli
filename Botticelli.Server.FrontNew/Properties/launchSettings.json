@@ -4,15 +4,15 @@
     "Botticelli.Server.FrontNew": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://0.0.0.0:7247",
+      "launchUrl": "http://0.0.0.0:7248",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "BackSettings__BackUrl": "https://localhost:53636/v1/",
+        "BackSettings__BackUrl": "https://localhost:7247/v1/",
         "BackSettings__AnalyticsUrl": "http://localhost:5251/v1/"
       },
       "dotnetRunMessages": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://0.0.0.0:7247;http://0.0.0.0:5042",
+      "applicationUrl": "https://0.0.0.0:7248",
       "nativeDebugging": true,
       "sqlDebugging": true
     }

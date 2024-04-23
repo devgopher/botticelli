@@ -50,8 +50,10 @@ public static class ServiceCollectionExtensions
 
         var token = botContext.BotKey ?? string.Empty;
 
-        services.AddHttpClient<BotStatusService<TelegramBot>>();
-        services.AddHttpClient<BotKeepAliveService<TelegramBot>>();
+        services.AddHttpClient<BotStatusService<TelegramBot>>()
+                .AddPrimaryCertChecking();
+        services.AddHttpClient<BotKeepAliveService<TelegramBot>>()
+                .AddPrimaryCertChecking();;
         
         var serverConfig = new ServerSettings();
         config.GetSection(nameof(ServerSettings)).Bind(serverConfig);

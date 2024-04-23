@@ -1,4 +1,6 @@
-﻿using Botticelli.Bot.Interfaces.Processors;
+﻿using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using Botticelli.Bot.Interfaces.Processors;
 using Botticelli.Client.Analytics.Extensions;
 using Botticelli.Framework.Commands;
 using Botticelli.Framework.Commands.Processors;
@@ -60,6 +62,30 @@ public static class ServiceCollectionExtensions
         return sp;
     }
 
+    public static IHttpClientBuilder AddPrimaryCertChecking(this IHttpClientBuilder builder) =>
+            builder.ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+                store.Open(OpenFlags.ReadOnly);
 
+                var certificate = store.Certificates
+                                       .FirstOrDefault(c => c.FriendlyName == "BotticelliBotsServerBack");
 
+                if (certificate == null) throw new NullReferenceException("Can't find a client certificate!");
+                
+                return new HttpClientHandler
+                {
+                    ClientCertificates = { certificate },
+                    // ClientCertificateOptions = ClientCertificateOption.Automatic,
+                    ServerCertificateCustomValidationCallback =
+                            (httpRequestMessage, cert, cetChain, policyErrors) =>
+                            {
+                                #if DEBUG
+                                return true;
+                                #endif
+                                return policyErrors == SslPolicyErrors.None;
+                                // TODO: cert checking
+                            }
+                };
+            });
 }

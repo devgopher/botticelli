@@ -13,6 +13,7 @@ public class ServerSettings
 
     public string ServerEmail { get; set; }
 
+    public int HttpsPort { get; set; } 
     public string ServerUrl { get; set; }
     public string AnalyticsUrl { get; set; }
 }
