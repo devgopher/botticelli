@@ -1,7 +1,7 @@
-﻿using BotDataSecureStorage.Settings;
-using Botticelli.Framework.Vk.Messages;
+﻿using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Framework.Vk.Tests.Settings;
+using Botticelli.SecureStorage.Settings;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 

@@ -1,4 +1,3 @@
-using BotDataSecureStorage.Settings;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
@@ -6,6 +5,7 @@ using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Schedule.Quartz.Extensions;
+using Botticelli.SecureStorage.Settings;
 using Botticelli.Talks.Extensions;
 using MessagingSample.Common.Commands;
 using MessagingSample.Common.Commands.Processors;

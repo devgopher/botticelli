@@ -1,9 +1,9 @@
-﻿using BotDataSecureStorage.Entities;
-using BotDataSecureStorage.Settings;
+﻿using Botticelli.SecureStorage.Entities;
+using Botticelli.SecureStorage.Settings;
 using Botticelli.Shared.ValueObjects;
 using LiteDB;
 
-namespace BotDataSecureStorage;
+namespace Botticelli.SecureStorage;
 
 /// <summary>
 ///     This storage is intended for keeping bot keys safely
@@ -12,10 +12,7 @@ public class SecureStorage
 {
     private readonly SecureStorageSettings _settings;
 
-    public SecureStorage(SecureStorageSettings settings)
-    {
-        _settings = settings;
-    }
+    public SecureStorage(SecureStorageSettings settings) => _settings = settings;
 
     [Obsolete($"Use {nameof(GetBotContext)}")]
     public BotKey? GetBotKey(string botId)
@@ -31,12 +28,12 @@ public class SecureStorage
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 
         db.GetCollection<BotKey>()
-            .Upsert(botId,
-                new BotKey
-                {
-                    Id = botId,
-                    Key = key
-                });
+          .Upsert(botId,
+                  new BotKey
+                  {
+                      Id = botId,
+                      Key = key
+                  });
     }
 
     public BotContext? GetBotContext(string botId)
@@ -51,7 +48,7 @@ public class SecureStorage
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 
         db.GetCollection<BotContext>()
-            .Upsert(context.BotId, context);
+          .Upsert(context.BotId, context);
     }
 
     /// <summary>
@@ -60,9 +57,9 @@ public class SecureStorage
     /// <param name="botId"></param>
     public void MigrateToBotContext(string botId)
     {
-#pragma warning disable CS0618
+        #pragma warning disable CS0618
         var botKey = GetBotKey(botId);
-#pragma warning restore CS0618
+        #pragma warning restore CS0618
 
         if (botKey == null || string.IsNullOrWhiteSpace(botKey.Key)) return;
 
@@ -80,20 +77,20 @@ public class SecureStorage
     }
 
     public void SetAnyData<T>(string id, T data)
-        where T : IDbEntity
+            where T : IDbEntity
     {
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 
         db.GetCollection<T>()
-            .Upsert(id, data);
+          .Upsert(id, data);
     }
 
     public T GetAnyData<T>(string id)
-        where T : IDbEntity
+            where T : IDbEntity
         => GetAnyData<T>().FirstOrDefault(x => x.Id == id);
 
     public IEnumerable<T> GetAnyData<T>()
-        where T : IDbEntity
+            where T : IDbEntity
     {
         using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
 

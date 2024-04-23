@@ -1,6 +1,6 @@
 using System.Text;
-using BotDataSecureStorage;
-using BotDataSecureStorage.Settings;
+using Botticelli.SecureStorage;
+using Botticelli.SecureStorage.Settings;
 using Botticelli.Server.Data;
 using Botticelli.Server.Extensions;
 using Botticelli.Server.Services;
@@ -36,7 +36,6 @@ builder.Configuration
 var secureStorageSettings = builder.Configuration
     .GetSection(nameof(SecureStorageSettings))
     .Get<SecureStorageSettings>();
-
 
 var serverSettings = builder.Configuration
     .GetSection(nameof(ServerSettings))
@@ -91,7 +90,6 @@ builder.Services
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authorization:Key"]))
     });
 
-
 builder.Services
     .AddLogging(cfg => cfg.AddNLog())
     .AddScoped<IBotManagementService, BotManagementService>()
@@ -132,6 +130,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseHsts();
 app.UseRouting();
 
 app.UseAuthentication();

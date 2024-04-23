@@ -1,5 +1,4 @@
-﻿using BotDataSecureStorage;
-using Botticelli.BotBase.Utils;
+﻿using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
@@ -23,13 +22,13 @@ public class VkBot : BaseBot<VkBot>
     private readonly IBotUpdateHandler _handler;
     private readonly MessagePublisher _messagePublisher;
     private readonly LongPollMessagesProvider _messagesProvider;
-    private readonly SecureStorage _secureStorage;
+    private readonly SecureStorage.SecureStorage _secureStorage;
     private readonly VkStorageUploader _vkUploader;
     private bool _eventsAttached;
 
     public VkBot(LongPollMessagesProvider messagesProvider,
         MessagePublisher messagePublisher,
-        SecureStorage secureStorage,
+        SecureStorage.SecureStorage secureStorage,
         VkStorageUploader vkUploader,
         IBotUpdateHandler handler,
         MetricsProcessor metrics,

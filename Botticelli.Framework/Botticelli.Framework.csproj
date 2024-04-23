@@ -33,7 +33,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BotDataSecureStorage\BotDataSecureStorage.csproj"/>
+        <ProjectReference Include="..\Botticelli.SecureStorage\Botticelli.SecureStorage.csproj" />
         <ProjectReference Include="..\Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj"/>
         <ProjectReference Include="..\Botticelli.Bot.Utils\Botticelli.Bot.Utils.csproj"/>
         <ProjectReference Include="..\Botticelli.Client.Analytics\Botticelli.Client.Analytics.csproj"/>

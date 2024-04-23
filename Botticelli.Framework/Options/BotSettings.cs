@@ -1,4 +1,4 @@
-﻿using BotDataSecureStorage.Settings;
+﻿using Botticelli.SecureStorage.Settings;
 
 namespace Botticelli.Framework.Options;
 
@@ -12,6 +12,8 @@ public abstract class BotSettings
     /// </summary>
     public string Name { get; set; }
     public SecureStorageSettings SecureStorageSettings { get; set; }
-    
+
+    public string BotCertificateName { get; set; } = "BotticelliBotsBot";
+
     public LogTargetSettings LogTargetSettings { get; set; }
 }

@@ -2,7 +2,6 @@ using AiSample.Common;
 using AiSample.Common.Commands;
 using AiSample.Common.Handlers;
 using AiSample.Common.Settings;
-using BotDataSecureStorage.Settings;
 using Botticelli.AI.DeepSeekGpt.Extensions;
 using Botticelli.AI.Extensions;
 using Botticelli.Bus.None.Extensions;
@@ -14,6 +13,7 @@ using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
+using Botticelli.SecureStorage.Settings;
 using NLog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);

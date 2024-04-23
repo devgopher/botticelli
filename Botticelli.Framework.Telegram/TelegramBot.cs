@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using BotDataSecureStorage;
 using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
@@ -29,7 +28,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly IBotUpdateHandler _handler;
 
-    private readonly SecureStorage _secureStorage;
+    private readonly SecureStorage.SecureStorage _secureStorage;
 
     // private static readonly IMemoryCache Cache;
     private ITelegramBotClient _client;
@@ -38,7 +37,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         IBotUpdateHandler handler,
         ILogger<TelegramBot> logger,
         MetricsProcessor metrics,
-        SecureStorage secureStorage) : base(logger, metrics)
+        SecureStorage.SecureStorage secureStorage) : base(logger, metrics)
     {
         BotStatusKeeper.IsStarted = false;
         _client = client;

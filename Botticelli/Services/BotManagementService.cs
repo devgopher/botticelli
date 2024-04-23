@@ -1,5 +1,4 @@
-﻿using BotDataSecureStorage;
-using Botticelli.Server.Data;
+﻿using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.Constants;
@@ -14,10 +13,10 @@ public class BotManagementService : IBotManagementService
 {
     private readonly BotInfoContext _context;
     private readonly ILogger<BotManagementService> _logger;
-    private readonly SecureStorage _secureStorage;
+    private readonly SecureStorage.SecureStorage _secureStorage;
 
     public BotManagementService(BotInfoContext context,
-        SecureStorage secureStorage,
+        SecureStorage.SecureStorage secureStorage,
         ILogger<BotManagementService> logger)
     {
         _context = context;

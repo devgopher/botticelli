@@ -1,5 +1,4 @@
-﻿using BotDataSecureStorage;
-using Botticelli.Server.Data;
+﻿using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.ValueObjects;
@@ -7,14 +6,14 @@ using Botticelli.Shared.ValueObjects;
 namespace Botticelli.Server.Services;
 
 /// <summary>
-///     This class is intended for bot management purposes (start/stop/block/add/remove)
+///     This class is intended for bot management purposes (Getting a bots list/context/status)
 /// </summary>
 public class BotStatusDataService : IBotStatusDataService
 {
     private readonly BotInfoContext _context;
-    private readonly SecureStorage _secureStorage;
+    private readonly SecureStorage.SecureStorage _secureStorage;
 
-    public BotStatusDataService(BotInfoContext context, SecureStorage secureStorage)
+    public BotStatusDataService(BotInfoContext context, SecureStorage.SecureStorage secureStorage)
     {
         _context = context;
         _secureStorage = secureStorage;

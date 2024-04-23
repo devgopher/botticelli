@@ -1,4 +1,3 @@
-using BotDataSecureStorage.Settings;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
@@ -6,6 +5,7 @@ using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Messages.Extensions;
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Scheduler.Hangfire.Extensions;
+using Botticelli.SecureStorage.Settings;
 using MessagingSample.Common.Commands;
 using MessagingSample.Common.Commands.Processors;
 using NLog.Extensions.Logging;

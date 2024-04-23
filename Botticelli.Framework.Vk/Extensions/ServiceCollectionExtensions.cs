@@ -1,5 +1,4 @@
-﻿using BotDataSecureStorage;
-using Botticelli.Audio;
+﻿using Botticelli.Audio;
 using Botticelli.BotBase;
 using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
@@ -32,7 +31,7 @@ public static class ServiceCollectionExtensions
         BotOptionsBuilder<VkBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
-        var secureStorage = new SecureStorage(settings.SecureStorageSettings);
+        var secureStorage = new SecureStorage.SecureStorage(settings.SecureStorageSettings);
         var botId = BotDataUtils.GetBotId();
         var botContext = secureStorage.GetBotContext(botId);
 

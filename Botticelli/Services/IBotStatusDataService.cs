@@ -4,6 +4,9 @@ using Botticelli.Shared.ValueObjects;
 
 namespace Botticelli.Server.Services;
 
+/// <summary>
+///     This interface is intended for bot management purposes (Getting a bots list/context/status)
+/// </summary>
 public interface IBotStatusDataService
 {
     /// <summary>
