@@ -4,5 +4,6 @@ namespace Botticelli.Framework.Controls.Parsers;
 
 public interface ILayoutParser
 {
-    public ILayout ParseJson(string jsonText);
+    public ILayout Parse(string jsonText);
+    public ILayout ParseFromFile(string jsonFile);
 }

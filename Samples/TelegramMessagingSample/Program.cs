@@ -1,4 +1,5 @@
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
@@ -34,6 +35,7 @@ builder.Services
     .AddScoped<StartCommandProcessor>()
     .AddScoped<StopCommandProcessor>()
     .AddOpenTtsTalks(builder.Configuration)
+    .AddScoped<ILayoutParser, JsonLayoutParser>()
     .AddBotCommand<StartCommand, StartCommandProcessor, PassValidator<StartCommand>>()
     .AddBotCommand<StopCommand, StopCommandProcessor, PassValidator<StopCommand>>();
 

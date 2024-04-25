@@ -19,6 +19,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using Exception = System.Exception;
 using Message = Telegram.Bot.Types.Message;
 using Poll = Botticelli.Shared.ValueObjects.Poll;
 
@@ -197,6 +198,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                         request.Message.Poll?.Variants,
                         isAnonymous: request.Message.Poll?.IsAnonymous,
                         type: type,
+                        correctOptionId: request.Message.Poll?.CorrectAnswerId,
                         replyToMessageId: request.Message.ReplyToMessageUid != default
                             ? int.Parse(request.Message.ReplyToMessageUid)
                             : default,
@@ -351,17 +353,22 @@ public class TelegramBot : BaseBot<TelegramBot>
     {
         foreach (var chatId in request.Message?.ChatIds)
         {
-            var message = await _client.SendContactAsync(chatId,
-                request.Message.Contact?.Phone,
-                request.Message?.Contact?.Name,
-                lastName: request.Message?.Contact?.Surname,
-                replyToMessageId: request.Message.ReplyToMessageUid != default
-                    ? int.Parse(request.Message.ReplyToMessageUid)
-                    : default,
-                replyMarkup: replyMarkup,
-                cancellationToken: token);
+            try
+            {
+                var message = await _client.SendContactAsync(chatId,
+                                                             request.Message.Contact?.Phone,
+                                                             request.Message?.Contact?.Name,
+                                                             lastName: request.Message?.Contact?.Surname,
+                                                             replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                             replyMarkup: replyMarkup,
+                                                             cancellationToken: token);
 
-            AddChatIdInnerIdLink(response, chatId, message);
+                AddChatIdInnerIdLink(response, chatId, message);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+            }
         }
     }
 

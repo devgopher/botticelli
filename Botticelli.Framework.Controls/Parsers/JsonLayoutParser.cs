@@ -7,7 +7,7 @@ namespace Botticelli.Framework.Controls.Parsers;
 
 public class JsonLayoutParser : ILayoutParser
 {
-    public ILayout ParseJson(string jsonText)
+    public ILayout Parse(string jsonText)
     {
         var jsonDoc = JsonSerializer.Deserialize<JsonElement>(jsonText);
         var layout = new BaseLayout();
@@ -52,6 +52,13 @@ public class JsonLayoutParser : ILayoutParser
         }
 
         return layout;
+    }
+
+    public ILayout ParseFromFile(string jsonFile)
+    {
+        var json = File.ReadAllText(jsonFile);
+
+        return Parse(json);
     }
 
     private static void ResolveControlType(JsonElement itemElement, Item item)

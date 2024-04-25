@@ -1,4 +1,5 @@
-﻿using Botticelli.Client.Analytics;
+﻿using System.Reflection;
+using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Controls.Parsers;
@@ -22,14 +23,15 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
     public StartCommandProcessor(ILogger<StartCommandProcessor> logger,
                                  ICommandValidator<StartCommand> validator,
                                  MetricsProcessor metricsProcessor,
-                                 IJobManager jobManager, 
-                                 ITelegramLayoutSupplier layoutSupplier)
+                                 IJobManager jobManager,
+                                 ITelegramLayoutSupplier layoutSupplier,
+                                 ILayoutParser layoutParser)
         : base(logger, validator, metricsProcessor)
     {
         _jobManager = jobManager;
 
-        var textingLayout = new TextingLayout();
-        var responseMarkup = layoutSupplier.GetMarkup(textingLayout);
+        var responseLayout = layoutParser.ParseFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(this.GetType()).Location), "layout.json"));
+        var responseMarkup = layoutSupplier.GetMarkup(responseLayout);
         _options = SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(responseMarkup);
     }
 
@@ -73,6 +75,24 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
             {
                 Body = "Now you see me!",
                 ChatIds = [chatId],
+                Contact = new Contact
+                {
+                    Phone = "+9003289384923842343243243",
+                    Name = "Test",
+                    Surname = "Botticelli"
+                },
+                Poll = new Poll
+                {
+                    Question = "To be or not to be?",
+                    Variants = new []
+                    {
+                        "To be!",
+                        "Not to be!"
+                    },
+                    CorrectAnswerId = 0,
+                    IsAnonymous = false,
+                    Type = Poll.PollType.Quiz
+                },
                 Attachments =
                 [
                     new BinaryBaseAttachment(Guid.NewGuid().ToString(),
@@ -102,7 +122,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
             },
             new Schedule
             {
-                Cron = "*/15 * * ? * * *"
+                Cron = "*/30 * * ? * * *"
             });
     }
 }

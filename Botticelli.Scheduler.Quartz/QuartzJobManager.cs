@@ -98,7 +98,7 @@ public class QuartzJobManager : IJobManager, IDisposable
 
     public void RemoveAllJobs()
     {
-        _scheduler.UnscheduleJobs(_triggerKeys, _tokenSource.Token);
+        _scheduler?.UnscheduleJobs(_triggerKeys, _tokenSource.Token);
         _triggerKeys.Clear();
     }
 

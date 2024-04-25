@@ -1,0 +1,24 @@
+{
+  "Name": "TestLayout",
+  "Layout": [
+    [
+      {
+        "Button": {
+          "Content": "/start"
+        }
+      },
+      {
+        "Button": {
+          "Content": "/stop"
+        }
+      }
+    ],
+    [
+      {
+        "Button": {
+          "Content": "/info"
+        }
+      }
+    ]
+  ]
+}

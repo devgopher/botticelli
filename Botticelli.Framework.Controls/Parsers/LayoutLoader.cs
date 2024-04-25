@@ -16,7 +16,7 @@ public class LayoutLoader<TLayoutParser, TLayoutSupplier, TMarkup>(TLayoutParser
         try
         {
             var jsonConfig = File.ReadAllText(configPath);
-            var layout = parser.ParseJson(jsonConfig);
+            var layout = parser.Parse(jsonConfig);
 
             return supplier.GetMarkup(layout);
         }

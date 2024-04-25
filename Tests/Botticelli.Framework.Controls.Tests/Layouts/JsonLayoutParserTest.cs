@@ -16,7 +16,7 @@ public class JsonLayoutParserTest
     {
         var jsonText = File.ReadAllText("TestCases/CorrectLayout.json");
 
-        var layout = _jsonLayoutParser.ParseJson(jsonText);
+        var layout = _jsonLayoutParser.Parse(jsonText);
 
         Assert.That(layout, Is.Not.Null);
     }
@@ -27,6 +27,6 @@ public class JsonLayoutParserTest
     {
         var jsonText = File.ReadAllText("TestCases/InvalidLayout.json");
 
-        Assert.Throws<LayoutException>(() => _jsonLayoutParser.ParseJson(jsonText));
+        Assert.Throws<LayoutException>(() => _jsonLayoutParser.Parse(jsonText));
     }
 }

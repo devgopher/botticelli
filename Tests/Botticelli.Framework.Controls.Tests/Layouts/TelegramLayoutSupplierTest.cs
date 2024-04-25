@@ -14,7 +14,7 @@ public class TelegramLayoutSupplierTest
     public void GetMarkupTest()
     {
         var jsonText = File.ReadAllText("TestCases/CorrectLayout.json");
-        var layout = _jsonLayoutParser.ParseJson(jsonText);
+        var layout = _jsonLayoutParser.Parse(jsonText);
         var markup = _supplier.GetMarkup(layout);
         
         Assert.IsNotNull(markup);
