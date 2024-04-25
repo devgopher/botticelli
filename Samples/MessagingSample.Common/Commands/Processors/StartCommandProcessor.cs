@@ -50,7 +50,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
         var chatId = message.ChatIds.FirstOrDefault();
-        var greetingMessageRequest = new SendMessageRequest(Guid.NewGuid().ToString())
+        var greetingMessageRequest = new SendMessageRequest
         {
             Message = new Message
             {

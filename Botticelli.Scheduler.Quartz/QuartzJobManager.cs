@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using Botticelli.Interfaces;
 using Botticelli.Scheduler;
@@ -14,18 +13,11 @@ using Quartz;
 
 namespace Botticelli.Schedule.Quartz;
 
-public class QuartzJobManager : IJobManager, IDisposable
+public class QuartzJobManager(ISchedulerFactory schedulerFactory) : IJobManager, IDisposable
 {
-    private readonly ISchedulerFactory _schedulerFactory;
-    private readonly CancellationTokenSource _tokenSource;
+    private readonly CancellationTokenSource _tokenSource = new();
     private readonly List<TriggerKey> _triggerKeys = new(5);
     private IScheduler _scheduler;
-
-    public QuartzJobManager(ISchedulerFactory schedulerFactory)
-    {
-        _schedulerFactory = schedulerFactory;
-        _tokenSource = new CancellationTokenSource();
-    }
 
     public void Dispose()
     {
@@ -39,19 +31,18 @@ public class QuartzJobManager : IJobManager, IDisposable
         Scheduler.Schedule schedule,
         Action<Message> preprocessFunc = default)
     {
-        _scheduler ??= _schedulerFactory.GetScheduler().Result;
-
         if (!CronExpression.IsValidExpression(schedule.Cron))
             throw new InvalidDataException($"Cron {schedule?.Cron ?? "null"} is invalid!");
+        
+        _scheduler ??= schedulerFactory.GetScheduler().Result;
 
         var jobId = GetJobId();
 
-        var request = new SendMessageRequest(Guid.NewGuid().ToString())
+        var request = new SendMessageRequest
         {
             Message = message
         };
-
-     //   JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+        
         var serialized = JsonSerializer.Serialize(request);
         
         preprocessFunc?.Invoke(request.Message);
@@ -65,21 +56,18 @@ public class QuartzJobManager : IJobManager, IDisposable
                 .WithIdentity(jobId, "reliableSendMessageJobGroup")
                 .UsingJobData("sendMessageRequest", serialized)
                 .Build();
-
        
         var triggerId = GetTriggerIdentity();
 
         var trigger = TriggerBuilder.Create()
             .ForJob(job)
             .StartNow()
-            // .WithSimpleSchedule(b => b.WithIntervalInSeconds(10).RepeatForever())
             .WithCronSchedule(schedule.Cron)
             .WithIdentity(triggerId)
             .StartNow()
             .Build();
 
         _scheduler.ScheduleJob(job, trigger, _tokenSource.Token);
-        // _scheduler.TriggerJob(job.Key, _tokenSource.Token);
         _scheduler.Start();
         _triggerKeys.Add(trigger.Key);
 

@@ -121,10 +121,12 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         }
         else
         {
-            var errMessageRequest = SendMessageRequest.GetInstance();
-            errMessageRequest.Message = new Message(Guid.NewGuid().ToString())
+            var errMessageRequest = new SendMessageRequest
             {
-                Body = _validator.Help()
+                Message =
+                {
+                    Body = _validator.Help()
+                }
             };
 
             await Bot.SendMessageAsync(errMessageRequest, token);

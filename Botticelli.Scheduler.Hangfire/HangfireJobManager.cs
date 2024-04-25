@@ -22,7 +22,7 @@ public class HangfireJobManager : IJobManager
     {
         var jobId = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
 
-        var request = new SendMessageRequest(Guid.NewGuid().ToString())
+        var request = new SendMessageRequest
         {
             Message = message
         };

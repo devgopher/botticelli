@@ -5,6 +5,10 @@ namespace Botticelli.Shared.API.Client.Requests;
 
 public class SendMessageRequest : BaseRequest<SendMessageRequest>
 {
+    public SendMessageRequest() : this(Guid.NewGuid().ToString())
+    {
+    }
+
     public SendMessageRequest(string uid) : base(uid) => Message = new Message(uid);
 
     public bool? ExpectPartialResponse { get; set; }
@@ -13,6 +17,4 @@ public class SendMessageRequest : BaseRequest<SendMessageRequest>
 
 
     public Message Message { get; set; }
-
-    public static SendMessageRequest GetInstance() => new(BotIdUtils.GenerateShortBotId());
 }

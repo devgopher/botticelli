@@ -37,7 +37,7 @@ public class StopCommandProcessor : CommandProcessor<StopCommand>
     {
         _jobManager.RemoveAllJobs();
 
-        var farewellMessageRequest = new SendMessageRequest(Guid.NewGuid().ToString())
+        var farewellMessageRequest = new SendMessageRequest
         {
             Message = new Message
             {
