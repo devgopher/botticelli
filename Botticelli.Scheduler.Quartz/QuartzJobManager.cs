@@ -51,16 +51,19 @@ public class QuartzJobManager : IJobManager, IDisposable
             Message = message
         };
 
+     //   JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+        var serialized = JsonSerializer.Serialize(request);
+        
         preprocessFunc?.Invoke(request.Message);
 
         var job = !reliability.IsEnabled
             ? JobBuilder.Create<SendMessageJob>()
                 .WithIdentity(jobId, "sendMessageJobGroup")
-                .UsingJobData("sendMessageRequest", JsonSerializer.Serialize(request))
+                .UsingJobData("sendMessageRequest", serialized)
                 .Build()
             : JobBuilder.Create<ReliableSendMessageJob>()
                 .WithIdentity(jobId, "reliableSendMessageJobGroup")
-                .UsingJobData("sendMessageRequest", JsonSerializer.Serialize(request))
+                .UsingJobData("sendMessageRequest", serialized)
                 .Build();
 
        

@@ -1,25 +1,36 @@
 ﻿using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.Controls.Parsers;
+using Botticelli.Framework.SendOptions;
 using Botticelli.Scheduler;
 using Botticelli.Scheduler.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
+using MessagingSample.Common.Layouts;
 using Microsoft.Extensions.Logging;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MessagingSample.Common.Commands.Processors;
 
 public class StartCommandProcessor : CommandProcessor<StartCommand>
 {
     private readonly IJobManager _jobManager;
+    private readonly SendOptionsBuilder<ReplyMarkupBase> _options;
     
     public StartCommandProcessor(ILogger<StartCommandProcessor> logger,
-        ICommandValidator<StartCommand> validator,
-        MetricsProcessor metricsProcessor, IJobManager jobManager)
+                                 ICommandValidator<StartCommand> validator,
+                                 MetricsProcessor metricsProcessor,
+                                 IJobManager jobManager, 
+                                 ITelegramLayoutSupplier layoutSupplier)
         : base(logger, validator, metricsProcessor)
     {
         _jobManager = jobManager;
+
+        var textingLayout = new TextingLayout();
+        var responseMarkup = layoutSupplier.GetMarkup(textingLayout);
+        _options = SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(responseMarkup);
     }
 
     protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
@@ -47,7 +58,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
             }
         };
 
-        await Bot.SendMessageAsync(greetingMessageRequest, token);
+        await Bot.SendMessageAsync(greetingMessageRequest, _options, token);
 
         var assemblyPath = Path.GetDirectoryName(typeof(StartCommandProcessor).Assembly.Location);
         _jobManager.AddJob(Bot,

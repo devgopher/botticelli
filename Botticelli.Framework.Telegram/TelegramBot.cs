@@ -339,7 +339,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     private static void AddChatIdInnerIdLink(SendMessageResponse response, string chatId, Message message)
     {
         if (!response.Message.ChatIdInnerIdLinks.ContainsKey(chatId))
-            response.Message.ChatIdInnerIdLinks[chatId] = new List<string>();
+            response.Message.ChatIdInnerIdLinks[chatId] = [];
 
         response.Message.ChatIdInnerIdLinks[chatId].Add(message.MessageId.ToString());
     }
