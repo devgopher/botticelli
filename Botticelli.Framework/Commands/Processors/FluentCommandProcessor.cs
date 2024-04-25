@@ -32,9 +32,14 @@ public abstract class FluentCommandProcessor<TCommand>(
         }
         else
         {
-            var errMessageRequest = new SendMessageRequest();
-            errMessageRequest.Message.Body = validator.Help();
-            
+            var errMessageRequest = new SendMessageRequest
+            {
+                Message =
+                {
+                    Body = validator.Help()
+                }
+            };
+
             await Bot.SendMessageAsync(errMessageRequest, token);
         }
     }
