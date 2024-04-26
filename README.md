@@ -1,7 +1,7 @@
 # Botticelli
 **Botticelli** framework: a chat bot development platform for .NET 
 
-[![release]([(https://img.shields.io/github/downloads/devgopher/botticelli/0.4/total)]([https://core.telegram.org/bots/api#february-16-2024](https://github.com/devgopher/botticelli/releases/tag/0.4))
+[![release](https://img.shields.io/github/downloads/devgopher/botticelli/0.4/total)]([https://core.telegram.org/bots/api#february-16-2024](https://github.com/devgopher/botticelli/releases/tag/0.4))
 [![documentations](https://img.shields.io/badge/Documentations-Book-orange.svg?style=flat-square)](http://botticellibots.com/documentation/)
 [![quickstart](https://img.shields.io/badge/Documentations-Book-orange.svg?style=flat-square)](http://botticellibots.com/quick-start)
 
