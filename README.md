@@ -7,16 +7,16 @@
 [![Quickstart](https://img.shields.io/badge/Quickstart-docs-orange)](http://botticellibots.com/quick-start)
 [![Telegram](https://img.shields.io/badge/Telegram-channel-orange)](https://t.me/botticelli_bots) 
 
-There are several reasons to choose Botticelli:
+**There are several reasons to choose Botticelli:**
 - cross-platform
 - supports a wide range of messengers (Telegram, Facebook, VK)
 - extensible (you may add support of any other messenger, that has an open API)
 - reliable
 - easy to use
-- easy to deploy(docker support)
-- easy to integrate with databases
-- easy to integrate with AI solutions (Botticelli.AI)
-- easy to integrate with speech synthesizers (Botticelli.Talks)
+- easy to deploy
+- easy to integrate with **databases**
+- easy to integrate with **AI** (**ChatGPT**, **YandexGPT**, **DeepSeek**) solutions (Botticelli.AI)
+- easy to integrate with **speech synthesizers** (Botticelli.Talks)
 - easy to integrate with queue brokers for highload systems (Botticelli.Bus)
 - easy to schedule (Botticelli.Scheduler)
 
