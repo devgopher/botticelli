@@ -5,7 +5,7 @@
 [![Release](https://img.shields.io/github/downloads/devgopher/botticelli/0.4/total)](https://github.com/devgopher/botticelli/releases/tag/0.4)
 [![Documentations](https://img.shields.io/badge/Documentations-docs-orange.svg?style=flat-square)](http://botticellibots.com/documentation/)
 [![Quickstart](https://img.shields.io/badge/Quickstart-docs-orange)](http://botticellibots.com/quick-start)
-[![Telegram](ttps://img.shields.io/badge/Telegram-channel-orange)](https://t.me/botticelli_bots) 
+[![Telegram](https://img.shields.io/badge/Telegram-channel-orange)](https://t.me/botticelli_bots) 
 
 There are several reasons to choose Botticelli:
 - cross-platform
