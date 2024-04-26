@@ -1,13 +1,11 @@
 # Botticelli
 **Botticelli** framework: a chat bot development platform for .NET 
 
-[![release](https://img.shields.io/github/downloads/devgopher/botticelli/0.4/total)](https://github.com/devgopher/botticelli/releases/tag/0.4)
-[![documentations](https://img.shields.io/badge/Documentations-docs-orange.svg?style=flat-square)](http://botticellibots.com/documentation/)
-[![quickstart](https://img.shields.io/badge/Quickstart-docs-orange)](http://botticellibots.com/quick-start)
-
-[![NuGet](nuget_logo.png)](https://www.nuget.org/profiles/Botticelli)
-[![Telegram](telegram_logo.png)](https://t.me/botticelli_bots) 
-[![X](x_logo.png)](https://twitter.com/botticellibots) 
+[![License](https://img.shields.io/badge/GPL-license-orange)](https://github.com/devgopher/botticelli?tab=GPL-3.0-1-ov-file)
+[![Release](https://img.shields.io/github/downloads/devgopher/botticelli/0.4/total)](https://github.com/devgopher/botticelli/releases/tag/0.4)
+[![Documentations](https://img.shields.io/badge/Documentations-docs-orange.svg?style=flat-square)](http://botticellibots.com/documentation/)
+[![Quickstart](https://img.shields.io/badge/Quickstart-docs-orange)](http://botticellibots.com/quick-start)
+[![Telegram](ttps://img.shields.io/badge/Telegram-channel-orange)](https://t.me/botticelli_bots) 
 
 There are several reasons to choose Botticelli:
 - cross-platform
