@@ -8,6 +8,7 @@ using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Vk.Messages;
+using Botticelli.Framework.Vk.Messages.API.Markups;
 using Botticelli.Framework.Vk.Messages.Extensions;
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Interfaces;
@@ -33,9 +34,9 @@ builder.Services.AddVkBot(builder.Configuration,
     .AddSingleton<AiHandler>()
     .UsePassBusAgent<IBot<VkBot>, AiHandler>()
     .UsePassBusClient<IBot<VkBot>>()
-    .AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>();
+    .AddBotCommand<AiCommand, AiCommandProcessor<VkKeyboardMarkup>, PassValidator<AiCommand>>();
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<AiCommand, AiCommandProcessor, VkBot>();
+app.Services.RegisterBotCommand<AiCommand, AiCommandProcessor<VkKeyboardMarkup>, VkBot>();
 
 app.Run();

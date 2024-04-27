@@ -15,6 +15,7 @@ using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
 using Botticelli.SecureStorage.Settings;
 using NLog.Extensions.Logging;
+using Telegram.Bot.Types.ReplyMarkups;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,10 +38,10 @@ builder.Services.AddTelegramBot(builder.Configuration,
     .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
     .UsePassBusClient<IBot<TelegramBot>>()
     .UsePassEventBusClient<IBot<TelegramBot>>()
-    .AddBotCommand<AiCommand, AiCommandProcessor, PassValidator<AiCommand>>()
+    .AddBotCommand<AiCommand, AiCommandProcessor<ReplyMarkupBase>, PassValidator<AiCommand>>()
     .AddTelegramLayoutsSupport();
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<AiCommand, AiCommandProcessor, TelegramBot>();
+app.Services.RegisterBotCommand<AiCommand, AiCommandProcessor<ReplyMarkupBase>, TelegramBot>();
 
 app.Run();

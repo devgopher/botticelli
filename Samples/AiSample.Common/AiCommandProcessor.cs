@@ -15,22 +15,22 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace AiSample.Common;
 
-public class AiCommandProcessor : CommandProcessor<AiCommand>
+public class AiCommandProcessor<TReplyMarkup> : CommandProcessor<AiCommand> where TReplyMarkup : class
 {
     private readonly IEventBusClient _bus;
 
-    public AiCommandProcessor(ILogger<AiCommandProcessor> logger,
+    public AiCommandProcessor(ILogger<AiCommandProcessor<TReplyMarkup>> logger,
         ICommandValidator<AiCommand> validator,
         MetricsProcessor metricsProcessor,
         IEventBusClient bus, 
-        ITelegramLayoutSupplier layoutSupplier)
+        ILayoutSupplier<TReplyMarkup> layoutSupplier)
         : base(logger, validator, metricsProcessor)
     {
         _bus = bus;
         var responseLayout = new AiLayout();
         var responseMarkup = layoutSupplier.GetMarkup(responseLayout);
         
-        var options = SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(responseMarkup);
+        var options = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
         
         _bus.OnReceived += async (sender, response) =>
         {
