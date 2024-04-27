@@ -46,7 +46,10 @@ public class JsonLayoutParser : ILayoutParser
                             : 1,
                     };
                 }
-                
+
+                if (itemElement.TryGetProperty("Specials", out var messengerSpecific)) 
+                    item.Control.Specials = messengerSpecific.Deserialize<Dictionary<string, Dictionary<string, object>>>();
+
                 row.AddItem(item);
             }
         }

@@ -14,5 +14,5 @@ public interface IControl
     /// Messenger-specific parameters
     /// <MessengerName, <Key, Value>>
     /// </summary>
-    public Dictionary<string, Dictionary<string, object>> Specials { get; set; }
+    public Dictionary<string, Dictionary<string, object>>? Specials { get; set; }
 }

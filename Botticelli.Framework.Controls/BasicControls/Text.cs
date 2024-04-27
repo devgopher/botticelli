@@ -3,5 +3,5 @@
 public class Text : IControl
 {
     public string? Content { get; set; }
-    public Dictionary<string, Dictionary<string, object>> Specials { get; set; } = new();
+    public Dictionary<string, Dictionary<string, object>>? Specials { get; set; } = new();
 }

@@ -4,7 +4,7 @@ namespace Botticelli.Framework.Controls.Extensions;
 
 public static class DictionaryExtensions
 {
-    public static T ReturnValueOrDefault<T>(this IDictionary? dict, object key) 
+    public static T ReturnValueOrDefault<T>(this IDictionary dict, object key) 
     {
         if (dict == default)
             return default!;
