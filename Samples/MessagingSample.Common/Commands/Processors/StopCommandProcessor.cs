@@ -8,17 +8,15 @@ using Microsoft.Extensions.Logging;
 
 namespace MessagingSample.Common.Commands.Processors;
 
-public class StopCommandProcessor : CommandProcessor<StopCommand>
+public class StopCommandProcessor<TReplyMarkup> : CommandProcessor<StopCommand>
 {
     private readonly IJobManager _jobManager;
     
-    public StopCommandProcessor(ILogger<StopCommandProcessor> logger,
+    public StopCommandProcessor(ILogger<StopCommandProcessor<TReplyMarkup>> logger,
         ICommandValidator<StopCommand> validator,
         MetricsProcessor metricsProcessor, IJobManager jobManager)
-        : base(logger, validator, metricsProcessor)
-    {
-        _jobManager = jobManager;
-    }
+        : base(logger, validator, metricsProcessor) =>
+            _jobManager = jobManager;
 
     protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
     {

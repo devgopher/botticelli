@@ -6,5 +6,5 @@ public class BaseLayout : ILayout
   
     public void AddRow(Row row) => _rows.Add(row);
 
-    public IEnumerable<Row> Rows => _rows;
+    public IList<Row> Rows => _rows;
 }

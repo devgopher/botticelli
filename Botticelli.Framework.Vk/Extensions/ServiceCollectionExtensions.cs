@@ -3,9 +3,12 @@ using Botticelli.BotBase;
 using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
+using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
+using Botticelli.Framework.Vk.Messages.API.Markups;
 using Botticelli.Framework.Vk.Messages.Handlers;
+using Botticelli.Framework.Vk.Messages.Layout;
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
@@ -97,4 +100,9 @@ public static class ServiceCollectionExtensions
             .AddHostedService<BotStatusService<IBot<VkBot>>>()
             .AddHostedService<BotKeepAliveService<IBot<VkBot>>>();
     }
+    public static IServiceCollection AddVkLayoutsSupport(this IServiceCollection services) =>
+            services.AddScoped<ILayoutParser, JsonLayoutParser>()
+                    .AddScoped<ILayoutSupplier<VkKeyboardMarkup>, VkLayoutSupplier>()
+                    .AddScoped<ILayoutLoader<VkKeyboardMarkup>,
+                            LayoutLoader<ILayoutParser, ILayoutSupplier<VkKeyboardMarkup>, VkKeyboardMarkup>>();
 }

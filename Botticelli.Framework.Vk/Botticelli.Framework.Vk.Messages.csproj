@@ -30,6 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj" />
         <ProjectReference Include="..\Botticelli.SecureStorage\Botticelli.SecureStorage.csproj" />
         <ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj"/>
         <ProjectReference Include="..\Botticelli.Audio\Botticelli.Audio.csproj"/>

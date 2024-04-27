@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Botticelli.Framework.Telegram.Extensions;
 
@@ -76,4 +77,10 @@ public static class ServiceCollectionExtensions
             .AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>()
             .AddHostedService<TelegramBotHostedService>();
     }
+    
+    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services) =>
+            services.AddScoped<ILayoutParser, JsonLayoutParser>()
+                    .AddScoped<ILayoutSupplier<ReplyKeyboardMarkup>, TelegramLayoutSupplier>()
+                    .AddScoped<ILayoutLoader<ReplyKeyboardMarkup>,
+                            LayoutLoader<ILayoutParser, ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>();
 }

@@ -11,6 +11,7 @@ using Botticelli.Talks.Extensions;
 using MessagingSample.Common.Commands;
 using MessagingSample.Common.Commands.Processors;
 using NLog.Extensions.Logging;
+using Telegram.Bot.Types.ReplyMarkups;
 using TelegramMessagingSample;
 using TelegramMessagingSample.Settings;
 
@@ -32,15 +33,15 @@ builder.Services
     .AddLogging(cfg => cfg.AddNLog())
     .AddQuartzScheduler(builder.Configuration)
     .AddHostedService<TestBotHostedService>()
-    .AddScoped<StartCommandProcessor>()
-    .AddScoped<StopCommandProcessor>()
+    .AddScoped<StartCommandProcessor<ReplyMarkupBase>>()
+    .AddScoped<StopCommandProcessor<ReplyMarkupBase>>()
     .AddOpenTtsTalks(builder.Configuration)
     .AddScoped<ILayoutParser, JsonLayoutParser>()
-    .AddBotCommand<StartCommand, StartCommandProcessor, PassValidator<StartCommand>>()
-    .AddBotCommand<StopCommand, StopCommandProcessor, PassValidator<StopCommand>>();
+    .AddBotCommand<StartCommand, StartCommandProcessor<ReplyMarkupBase>, PassValidator<StartCommand>>()
+    .AddBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, PassValidator<StopCommand>>();
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor, TelegramBot>()
-            .RegisterBotCommand<StopCommand, StopCommandProcessor, TelegramBot>();
+app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor<ReplyMarkupBase>, TelegramBot>()
+            .RegisterBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, TelegramBot>();
 
 app.Run();

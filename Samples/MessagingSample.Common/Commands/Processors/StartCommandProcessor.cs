@@ -15,16 +15,16 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MessagingSample.Common.Commands.Processors;
 
-public class StartCommandProcessor : CommandProcessor<StartCommand>
+public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand> where TReplyMarkup : class
 {
     private readonly IJobManager _jobManager;
-    private readonly SendOptionsBuilder<ReplyMarkupBase> _options;
+    private readonly SendOptionsBuilder<TReplyMarkup> _options;
     
-    public StartCommandProcessor(ILogger<StartCommandProcessor> logger,
+    public StartCommandProcessor(ILogger<StartCommandProcessor<TReplyMarkup>> logger,
                                  ICommandValidator<StartCommand> validator,
                                  MetricsProcessor metricsProcessor,
                                  IJobManager jobManager,
-                                 ITelegramLayoutSupplier layoutSupplier,
+                                 ILayoutSupplier<TReplyMarkup> layoutSupplier,
                                  ILayoutParser layoutParser)
         : base(logger, validator, metricsProcessor)
     {
@@ -32,7 +32,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
 
         var responseLayout = layoutParser.ParseFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(this.GetType()).Location), "layout.json"));
         var responseMarkup = layoutSupplier.GetMarkup(responseLayout);
-        _options = SendOptionsBuilder<ReplyMarkupBase>.CreateBuilder(responseMarkup);
+        _options = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
     }
 
     protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
@@ -62,7 +62,7 @@ public class StartCommandProcessor : CommandProcessor<StartCommand>
 
         await Bot.SendMessageAsync(greetingMessageRequest, _options, token);
 
-        var assemblyPath = Path.GetDirectoryName(typeof(StartCommandProcessor).Assembly.Location);
+        var assemblyPath = Path.GetDirectoryName(typeof(StartCommandProcessor<TReplyMarkup>).Assembly.Location);
         _jobManager.AddJob(Bot,
             new Reliability
             {

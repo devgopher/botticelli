@@ -1,11 +1,14 @@
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Messages.Extensions;
 using Botticelli.Framework.Vk.Messages.Options;
+using Botticelli.Schedule.Quartz.Extensions;
 using Botticelli.Scheduler.Hangfire.Extensions;
 using Botticelli.SecureStorage.Settings;
+using Botticelli.Talks.Extensions;
 using MessagingSample.Common.Commands;
 using MessagingSample.Common.Commands.Processors;
 using NLog.Extensions.Logging;
@@ -22,26 +25,24 @@ var vkSettings = builder.Configuration
     .Get<VkBotSettings>();
 
 builder.Services
-    .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
-    .AddVkBot(builder.Configuration,
-        new BotOptionsBuilder<VkBotSettings>()
-            .Set(s => s.SecureStorageSettings = new SecureStorageSettings
-            {
-                ConnectionString = settings.SecureStorageConnectionString
-            })
-            .Set(s =>
-            {
-                s.Name = settings.BotName;
-                s.PollIntervalMs = 100;
-                s.GroupId = vkSettings.GroupId;
-            }))
-    .AddLogging(cfg => cfg.AddNLog())
-    .AddHangfireScheduler(builder.Configuration)
-    .AddHostedService<TestBotHostedService>()
-    .AddScoped<StartCommandProcessor>()
-    .AddScoped<StopCommandProcessor>()
-    .AddBotCommand<StartCommand, StartCommandProcessor, PassValidator<StartCommand>>()
-    .AddBotCommand<StopCommand, StopCommandProcessor, PassValidator<StopCommand>>();
+       .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
+       .AddVkBot(builder.Configuration,
+                       new BotOptionsBuilder<VkBotSettings>()
+                               .Set(s => s.SecureStorageSettings = new SecureStorageSettings
+                               {
+                                   ConnectionString = settings?.SecureStorageConnectionString
+                               })
+                               .Set(s => s.Name = settings?.BotName))
+       .AddLogging(cfg => cfg.AddNLog())
+       .AddQuartzScheduler(builder.Configuration)
+       .AddHostedService<TestBotHostedService>()
+       .AddScoped<StartCommandProcessor<>>()
+       .AddScoped<StopCommandProcessor>()
+       .AddOpenTtsTalks(builder.Configuration)
+       .AddScoped<ILayoutParser, JsonLayoutParser>()
+       .AddBotCommand<StartCommand, StartCommandProcessor, PassValidator<StartCommand>>()
+       .AddBotCommand<StopCommand, StopCommandProcessor, PassValidator<StopCommand>>();
+
 
 var app = builder.Build();
 app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor, VkBot>();
