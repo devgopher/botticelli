@@ -20,7 +20,8 @@ public class VkLayoutSupplier : IVkLayoutSupplier
         {
             var keyboardElement = new List<VkItem>();
 
-            keyboardElement.AddRange(layoutRow.Items.Select(item =>
+            keyboardElement.AddRange(layoutRow.Items.Where(i => i.Control != default)
+                .Select(item =>
             {
                 var controlParams = item.Control.Specials.ContainsKey("VK") ? item.Control?.Specials["VK"] : new Dictionary<string, object>();
                 
@@ -28,7 +29,7 @@ public class VkLayoutSupplier : IVkLayoutSupplier
                 {
                     Type = item.Control is TextButton ? "text" : "button",
                     Payload = "{\"button\": \"" + layout.Rows.IndexOf(layoutRow) + "\"}",
-                    Label = item.Control?.Content,
+                    Label = item.Control.Content,
                     AppId = controlParams.ReturnValueOrDefault<int>("AppId"),
                     OwnerId = controlParams.ReturnValueOrDefault<int>("OwnerId"),
                     Hash = controlParams.ReturnValueOrDefault<string>("Hash")

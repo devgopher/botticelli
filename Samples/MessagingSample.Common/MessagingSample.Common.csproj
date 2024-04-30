@@ -26,7 +26,10 @@
         <None Update="Media\voice.mp3">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="layout.json">
+        <None Update="main_layout.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="start_layout.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
@@ -35,6 +38,11 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Botticelli.Framework\Botticelli.Framework.csproj" />
       <ProjectReference Include="..\..\Botticelli.Scheduler\Botticelli.Scheduler.csproj" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <Folder Include="Layouts\" />
     </ItemGroup>
 
 </Project>

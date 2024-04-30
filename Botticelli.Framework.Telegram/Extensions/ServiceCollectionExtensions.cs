@@ -7,6 +7,7 @@ using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Framework.Telegram.HostedService;
+using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
@@ -59,7 +60,7 @@ public static class ServiceCollectionExtensions
         var serverConfig = new ServerSettings();
         config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
         services.AddSingleton(serverConfig)
-                .AddScoped<ITelegramLayoutSupplier, TelegramLayoutSupplier>()
+                .AddScoped<ILayoutSupplier<ReplyMarkupBase>, TelegramLayoutSupplier>()
                 .AddScoped<IBotUpdateHandler, BotUpdateHandler>()
                 .AddBotticelliFramework(config);
 
@@ -77,10 +78,4 @@ public static class ServiceCollectionExtensions
             .AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>()
             .AddHostedService<TelegramBotHostedService>();
     }
-    
-    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services) =>
-            services.AddScoped<ILayoutParser, JsonLayoutParser>()
-                    .AddScoped<ILayoutSupplier<ReplyKeyboardMarkup>, TelegramLayoutSupplier>()
-                    .AddScoped<ILayoutLoader<ReplyKeyboardMarkup>,
-                            LayoutLoader<ILayoutParser, ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>();
 }

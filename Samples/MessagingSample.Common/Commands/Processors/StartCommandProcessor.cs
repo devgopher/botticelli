@@ -9,7 +9,6 @@ using Botticelli.Scheduler.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
-using MessagingSample.Common.Layouts;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -30,22 +29,18 @@ public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand
     {
         _jobManager = jobManager;
 
-        var responseLayout = layoutParser.ParseFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(this.GetType()).Location), "layout.json"));
+        var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+        var responseLayout = layoutParser.ParseFromFile(Path.Combine(location, "main_layout.json"));
         var responseMarkup = layoutSupplier.GetMarkup(responseLayout);
+        
         _options = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
     }
 
-    protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
-    {
-    }
+    protected override Task InnerProcessContact(Message message, string argsString, CancellationToken token) => Task.CompletedTask;
 
-    protected override async Task InnerProcessPoll(Message message, string argsString, CancellationToken token)
-    {
-    }
+    protected override Task InnerProcessPoll(Message message, string argsString, CancellationToken token) => Task.CompletedTask;
 
-    protected override async Task InnerProcessLocation(Message message, string argsString, CancellationToken token)
-    {
-    }
+    protected override Task InnerProcessLocation(Message message, string argsString, CancellationToken token) => Task.CompletedTask;
 
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {

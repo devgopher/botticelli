@@ -2,7 +2,7 @@
 using Botticelli.Framework.Controls.Layouts;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Botticelli.Framework.Controls.Parsers;
+namespace Botticelli.Framework.Telegram.Layout;
 
 public class TelegramLayoutSupplier : ITelegramLayoutSupplier
 {

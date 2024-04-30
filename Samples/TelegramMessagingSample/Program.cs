@@ -35,13 +35,16 @@ builder.Services
     .AddHostedService<TestBotHostedService>()
     .AddScoped<StartCommandProcessor<ReplyMarkupBase>>()
     .AddScoped<StopCommandProcessor<ReplyMarkupBase>>()
+    .AddScoped<InfoCommandProcessor<ReplyMarkupBase>>()
     .AddOpenTtsTalks(builder.Configuration)
     .AddScoped<ILayoutParser, JsonLayoutParser>()
+    .AddBotCommand<InfoCommand, InfoCommandProcessor<ReplyMarkupBase>, PassValidator<InfoCommand>>()
     .AddBotCommand<StartCommand, StartCommandProcessor<ReplyMarkupBase>, PassValidator<StartCommand>>()
     .AddBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, PassValidator<StopCommand>>();
 
 var app = builder.Build();
 app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor<ReplyMarkupBase>, TelegramBot>()
-            .RegisterBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, TelegramBot>();
+            .RegisterBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, TelegramBot>()
+            .RegisterBotCommand<InfoCommand, InfoCommandProcessor<ReplyMarkupBase>, TelegramBot>();
 
 app.Run();
