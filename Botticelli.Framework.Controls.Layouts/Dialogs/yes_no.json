@@ -1,0 +1,17 @@
+{
+  "Name": "MainLayout",
+  "Layout": [
+    [
+      {
+        "Button": {
+          "Content": "Yes"
+        }
+      }                  
+      {
+        "Button": {
+          "Content": "No"
+        }
+      }
+    ]
+  ]
+}

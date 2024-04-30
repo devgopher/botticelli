@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <Folder Include="Buttons\" />
-      <Folder Include="Calendar\" />
       <Folder Include="Dialogs\" />
       <Folder Include="Tables\" />
     </ItemGroup>
