@@ -60,7 +60,7 @@ public static class ServiceCollectionExtensions
         var serverConfig = new ServerSettings();
         config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
         services.AddSingleton(serverConfig)
-                .AddScoped<ILayoutSupplier<ReplyMarkupBase>, TelegramLayoutSupplier>()
+                .AddScoped<ILayoutSupplier<ReplyMarkupBase>, ReplyTelegramLayoutSupplier>()
                 .AddScoped<IBotUpdateHandler, BotUpdateHandler>()
                 .AddBotticelliFramework(config);
 
@@ -78,4 +78,11 @@ public static class ServiceCollectionExtensions
             .AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>()
             .AddHostedService<TelegramBotHostedService>();
     }
+    
+    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services) =>
+        services.AddScoped<ILayoutParser, JsonLayoutParser>()
+            .AddScoped<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
+            .AddScoped<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
+            .AddScoped<ILayoutLoader<ReplyKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>()
+            .AddScoped<ILayoutLoader<InlineKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<InlineKeyboardMarkup>, InlineKeyboardMarkup>>();
 }

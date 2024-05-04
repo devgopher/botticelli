@@ -27,7 +27,7 @@ builder.Services.AddTelegramBot(builder.Configuration,
         new BotOptionsBuilder<TelegramBotSettings>()
             .Set(s => s.SecureStorageSettings = new SecureStorageSettings
             {
-                ConnectionString = settings.SecureStorageConnectionString
+                ConnectionString = settings?.SecureStorageConnectionString
             })
             .Set(s => s.Name = "test_bot"))
     .AddLogging(cfg => cfg.AddNLog())

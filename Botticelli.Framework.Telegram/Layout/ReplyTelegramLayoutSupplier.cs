@@ -4,7 +4,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Botticelli.Framework.Telegram.Layout;
 
-public class TelegramLayoutSupplier : ITelegramLayoutSupplier
+public class ReplyTelegramLayoutSupplier : IReplyTelegramLayoutSupplier
 {
     public ReplyKeyboardMarkup GetMarkup(ILayout layout)
     {

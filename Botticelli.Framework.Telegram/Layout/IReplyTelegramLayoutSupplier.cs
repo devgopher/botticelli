@@ -3,6 +3,6 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Botticelli.Framework.Telegram.Layout;
 
-public interface ITelegramLayoutSupplier : ILayoutSupplier<ReplyKeyboardMarkup>
+public interface IReplyTelegramLayoutSupplier : ILayoutSupplier<ReplyKeyboardMarkup>
 {
 }

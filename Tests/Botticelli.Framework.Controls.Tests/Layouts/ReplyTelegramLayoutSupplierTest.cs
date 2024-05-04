@@ -5,11 +5,11 @@ using Botticelli.Framework.Telegram.Layout;
 namespace Botticelli.Framework.Controls.Tests.Layouts;
 
 [TestFixture]
-[TestOf(typeof(TelegramLayoutSupplier))]
-public class TelegramLayoutSupplierTest
+[TestOf(typeof(ReplyTelegramLayoutSupplier))]
+public class ReplyTelegramLayoutSupplierTest
 {
     private readonly JsonLayoutParser _jsonLayoutParser = new();
-    private readonly ITelegramLayoutSupplier _supplier = new TelegramLayoutSupplier();
+    private readonly IReplyTelegramLayoutSupplier _supplier = new ReplyTelegramLayoutSupplier();
 
     [Test]
     public void GetMarkupTest()
