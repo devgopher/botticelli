@@ -1,4 +1,6 @@
-﻿namespace Botticelli.Framework.Controls.Layouts;
+﻿using Telegram.Bot.Requests;
+
+namespace Botticelli.Framework.Controls.Layouts;
 
 public interface ILayout
 {
