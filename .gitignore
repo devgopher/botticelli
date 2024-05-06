@@ -63,6 +63,8 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+# Botticelli specials
+botId
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
