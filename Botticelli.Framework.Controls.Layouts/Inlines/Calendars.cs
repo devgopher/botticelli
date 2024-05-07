@@ -21,5 +21,17 @@ public static class Calendars
         return calendar;
     }
 
+    public static InlineCalendar GetMonthsForward(string culture, int months = 1)
+        => GetMonthsForward(DateTime.Today, culture, months);
+
+    public static InlineCalendar GetMonthsForward(DateTime dt, string culture, int months = 1)
+        => Get(dt.AddMonths(months), culture);
+    
+    public static InlineCalendar GetMonthsBackward(string culture, int months = 1)
+        => GetMonthsForward(DateTime.Today, culture, -months);
+
+    public static InlineCalendar GetMonthsBackward(DateTime dt, string culture, int months = 1)
+        => GetMonthsForward(dt, culture, -months);
+
     private static ConcurrentDictionary<(int month, int year, string culture), InlineCalendar> Cache => new();
 }

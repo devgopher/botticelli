@@ -27,10 +27,19 @@ public class InlineCalendar : ILayout
 
     private void Init(DateTime dt, CultureInfo cultureInfo)
     {
+        // Displays a year in a header
+        var yearNameRow = new Row();
+        yearNameRow.Items.Add(new Item { Control = new Button() { Content = "<<"}});
+        yearNameRow.Items.Add(new Item { Control = new Text() { Content = dt.Year.ToString("YYYY")}});
+        yearNameRow.Items.Add(new Item { Control = new Button() { Content = ">>"}});
+        Rows.Add(yearNameRow);
+        
         // Displays a month name in a header
         var monthName = cultureInfo.DateTimeFormat.MonthNames[dt.Month];
         var monthNameRow = new Row();
+        monthNameRow.Items.Add(new Item { Control = new Button() { Content = "<<"}});
         monthNameRow.Items.Add(new Item { Control = new Text() { Content = monthName}});
+        monthNameRow.Items.Add(new Item { Control = new Button() { Content = ">>"}});
         Rows.Add(monthNameRow);
         
         // Displays a weekday names in a header
@@ -43,11 +52,10 @@ public class InlineCalendar : ILayout
         Rows.Add(weekDaysRow);
         
         // Displays dates
-        var calendar = CultureInfo.InvariantCulture.Calendar;
-        var days = calendar.GetDaysInMonth(dt.Year, dt.Month);
+        var days = CultureInfo.InvariantCulture.Calendar.GetDaysInMonth(dt.Year, dt.Month);
         var rows = new Row?[5];
 
-        for (var day = 0; day < days; ++day)
+        for (var day = 1; day <= days; ++day)
         {
             var cdt = new DateTime(day, dt.Month, dt.Year);
             var offset = (int)(day + cdt.DayOfWeek);
@@ -57,10 +65,11 @@ public class InlineCalendar : ILayout
             {
                 Control = new Button()
                 {
-                    Content = (day + 1).ToString()
+                    Content = day.ToString()
                 }
             };
 
+            rows[offset % rows.Length]!.Items[offset].Control!.Specials!["Value"]["Date"] = new DateTime(day: day, month: dt.Month, year: dt.Year);
         }
         
         foreach (var row in rows) 
