@@ -14,7 +14,5 @@ public class SendMessageRequest : BaseRequest<SendMessageRequest>
     public bool? ExpectPartialResponse { get; set; }
     public int? SequenceNumber { get; set; }
     public bool? IsFinal { get; set; }
-
-
     public Message Message { get; set; }
 }

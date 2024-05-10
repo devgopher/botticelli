@@ -44,10 +44,11 @@ public class BotUpdateHandler : IBotUpdateHandler
             var botticelliMessage = new Message(botMessage.MessageId.ToString())
             {
                 ChatIdInnerIdLinks = new Dictionary<string, List<string>>
-                    { { botMessage.Chat.Id.ToString(), new List<string> { botMessage.MessageId.ToString() } } },
-                ChatIds = new List<string> { botMessage.Chat.Id.ToString() },
+                    { { botMessage.Chat.Id.ToString(), [botMessage.MessageId.ToString()]} },
+                ChatIds = [botMessage.Chat.Id.ToString()],
                 Subject = string.Empty,
                 Body = botMessage.Text,
+                CallbackData = update.CallbackQuery?.Data ?? string.Empty,
                 Attachments = new List<BaseAttachment>(5),
                 From = new User
                 {

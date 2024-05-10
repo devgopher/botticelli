@@ -216,95 +216,81 @@ public class TelegramBot : BaseBot<TelegramBot>
                 if (request.Message?.Attachments == null) continue;
 
                 foreach (var attachment in request.Message
-                             .Attachments
-                             .Where(a => a is BinaryBaseAttachment)
-                             .Cast<BinaryBaseAttachment>())
+                                                  .Attachments
+                                                  .Where(a => a is BinaryBaseAttachment)
+                                                  .Cast<BinaryBaseAttachment>())
                 {
                     switch (attachment.MediaType)
                     {
                         case MediaType.Audio:
                             var audio = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                             message = await _client.SendAudioAsync(link.chatId,
-                                audio,
-                                caption: request.Message.Subject,
-                                parseMode: ParseMode.MarkdownV2,
-                                replyToMessageId: request.Message.ReplyToMessageUid != default
-                                    ? int.Parse(request.Message.ReplyToMessageUid)
-                                    : default,
-                                replyMarkup: replyMarkup,
-                                cancellationToken: token);
+                                                                   audio,
+                                                                   caption: request.Message.Subject,
+                                                                   parseMode: ParseMode.MarkdownV2,
+                                                                   replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                                   replyMarkup: replyMarkup,
+                                                                   cancellationToken: token);
                             AddChatIdInnerIdLink(response, link.chatId, message);
 
                             break;
                         case MediaType.Video:
                             var video = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                             message = await _client.SendVideoAsync(link.chatId,
-                                video,
-                                replyToMessageId: request.Message.ReplyToMessageUid != default
-                                    ? int.Parse(request.Message.ReplyToMessageUid)
-                                    : default,
-                                replyMarkup: replyMarkup,
-                                cancellationToken: token);
+                                                                   video,
+                                                                   replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                                   replyMarkup: replyMarkup,
+                                                                   cancellationToken: token);
                             AddChatIdInnerIdLink(response, link.chatId, message);
 
                             break;
                         case MediaType.Image:
                             var image = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                             message = await _client.SendPhotoAsync(link.chatId,
-                                image,
-                                replyToMessageId: request.Message.ReplyToMessageUid != default
-                                    ? int.Parse(request.Message.ReplyToMessageUid)
-                                    : default,
-                                replyMarkup: replyMarkup,
-                                cancellationToken: token);
+                                                                   image,
+                                                                   replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                                   replyMarkup: replyMarkup,
+                                                                   cancellationToken: token);
                             AddChatIdInnerIdLink(response, link.chatId, message);
 
                             break;
                         case MediaType.Voice:
                             var voice = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                             message = await _client.SendVoiceAsync(link.chatId,
-                                voice,
-                                caption: request.Message.Subject,
-                                parseMode: ParseMode.MarkdownV2,
-                                replyToMessageId: request.Message.ReplyToMessageUid != default
-                                    ? int.Parse(request.Message.ReplyToMessageUid)
-                                    : default,
-                                replyMarkup: replyMarkup,
-                                cancellationToken: token);
+                                                                   voice,
+                                                                   caption: request.Message.Subject,
+                                                                   parseMode: ParseMode.MarkdownV2,
+                                                                   replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                                   replyMarkup: replyMarkup,
+                                                                   cancellationToken: token);
                             AddChatIdInnerIdLink(response, link.chatId, message);
 
                             break;
                         case MediaType.Sticker:
-                            InputFile sticker = string.IsNullOrWhiteSpace(attachment.Url)
-                                ? new InputFileStream(attachment.Data.ToStream(), attachment.Name)
-                                : new InputFileUrl(attachment.Url);
+                            InputFile sticker = string.IsNullOrWhiteSpace(attachment.Url) ? new InputFileStream(attachment.Data.ToStream(), attachment.Name) : new InputFileUrl(attachment.Url);
 
                             message = await _client.SendStickerAsync(link.chatId,
-                                sticker,
-                                replyToMessageId: request.Message.ReplyToMessageUid != default
-                                    ? int.Parse(request.Message.ReplyToMessageUid)
-                                    : default,
-                                replyMarkup: replyMarkup,
-                                cancellationToken: token);
+                                                                     sticker,
+                                                                     replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                                     replyMarkup: replyMarkup,
+                                                                     cancellationToken: token);
                             AddChatIdInnerIdLink(response, link.chatId, message);
 
                             break;
                         case MediaType.Contact:
                             await SendContact(request,
-                                response,
-                                token,
-                                replyMarkup);
+                                              response,
+                                              token,
+                                              replyMarkup);
 
                             break;
                         case MediaType.Document:
                             var doc = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                             message = await _client.SendDocumentAsync(link.chatId,
-                                doc,
-                                replyToMessageId: request.Message.ReplyToMessageUid != default
-                                    ? int.Parse(request.Message.ReplyToMessageUid)
-                                    : default,
-                                replyMarkup: replyMarkup,
-                                cancellationToken: token);
+                                                                      doc,
+                                                                      replyToMessageId: request.Message.ReplyToMessageUid != default ? int.Parse(request.Message.ReplyToMessageUid) : default,
+                                                                      replyMarkup: replyMarkup,
+                                                                      cancellationToken: token);
                             AddChatIdInnerIdLink(response, link.chatId, message);
 
                             break;

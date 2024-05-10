@@ -45,11 +45,13 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
                 return;
             }
 
-            message.Body ??= string.Empty;
+            // if we've any callback data, lets assume , that it is a command, if not - see in a message body
+            var body = !string.IsNullOrWhiteSpace(message.CallbackData) ? message.CallbackData : !string.IsNullOrWhiteSpace(message.Body) 
+                    ? message.Body : string.Empty;
 
-            if (SimpleCommandRegex().IsMatch(message.Body))
+            if (SimpleCommandRegex().IsMatch(body))
             {
-                var match = SimpleCommandRegex().Matches(message.Body)
+                var match = SimpleCommandRegex().Matches(body)
                     .FirstOrDefault();
 
                 if (match == default) return;
@@ -64,9 +66,9 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
 
                 SendMetric(MetricNames.CommandReceived);
             }
-            else if (ArgsCommandRegex().IsMatch(message.Body))
+            else if (ArgsCommandRegex().IsMatch(body))
             {
-                var match = ArgsCommandRegex().Matches(message.Body)
+                var match = ArgsCommandRegex().Matches(body)
                     .FirstOrDefault();
 
                 if (match == default) return;

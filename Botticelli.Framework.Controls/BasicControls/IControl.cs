@@ -9,10 +9,15 @@ public interface IControl
     /// Content for a control
     /// </summary>
     public string? Content { get; set; }
-    
+
+    /// <summary>
+    /// Common control params
+    /// </summary>
+    public Dictionary<string, string>? Params { get; set; }
+
     /// <summary>
     /// Messenger-specific parameters
     /// <MessengerName, <Key, Value>>
     /// </summary>
-    public Dictionary<string, Dictionary<string, object>>? Specials { get; set; }
+    public Dictionary<string, Dictionary<string, object>>? MessengerSpecificParams { get; set; }
 }

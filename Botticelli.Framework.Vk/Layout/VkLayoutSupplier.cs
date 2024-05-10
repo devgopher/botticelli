@@ -23,7 +23,7 @@ public class VkLayoutSupplier : IVkLayoutSupplier
             keyboardElement.AddRange(layoutRow.Items.Where(i => i.Control != default)
                 .Select(item =>
             {
-                var controlParams = item.Control.Specials.ContainsKey("VK") ? item.Control?.Specials["VK"] : new Dictionary<string, object>();
+                var controlParams = item.Control.MessengerSpecificParams.ContainsKey("VK") ? item.Control?.MessengerSpecificParams["VK"] : new Dictionary<string, object>();
                 
                 var action = new Action
                 {

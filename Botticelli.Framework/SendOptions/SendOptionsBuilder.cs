@@ -16,10 +16,7 @@ public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
     {
     }
 
-    protected SendOptionsBuilder(T innerObject)
-    {
-        _innerObject = innerObject;
-    }
+    protected SendOptionsBuilder(T innerObject) => _innerObject = innerObject;
 
     public ISendOptionsBuilder<T> Create(params object[] args)
     {
@@ -27,7 +24,8 @@ public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
 
         var constructors = typeof(T)
             .GetConstructors()
-            .Where(c => c.IsPublic);
+            .Where(c => c.IsPublic)
+            .ToArray();
 
         // no params? ok => let's seek a parameterless constructor!
         if ((args == null || !args.Any()) && constructors.Any(c => !c.GetParameters().Any()))
