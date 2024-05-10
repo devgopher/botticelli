@@ -215,6 +215,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Contro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Controls.Layouts", "Botticelli.Framework.Controls.Layouts\Botticelli.Framework.Controls.Layouts.csproj", "{C693D17D-DEB1-43E9-9EE4-031D14696065}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramInlineLayoutsSample", "Samples\TelegramInlineLayoutsSample\TelegramInlineLayoutsSample.csproj", "{2DF28873-A172-42EB-8FBD-324DF8AD9323}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -417,6 +419,10 @@ Global
 		{C693D17D-DEB1-43E9-9EE4-031D14696065}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C693D17D-DEB1-43E9-9EE4-031D14696065}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C693D17D-DEB1-43E9-9EE4-031D14696065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DF28873-A172-42EB-8FBD-324DF8AD9323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DF28873-A172-42EB-8FBD-324DF8AD9323}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DF28873-A172-42EB-8FBD-324DF8AD9323}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DF28873-A172-42EB-8FBD-324DF8AD9323}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -496,6 +502,7 @@ Global
 		{70EB3FE2-9EB5-4B62-9405-71D1A332B0FD} = {346A18CA-EB1F-483B-8BC3-EDF250DA72E6}
 		{54E9BED2-9760-4B78-966F-17500C29D323} = {41AA926F-88C1-4FC4-8F04-6FBA3CA6C741}
 		{C693D17D-DEB1-43E9-9EE4-031D14696065} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
+		{2DF28873-A172-42EB-8FBD-324DF8AD9323} = {2AD59714-541D-4794-9216-6EAB25F271DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

@@ -14,6 +14,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj" />
+      <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
       <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
       <ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj" />
     </ItemGroup>

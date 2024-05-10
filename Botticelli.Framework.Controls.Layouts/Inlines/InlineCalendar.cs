@@ -1,5 +1,6 @@
 using System.Globalization;
 using Botticelli.Framework.Controls.BasicControls;
+using Botticelli.Framework.Controls.Layouts.Commands.InlineCalendar;
 
 namespace Botticelli.Framework.Controls.Layouts.Inlines;
 
@@ -49,6 +50,7 @@ public class InlineCalendar : ILayout
         {
             {"CallbackData", $"/MonthForward {dt.ToLongDateString()}"}
         }}});
+        
         Rows.Add(monthNameRow);
 
         // Displays a weekday names in a header

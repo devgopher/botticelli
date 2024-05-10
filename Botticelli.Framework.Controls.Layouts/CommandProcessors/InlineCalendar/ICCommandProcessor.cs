@@ -43,13 +43,13 @@ public class ICCommandProcessor<TCommand, TReplyMarkup> : CommandProcessor<TComm
 
         if (!DateTime.TryParse(args, out var dt)) return;
         
-        if (typeof(TCommand) == typeof(MonthBackward))
+        if (typeof(TCommand) == typeof(MonthBackwardCommand))
             calendar = Calendars.GetMonthsForward(dt, CultureInfo.InvariantCulture.Name, -1);
-        else if (typeof(TCommand) == typeof(MonthForward))
+        else if (typeof(TCommand) == typeof(MonthForwardCommand))
             calendar = Calendars.GetMonthsForward(dt, CultureInfo.InvariantCulture.Name, 1);
-        if (typeof(TCommand) == typeof(YearBackward))
+        if (typeof(TCommand) == typeof(YearBackwardCommand))
             calendar = Calendars.GetMonthsForward(dt, CultureInfo.InvariantCulture.Name, -12);
-        else if (typeof(TCommand) == typeof(YearForward))
+        else if (typeof(TCommand) == typeof(YearForwardCommand))
             calendar = Calendars.GetMonthsForward(dt, CultureInfo.InvariantCulture.Name, 12);
         else
             calendar = Calendars.Get(DateTime.Now, CultureInfo.InvariantCulture.Name);
