@@ -14,6 +14,10 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInlineCalendar<TReplyMarkup, TLayoutSupplier>(this IServiceCollection services)
             where TLayoutSupplier : class, ILayoutSupplier<TReplyMarkup>
         => services.AddScoped<ILayoutSupplier<TReplyMarkup>, TLayoutSupplier>()
+                   .AddScoped<ICCommandProcessor<MonthForwardCommand, InlineKeyboardMarkup>>()
+                   .AddScoped<ICCommandProcessor<MonthBackwardCommand, InlineKeyboardMarkup>>()
+                   .AddScoped<ICCommandProcessor<YearForwardCommand, InlineKeyboardMarkup>>()
+                   .AddScoped<ICCommandProcessor<YearBackwardCommand, InlineKeyboardMarkup>>()
                    .AddScoped<ICommandValidator<YearForwardCommand>, PassValidator<YearForwardCommand>>()
                    .AddScoped<ICommandValidator<YearBackwardCommand>, PassValidator<YearBackwardCommand>>()
                    .AddScoped<ICommandValidator<MonthForwardCommand>, PassValidator<MonthForwardCommand>>()

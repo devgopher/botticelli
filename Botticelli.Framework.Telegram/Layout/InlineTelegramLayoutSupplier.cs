@@ -16,7 +16,10 @@ public class InlineTelegramLayoutSupplier : IInlineTelegramLayoutSupplier
         foreach (var layoutRow in layout.Rows)
         {
             var keyboardElement = new List<InlineKeyboardButton>();
-            keyboardElement.AddRange(layoutRow.Items.Select(item => new InlineKeyboardButton(item?.Control?.Content)));
+            keyboardElement.AddRange(layoutRow.Items.Select(item => new InlineKeyboardButton(item.Control?.Content!)
+            {
+                CallbackData = item.Control!.Params!.ContainsKey("CallbackData") ? item.Control?.Params["CallbackData"]  : "none"
+            }));
             
             elems.Add(keyboardElement);
         }

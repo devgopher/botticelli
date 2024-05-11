@@ -147,7 +147,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             List<(string chatId, string innerId)> pairs = new();
 
             foreach (var link in request.Message.ChatIdInnerIdLinks)
-                pairs.AddRange(link.Value.Select(innerId => (innerId, link.Key)));
+                pairs.AddRange(link.Value.Select(innerId => (link.Key, innerId)));
 
             var chatIdOnly = request.Message.ChatIds.Where(c => !request.Message.ChatIdInnerIdLinks.ContainsKey(c));
             pairs.AddRange(chatIdOnly.Select(c => (c, string.Empty)));

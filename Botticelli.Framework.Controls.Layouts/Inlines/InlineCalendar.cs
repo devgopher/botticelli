@@ -17,11 +17,15 @@ public class InlineCalendar : ILayout
         DayOfWeek.Saturday
     ];
 
-    public InlineCalendar(DateTime dt, CultureInfo cultureInfo) => Init(dt, cultureInfo);
+    public InlineCalendar(DateTime dt, CultureInfo cultureInfo)
+    {
+        Rows = new List<Row>(5);
+        Init(dt, cultureInfo);
+    }
 
     public void AddRow(Row row) => Rows.Add(row);
 
-    public IList<Row> Rows => new List<Row>(6);
+    public IList<Row> Rows { get; }  
 
     private void Init(DateTime dt, CultureInfo cultureInfo)
     {
@@ -31,7 +35,7 @@ public class InlineCalendar : ILayout
         {
             {"CallbackData", $"/YearBackward {dt.ToLongDateString()}"}
         }}});
-        yearNameRow.Items.Add(new Item {Control = new Text {Content = dt.Year.ToString("YYYY")}});
+        yearNameRow.Items.Add(new Item {Control = new Button() {Content = dt.Year.ToString("YYYY")}});
         yearNameRow.Items.Add(new Item {Control = new Button {Content = ">>", Params = new Dictionary<string, string>()
         {
             {"CallbackData", $"/YearForward {dt.ToLongDateString()}"}
@@ -45,7 +49,7 @@ public class InlineCalendar : ILayout
         {
             {"CallbackData", $"/MonthBackward {dt.ToLongDateString()}"}
         }}});
-        monthNameRow.Items.Add(new Item {Control = new Text {Content = monthName}});
+        monthNameRow.Items.Add(new Item {Control = new Button() {Content = monthName}});
         monthNameRow.Items.Add(new Item {Control = new Button {Content = ">>", Params = new Dictionary<string, string>()
         {
             {"CallbackData", $"/MonthForward {dt.ToLongDateString()}"}
@@ -59,20 +63,25 @@ public class InlineCalendar : ILayout
         for (var i = 0; i < Days.Length; ++i) sortedDays[i] = Days[(fdw + i) % Days.Length];
 
         var weekDaysRow = new Row();
-        weekDaysRow.Items.AddRange(sortedDays.Select(sd => new Item {Control = new Text {Content = sd.ToString("G")}}));
+        weekDaysRow.Items.AddRange(sortedDays.Select(sd => new Item {Control = new Button() {Content = sd.ToString("G")}}));
         Rows.Add(weekDaysRow);
 
         // Displays dates
-        var days = CultureInfo.InvariantCulture.Calendar.GetDaysInMonth(dt.Year, dt.Month);
+        var days = CultureInfo.InvariantCulture.Calendar.GetDaysInMonth(year: dt.Year, month: dt.Month);
+       
         var rows = new Row?[5];
 
         for (var day = 1; day <= days; ++day)
         {
-            var cdt = new DateTime(day, dt.Month, dt.Year);
-            var offset = (int) (day + cdt.DayOfWeek);
+            var dayOfWeek = (int)CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(new DateTime(year: dt.Year, month: dt.Month, day: 1));
+            var offset = dayOfWeek - 1;
+            var rowNum = (day + offset) / Days.Length;
+            
+            rows[rowNum] ??= new Row();
 
-            rows[offset % rows.Length] ??= new Row();
-            rows[offset % rows.Length]!.Items[offset] = new Item
+            PreloadItems(rows, rowNum);
+            
+            rows[rowNum]!.Items[(day + offset) % Days.Length] = new Item
             {
                 Control = new Button
                 {
@@ -80,9 +89,29 @@ public class InlineCalendar : ILayout
                 }
             };
 
-            rows[offset % rows.Length]!.Items[offset].Control!.MessengerSpecificParams!["Value"]["Date"] = new DateTime(day: day, month: dt.Month, year: dt.Year);
+            rows[rowNum]!.Items[(day + offset) % Days.Length].Control!.Params!["Callback"] 
+                    = new DateTime(day: day, month: dt.Month, year: dt.Year).ToLongDateString();
         }
 
-        foreach (var row in rows) Rows.Add(row!);
+        foreach (var row in rows) 
+            Rows.Add(row!);
+    }
+
+    private static void PreloadItems(Row?[] rows, int rowNum)
+    {
+        var cnt = rows[rowNum]!.Items.Count;
+
+        if (cnt >= Days.Length) return;
+
+        for (var i = cnt; i < Days.Length; ++i)
+        {
+            rows[rowNum]!.Items.Add(new Item
+            {
+                Control = new Button()
+                {
+                    Content = string.Empty
+                }
+            });
+        }
     }
 }
