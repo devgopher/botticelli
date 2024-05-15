@@ -29,10 +29,10 @@ builder.Services.AddTelegramBot(builder.Configuration,
                                         .Set(s => s.Name = "test_bot"))
        .AddLogging(cfg => cfg.AddNLog())
        .AddBotCommand<GetCalendarCommand, GetCalendarCommandProcessor, PassValidator<GetCalendarCommand>>()
-       .AddInlineCalendar<InlineKeyboardMarkup, InlineTelegramLayoutSupplier>();
+       .AddInlineCalendar<InlineKeyboardMarkup, InlineTelegramLayoutSupplier, DateChosenCommandProcessor>();
 
 var app = builder.Build();
-app.Services.UseInlineCalendar<TelegramBot>()
+app.Services.UseInlineCalendar<TelegramBot, DateChosenCommandProcessor>()
    .RegisterBotCommand<GetCalendarCommand, GetCalendarCommandProcessor, TelegramBot>();
 
 app.Run();

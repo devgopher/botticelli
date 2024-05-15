@@ -38,7 +38,8 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
                 message.Attachments == default &&
                 message.Location == default &&
                 message.Contact == default &&
-                message.Poll == default)
+                message.Poll == default &&
+                message.CallbackData == default)
             {
                 _logger.LogWarning("Message {msgId} is empty! Skipping...", message.Uid);
 

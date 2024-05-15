@@ -38,44 +38,58 @@ public class BotUpdateHandler : IBotUpdateHandler
             _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
             var botMessage = update.Message;
+            Message botticelliMessage;
 
-            if (botMessage == null) return;
-
-            var botticelliMessage = new Message(botMessage.MessageId.ToString())
+            if (botMessage == null)
             {
-                ChatIdInnerIdLinks = new Dictionary<string, List<string>>
-                    { { botMessage.Chat.Id.ToString(), [botMessage.MessageId.ToString()]} },
-                ChatIds = [botMessage.Chat.Id.ToString()],
-                Subject = string.Empty,
-                Body = botMessage.Text,
-                CallbackData = update.CallbackQuery?.Data ?? string.Empty,
-                Attachments = new List<BaseAttachment>(5),
-                From = new User
-                {
-                    Id = botMessage.From?.Id.ToString(),
-                    Name = botMessage.From?.FirstName,
-                    Surname = botMessage.From?.LastName,
-                    Info = string.Empty,
-                    IsBot = botMessage.From?.IsBot,
-                    NickName = botMessage.From?.Username
-                },
-                ForwardedFrom = new User
-                {
-                    Id = botMessage.ForwardFrom?.Id.ToString(),
-                    Name = botMessage.ForwardFrom?.FirstName,
-                    Surname = botMessage.ForwardFrom?.LastName,
-                    Info = string.Empty,
-                    IsBot = botMessage.ForwardFrom?.IsBot,
-                    NickName = botMessage.ForwardFrom?.Username
-                },
-                Location = botMessage.Location != null
-                    ? new GeoLocation
+                if (update.CallbackQuery != null)
+                    botticelliMessage = new Message()
                     {
-                        Latitude = (decimal)botMessage.Location?.Latitude,
-                        Longitude = (decimal)botMessage.Location?.Longitude
-                    }
-                    : null
-            };
+                        ChatIdInnerIdLinks = new Dictionary<string, List<string>>
+                                {{update.CallbackQuery?.Message.Chat?.Id.ToString(), [update.CallbackQuery.Message?.MessageId.ToString()]}},
+                        ChatIds = [update.CallbackQuery?.Message.Chat?.Id.ToString()],
+                        CallbackData = update.CallbackQuery?.Data ?? string.Empty
+                    };
+                else
+                    return;
+            }
+            else
+            {
+                botticelliMessage = new Message(botMessage.MessageId.ToString())
+                {
+                    ChatIdInnerIdLinks = new Dictionary<string, List<string>>
+                            {{botMessage.Chat.Id.ToString(), [botMessage.MessageId.ToString()]}},
+                    ChatIds = [botMessage.Chat.Id.ToString()],
+                    Subject = string.Empty,
+                    Body = botMessage?.Text ?? string.Empty,
+                    Attachments = new List<BaseAttachment>(5),
+                    From = new User
+                    {
+                        Id = botMessage.From?.Id.ToString(),
+                        Name = botMessage.From?.FirstName,
+                        Surname = botMessage.From?.LastName,
+                        Info = string.Empty,
+                        IsBot = botMessage.From?.IsBot,
+                        NickName = botMessage.From?.Username
+                    },
+                    ForwardedFrom = new User
+                    {
+                        Id = botMessage.ForwardFrom?.Id.ToString(),
+                        Name = botMessage.ForwardFrom?.FirstName,
+                        Surname = botMessage.ForwardFrom?.LastName,
+                        Info = string.Empty,
+                        IsBot = botMessage.ForwardFrom?.IsBot,
+                        NickName = botMessage.ForwardFrom?.Username
+                    },
+                    Location = botMessage.Location != null ?
+                            new GeoLocation
+                            {
+                                Latitude = (decimal) botMessage.Location?.Latitude,
+                                Longitude = (decimal) botMessage.Location?.Longitude
+                            } :
+                            null
+                };
+            }
 
             await Process(botticelliMessage, cancellationToken);
 

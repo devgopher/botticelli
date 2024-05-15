@@ -26,10 +26,8 @@ public class ICCommandProcessor<TCommand, TReplyMarkup> : CommandProcessor<TComm
                               ICommandValidator<TCommand> validator,
                               ILayoutSupplier<TReplyMarkup> layoutSupplier,
                               MetricsProcessor metricsProcessor) 
-            : base(logger, validator, metricsProcessor)
-    {
-        _layoutSupplier = layoutSupplier;
-    }
+            : base(logger, validator, metricsProcessor) =>
+            _layoutSupplier = layoutSupplier;
 
     protected override Task InnerProcessContact(Message message, string args, CancellationToken token) => throw new NotImplementedException();
 
@@ -47,7 +45,7 @@ public class ICCommandProcessor<TCommand, TReplyMarkup> : CommandProcessor<TComm
             calendar = Calendars.GetMonthsForward(dt, CultureInfo.InvariantCulture.Name, -1);
         else if (typeof(TCommand) == typeof(MonthForwardCommand))
             calendar = Calendars.GetMonthsForward(dt, CultureInfo.InvariantCulture.Name, 1);
-        if (typeof(TCommand) == typeof(YearBackwardCommand))
+        else if (typeof(TCommand) == typeof(YearBackwardCommand))
             calendar = Calendars.GetMonthsForward(dt, CultureInfo.InvariantCulture.Name, -12);
         else if (typeof(TCommand) == typeof(YearForwardCommand))
             calendar = Calendars.GetMonthsForward(dt, CultureInfo.InvariantCulture.Name, 12);
@@ -62,6 +60,7 @@ public class ICCommandProcessor<TCommand, TReplyMarkup> : CommandProcessor<TComm
                                        ExpectPartialResponse = false,
                                        Message = new Message
                                        {
+                                           Body = message.CallbackData,
                                            Uid = message.Uid,
                                            ChatIds = message.ChatIds
                                        }

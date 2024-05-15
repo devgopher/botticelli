@@ -31,28 +31,28 @@ public class InlineCalendar : ILayout
     {
         // Displays a year in a header
         var yearNameRow = new Row();
-        yearNameRow.Items.Add(new Item {Control = new Button {Content = "<<", Params = new Dictionary<string, string>()
+        yearNameRow.Items.Add(new Item {Control = new Button {Content = "<<", Params = new Dictionary<string, string>
         {
-            {"CallbackData", $"/YearBackward {dt.ToLongDateString()}"}
+            {"CallbackData", $"/YearBackward {dt:dd/MM/yyyy}"}
         }}});
-        yearNameRow.Items.Add(new Item {Control = new Button() {Content = dt.Year.ToString("YYYY")}});
-        yearNameRow.Items.Add(new Item {Control = new Button {Content = ">>", Params = new Dictionary<string, string>()
+        yearNameRow.Items.Add(new Item {Control = new Button {Content = dt.ToString("yyyy")}});
+        yearNameRow.Items.Add(new Item {Control = new Button {Content = ">>", Params = new Dictionary<string, string>
         {
-            {"CallbackData", $"/YearForward {dt.ToLongDateString()}"}
+            {"CallbackData", $"/YearForward {dt:dd/MM/yyyy}"}
         }}});
         Rows.Add(yearNameRow);
 
         // Displays a month name in a header
-        var monthName = cultureInfo.DateTimeFormat.MonthNames[dt.Month];
+        var monthName = cultureInfo.DateTimeFormat.MonthNames[dt.Month-1];
         var monthNameRow = new Row();
-        monthNameRow.Items.Add(new Item {Control = new Button {Content = "<<", Params = new Dictionary<string, string>()
+        monthNameRow.Items.Add(new Item {Control = new Button {Content = "<<", Params = new Dictionary<string, string>
         {
-            {"CallbackData", $"/MonthBackward {dt.ToLongDateString()}"}
+            {"CallbackData", $"/MonthBackward {dt:dd/MM/yyyy}"}
         }}});
-        monthNameRow.Items.Add(new Item {Control = new Button() {Content = monthName}});
-        monthNameRow.Items.Add(new Item {Control = new Button {Content = ">>", Params = new Dictionary<string, string>()
+        monthNameRow.Items.Add(new Item {Control = new Button {Content = monthName}});
+        monthNameRow.Items.Add(new Item {Control = new Button {Content = ">>", Params = new Dictionary<string, string>
         {
-            {"CallbackData", $"/MonthForward {dt.ToLongDateString()}"}
+            {"CallbackData", $"/MonthForward {dt:dd/MM/yyyy}"}
         }}});
         
         Rows.Add(monthNameRow);
@@ -63,13 +63,13 @@ public class InlineCalendar : ILayout
         for (var i = 0; i < Days.Length; ++i) sortedDays[i] = Days[(fdw + i) % Days.Length];
 
         var weekDaysRow = new Row();
-        weekDaysRow.Items.AddRange(sortedDays.Select(sd => new Item {Control = new Button() {Content = sd.ToString("G")}}));
+        weekDaysRow.Items.AddRange(sortedDays.Select(sd => new Item {Control = new Button {Content = sd.ToString("G")}}));
         Rows.Add(weekDaysRow);
 
         // Displays dates
         var days = CultureInfo.InvariantCulture.Calendar.GetDaysInMonth(year: dt.Year, month: dt.Month);
        
-        var rows = new Row?[5];
+        var rows = new Row?[6];
 
         for (var day = 1; day <= days; ++day)
         {
@@ -85,12 +85,14 @@ public class InlineCalendar : ILayout
             {
                 Control = new Button
                 {
-                    Content = day.ToString()
+                    Content = day.ToString(),
+                    CallbackData = $"/DateChosen {new DateTime(day: day, month: dt.Month, year: dt.Year):dd/MM/yyyy}"
                 }
             };
 
-            rows[rowNum]!.Items[(day + offset) % Days.Length].Control!.Params!["Callback"] 
-                    = new DateTime(day: day, month: dt.Month, year: dt.Year).ToLongDateString();
+            var weekDayOffset = (day + offset) % Days.Length;
+            rows[rowNum]!.Items[weekDayOffset].Control!.CallbackData
+                    = $"/DateChosen {new DateTime(day: day, month: dt.Month, year: dt.Year):dd/MM/yyyy}";
         }
 
         foreach (var row in rows) 
@@ -107,9 +109,9 @@ public class InlineCalendar : ILayout
         {
             rows[rowNum]!.Items.Add(new Item
             {
-                Control = new Button()
+                Control = new Button
                 {
-                    Content = string.Empty
+                    Content = "-"
                 }
             });
         }

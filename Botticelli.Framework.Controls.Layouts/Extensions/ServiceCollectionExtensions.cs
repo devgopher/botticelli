@@ -1,3 +1,4 @@
+using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Controls.Layouts.CommandProcessors.InlineCalendar;
 using Botticelli.Framework.Controls.Layouts.Commands.InlineCalendar;
@@ -11,22 +12,27 @@ namespace Botticelli.Framework.Controls.Layouts.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInlineCalendar<TReplyMarkup, TLayoutSupplier>(this IServiceCollection services)
+    public static IServiceCollection AddInlineCalendar<TReplyMarkup, TLayoutSupplier, TDateChosenCommandProcessor>(this IServiceCollection services)
             where TLayoutSupplier : class, ILayoutSupplier<TReplyMarkup>
+            where TDateChosenCommandProcessor : CommandProcessor<DateChosenCommand>
         => services.AddScoped<ILayoutSupplier<TReplyMarkup>, TLayoutSupplier>()
                    .AddScoped<ICCommandProcessor<MonthForwardCommand, InlineKeyboardMarkup>>()
                    .AddScoped<ICCommandProcessor<MonthBackwardCommand, InlineKeyboardMarkup>>()
                    .AddScoped<ICCommandProcessor<YearForwardCommand, InlineKeyboardMarkup>>()
                    .AddScoped<ICCommandProcessor<YearBackwardCommand, InlineKeyboardMarkup>>()
+                   .AddScoped<TDateChosenCommandProcessor>()
                    .AddScoped<ICommandValidator<YearForwardCommand>, PassValidator<YearForwardCommand>>()
                    .AddScoped<ICommandValidator<YearBackwardCommand>, PassValidator<YearBackwardCommand>>()
                    .AddScoped<ICommandValidator<MonthForwardCommand>, PassValidator<MonthForwardCommand>>()
-                   .AddScoped<ICommandValidator<MonthBackwardCommand>, PassValidator<MonthBackwardCommand>>();
+                   .AddScoped<ICommandValidator<MonthBackwardCommand>, PassValidator<MonthBackwardCommand>>()
+                   .AddScoped<ICommandValidator<DateChosenCommand>, PassValidator<DateChosenCommand>>();
 
-    public static IServiceProvider UseInlineCalendar<TBot>(this IServiceProvider sp)
+    public static IServiceProvider UseInlineCalendar<TBot, TDateChosenCommandProcessor>(this IServiceProvider sp)
+            where TDateChosenCommandProcessor : CommandProcessor<DateChosenCommand>
             where TBot : IBot<TBot> =>
             sp.RegisterBotCommand<MonthForwardCommand, ICCommandProcessor<MonthForwardCommand, InlineKeyboardMarkup>, TBot>()
               .RegisterBotCommand<MonthBackwardCommand, ICCommandProcessor<MonthBackwardCommand, InlineKeyboardMarkup>, TBot>()
               .RegisterBotCommand<YearForwardCommand, ICCommandProcessor<YearForwardCommand, InlineKeyboardMarkup>, TBot>()
-              .RegisterBotCommand<YearBackwardCommand, ICCommandProcessor<YearBackwardCommand, InlineKeyboardMarkup>, TBot>();
+              .RegisterBotCommand<YearBackwardCommand, ICCommandProcessor<YearBackwardCommand, InlineKeyboardMarkup>, TBot>()
+              .RegisterBotCommand<DateChosenCommand, TDateChosenCommandProcessor, TBot>();
 }

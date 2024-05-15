@@ -11,6 +11,11 @@ public interface IControl
     public string? Content { get; set; }
 
     /// <summary>
+    /// Callback data
+    /// </summary>
+    public string? CallbackData { get; set; }
+    
+    /// <summary>
     /// Common control params
     /// </summary>
     public Dictionary<string, string>? Params { get; set; }
