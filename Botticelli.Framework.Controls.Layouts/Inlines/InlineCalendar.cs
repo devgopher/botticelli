@@ -1,6 +1,5 @@
 using System.Globalization;
 using Botticelli.Framework.Controls.BasicControls;
-using Botticelli.Framework.Controls.Layouts.Commands.InlineCalendar;
 
 namespace Botticelli.Framework.Controls.Layouts.Inlines;
 
@@ -25,7 +24,7 @@ public class InlineCalendar : ILayout
 
     public void AddRow(Row row) => Rows.Add(row);
 
-    public IList<Row> Rows { get; }  
+    public IList<Row>? Rows { get; }  
 
     private void Init(DateTime dt, CultureInfo cultureInfo)
     {

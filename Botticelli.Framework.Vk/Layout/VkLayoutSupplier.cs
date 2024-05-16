@@ -23,12 +23,13 @@ public class VkLayoutSupplier : IVkLayoutSupplier
             keyboardElement.AddRange(layoutRow.Items.Where(i => i.Control != default)
                 .Select(item =>
             {
-                var controlParams = item.Control.MessengerSpecificParams.ContainsKey("VK") ? item.Control?.MessengerSpecificParams["VK"] : new Dictionary<string, object>();
+                var controlParams = item.Control.MessengerSpecificParams.ContainsKey("VK") ? item.Control?.MessengerSpecificParams["VK"] 
+                        : new Dictionary<string, object>();
                 
                 var action = new Action
                 {
                     Type = item.Control is TextButton ? "text" : "button",
-                    Payload = "{\"button\": \"" + layout.Rows.IndexOf(layoutRow) + "\"}",
+                    Payload = $"{{\"button\": \"{layout.Rows.IndexOf(layoutRow)}\"}}",
                     Label = item.Control.Content,
                     AppId = controlParams.ReturnValueOrDefault<int>("AppId"),
                     OwnerId = controlParams.ReturnValueOrDefault<int>("OwnerId"),
