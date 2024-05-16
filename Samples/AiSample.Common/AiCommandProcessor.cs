@@ -47,14 +47,6 @@ public class AiCommandProcessor<TReplyMarkup> : CommandProcessor<AiCommand> wher
         };
     }
 
-    protected override async Task InnerProcessContact(Message message, string argsString, CancellationToken token)
-    {
-    }
-
-    protected override async Task InnerProcessPoll(Message message, string argsString, CancellationToken token)
-    {
-    }
-
     protected override async Task InnerProcessLocation(Message message, string argsString, CancellationToken token)
     {
         message.Body =

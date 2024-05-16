@@ -29,12 +29,6 @@ public class ICCommandProcessor<TCommand, TReplyMarkup> : CommandProcessor<TComm
             : base(logger, validator, metricsProcessor) =>
             _layoutSupplier = layoutSupplier;
 
-    protected override Task InnerProcessContact(Message message, string args, CancellationToken token) => throw new NotImplementedException();
-
-    protected override Task InnerProcessPoll(Message message, string args, CancellationToken token) => throw new NotImplementedException();
-
-    protected override Task InnerProcessLocation(Message message, string args, CancellationToken token) => throw new NotImplementedException();
-
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
         Inlines.InlineCalendar calendar;

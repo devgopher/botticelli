@@ -35,12 +35,6 @@ public class GetCalendarCommandProcessor : CommandProcessor<GetCalendarCommand>
         _options = SendOptionsBuilder<InlineKeyboardMarkup>.CreateBuilder(markup);
     }
 
-    protected override Task InnerProcessContact(Message message, string args, CancellationToken token) => throw new NotImplementedException();
-
-    protected override Task InnerProcessPoll(Message message, string args, CancellationToken token) => throw new NotImplementedException();
-
-    protected override Task InnerProcessLocation(Message message, string args, CancellationToken token) => throw new NotImplementedException();
-
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
         var request = new SendMessageRequest

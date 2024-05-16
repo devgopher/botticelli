@@ -136,9 +136,9 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         }
     }
 
-    protected abstract Task InnerProcessContact(Message message, string args, CancellationToken token);
-    protected abstract Task InnerProcessPoll(Message message, string args, CancellationToken token);
-    protected abstract Task InnerProcessLocation(Message message, string args, CancellationToken token);
+    protected virtual Task InnerProcessContact(Message message, string args, CancellationToken token) => Task.CompletedTask;
+    protected virtual Task InnerProcessPoll(Message message, string args, CancellationToken token) => Task.CompletedTask;
+    protected virtual Task InnerProcessLocation(Message message, string args, CancellationToken token) => Task.CompletedTask;
     protected abstract Task InnerProcess(Message message, string args, CancellationToken token);
    
     [GeneratedRegex("\\/([a-zA-Z0-9]*)$")]

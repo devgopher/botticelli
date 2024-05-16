@@ -11,22 +11,13 @@ using Botticelli.Shared.ValueObjects;
 
 namespace TelegramInlineLayoutsSample.Handlers;
 
-public class DateChosenCommandProcessor : CommandProcessor<DateChosenCommand>
+public class DateChosenCommandProcessor(
+        IBot bot,
+        ICommandValidator<DateChosenCommand> validator,
+        MetricsProcessor metricsProcessor,
+        ILogger<GetCalendarCommandProcessor> logger)
+        : CommandProcessor<DateChosenCommand>(logger, validator, metricsProcessor)
 {
-    private readonly IBot _bot;
-
-    public DateChosenCommandProcessor(IBot bot,
-                                      ICommandValidator<DateChosenCommand> validator,
-                                      MetricsProcessor metricsProcessor,
-                                      ILogger<GetCalendarCommandProcessor> logger) : base(logger, validator, metricsProcessor) =>
-            _bot = bot;
-
-    protected override Task InnerProcessContact(Message message, string args, CancellationToken token) => throw new NotImplementedException();
-
-    protected override Task InnerProcessPoll(Message message, string args, CancellationToken token) => throw new NotImplementedException();
-
-    protected override Task InnerProcessLocation(Message message, string args, CancellationToken token) => throw new NotImplementedException();
-
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
         var request = new SendMessageRequest
@@ -37,6 +28,6 @@ public class DateChosenCommandProcessor : CommandProcessor<DateChosenCommand>
 
         request.Message.Body = message.CallbackData?.Replace("/DateChosen ", string.Empty) ?? string.Empty;
 
-        await _bot.SendMessageAsync(request, token);
+        await bot.SendMessageAsync(request, token);
     }
 }
