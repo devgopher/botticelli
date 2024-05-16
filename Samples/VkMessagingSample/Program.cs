@@ -21,9 +21,6 @@ var builder = WebApplication.CreateBuilder(args);
 var settings = builder.Configuration
     .GetSection(nameof(SampleSettings))
     .Get<SampleSettings>();
-var vkSettings = builder.Configuration
-    .GetSection(nameof(VkBotSettings))
-    .Get<VkBotSettings>();
 
 builder.Services
        .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))

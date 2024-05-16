@@ -1,4 +1,5 @@
-﻿using Botticelli.Framework.Vk.Messages;
+﻿using System.Globalization;
+using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Messages.API.Requests;
 using NUnit.Framework;
 
@@ -23,7 +24,7 @@ public class MessagePublisherTests
         Assert.DoesNotThrowAsync(async () => await _publisher.SendAsync(new VkSendMessageRequest
             {
                 AccessToken = EnvironmentDataProvider.GetApiKey(),
-                Body = $"test msg {DateTime.Now.ToString()}",
+                Body = $"test msg {DateTime.Now.ToString(CultureInfo.InvariantCulture)}",
                 UserId = EnvironmentDataProvider.GetTargetUserId().ToString()
             },
             CancellationToken.None));

@@ -31,6 +31,7 @@
         </PackageReference>
         <PackageReference Include="NUnit" Version="4.1.0"/>
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
+        <PackageReference Include="RichardSzalay.MockHttp" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>

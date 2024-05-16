@@ -89,7 +89,7 @@ public class LongPollMessagesProvider : IDisposable
             }
 
 
-            int[] codesForRetry = { 408, 500, 502, 503, 504 };
+            int[] codesForRetry = [408, 500, 502, 503, 504];
 
             var updatePolicy = Policy
                 .Handle<FlurlHttpException>(ex =>
@@ -136,7 +136,7 @@ public class LongPollMessagesProvider : IDisposable
 
                         _lastTs = int.Parse(updates?.Ts ?? "0");
 
-                        if (updates.Updates != default) OnUpdates?.Invoke(new VkUpdatesEventArgs(updates), token);
+                        if (updates?.Updates != default) OnUpdates?.Invoke(new VkUpdatesEventArgs(updates), token);
 
                         return updates;
                     }

@@ -46,7 +46,7 @@ public class LongPollMessagesProviderTests
 
         Thread.Sleep(5000);
 
-        Assert.That(task.Exception != null);
+        Assert.That(task.Exception == null);
     }
 
     [Test]
