@@ -4,41 +4,22 @@ using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Controls.Layouts.Commands.InlineCalendar;
 using Botticelli.Framework.Controls.Layouts.Inlines;
-using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace TelegramInlineLayoutsSample.Handlers;
 
 public class DateChosenCommandProcessor : CommandProcessor<DateChosenCommand>
 {
     private readonly IBot _bot;
-    private SendOptionsBuilder<InlineKeyboardMarkup> _options;
 
     public DateChosenCommandProcessor(IBot bot,
                                       ICommandValidator<DateChosenCommand> validator,
                                       MetricsProcessor metricsProcessor,
-                                      ILayoutSupplier<InlineKeyboardMarkup> supplier,
-                                      ILogger<GetCalendarCommandProcessor> logger) : base(logger, validator, metricsProcessor)
-    {
-        _bot = bot;
-
-        InitLayouts(supplier);
-    }
-
-    private void InitLayouts(ILayoutSupplier<InlineKeyboardMarkup> supplier)
-    {
-        var markup = supplier.GetMarkup(Calendars.Get(DateTime.Now, CultureInfo.InvariantCulture.Name));
-        _options = SendOptionsBuilder<InlineKeyboardMarkup>.CreateBuilder(markup);
-    }
-
-    
-    public DateChosenCommandProcessor(ILogger logger, ICommandValidator<DateChosenCommand> validator, MetricsProcessor metricsProcessor) : base(logger, validator, metricsProcessor)
-    {
-    }
+                                      ILogger<GetCalendarCommandProcessor> logger) : base(logger, validator, metricsProcessor) =>
+            _bot = bot;
 
     protected override Task InnerProcessContact(Message message, string args, CancellationToken token) => throw new NotImplementedException();
 
@@ -54,6 +35,8 @@ public class DateChosenCommandProcessor : CommandProcessor<DateChosenCommand>
             Message = message
         };
 
-        await _bot.SendMessageAsync(request, _options, token);
+        request.Message.Body = message.CallbackData?.Replace("/DateChosen ", string.Empty) ?? string.Empty;
+
+        await _bot.SendMessageAsync(request, token);
     }
 }
