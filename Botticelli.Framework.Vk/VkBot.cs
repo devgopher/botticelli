@@ -166,6 +166,7 @@ public class VkBot : BaseBot<VkBot>
 
     protected override async Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
         ISendOptionsBuilder<TSendOptions> optionsBuilder,
+        bool isUpdate,
         CancellationToken token)
     {
         foreach (var peerId in request.Message.ChatIds)
@@ -190,9 +191,9 @@ public class VkBot : BaseBot<VkBot>
 
         return new SendMessageResponse(request.Uid, string.Empty);
     }
-
+    
     protected override async Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
-        CancellationToken token) => throw new NotImplementedException();
+                                                                                 CancellationToken token) => throw new NotImplementedException();
 
     private async Task<IEnumerable<VkSendMessageRequest>> CreateRequestsWithAttachments(SendMessageRequest request,
         string peerId,

@@ -81,6 +81,7 @@ public abstract class BaseBot<T> : IBot<T>
     ///     Sends a message
     /// </summary>
     /// <param name="request">Request</param>
+    /// <param name="token"></param>
     /// <returns></returns>
     public Task<SendMessageResponse> SendMessageAsync(SendMessageRequest request, CancellationToken token)
         => SendMessageAsync<object>(request, null, token);
@@ -91,19 +92,31 @@ public abstract class BaseBot<T> : IBot<T>
     /// </summary>
     /// <param name="request">Request</param>
     /// <param name="optionsBuilder"></param>
+    /// <param name="token"></param>
     /// <returns></returns>
     public virtual async Task<SendMessageResponse> SendMessageAsync<TSendOptions>(SendMessageRequest request,
-        ISendOptionsBuilder<TSendOptions> optionsBuilder,
-        CancellationToken token)
+                                                                                  ISendOptionsBuilder<TSendOptions> optionsBuilder,
+                                                                                  CancellationToken token)
         where TSendOptions : class
     {
         _metrics.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
 
-        return await InnerSendMessageAsync(request, optionsBuilder, token);
+        return await InnerSendMessageAsync(request, optionsBuilder, false, token);
+    }
+
+    public Task<SendMessageResponse> UpdateMessageAsync(SendMessageRequest request, CancellationToken token)
+        => SendMessageAsync<object>(request, null, token);
+
+    public async Task<SendMessageResponse> UpdateMessageAsync<TSendOptions>(SendMessageRequest request, ISendOptionsBuilder<TSendOptions> optionsBuilder, CancellationToken token) 
+            where TSendOptions : class
+    {
+        _metrics.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
+
+        return await InnerSendMessageAsync(request, optionsBuilder, true, token);
     }
 
     public virtual async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request,
-        CancellationToken token)
+                                                                        CancellationToken token)
     {
         _metrics.Process(MetricNames.MessageRemoved, BotDataUtils.GetBotId());
 
@@ -123,11 +136,12 @@ public abstract class BaseBot<T> : IBot<T>
 
     protected abstract Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
         ISendOptionsBuilder<TSendOptions> optionsBuilder,
+        bool isUpdate,
         CancellationToken token)
         where TSendOptions : class;
 
     protected abstract Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
-        CancellationToken token);
+                                                                           CancellationToken token);
 
     public event StartedEventHandler Started;
     public event StoppedEventHandler Stopped;
