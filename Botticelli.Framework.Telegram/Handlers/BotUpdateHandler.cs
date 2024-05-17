@@ -1,5 +1,4 @@
 ﻿using Botticelli.Framework.Commands.Processors;
-using Botticelli.Framework.MessageProcessors;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
@@ -117,7 +116,6 @@ public class BotUpdateHandler : IBotUpdateHandler
         
         var clientTasks = _processorFactory
             .GetProcessors()
-            .Where(p => p.GetType() != typeof(ChatMessageProcessor))
             .Select(p => p.ProcessAsync(request, token));
 
         Parallel.ForEachAsync(clientTasks, token, async (t, ct) => await t.WaitAsync(ct));

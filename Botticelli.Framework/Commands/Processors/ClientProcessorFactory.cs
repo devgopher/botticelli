@@ -1,5 +1,4 @@
-﻿using Botticelli.Framework.MessageProcessors;
-using Botticelli.Interfaces;
+﻿using Botticelli.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Framework.Commands.Processors;
@@ -24,12 +23,6 @@ public class ClientProcessorFactory
         proc.SetBot(bot);
         proc.SetServiceProvider(sp);
         ClientProcessors.Add(proc);
-    }
-
-    public void AddChatMessageProcessor(IBot bot, IServiceProvider sp)
-    {
-        if (!ClientProcessors.Any(x => x is ChatMessageProcessor))
-            ClientProcessors.Add(sp.GetRequiredService<ChatMessageProcessor>());
     }
 
     public IEnumerable<IClientMessageProcessor> GetProcessors()

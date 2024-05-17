@@ -5,7 +5,6 @@ using Botticelli.Client.Analytics.Extensions;
 using Botticelli.Framework.Commands;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.MessageProcessors;
 using Botticelli.Framework.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.Extensions;
@@ -17,8 +16,7 @@ namespace Botticelli.Framework.Extensions;
 public static class StartupExtensions
 {
     public static IServiceCollection AddBotticelliFramework(this IServiceCollection services, IConfiguration config) =>
-        services.AddSingleton<ChatMessageProcessor>()
-                .AddSingleton<ClientProcessorFactory>()
+        services.AddSingleton<ClientProcessorFactory>()
                 .AddSingleton<CommandProcessorFactory>()
                 .AddSharedValidation()
                 .AddMetrics(config);
@@ -43,7 +41,6 @@ public static class StartupExtensions
 
         commandProcessorFactory.AddCommandType(typeof(TCommand), typeof(TCommandProcessor));
         clientProcessorFactory.AddProcessor<TCommandProcessor, TBot>(sp);
-        clientProcessorFactory.AddChatMessageProcessor(sp.GetRequiredService<IBot<TBot>>(), sp);
 
         return sp;
     }
@@ -58,7 +55,6 @@ public static class StartupExtensions
 
         commandProcessorFactory.AddCommandType(typeof(TCommand), typeof(TCommandProcessor));
         clientProcessorFactory.AddProcessor<TCommandProcessor, TBot>(sp);
-        clientProcessorFactory.AddChatMessageProcessor(sp.GetRequiredService<IBot<TBot>>(), sp);
 
         return sp;
     }
