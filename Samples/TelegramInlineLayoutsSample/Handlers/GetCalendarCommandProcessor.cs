@@ -31,7 +31,7 @@ public class GetCalendarCommandProcessor : CommandProcessor<GetCalendarCommand>
 
     private void InitLayouts(ILayoutSupplier<InlineKeyboardMarkup> supplier)
     {
-        var markup = supplier.GetMarkup(Calendars.Get(DateTime.Now, CultureInfo.InvariantCulture.Name));
+        var markup = supplier.GetMarkup(CalendarFactory.Get(DateTime.Now, CultureInfo.InvariantCulture.Name));
         _options = SendOptionsBuilder<InlineKeyboardMarkup>.CreateBuilder(markup);
     }
 

@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Botticelli.Framework.Controls.Layouts.Inlines;
 
-public static class Calendars 
+public static class CalendarFactory 
 {
     public static InlineCalendar Get(DateTime dt, string culture)
     {
