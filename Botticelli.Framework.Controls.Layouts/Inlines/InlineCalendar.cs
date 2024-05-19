@@ -24,6 +24,15 @@ public class InlineCalendar : ILayout
 
     public void AddRow(Row row) => Rows.Add(row);
 
+    /// <summary>
+    /// Today checkmark image  path
+    /// </summary>
+    public string TodayMark
+    {
+        get;
+        set;
+    }
+    
     public IList<Row>? Rows { get; }  
 
     private void Init(DateTime dt, CultureInfo cultureInfo)
@@ -79,13 +88,15 @@ public class InlineCalendar : ILayout
             rows[rowNum] ??= new Row();
 
             PreloadItems(rows, rowNum);
+            var buttonDt = new DateTime(day: day, month: dt.Month, year: dt.Year);
             
             rows[rowNum]!.Items[(day + offset) % Days.Length] = new Item
             {
                 Control = new Button
                 {
-                    Content = day.ToString(),
-                    CallbackData = $"/DateChosen {new DateTime(day: day, month: dt.Month, year: dt.Year):dd/MM/yyyy}"
+                    Content = $"{GetImage(buttonDt)}{day}",
+                    Image = GetImage(buttonDt),
+                    CallbackData = $"/DateChosen {buttonDt:dd/MM/yyyy}"
                 }
             };
 
@@ -97,6 +108,8 @@ public class InlineCalendar : ILayout
         foreach (var row in rows) 
             Rows.Add(row!);
     }
+
+    private string GetImage(DateTime buttonDt) => DateTime.Today == buttonDt.Date ? !string.IsNullOrWhiteSpace(TodayMark) ? TodayMark : "✓" : string.Empty;
 
     private static void PreloadItems(Row?[] rows, int rowNum)
     {
