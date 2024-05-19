@@ -44,11 +44,11 @@ public class BotUpdateHandler : IBotUpdateHandler
 
                 var botticelliMessage = new Message(eventId)
                 {
-                    ChatIds = new List<string>
-                    {
+                    ChatIds =
+                    [
                         peerId,
                         fromId
-                    },
+                    ],
                     Subject = string.Empty,
                     Body = text,
                     Attachments = new List<BaseAttachment>(5),
