@@ -9,4 +9,5 @@ public static class AudioBitrate
     public const int LowMusic = 32;
     public const int MiddleMusic = 128;
     public const int HiMusic = 256;
+    public const int HighestMusic = 320;
 }

@@ -80,7 +80,10 @@ public class UniversalLowQualityConvertor : IConvertor
                 .OutputToPipe(new StreamPipeSink(output), options => options
                     .ForceFormat(codec)
                     .WithAudioBitrate(tgtParams.Bitrate))
-                .ProcessSynchronously();
+                .ProcessSynchronously(ffMpegOptions: new FFOptions
+                {
+                    BinaryFolder = "ffmpeg",
+                });
 
             return output.ToArray();
         }
