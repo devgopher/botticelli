@@ -5,6 +5,14 @@ namespace Botticelli.Locations.Models;
 /// </summary>
 public class Location
 {
+    public Location(){}
+    
+    public Location(double lat, double lng)
+    {
+        Lat = lat;
+        Lng = lng;
+    }
+
     /// <summary>
     /// Latitude
     /// </summary>
@@ -12,5 +20,5 @@ public class Location
     /// <summary>
     /// Longitude
     /// </summary>
-    public double Long { get; set; }
+    public double Lng { get; set; }
 }

@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
-namespace Botticelli.Framework.Vk.Tests;
+namespace Shared;
 
-internal static class Utils
+public static class LoggerMocks
 {
     public static ILogger<T> CreateConsoleLogger<T>()
     {
         return LoggerFactory.Create(o => o.AddConsole())
-            .CreateLogger<T>();
+                            .CreateLogger<T>();
     }
 }

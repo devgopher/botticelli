@@ -1,13 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace Botticelli.Framework.Vk.Tests;
+namespace Shared;
 
-internal class OptionsMonitorMock<T> : IOptionsMonitor<T>
+public class OptionsMonitorMock<T> : IOptionsMonitor<T>
 {
-    public OptionsMonitorMock(T value)
-    {
-        CurrentValue = value;
-    }
+    public OptionsMonitorMock(T value) => CurrentValue = value;
 
 
     public T Get(string? name) => CurrentValue;

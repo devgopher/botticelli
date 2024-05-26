@@ -36,6 +36,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Botticelli.Framework.Vk\Botticelli.Framework.Vk.Messages.csproj" />
+        <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using Botticelli.Framework.Vk.Messages.API.Responses;
 using Botticelli.Framework.Vk.Messages.API.Utils;
-using Flurl;
 using RichardSzalay.MockHttp;
 
 namespace Botticelli.Framework.Vk.Tests;

@@ -2,6 +2,8 @@
 using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Messages.API.Requests;
 using NUnit.Framework;
+using RichardSzalay.MockHttp;
+using Shared;
 
 namespace Botticelli.Framework.Vk.Tests;
 
@@ -12,10 +14,15 @@ public class MessagePublisherTests
     public void Setup()
     {
         _publisher = new MessagePublisher(new TestHttpClientFactory(),
-            Utils.CreateConsoleLogger<MessagePublisher>());
+            LoggerMocks.CreateConsoleLogger<MessagePublisher>());
     }
 
     private MessagePublisher _publisher;
+
+    public MessagePublisherTests(MessagePublisher publisher)
+    {
+        _publisher = publisher;
+    }
 
     [Test]
     public async Task SendAsyncTest()
