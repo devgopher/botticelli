@@ -52,7 +52,12 @@ public class Address
 
     [JsonPropertyName("state_district")]
     public string? District { get; set; }
+    
+    [JsonPropertyName("lat")]
+    public double Latitude { get; set; }
 
+    [JsonPropertyName("lon")]
+    public double Longitude { get; set; }
 
     public override string ToString()
         => ToString(CultureInfo.InvariantCulture);

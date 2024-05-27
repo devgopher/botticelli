@@ -28,7 +28,6 @@ public class OsmLocationProvider : ILocationProvider
         });
 
         return results.Take(maxPoints)
-                      .Select(r => r.Address)
                       .Adapt<IEnumerable<Address>>();
     }
 

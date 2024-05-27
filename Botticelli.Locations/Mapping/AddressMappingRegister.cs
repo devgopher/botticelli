@@ -11,10 +11,11 @@ public class AddressMappingRegister : IRegister
     {
         // Put your mapping logic here
         config
-                .NewConfig<AddressResult, Address>()
+                .NewConfig<GeocodeResponse, Address>()
+                .Map(dest => dest, src => src.Address)
+                .Map(dest => dest, src => src)
                 .IgnoreNullValues(true)
                 .IgnoreNonMapped(true);
-
 
     }
 }

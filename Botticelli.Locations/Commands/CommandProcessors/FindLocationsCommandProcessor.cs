@@ -46,7 +46,7 @@ public class FindLocationsCommandProcessor<TReplyMarkup> : CommandProcessor<Find
                     Image = null,
                     Params = null,
                     MessengerSpecificParams = null,
-                    CallbackData = null
+                    CallbackData = $"https://www.openstreetmap.org/#map=15/{result.Latitude:00.#####}/{result.Longitude:00.#####}"
                 },
                 Params = null
             });
