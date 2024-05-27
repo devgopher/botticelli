@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Botticelli.Analytics.Shared\Botticelli.Analytics.Shared.csproj" />
+      <ProjectReference Include="..\Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj" />
+      <ProjectReference Include="..\Botticelli.Bot.Utils\Botticelli.Bot.Utils.csproj" />
+      <ProjectReference Include="..\Botticelli.Client.Analytics\Botticelli.Client.Analytics.csproj" />
+      <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
+    </ItemGroup>
+
+</Project>
