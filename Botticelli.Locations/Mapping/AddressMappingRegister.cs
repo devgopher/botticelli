@@ -16,6 +16,5 @@ public class AddressMappingRegister : IRegister
                 .Map(dest => dest, src => src)
                 .IgnoreNullValues(true)
                 .IgnoreNonMapped(true);
-
     }
 }
