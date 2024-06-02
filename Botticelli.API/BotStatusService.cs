@@ -12,14 +12,14 @@ namespace Botticelli.BotBase;
 
 public class BotStatusService<TBot> : BotActualizationService<TBot> where TBot : IBot
 {
-    private const short GetStatusPeriod = 15000;
+    private const short GetStatusPeriod = 5000;
     private readonly ManualResetEventSlim _getRequiredStatusEvent = new(false);
     private Task _getRequiredStatusEventTask;
 
     public BotStatusService(IHttpClientFactory httpClientFactory,
                             ServerSettings serverSettings,
                             TBot bot,
-                            ILogger<BotActualizationService<TBot>> logger) : base(httpClientFactory,
+                            ILogger<BotStatusService<TBot>> logger) : base(httpClientFactory,
                                                                                   serverSettings,
                                                                                   bot,
                                                                                   logger)

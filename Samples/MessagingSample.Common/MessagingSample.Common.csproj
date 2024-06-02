@@ -40,9 +40,4 @@
       <ProjectReference Include="..\..\Botticelli.Scheduler\Botticelli.Scheduler.csproj" />
     </ItemGroup>
 
-
-    <ItemGroup>
-      <Folder Include="Layouts\" />
-    </ItemGroup>
-
 </Project>

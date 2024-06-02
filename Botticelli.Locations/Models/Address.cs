@@ -59,6 +59,8 @@ public class Address
     [JsonPropertyName("lon")]
     public double Longitude { get; set; }
 
+    public string DisplayName { get; set; }
+
     public override string ToString()
         => ToString(CultureInfo.InvariantCulture);
 

@@ -7,9 +7,11 @@ using Botticelli.Framework.Controls.Layouts.Inlines;
 using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Locations.Integration;
+using Botticelli.Locations.Options;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Botticelli.Locations.Commands.CommandProcessors;
 
@@ -18,42 +20,49 @@ public class FindLocationsCommandProcessor<TReplyMarkup> : CommandProcessor<Find
 {
     private readonly ILocationProvider _locationProvider;
     private readonly ILayoutSupplier<TReplyMarkup> _layoutSupplier;
+    private readonly IOptionsSnapshot<LocationsProcessorOptions> _options;
 
     
     public FindLocationsCommandProcessor(ILogger<FindLocationsCommandProcessor<TReplyMarkup>> logger, 
                                          ICommandValidator<FindLocationsCommand> validator, 
                                          MetricsProcessor metricsProcessor,
                                          ILocationProvider locationProvider,
-                                         ILayoutSupplier<TReplyMarkup> layoutSupplier) : base(logger, validator, metricsProcessor)
+                                         ILayoutSupplier<TReplyMarkup> layoutSupplier,
+                                         IOptionsSnapshot<LocationsProcessorOptions> options) : base(logger, validator, metricsProcessor)
     {
         _locationProvider = locationProvider;
         _layoutSupplier = layoutSupplier;
+        _options = options;
     }
 
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
-        var results = await _locationProvider.Search(message.Body, 10);
+        var query = string.Join(" ", values: message.Body?.Split(" ").Skip(1) ?? Array.Empty<string>());
+        
+        var results = await _locationProvider.Search(query, 10);
 
         var markup = new Table(2);
 
         foreach (var result in results)
         {
+            var cdata =  $"{_options.Value.ApiUrl}/" +
+                         $"#map={(int)_options.Value.InitialZoom}/" +
+                         $"{result.Latitude:N5}/" +
+                         $"{result.Longitude:N5}";
+            
             markup.AddItem(new Item
             {
                 Control = new Button
                 {
-                    Content = result.ToString(),
-                    Image = null,
-                    Params = null,
-                    MessengerSpecificParams = null,
-                    CallbackData = $"https://www.openstreetmap.org/#map=15/{result.Latitude:00.#####}/{result.Longitude:00.#####}"
+                    Content = result.DisplayName,
+                    CallbackData = cdata
                 },
-                Params = null
+                Params = new ItemParams()
             });
         }
         
-        var responseMarkup = _layoutSupplier.GetMarkup(new Table(2));
-        var options = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
+        var responseMarkup = _layoutSupplier.GetMarkup(markup);
+        var replyOptions = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
         
         var request = new SendMessageRequest
         {
@@ -61,11 +70,10 @@ public class FindLocationsCommandProcessor<TReplyMarkup> : CommandProcessor<Find
             {
                 Uid = Guid.NewGuid().ToString(),
                 ChatIds = message.ChatIds,
-                Body = string.Empty,
+                Body = "Addresses",
             }
         };
 
-
-        await Bot.SendMessageAsync(request,  options, token);
+        await Bot.SendMessageAsync(request,  replyOptions, token);
     }
 }

@@ -18,14 +18,14 @@ public abstract class BotActualizationService<TBot> : IHostedService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ServerSettings _serverSettings;
-    protected readonly string? BotId;
+    protected readonly string BotId;
     protected readonly ILogger Logger;
-    protected TBot Bot;
+    protected readonly TBot Bot;
 
     protected BotActualizationService(IHttpClientFactory httpClientFactory,
                                       ServerSettings serverSettings,
                                       TBot bot,
-                                      ILogger<BotActualizationService<TBot>> logger)
+                                      ILogger logger)
     {
         _httpClientFactory = httpClientFactory;
         _serverSettings = serverSettings;

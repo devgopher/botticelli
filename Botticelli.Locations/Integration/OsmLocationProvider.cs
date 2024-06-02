@@ -22,13 +22,23 @@ public class OsmLocationProvider : ILocationProvider
 
     public async Task<IEnumerable<Address>> Search(string query, int maxPoints)
     {
-        var results = await _forwardGeocoder.Geocode(new ForwardGeocodeRequest
+        var results = (await _forwardGeocoder.Geocode(new ForwardGeocodeRequest
         {
             queryString = query
-        });
+        })).Select(gr =>
+        {
+            var address = gr.Address?.Adapt<Address>() ?? new Address();
+            address.Longitude = gr.Longitude;
+            address.Latitude = gr.Latitude;
+            address.DisplayName = gr.DisplayName;
+            
+            return address;
+        }).ToList();
 
-        return results.Take(maxPoints)
-                      .Adapt<IEnumerable<Address>>();
+        return results;
+
+        // return results.Take(maxPoints)
+        //               .Adapt<IEnumerable<Address>>(TypeAdapterConfig.GlobalSettings);
     }
 
     public Task<TimeZoneInfo?> GetTimeZone(Location location)

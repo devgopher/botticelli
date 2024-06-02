@@ -8,7 +8,6 @@
 
 	<ItemGroup>
 		<Folder Include="Handlers\"/>
-		<Folder Include="Options\"/>
 	</ItemGroup>
 
 	<ItemGroup>
