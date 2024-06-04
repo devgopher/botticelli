@@ -13,5 +13,5 @@ public class LocationsProcessorOptions
     /// <summary>
     /// Initial zoom for map
     /// </summary>
-    public float InitialZoom { get; set; } = 15.0f;
+    public float InitialZoom { get; set; } = 18.0f;
 }
