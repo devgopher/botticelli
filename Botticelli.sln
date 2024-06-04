@@ -229,6 +229,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Location", "Bott
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Locations.Controls", "Botticelli.Locations.Controls\Botticelli.Locations.Controls.csproj", "{FDB71402-7488-4F3C-AA6C-BF53903EAB0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Locations.Telegram", "Botticelli.Locations.Telegram\Botticelli.Locations.Telegram.csproj", "{3585C2D1-9AA8-4B83-918D-588D701E37F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Locations.Vk", "Botticelli.Locations.Vk\Botticelli.Locations.Vk.csproj", "{89865D7E-8769-477B-8CED-C5B53C981178}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -451,6 +455,14 @@ Global
 		{FDB71402-7488-4F3C-AA6C-BF53903EAB0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDB71402-7488-4F3C-AA6C-BF53903EAB0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDB71402-7488-4F3C-AA6C-BF53903EAB0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3585C2D1-9AA8-4B83-918D-588D701E37F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3585C2D1-9AA8-4B83-918D-588D701E37F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3585C2D1-9AA8-4B83-918D-588D701E37F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3585C2D1-9AA8-4B83-918D-588D701E37F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89865D7E-8769-477B-8CED-C5B53C981178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89865D7E-8769-477B-8CED-C5B53C981178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89865D7E-8769-477B-8CED-C5B53C981178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89865D7E-8769-477B-8CED-C5B53C981178}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -537,6 +549,8 @@ Global
 		{12AB0F40-141F-4C65-A630-7A4D4421EEEE} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{25B7376F-D770-4C4A-8EAB-73465BA962BA} = {12AB0F40-141F-4C65-A630-7A4D4421EEEE}
 		{FDB71402-7488-4F3C-AA6C-BF53903EAB0B} = {12AB0F40-141F-4C65-A630-7A4D4421EEEE}
+		{3585C2D1-9AA8-4B83-918D-588D701E37F5} = {12AB0F40-141F-4C65-A630-7A4D4421EEEE}
+		{89865D7E-8769-477B-8CED-C5B53C981178} = {12AB0F40-141F-4C65-A630-7A4D4421EEEE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

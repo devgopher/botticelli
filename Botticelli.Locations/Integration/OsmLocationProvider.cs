@@ -1,6 +1,9 @@
+using System.Globalization;
 using Botticelli.Locations.Models;
+using Botticelli.Locations.Options;
 using GeoTimeZone;
 using Mapster;
+using Microsoft.Extensions.Options;
 using Nominatim.API.Interfaces;
 using Nominatim.API.Models;
 
@@ -10,15 +13,31 @@ public class OsmLocationProvider : ILocationProvider
 {
     private readonly IReverseGeocoder _reverseGeoCoder;
     private readonly IForwardGeocoder _forwardGeocoder;
+    private readonly IOptionsSnapshot<LocationsProcessorOptions> _options;
 
-    public OsmLocationProvider(IReverseGeocoder reverseGeoCoder, IForwardGeocoder forwardGeocoder)
+    public OsmLocationProvider(IReverseGeocoder reverseGeoCoder,
+        IForwardGeocoder forwardGeocoder, 
+        IOptionsSnapshot<LocationsProcessorOptions> options)
     {
         _reverseGeoCoder = reverseGeoCoder;
         _forwardGeocoder = forwardGeocoder;
+        _options = options;
     }
 
     public async Task<Address?> GetAddress(Location location)
         => await InnerGetAddress(location);
+
+    public async Task<string> GetMapLink(Location location) =>
+        $"{_options.Value.ApiUrl}/" +
+        $"#map={(int)_options.Value.InitialZoom}/" +
+        $"{location.Lat.ToString("0.00000", CultureInfo.InvariantCulture)}/" +
+        $"{location.Lng.ToString("0.00000", CultureInfo.InvariantCulture)}";
+
+    public async Task<string> GetMapLink(Address address) =>
+        $"{_options.Value.ApiUrl}/" +
+        $"#map={(int)_options.Value.InitialZoom}/" +
+        $"{address.Latitude.ToString("0.00000", CultureInfo.InvariantCulture)}/" +
+        $"{address.Longitude.ToString("0.00000", CultureInfo.InvariantCulture)}";
 
     public async Task<IEnumerable<Address>> Search(string query, int maxPoints)
     {
@@ -36,9 +55,6 @@ public class OsmLocationProvider : ILocationProvider
         }).ToList();
 
         return results;
-
-        // return results.Take(maxPoints)
-        //               .Adapt<IEnumerable<Address>>(TypeAdapterConfig.GlobalSettings);
     }
 
     public Task<TimeZoneInfo?> GetTimeZone(Location location)

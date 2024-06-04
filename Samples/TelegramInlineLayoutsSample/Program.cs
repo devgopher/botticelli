@@ -7,7 +7,7 @@ using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
-using Botticelli.Locations.Extensions;
+using Botticelli.Locations.Telegram.Extensions;
 using Botticelli.SecureStorage.Settings;
 using NLog.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -36,6 +36,6 @@ builder.Services.AddTelegramBot(builder.Configuration,
 var app = builder.Build();
 app.Services.UseInlineCalendar<TelegramBot, DateChosenCommandProcessor>()
    .RegisterBotCommand<GetCalendarCommand, GetCalendarCommandProcessor, TelegramBot>()
-   .RegisterOsmLocationsCommands<TelegramBot>();
+   .RegisterOsmLocationsCommands();
 
 app.Run();

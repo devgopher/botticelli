@@ -27,9 +27,4 @@
 	  <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj" />
-	  <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
-	</ItemGroup>
-
 </Project>

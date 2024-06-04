@@ -20,6 +20,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.*"/>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1"/>
 		<ProjectReference Include="..\..\Botticelli.Framework.Controls.Layouts\Botticelli.Framework.Controls.Layouts.csproj" />
+		<ProjectReference Include="..\..\Botticelli.Locations.Telegram\Botticelli.Locations.Telegram.csproj" />
 		<ProjectReference Include="..\..\Botticelli.Locations\Botticelli.Locations.csproj" />
 		<ProjectReference Include="..\MessagingSample.Common\MessagingSample.Common.csproj"/>
 	</ItemGroup>
