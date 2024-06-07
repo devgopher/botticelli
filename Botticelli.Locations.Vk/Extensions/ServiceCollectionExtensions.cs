@@ -36,7 +36,7 @@ public static class ServiceCollectionExtensions
         return services.Configure<LocationsProcessorOptions>(config)
             .AddScoped<ICommandValidator<FindLocationsCommand>, PassValidator<FindLocationsCommand>>()
             .AddScoped<FindLocationsCommandProcessor<VkKeyboardMarkup>>()
-            .AddScoped<ShowMapCommandProcessor<VkKeyboardMarkup>>()
+            .AddScoped<MapCommandProcessor<VkKeyboardMarkup>>()
             .AddScoped<ILocationProvider, OsmLocationProvider>()
             .AddScoped<INominatimWebInterface, NominatimWebInterface>()
             .AddScoped<IAddressSearcher, AddressSearcher>()
@@ -52,5 +52,5 @@ public static class ServiceCollectionExtensions
     public static IServiceProvider RegisterOsmLocationsCommands(this IServiceProvider sp,
         string url = "https://nominatim.openstreetmap.org")
         => sp.RegisterBotCommand<FindLocationsCommand, FindLocationsCommandProcessor<VkKeyboardMarkup>, VkBot>()
-            .RegisterBotCommand<ShowMapCommand, ShowMapCommandProcessor<VkKeyboardMarkup>, VkBot>();
+            .RegisterBotCommand<MapCommand, MapCommandProcessor<VkKeyboardMarkup>, VkBot>();
 }

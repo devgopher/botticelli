@@ -9,15 +9,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Locations.Commands.CommandProcessors;
 
-public class ShowMapCommandProcessor<TReplyMarkup> : CommandProcessor<ShowMapCommand>
+public class MapCommandProcessor<TReplyMarkup> : CommandProcessor<MapCommand>
     where TReplyMarkup : class
 {
     private readonly ILocationProvider _locationProvider;
     private readonly ILayoutSupplier<TReplyMarkup> _layoutSupplier;
 
 
-    public ShowMapCommandProcessor(ILogger<FindLocationsCommandProcessor<TReplyMarkup>> logger,
-        ICommandValidator<ShowMapCommand> validator,
+    public MapCommandProcessor(ILogger<FindLocationsCommandProcessor<TReplyMarkup>> logger,
+        ICommandValidator<MapCommand> validator,
         MetricsProcessor metricsProcessor,
         ILocationProvider locationProvider,
         ILayoutSupplier<TReplyMarkup> layoutSupplier) : base(logger, validator, metricsProcessor)

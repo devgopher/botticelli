@@ -34,9 +34,9 @@ public static class ServiceCollectionExtensions
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
         return services.Configure<LocationsProcessorOptions>(config)
             .AddScoped<ICommandValidator<FindLocationsCommand>, PassValidator<FindLocationsCommand>>()
-            .AddScoped<ICommandValidator<ShowMapCommand>, PassValidator<ShowMapCommand>>()
+            .AddScoped<ICommandValidator<MapCommand>, PassValidator<MapCommand>>()
             .AddScoped<FindLocationsCommandProcessor<InlineKeyboardMarkup>>()
-            .AddScoped<ShowMapCommandProcessor<ReplyKeyboardMarkup>>()
+            .AddScoped<MapCommandProcessor<ReplyKeyboardMarkup>>()
             .AddScoped<ILocationProvider, OsmLocationProvider>()
             .AddScoped<INominatimWebInterface, NominatimWebInterface>()
             .AddScoped<IAddressSearcher, AddressSearcher>()
@@ -53,5 +53,5 @@ public static class ServiceCollectionExtensions
     public static IServiceProvider RegisterOsmLocationsCommands(this IServiceProvider sp,
         string url = "https://nominatim.openstreetmap.org") =>
         sp.RegisterBotCommand<FindLocationsCommand, FindLocationsCommandProcessor<InlineKeyboardMarkup>, TelegramBot>()
-          .RegisterBotCommand<ShowMapCommand, ShowMapCommandProcessor<ReplyKeyboardMarkup>, TelegramBot>();
+          .RegisterBotCommand<MapCommand, MapCommandProcessor<ReplyKeyboardMarkup>, TelegramBot>();
 }

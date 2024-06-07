@@ -47,7 +47,7 @@ public class FindLocationsCommandProcessor<TReplyMarkup> : CommandProcessor<Find
                 Control = new Button
                 {
                     Content = result.DisplayName,
-                    CallbackData = $"/ShowMap {cdata}"
+                    CallbackData = $"/Map {cdata}"
                 },
                 Params = new ItemParams()
             });
