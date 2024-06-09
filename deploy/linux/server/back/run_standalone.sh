@@ -9,7 +9,7 @@ sudo apt-get install -y dotnet-sdk-8.0 dotnet-runtime-8.0 aspnetcore-runtime-8.0
 rm -rf botticelli``/
 git clone https://github.com/devgopher/botticelli.git
 pushd botticelli/
-git checkout dev/0.4
+git checkout dev/0.5
 git pull
 
 pushd Botticelli

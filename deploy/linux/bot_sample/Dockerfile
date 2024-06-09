@@ -5,7 +5,7 @@ WORKDIR /app
 RUN git clone https://github.com/devgopher/botticelli.git
 WORKDIR /app/botticelli/Botticelli
 RUN git fetch --all
-RUN git switch dev/0.4
+RUN git switch dev/0.5
 RUN git pull
 
 COPY . ./
