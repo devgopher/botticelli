@@ -129,7 +129,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (OperatingSystem.IsWindows())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseHsts();
 app.UseRouting();
 
