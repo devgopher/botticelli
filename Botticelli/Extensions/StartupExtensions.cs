@@ -63,6 +63,8 @@ public static class StartupExtensions
     public static IWebHostBuilder AddSsl(this IWebHostBuilder builder, IConfiguration config)
     {
         // in Linux put here: ~/.dotnet/corefx/cryptography/x509stores/
+        if (!OperatingSystem.IsWindows()) return builder;
+        
         var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
         store.Open(OpenFlags.ReadOnly);
         int port = int.Parse(config["ServerSettings:httpsPort"]!);
