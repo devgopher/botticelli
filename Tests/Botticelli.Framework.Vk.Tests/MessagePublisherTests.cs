@@ -10,6 +10,8 @@ namespace Botticelli.Framework.Vk.Tests;
 [TestFixture]
 public class MessagePublisherTests
 {
+    public MessagePublisherTests() {}
+    
     [SetUp]
     public void Setup()
     {

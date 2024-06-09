@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Botticelli.Locations.Integration;
-using Botticelli.Locations.Models;
+using Botticelli.Locations.Options;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualBasic.CompilerServices;
+using Moq;
 using NUnit.Framework;
 using RichardSzalay.MockHttp;
 using Shared;
+using Telegram.Bot.Types;
+using Location = Botticelli.Locations.Models.Location;
 
 namespace Botticelli.Locations.Tests.Integration;
 
@@ -20,7 +24,8 @@ public class OsmLocationProviderTest
     {
         var reverseGeocoder = new ReverseGeocoderMock();
         var forwardGeocoder = new ForwardGeocoderMock();
-        _locationProvider = new OsmLocationProvider(reverseGeocoder, forwardGeocoder);
+        var options = Mock.Of<IOptionsSnapshot<LocationsProcessorOptions>>();
+        _locationProvider = new OsmLocationProvider(reverseGeocoder, forwardGeocoder, options);
     }
     
     [Test]
