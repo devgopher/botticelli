@@ -27,6 +27,7 @@ builder.Services.AddTelegramBot(builder.Configuration,
                                         {
                                             ConnectionString = settings.SecureStorageConnectionString
                                         })
+                                        .Set(s => s.Timeout = 20000)
                                         .Set(s => s.Name = "test_bot"))
        .AddLogging(cfg => cfg.AddNLog())
        .AddBotCommand<GetCalendarCommand, GetCalendarCommandProcessor, PassValidator<GetCalendarCommand>>()

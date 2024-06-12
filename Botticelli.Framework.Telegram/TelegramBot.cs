@@ -145,7 +145,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             var text = new StringBuilder($"{request.Message.Subject} {request.Message.Body}");
             var retText = Escape(text).ToString();
-            List<(string chatId, string innerId)> pairs = new();
+            List<(string chatId, string innerId)> pairs = [];
 
             foreach (var link in request.Message.ChatIdInnerIdLinks)
                 pairs.AddRange(link.Value.Select(innerId => (link.Key, innerId)));
@@ -170,7 +170,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                     else
                     {
                         Logger.LogWarning(@"Streaming output isn't supported for Telegram now!");
-                        await SendText(@"Sorry, but streaming output isn't supported for Telegram now\!");
+                        await SendText(@"Sorry, but streaming output isn't supported for Telegram now!");
                     }
 
                     async Task SendText(string sendText)
@@ -403,7 +403,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    protected override async Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token)
+    protected override Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token)
     {
         try
         {
@@ -414,7 +414,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             {
                 Logger.LogInformation($"{nameof(StartBotAsync)}: already started");
 
-                return response;
+                return Task.FromResult(response);
             }
 
             BotStatusKeeper.IsStarted = true;
@@ -430,14 +430,14 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             Logger.LogInformation($"{nameof(StartBotAsync)}: started");
 
-            return response;
+            return Task.FromResult(response);
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, ex.Message);
         }
 
-        return StartBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
+        return Task.FromResult(StartBotResponse.GetInstance(AdminCommandStatus.Fail, "error"));
     }
 
     /// <summary>
@@ -487,10 +487,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         }
     }
 
-    private void RecreateClient(string key)
-    {
-        _client = new TelegramBotClient(key);
-    }
+    private void RecreateClient(string key) => _client = new TelegramBotClient(key);
 
     private async Task StartBot(CancellationToken token)
     {
