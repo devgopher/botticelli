@@ -243,6 +243,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.LoadTests.Receiv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.LoadTests.Controller", "Botticelli.LoadTests.Controller\Botticelli.LoadTests.Controller.csproj", "{7CAEB21E-5F21-41C6-AEF7-3BE2524572F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.LoadTests.Shared", "Botticelli.LoadTests.Shared\Botticelli.LoadTests.Shared.csproj", "{08C4ED60-6F8E-40E0-B560-C13B268E242D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -485,6 +487,10 @@ Global
 		{7CAEB21E-5F21-41C6-AEF7-3BE2524572F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CAEB21E-5F21-41C6-AEF7-3BE2524572F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CAEB21E-5F21-41C6-AEF7-3BE2524572F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08C4ED60-6F8E-40E0-B560-C13B268E242D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08C4ED60-6F8E-40E0-B560-C13B268E242D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08C4ED60-6F8E-40E0-B560-C13B268E242D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08C4ED60-6F8E-40E0-B560-C13B268E242D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -578,6 +584,7 @@ Global
 		{AE101F08-851A-4FAD-9076-FD4C0CADEC8B} = {588AA831-D236-4B72-AA0F-784BBCCFAD73}
 		{2B71513E-44FD-4776-9338-81054D9BE020} = {588AA831-D236-4B72-AA0F-784BBCCFAD73}
 		{7CAEB21E-5F21-41C6-AEF7-3BE2524572F5} = {588AA831-D236-4B72-AA0F-784BBCCFAD73}
+		{08C4ED60-6F8E-40E0-B560-C13B268E242D} = {588AA831-D236-4B72-AA0F-784BBCCFAD73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
