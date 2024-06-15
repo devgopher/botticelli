@@ -9,15 +9,3 @@ public interface ITest<TResult>
     public DateTime Started { get; set; }
     public DateTime Finished { get; set; }
 }
-
-/// <summary>
-/// A step interface
-/// </summary>
-/// <typeparam name="TStepInput"></typeparam>
-/// <typeparam name="TStepResult"></typeparam>
-public interface IStep<in TStepInput, TStepResult> : IStep
-where TStepInput : IStepInput
-where TStepResult : IStepResult
-{
-    public Task<TStepResult> Go(TStepInput? input);
-}
