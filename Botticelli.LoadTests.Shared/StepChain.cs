@@ -12,7 +12,13 @@ public class StepChain
 
     public async Task<(IStepResult result, TimeSpan elapsed)> Run(IStepInput input)
     {
-        IStepResult finalResult;
+        IStepResult finalResult = new BaseResult
+        {
+            IsSuccess = false,
+            Error = "No results",
+            Message = string.Empty
+        };
+        
         try
         {
             if (_steps == null || !_steps.Any()) throw new InvalidDataException("No steps!");
@@ -50,8 +56,8 @@ public class StepChain
         finally
         {
             _stopwatch.Stop();
-
-            return (finalResult, _stopwatch.Elapsed);
         }
+        
+        return (finalResult, _stopwatch.Elapsed);
     }
 }

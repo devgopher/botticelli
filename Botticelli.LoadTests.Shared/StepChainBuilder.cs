@@ -4,15 +4,19 @@ namespace Botticelli.LoadTests.Shared;
 
 public class StepChainBuilder
 {
-    private readonly StepChain _chain = new StepChain(new List<IStep>(5));
+    private readonly List<IStep> _steps = new();
 
     public StepChainBuilder(IServiceCollection services)
     {
         
     }
 
-    public StepChainBuilder Add()
+    public StepChainBuilder Add(IStep step)
     {
-        
+        _steps.Add(step);
+
+        return this;
     }
+
+    public StepChain Build() => new(_steps);
 }
