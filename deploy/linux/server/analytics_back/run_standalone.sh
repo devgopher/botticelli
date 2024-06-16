@@ -16,7 +16,7 @@ export SecureStorageConnectionString="User ID=postgres;Password=12345678;Host=12
 rm -rf botticelli/
 git clone https://github.com/devgopher/botticelli.git
 pushd botticelli/
-git checkout dev/0.5
+git checkout release/0.5
 git pull
 
 pushd Botticelli.Server.Analytics
