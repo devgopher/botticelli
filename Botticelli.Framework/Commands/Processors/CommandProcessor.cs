@@ -15,7 +15,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     where TCommand : class, ICommand
 {
     private readonly string _command;
-    private readonly ILogger _logger;
+    protected readonly ILogger _logger;
     private readonly MetricsProcessor _metricsProcessor;
     private readonly ICommandValidator<TCommand> _validator;
     protected IBot Bot;

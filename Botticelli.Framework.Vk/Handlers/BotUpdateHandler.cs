@@ -41,6 +41,7 @@ public class BotUpdateHandler : IBotUpdateHandler
                 var peerId = botMessage.message["peer_id"]?.ToString();
                 var text = botMessage.message["text"]?.ToString();
                 var fromId = botMessage.message["from_id"]?.ToString();
+                var date = 
 
                 var botticelliMessage = new Message(eventId)
                 {
@@ -57,7 +58,8 @@ public class BotUpdateHandler : IBotUpdateHandler
                         Id = fromId
                     },
                     ForwardedFrom = null,
-                    Location = null
+                    Location = null,
+                    // LastModifiedAt = botMessage.
                 };
 
                 await Process(botticelliMessage, cancellationToken);

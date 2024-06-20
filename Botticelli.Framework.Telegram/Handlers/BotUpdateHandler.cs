@@ -61,6 +61,7 @@ public class BotUpdateHandler : IBotUpdateHandler
                     ChatIds = [botMessage.Chat.Id.ToString()],
                     Subject = string.Empty,
                     Body = botMessage?.Text ?? string.Empty,
+                    LastModifiedAt = botMessage.Date,
                     Attachments = new List<BaseAttachment>(5),
                     From = new User
                     {

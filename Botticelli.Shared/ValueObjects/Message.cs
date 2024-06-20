@@ -6,9 +6,17 @@
 [Serializable]
 public class Message
 {
-    public Message() => Uid = Guid.NewGuid().ToString();
+    public Message()
+    {
+        Uid = Guid.NewGuid().ToString();
+        CreatedAt = DateTime.Now;
+    }
 
-    public Message(string uid) => Uid = uid;
+    public Message(string uid)
+    {
+        Uid = uid;
+        CreatedAt = DateTime.Now;
+    }
 
     /// <summary>
     ///     Message uid
@@ -74,4 +82,14 @@ public class Message
     /// Callback data if exists
     /// </summary>
     public string? CallbackData { get; set; }
+
+    /// <summary>
+    /// Message creation date
+    /// </summary>
+    public DateTime CreatedAt { get; init; }
+    
+    /// <summary>
+    /// Message modification date
+    /// </summary>
+    public DateTime LastModifiedAt { get; set; }
 }
