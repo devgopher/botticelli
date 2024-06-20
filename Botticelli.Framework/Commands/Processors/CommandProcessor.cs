@@ -30,7 +30,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         _command = GetOldFashionedCommandName(typeof(TCommand).Name);
     }
 
-    public async Task ProcessAsync(Message message, CancellationToken token)
+    public virtual async Task ProcessAsync(Message message, CancellationToken token)
     {
         try
         {
