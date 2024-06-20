@@ -60,13 +60,8 @@ public class InlineButtonMenu : ILayout
     {
         if (!CheckControlsCount()) throw new InvalidOperationException("Limit of controls has been exceeded!");
 
-        var row = Rows?.Skip(Header != null ? 1 : 0).FirstOrDefault(r => r.Items.Count < _rows);
-
-        if (row == null)
-        {
-            row = new();
-            Rows.Add(row);
-        }
+        var row = Rows?.Skip(Header != null ? 1 : 0).FirstOrDefault(r => r.Items.Count < _rows) ?? new Row();
+        if (!Rows.Any()) Rows.Add(row);
         
         row?.AddItem(new Item
         {
