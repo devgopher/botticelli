@@ -15,6 +15,7 @@ public class InlineButtonMenu : ILayout
 
         _rows = rows;
         _columns = columns;
+        Rows = new List<Row>();
     }
 
     public string? Header
@@ -48,7 +49,7 @@ public class InlineButtonMenu : ILayout
     public void AddRow(Row row) => Rows?.Add(row);
 
 
-    public IList<Row>? Rows => new List<Row>();
+    public IList<Row>? Rows { get; }
 
     /// <summary>
     ///     Add a control into a free place
@@ -61,6 +62,12 @@ public class InlineButtonMenu : ILayout
 
         var row = Rows?.Skip(Header != null ? 1 : 0).FirstOrDefault(r => r.Items.Count < _rows);
 
+        if (row == null)
+        {
+            row = new();
+            Rows.Add(row);
+        }
+        
         row?.AddItem(new Item
         {
             Control = control,
