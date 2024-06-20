@@ -10,8 +10,8 @@ public class InlineButtonMenu : ILayout
 
     public InlineButtonMenu(int rows, int columns)
     {
-        if (_rows < 1) throw new InvalidDataException("rows count should be  > 1!");
-        if (_columns < 1) throw new InvalidDataException("columns count should be  > 1!");
+        if (rows < 1) throw new InvalidDataException("rows count should be  > 1!");
+        if (columns < 1) throw new InvalidDataException("columns count should be  > 1!");
 
         _rows = rows;
         _columns = columns;

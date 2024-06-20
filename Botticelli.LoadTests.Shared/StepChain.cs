@@ -33,7 +33,6 @@ public class StepChain
             _stopwatch.Start();
             var stepInput = input;
             
-
             foreach (var step in _steps)
             {
                 if (step == _steps.LastOrDefault())
