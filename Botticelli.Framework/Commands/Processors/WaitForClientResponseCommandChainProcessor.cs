@@ -24,10 +24,10 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
         var bot = (BaseBot) Bot;
         bot.MessageReceived += (sender, args) =>
         {
-            foreach (var chatId in args.Message?.ChatIds)
+            foreach (var chatId in (args.Message?.ChatIds)
+                     .Where(chatId => _receivedMessages[chatId].LastModifiedAt < args.Message?.LastModifiedAt))
             {
-                if (_receivedMessages[chatId].LastModifiedAt < args.Message?.LastModifiedAt)
-                    _receivedMessages[chatId] = args.Message;
+                _receivedMessages[chatId] = args.Message;
             }
         };
     }
@@ -42,8 +42,12 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
         while (DateTime.Now - started > Timeout)
         {
             var chatId = message.ChatIds.First()!;
-            if (_receivedMessages[chatId].LastModifiedAt <= message.LastModifiedAt) 
+
+            if (_receivedMessages[chatId].LastModifiedAt <= message.LastModifiedAt)
+            {
+                Thread.Sleep(50);
                 continue;
+            }
 
             responseMessage = _receivedMessages[chatId];
             break;
