@@ -47,7 +47,9 @@ public class BotUpdateHandler : IBotUpdateHandler
                         ChatIdInnerIdLinks = new Dictionary<string, List<string>>
                                 {{update.CallbackQuery?.Message.Chat?.Id.ToString(), [update.CallbackQuery.Message?.MessageId.ToString()]}},
                         ChatIds = [update.CallbackQuery?.Message.Chat?.Id.ToString()],
-                        CallbackData = update.CallbackQuery?.Data ?? string.Empty
+                        CallbackData = update.CallbackQuery?.Data ?? string.Empty,
+                        CreatedAt = update.Message?.Date ?? DateTime.Now,
+                        LastModifiedAt = update.Message?.Date ?? DateTime.Now
                     };
                 else
                     return;
@@ -63,6 +65,7 @@ public class BotUpdateHandler : IBotUpdateHandler
                     Body = botMessage?.Text ?? string.Empty,
                     LastModifiedAt = botMessage.Date,
                     Attachments = new List<BaseAttachment>(5),
+                    CreatedAt = botMessage.Date,
                     From = new User
                     {
                         Id = botMessage.From?.Id.ToString(),
