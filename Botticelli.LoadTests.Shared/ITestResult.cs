@@ -6,3 +6,4 @@ public interface ITestResult
     public TimeSpan ExecutionTime { get; }
     public Dictionary<string, object> AdditionalFields { get; }
 }
+
