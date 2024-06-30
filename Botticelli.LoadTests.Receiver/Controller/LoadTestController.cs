@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Botticelli.LoadTests.Receiver.Controller;
 
 [ApiController]
-[Route("/load-tests")]
+// [Route("/load-tests")]
 public class LoadTestController(ILoadTestGate loadTestGate)
 {
-    [HttpGet]
+    [HttpGet("[action]")]
     public async Task<CommandResult> GetResponse(string command, string? args, TimeSpan timeout)
     {
         var cts = new CancellationTokenSource();

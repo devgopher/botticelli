@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Botticelli.Framework.Commands.Processors;
+using Botticelli.Interfaces;
 using Botticelli.LoadTests.Receiver.Result;
 using Botticelli.Shared.ValueObjects;
 
@@ -33,7 +34,9 @@ public class LoadTestGate : ILoadTestGate
             LastModifiedAt = DateTime.Now
         };
 
-        return Task.Factory.StartNew(() => _processors.Get(command)?.ProcessAsync(message, token), token);
+        var processor = _processors.Get(command);
+
+        return Task.Factory.StartNew(() => processor?.ProcessAsync(message, token), token);
     }
 
     public async Task<CommandResult> WaitForExecution(Task task, TimeSpan timeout, CancellationToken token)

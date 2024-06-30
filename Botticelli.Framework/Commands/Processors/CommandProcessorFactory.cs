@@ -9,10 +9,12 @@ public class CommandProcessorFactory
     private readonly Dictionary<Type, Type> _fluentTypes = new();
     private readonly Dictionary<Type, Type> _oldFashionedTypes = new();
     private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScope _scope;
 
     public CommandProcessorFactory(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
+        _scope = _serviceProvider.CreateScope();
     }
 
     public void AddCommandType(Type commandType, Type procType)
@@ -34,16 +36,14 @@ public class CommandProcessorFactory
         var canonized = CanonizeOldFashioned(command);
 
         if (_oldFashionedTypes.Keys.All(t => t.Name.Replace("Command", string.Empty) != canonized))
-            return _serviceProvider.GetRequiredService<CommandProcessor<Unknown>>();
+            return _scope.ServiceProvider.GetRequiredService<CommandProcessor<Unknown>>();
 
         var type = _oldFashionedTypes.First(k => k.Key
                                                      .Name
-                                                     .Replace("Command", string.Empty) == canonized
-                                                 && k.Key.IsAssignableFrom(typeof(ICommand)) &&
-                                                 !k.Key.IsAssignableFrom(typeof(IFluentCommand)))
+                                                     .Replace("Command", string.Empty) == canonized)
             .Value;
 
-        return _serviceProvider.GetRequiredService(type) as ICommandProcessor;
+        return _scope.ServiceProvider.GetRequiredService(type) as ICommandProcessor;
     }
 
     private static string CanonizeOldFashioned(string command) =>
@@ -59,7 +59,7 @@ public class CommandProcessorFactory
         var canonized = CanonizeFluent(command);
         var targetType = GetTypeByCommand(canonized);
 
-        return _serviceProvider.GetRequiredService(targetType) as IFluentCommandProcessor;
+        return _scope.ServiceProvider.GetRequiredService(targetType) as IFluentCommandProcessor;
     }
 
     private static string CanonizeFluent(string command) => command.ToLowerInvariant().Trim();

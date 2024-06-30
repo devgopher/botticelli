@@ -10,7 +10,7 @@ public class CommandResult
     /// <summary>
     /// Result string
     /// </summary>
-    public string ResultMessage { get; set; }
+    public string? ResultMessage { get; set; }
 
     /// <summary>
     /// Elapsed time

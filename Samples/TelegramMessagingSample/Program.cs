@@ -17,7 +17,6 @@ using TelegramMessagingSample;
 using TelegramMessagingSample.Settings;
 using Botticelli.LoadTests.Receiver.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +25,8 @@ var settings = builder.Configuration
     .Get<SampleSettings>();
 
 
-builder.Services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(typeof(LoadTestController).GetType().Assembly));
+var loadAsm = typeof(LoadTestController).Assembly;
+builder.Services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(loadAsm));
 
 builder.Services
        .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
@@ -64,5 +64,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+app.UseRouting();
+app.UseEndpoints(endpoints => endpoints.MapControllers());
 
 app.Run();
