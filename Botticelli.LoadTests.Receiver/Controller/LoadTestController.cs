@@ -1,43 +1,40 @@
 using System.Diagnostics;
-using System.Web.Mvc;
-using Botticelli.Framework.Commands;
 using Botticelli.LoadTests.Receiver.Result;
-using Botticelli.Shared.ValueObjects;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.LoadTests.Receiver.Controller;
 
-[Authorize(AuthenticationSchemes = "Bearer")]
-public class LoadTestController(ILoadTestGate loadTestGate) : ControllerBase
+[ApiController]
+[Route("/load-tests")]
+public class LoadTestController(ILoadTestGate loadTestGate)
 {
-    public async Task<CommandResult> GetResponse(ICommand command, TimeSpan timeout)
+    [HttpGet]
+    public async Task<CommandResult> GetResponse(string command, string? args, TimeSpan timeout)
     {
+        var cts = new CancellationTokenSource();
         var stopWatch = Stopwatch.StartNew();
-        var result = new CommandResult();
+        CommandResult? result;
         try
         {
-            var messageUid = await loadTestGate.ThrowCommand(command);
-            result.ResultMessage = await loadTestGate.WaitForResponse(messageUid, timeout);
-            result.Duration = stopWatch.Elapsed;
-            result.IsSuccess = false;
+            var task = loadTestGate.ThrowCommand(command, args ?? string.Empty, cts.Token);
+            
+            result = loadTestGate.WaitForExecution(task, timeout, cts.Token).Result;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            result.ResultMessage = new Message();
-            result.Duration = stopWatch.Elapsed;
-            result.IsSuccess = false;
+            result = new CommandResult
+            {
+                ResultMessage = $"Error {ex.Message}",
+                Duration = stopWatch.Elapsed,
+                IsSuccess = false
+            };
         }
         finally
         {
             stopWatch.Stop();
+            await cts.CancelAsync();
         }
 
         return result;
-    }
-
-    protected override void ExecuteCore()
-    {
-        throw new NotImplementedException();
     }
 }

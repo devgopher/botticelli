@@ -8,9 +8,9 @@ namespace Botticelli.LoadTests.Receiver.Result;
 public class CommandResult
 {
     /// <summary>
-    /// Response from a bot
+    /// Result string
     /// </summary>
-    public Message ResultMessage { get; set; }
+    public string ResultMessage { get; set; }
 
     /// <summary>
     /// Elapsed time
