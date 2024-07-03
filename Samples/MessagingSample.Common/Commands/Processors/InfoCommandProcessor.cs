@@ -35,7 +35,6 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
 
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
-        var chatId = message.ChatIds.FirstOrDefault();
         var greetingMessageRequest = new SendMessageRequest
         {
             Message = new Message
@@ -46,6 +45,6 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
             }
         };
 
-        await Bot.SendMessageAsync(greetingMessageRequest, _options, token);
+        await Bot?.SendMessageAsync(greetingMessageRequest, _options, token)!; // TODO: think about Bot mocks
     }
 }

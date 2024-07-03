@@ -25,9 +25,6 @@ var settings = builder.Configuration
     .Get<SampleSettings>();
 
 
-var loadAsm = typeof(LoadTestController).Assembly;
-builder.Services.AddControllers().PartManager.ApplicationParts.Add(new AssemblyPart(loadAsm));
-
 builder.Services
        .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
        .AddTelegramBot(builder.Configuration,
@@ -47,8 +44,9 @@ builder.Services
        .AddScoped<ILayoutParser, JsonLayoutParser>()
        .AddBotCommand<InfoCommand, InfoCommandProcessor<ReplyMarkupBase>, PassValidator<InfoCommand>>()
        .AddBotCommand<StartCommand, StartCommandProcessor<ReplyMarkupBase>, PassValidator<StartCommand>>()
-       .AddBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, PassValidator<StopCommand>>()
-       .AddLoadTesting<TelegramBot>();
+       .AddBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, PassValidator<StopCommand>>();
+
+       builder.AddLoadTesting<TelegramBot>();
 
 builder.Services.AddEndpointsApiExplorer()
        .AddSwaggerGen();
