@@ -1,24 +1,26 @@
 using System.Diagnostics;
+using Botticelli.LoadTests.Receiver.Models;
 using Botticelli.LoadTests.Receiver.Result;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Botticelli.LoadTests.Receiver.Controller;
 
 [ApiController]
-// [Route("/load-tests")]
+[Route("/load-tests")]
 public class LoadTestController(ILoadTestGate loadTestGate)
 {
-    [HttpGet("[action]")]
-    public async Task<CommandResult> GetResponse(string command, string? args, TimeSpan timeout)
+    [HttpPost("[action]")]
+    public async Task<CommandResult> SendCommandResponse([FromBody]SendCommandRequestModel model)
     {
         var cts = new CancellationTokenSource();
         var stopWatch = Stopwatch.StartNew();
         CommandResult? result;
+        
         try
         {
-            var task = loadTestGate.ThrowCommand(command, args ?? string.Empty, cts.Token);
+            var task = loadTestGate.ThrowCommand(model.Command, model.Args ?? string.Empty, cts.Token);
             
-            result = loadTestGate.WaitForExecution(task, timeout, cts.Token).Result;
+            result = loadTestGate.WaitForExecution(task, model.Timeout, cts.Token).Result;
         }
         catch (Exception ex)
         {
