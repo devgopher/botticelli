@@ -1,3 +1,4 @@
+using Botticelli.Bot.Interfaces.Processors;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Interfaces;
@@ -21,7 +22,7 @@ public abstract class CommandChainProcessor<TInputCommand> : CommandProcessor<TI
     {
     }
 
-    public ICommandChainProcessor Next { get; set; }
+    public ICommandProcessor Next { get; set; }
     
     public override Task ProcessAsync(Message message, CancellationToken token)
     {

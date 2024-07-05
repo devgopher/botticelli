@@ -1,3 +1,4 @@
+using Botticelli.Bot.Interfaces.Processors;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Exceptions;
@@ -65,5 +66,5 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
             _logger.LogInformation("No Next command for message {uid}", message.Uid);
     }
     
-    public ICommandChainProcessor Next { get; set; }
+    public ICommandProcessor Next { get; set; }
 }
