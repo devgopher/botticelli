@@ -21,14 +21,12 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
                                                          ICommandValidator<TInputCommand> validator,
                                                          MetricsProcessor metricsProcessor) : base(logger, validator, metricsProcessor)
     {
-        var bot = (BaseBot) Bot;
+        var bot = (BaseBot)Bot;
         bot.MessageReceived += (sender, args) =>
         {
-            foreach (var chatId in (args.Message?.ChatIds)
-                     .Where(chatId => _receivedMessages[chatId].LastModifiedAt < args.Message?.LastModifiedAt))
-            {
+            foreach (var chatId in args.Message?.ChatIds
+                                       .Where(chatId => _receivedMessages[chatId]?.LastModifiedAt < args.Message?.LastModifiedAt)!) 
                 _receivedMessages[chatId] = args.Message;
-            }
         };
     }
     
@@ -39,13 +37,14 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
         var started = DateTime.Now;
         Message responseMessage = null;
         
-        while (DateTime.Now - started > Timeout)
+        // waiting for input
+        while (DateTime.Now - started <= Timeout)
         {
             var chatId = message.ChatIds.First()!;
 
             if (_receivedMessages[chatId].LastModifiedAt <= message.LastModifiedAt)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(5);
                 continue;
             }
 
