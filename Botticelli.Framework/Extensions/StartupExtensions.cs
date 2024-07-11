@@ -31,6 +31,17 @@ public static class StartupExtensions
             .AddScoped<TCommandProcessor>()
             .AddScoped<ICommandValidator<TCommand>, TCommandValidator>();
 
+    public static CommandChainProcessorBuilder<TCommand> AddBotChainProcessedCommand<TCommand,
+                                                                       TCommandValidator>(this IServiceCollection services)
+            where TCommand : class, ICommand
+    {
+         services.AddScoped<TCommand>()
+                   .AddScoped<TCommandProcessor>()
+                   .AddScoped<ICommandValidator<TCommand>, TCommandValidator>();
+        
+        var builder = new CommandChainProcessorBuilder<TCommand>(services);
+    }
+
     public static IServiceProvider RegisterBotCommand<TCommand, TCommandProcessor, TBot>(this IServiceProvider sp)
         where TCommand : class, ICommand
         where TCommandProcessor : class, ICommandProcessor
@@ -44,6 +55,8 @@ public static class StartupExtensions
 
         return sp;
     }
+    
+    
 
     public static IServiceProvider RegisterFluentBotCommand<TCommand, TCommandProcessor, TBot>(this IServiceProvider sp)
         where TCommand : class, ICommand

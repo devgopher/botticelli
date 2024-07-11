@@ -22,7 +22,7 @@ public abstract class CommandChainProcessor<TInputCommand> : CommandProcessor<TI
     {
     }
 
-    public ICommandProcessor Next { get; set; }
+    public ICommandChainProcessor Next { get; set; }
     
     public override Task ProcessAsync(Message message, CancellationToken token)
     {

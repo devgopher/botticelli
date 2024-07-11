@@ -13,5 +13,5 @@ public interface ICommandChainProcessor<TInputCommand> : ICommandChainProcessor
 
 public interface ICommandChainProcessor : ICommandProcessor
 {
-    public ICommandProcessor Next { get; set; }
+    public ICommandChainProcessor Next { get; set; }
 }
