@@ -1,4 +1,5 @@
-﻿using Botticelli.Interfaces;
+﻿using Botticelli.Bot.Interfaces.Processors;
+using Botticelli.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Framework.Commands.Processors;
@@ -24,6 +25,16 @@ public class ClientProcessorFactory
         proc.SetServiceProvider(sp);
         ClientProcessors.Add(proc);
     }
+    
+    public void AddProcessor<TBot>(IServiceProvider sp, ICommandProcessor proc)
+            where TBot : IBot<TBot>
+    { 
+        var bot = sp.GetRequiredService<IBot<TBot>>();
+        proc.SetBot(bot);
+        proc.SetServiceProvider(sp);
+        ClientProcessors.Add(proc);
+    }
+
 
     public IEnumerable<IClientMessageProcessor> GetProcessors()
         => ClientProcessors.AsEnumerable()

@@ -246,6 +246,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Load Testing", "Load Testin
 		Load Testing\SampleBotLoadTests.jmx = Load Testing\SampleBotLoadTests.jmx
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramCommandChainSample", "Samples\TelegramCommandChainSample\TelegramCommandChainSample.csproj", "{E33D4F38-48D2-44C7-A56B-4CE080A5B593}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -488,6 +490,10 @@ Global
 		{08C4ED60-6F8E-40E0-B560-C13B268E242D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08C4ED60-6F8E-40E0-B560-C13B268E242D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08C4ED60-6F8E-40E0-B560-C13B268E242D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E33D4F38-48D2-44C7-A56B-4CE080A5B593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E33D4F38-48D2-44C7-A56B-4CE080A5B593}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E33D4F38-48D2-44C7-A56B-4CE080A5B593}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E33D4F38-48D2-44C7-A56B-4CE080A5B593}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -580,6 +586,7 @@ Global
 		{AE101F08-851A-4FAD-9076-FD4C0CADEC8B} = {588AA831-D236-4B72-AA0F-784BBCCFAD73}
 		{2B71513E-44FD-4776-9338-81054D9BE020} = {588AA831-D236-4B72-AA0F-784BBCCFAD73}
 		{08C4ED60-6F8E-40E0-B560-C13B268E242D} = {588AA831-D236-4B72-AA0F-784BBCCFAD73}
+		{E33D4F38-48D2-44C7-A56B-4CE080A5B593} = {2AD59714-541D-4794-9216-6EAB25F271DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

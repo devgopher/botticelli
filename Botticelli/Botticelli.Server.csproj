@@ -8,7 +8,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>disable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Version>0.5.0</Version>
+        <Version>0.6.0</Version>
         <Company>Botticelli</Company>
         <Copyright>BotticelliBots</Copyright>
         <PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>

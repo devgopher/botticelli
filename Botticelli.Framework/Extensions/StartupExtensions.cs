@@ -32,14 +32,30 @@ public static class StartupExtensions
             .AddScoped<ICommandValidator<TCommand>, TCommandValidator>();
 
     public static CommandChainProcessorBuilder<TCommand> AddBotChainProcessedCommand<TCommand,
-                                                                       TCommandValidator>(this IServiceCollection services)
-            where TCommand : class, ICommand
+                                                                                     TCommandValidator>(this IServiceCollection services)
+            where TCommand : class, ICommand where TCommandValidator : class, ICommandValidator<TCommand>
     {
-         services.AddScoped<TCommand>()
-                   .AddScoped<TCommandProcessor>()
-                   .AddScoped<ICommandValidator<TCommand>, TCommandValidator>();
-        
         var builder = new CommandChainProcessorBuilder<TCommand>(services);
+        
+        services.AddScoped<TCommand>()
+                .AddScoped<ICommandValidator<TCommand>, TCommandValidator>()
+                .AddScoped(_ => builder);
+        
+      return builder;
+    }
+
+    public static IServiceProvider RegisterBotChainedCommand<TCommand, TBot>(this IServiceProvider sp)
+            where TCommand : class, ICommand
+            where TBot : IBot<TBot>
+    {
+        var commandChainProcessorBuilder = sp.GetRequiredService<CommandChainProcessorBuilder<TCommand>>();
+        var processor = commandChainProcessorBuilder.Build();
+        
+        var clientProcessorFactory = sp.GetRequiredService<ClientProcessorFactory>();
+        
+        clientProcessorFactory.AddProcessor<TBot>(sp, processor);
+      
+        return sp;
     }
 
     public static IServiceProvider RegisterBotCommand<TCommand, TCommandProcessor, TBot>(this IServiceProvider sp)
@@ -56,8 +72,6 @@ public static class StartupExtensions
         return sp;
     }
     
-    
-
     public static IServiceProvider RegisterFluentBotCommand<TCommand, TCommandProcessor, TBot>(this IServiceProvider sp)
         where TCommand : class, ICommand
         where TCommandProcessor : class, ICommandProcessor
