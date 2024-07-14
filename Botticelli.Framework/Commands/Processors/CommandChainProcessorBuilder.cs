@@ -12,7 +12,8 @@ public class CommandChainProcessorBuilder<TInputCommand>(IServiceCollection serv
             where TNextProcessor : class, ICommandChainProcessor<TInputCommand>
     {
         _typesChain.Add(typeof(TNextProcessor));
-
+        services.AddScoped<TNextProcessor>();
+        
         return this;
     }
     
@@ -21,8 +22,7 @@ public class CommandChainProcessorBuilder<TInputCommand>(IServiceCollection serv
         if (!_typesChain.Any()) return null;
         
         // initializing chain processors...
-        foreach (var type in _typesChain) services.AddScoped(type);
-        
+ 
         var sp = services.BuildServiceProvider();
         
         _chainProcessor ??= sp.GetRequiredService(_typesChain.First()) as ICommandChainProcessor<TInputCommand>;
