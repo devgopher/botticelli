@@ -1,5 +1,6 @@
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 
@@ -20,15 +21,19 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
                                                          ICommandValidator<TInputCommand> validator,
                                                          MetricsProcessor metricsProcessor) : base(logger, validator, metricsProcessor)
     {
-        var bot = (BaseBot)Bot;
-        bot.MessageReceived += (sender, args) =>
+
+    }
+    
+    public virtual void SetBot(IBot bot)
+    {
+        ((BaseBot)bot).MessageReceived += (sender, args) =>
         {
             foreach (var chatId in args.Message?.ChatIds
                                        .Where(chatId => _receivedMessages[chatId]?.LastModifiedAt < args.Message?.LastModifiedAt)!) 
                 _receivedMessages[chatId] = args.Message;
         };
     }
-    
+
     public override async Task ProcessAsync(Message message, CancellationToken token)
     {
         await base.ProcessAsync(message, token);

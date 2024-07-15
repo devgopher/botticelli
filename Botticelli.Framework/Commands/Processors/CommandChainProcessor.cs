@@ -26,12 +26,13 @@ public abstract class CommandChainProcessor<TInputCommand> : CommandProcessor<TI
     
     public override async Task ProcessAsync(Message message, CancellationToken token)
     {
-        var processTask = base.ProcessAsync(message, token);
+        await base.ProcessAsync(message, token);
 
         _logger.LogDebug(Next == default ?
                                  $"{nameof(CommandChainProcessor<TInputCommand>)} : no next step, returning" :
                                  $"{nameof(CommandChainProcessor<TInputCommand>)} : next step is '{Next?.GetType().Name}'");
 
-        await Next?.ProcessAsync(message, token)!;
+        if (Next != default)
+            await Next.ProcessAsync(message, token)!;
     }
 }

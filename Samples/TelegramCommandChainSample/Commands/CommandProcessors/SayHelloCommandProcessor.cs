@@ -7,18 +7,27 @@ using Botticelli.Shared.ValueObjects;
 
 namespace TelegramCommandChainSample.Commands.CommandProcessors;
 
-public class SayHelloCommandProcessor : CommandChainProcessor<SayHelloCommand>
+public class SayHelloCommandProcessor : WaitForClientResponseCommandChainProcessor<SayHelloCommand>
 {
-    public SayHelloCommandProcessor(ILogger<CommandChainProcessor<SayHelloCommand>> logger, ICommandValidator<SayHelloCommand> validator, MetricsProcessor metricsProcessor) : base(logger, validator, metricsProcessor)
+    public SayHelloCommandProcessor(ILogger<CommandChainProcessor<SayHelloCommand>> logger, 
+                                    ICommandValidator<SayHelloCommand> validator, 
+                                    MetricsProcessor metricsProcessor) : base(logger, validator, metricsProcessor)
     {
     }
 
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
-        message.Body = "What's your name?";
+        var responseMessage = new Message
+        {
+            ChatIdInnerIdLinks = message.ChatIdInnerIdLinks,
+            ChatIds = message.ChatIds,
+            Subject = string.Empty,
+            Body = "What's your name?"
+        };
+        
         await Bot.SendMessageAsync(new SendMessageRequest
         {
-            Message = message
+            Message = responseMessage
         }, token);
     }
 }

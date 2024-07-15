@@ -98,7 +98,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         }
     }
 
-    public void SetBot(IBot bot)
+    public virtual void SetBot(IBot bot)
         => Bot = bot;
 
     public void SetServiceProvider(IServiceProvider sp)
