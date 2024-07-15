@@ -15,6 +15,7 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
 {
     private readonly Dictionary<string, Message> _receivedMessages = new(100);
     private TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(1);
+    private bool _switchOn = false;
 
 
     protected WaitForClientResponseCommandChainProcessor(ILogger<CommandChainProcessor<TInputCommand>> logger,
@@ -26,48 +27,66 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
     
     public virtual void SetBot(IBot bot)
     {
-        ((BaseBot)bot).MessageReceived += (sender, args) =>
+        Bot = bot;
+        
+        ((BaseBot)Bot).MessageReceived += (sender, args) =>
         {
-            foreach (var chatId in args.Message?.ChatIds
-                                       .Where(chatId => _receivedMessages[chatId]?.LastModifiedAt < args.Message?.LastModifiedAt)!) 
+            if (!_switchOn)
+                return;
+                
+            foreach (var chatId in args.Message?.ChatIds?.Where(chatId =>
+                         !_receivedMessages.ContainsKey(chatId) || _receivedMessages[chatId]?.LastModifiedAt <
+                         args.Message?.LastModifiedAt)!)
                 _receivedMessages[chatId] = args.Message;
         };
     }
 
     public override async Task ProcessAsync(Message message, CancellationToken token)
     {
-        await base.ProcessAsync(message, token);
-        
-        var started = DateTime.Now;
-        Message responseMessage = null;
-        
-        // waiting for input
-        while (DateTime.Now - started <= Timeout)
+        _switchOn = true;
+        try
         {
-            var chatId = message.ChatIds.First()!;
+            await base.ProcessAsync(message, token);
 
-            if (_receivedMessages[chatId].LastModifiedAt <= message.LastModifiedAt)
+            var started = DateTime.Now;
+            Message responseMessage = null;
+
+            // waiting for input
+            while (DateTime.Now - started <= Timeout)
             {
-                Thread.Sleep(5);
-                continue;
+                var chatId = message.ChatIds.First()!;
+                if (!_receivedMessages.ContainsKey(chatId))
+                    continue;
+
+                if (_receivedMessages[chatId].LastModifiedAt <= message.LastModifiedAt)
+                {
+                    Thread.Sleep(5);
+                    continue;
+                }
+
+                responseMessage = _receivedMessages[chatId];
+                break;
             }
 
-            responseMessage = _receivedMessages[chatId];
-            break;
-        }
+            if (responseMessage == null)
+            {
+                _logger.LogInformation("No response from a client for message {uid}", message.Uid);
 
-        if (responseMessage == null)
+                return;
+            }
+
+            responseMessage.ProcessingArgs?.Add(message.Body);
+            
+            if (Next != null)
+                await Next.ProcessAsync(responseMessage, token);
+            else
+                _logger.LogInformation("No Next command for message {uid}", message.Uid);
+        }
+        finally
         {
-            _logger.LogInformation("No response from a client for message {uid}", message.Uid);
-
-            return;
+            _switchOn = false;
         }
-        
-        if (Next != null)
-            await Next.ProcessAsync(responseMessage, token);
-        else
-            _logger.LogInformation("No Next command for message {uid}", message.Uid);
     }
-    
+
     public ICommandChainProcessor Next { get; set; }
 }

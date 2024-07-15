@@ -14,7 +14,7 @@ public class SayHelloFinalCommandProcessor : CommandChainProcessor<SayHelloComma
 
     protected override async Task InnerProcess(Message message, string args, CancellationToken token)
     {
-        message.Body = $"Have a nice day, dear {message.Body}!";
+        message.Body = $"Have a nice day, dear {message.ProcessingArgs?.FirstOrDefault() ?? string.Empty}!";
         await Bot.SendMessageAsync(new SendMessageRequest
         {
             Message = message

@@ -32,12 +32,6 @@ public class CommandChainProcessorBuilder<TInputCommand>(IServiceCollection serv
         foreach (var type in _typesChain.Skip(1))
         {
             var proc = sp.GetRequiredService(type) as ICommandChainProcessor<TInputCommand>;
-            
-            if (_chainProcessor is {Next: null})
-            {
-                _chainProcessor.Next = proc;
-                continue;
-            }
 
             prev.Next = proc;
 

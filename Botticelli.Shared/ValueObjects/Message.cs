@@ -10,12 +10,14 @@ public class Message
     {
         Uid = Guid.NewGuid().ToString();
         CreatedAt = DateTime.Now;
+        ProcessingArgs = new List<string>(1);
     }
 
     public Message(string uid)
     {
         Uid = uid;
         CreatedAt = DateTime.Now;
+        ProcessingArgs = new List<string>(1);
     }
 
     /// <summary>
@@ -42,6 +44,11 @@ public class Message
     ///     Message body
     /// </summary>
     public string? Body { get; set; }
+
+    /// <summary>
+    /// Message arguments for processing
+    /// </summary>
+    public IList<string>? ProcessingArgs { get; set; }
 
     /// <summary>
     ///     Message attachments

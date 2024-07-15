@@ -1,4 +1,5 @@
 ﻿using Botticelli.Framework.Commands.Processors;
+using Botticelli.Framework.Events;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
@@ -96,6 +97,11 @@ public class BotUpdateHandler : IBotUpdateHandler
 
             await Process(botticelliMessage, cancellationToken);
 
+            MessageReceived?.Invoke(this, new MessageReceivedBotEventArgs
+            {
+                Message = botticelliMessage
+            });
+            
             _logger.LogDebug($"{nameof(HandleUpdateAsync)}() finished...");
         }
         catch (Exception ex)
