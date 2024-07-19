@@ -24,15 +24,15 @@ public abstract class CommandChainProcessor<TInputCommand> : CommandProcessor<TI
 
     public ICommandChainProcessor Next { get; set; }
     
-    public override async Task ProcessAsync(Message message, CancellationToken token)
-    {
-        await base.ProcessAsync(message, token);
-
-        _logger.LogDebug(Next == default ?
-                                 $"{nameof(CommandChainProcessor<TInputCommand>)} : no next step, returning" :
-                                 $"{nameof(CommandChainProcessor<TInputCommand>)} : next step is '{Next?.GetType().Name}'");
-
-        if (Next != default)
-            await Next.ProcessAsync(message, token)!;
-    }
+    // public override async Task ProcessAsync(Message message, CancellationToken token)
+    // {
+    //     await base.ProcessAsync(message, token);
+    //
+    //     _logger.LogDebug(Next == default ?
+    //                              $"{nameof(CommandChainProcessor<TInputCommand>)} : no next step, returning" :
+    //                              $"{nameof(CommandChainProcessor<TInputCommand>)} : next step is '{Next?.GetType().Name}'");
+    //
+    //     if (Next != default)
+    //         await Next.ProcessAsync(message, token)!;
+    // }
 }

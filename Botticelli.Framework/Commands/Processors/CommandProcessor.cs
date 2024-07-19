@@ -34,6 +34,8 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     {
         try
         {
+            if (message.From!.Id!.Equals(Bot.BotUserId, StringComparison.InvariantCulture)) return;
+            
             if (string.IsNullOrWhiteSpace(message.Body) &&
                 message.Attachments == default &&
                 message.Location == default &&

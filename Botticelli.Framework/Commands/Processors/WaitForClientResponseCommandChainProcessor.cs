@@ -12,85 +12,69 @@ namespace Botticelli.Framework.Commands.Processors;
 /// </summary>
 /// <typeparam name="TInputCommand"></typeparam>
 public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> : CommandProcessor<TInputCommand>,
-    ICommandChainProcessor<TInputCommand>
-    where TInputCommand : class, ICommand
+                                                                                  ICommandChainProcessor<TInputCommand>
+        where TInputCommand : class, ICommand
 {
-    private TimeSpan Timeout { get; } = TimeSpan.FromMinutes(1);
-    private readonly IEasyCachingProvider _cache;
+    private readonly Dictionary<string, State> _chatStates = new(100);
 
     protected WaitForClientResponseCommandChainProcessor(ILogger<CommandChainProcessor<TInputCommand>> logger,
-        ICommandValidator<TInputCommand> validator,
-        MetricsProcessor metricsProcessor,
-        IEasyCachingProviderFactory factory) : base(logger, validator, metricsProcessor)
+                                                         ICommandValidator<TInputCommand> validator,
+                                                         MetricsProcessor metricsProcessor,
+                                                         IEasyCachingProviderFactory factory) : base(logger, validator, metricsProcessor)
     {
-        _cache = factory.GetCachingProvider("botticelli_wait_for_response");
     }
+
+    private TimeSpan Timeout { get; } = TimeSpan.FromMinutes(10);
 
     public virtual void SetBot(IBot bot)
     {
         Bot = bot;
-
-        ((BaseBot)Bot).MessageReceived += async (sender, args) =>
-        {
-            var chats = args.Message?.ChatIds ?? [..Array.Empty<string>()];
-
-            foreach (var chatId in chats)
-            {
-                var checkMsg = await _cache.GetAsync<Message>(chatId);
-                switch (checkMsg.IsNull)
-                {
-                    case false when args.Message?.Type == Message.MessageType.Messaging
-                                    && checkMsg.Value.LastModifiedAt < args.Message?.LastModifiedAt
-                                    && args.Message?.From?.Id != Bot.BotUserId:
-                    case true:
-                        if (args.Message?.Type == Message.MessageType.Messaging && args.Message?.From?.Id != Bot.BotUserId)
-                            await _cache.SetAsync(chatId, args.Message, TimeSpan.FromMinutes(1));
-                        break;
-                }
-            }
-        };
     }
 
     public override async Task ProcessAsync(Message message, CancellationToken token)
     {
         await base.ProcessAsync(message, token);
 
-        if (message.Type != Message.MessageType.Messaging)
-            return;
+        if (message.Type != Message.MessageType.Messaging) return;
 
-        var started = DateTime.Now;
-        Message responseMessage = null;
-
-        // waiting for input
-        while (DateTime.Now - started <= Timeout)
+        foreach (var chatId in message.ChatIds)
         {
-            var chatId = message.ChatIds.First()!;
-            var checkMsg = await _cache.GetAsync<Message>(chatId, token);
-
-            if (checkMsg.IsNull || (checkMsg.Value.Type != Message.MessageType.Messaging && checkMsg.Value.From?.Id == this.Bot.BotUserId))
-                continue;
+            if (!_chatStates.ContainsKey(chatId)) _chatStates[chatId] = State.WaitingForMessage;
             
-            responseMessage = checkMsg.Value;
+            // checks state for each chat in a message
+            if (_chatStates[chatId] != State.WaitingForMessage) continue;
+
+            if (DateTime.UtcNow - message.LastModifiedAt > Timeout) continue;
+
+            var responseMessage = message;
+            responseMessage.ChatIds = [chatId];
             responseMessage.ProcessingArgs ??= new List<string>();
-            responseMessage.ProcessingArgs?.Add(checkMsg.Value.Body);
+            responseMessage.ProcessingArgs?.Add(message.Body);
 
-            break;
+            ChangeState(message, chatId);
+
+            if (Next != null)
+                await Next.ProcessAsync(responseMessage, token);
+            else
+                _logger.LogInformation("No Next command for message {uid}", message.Uid);
         }
-
-        if (responseMessage == null)
-        {
-            _logger.LogInformation("No response from a client for message {uid}", message.Uid);
-
-            return;
-        }
-
-        responseMessage.ProcessingArgs?.Add(message.Body);
-
-        if (Next != null)
-            await Next.ProcessAsync(responseMessage, token);
-        else
-            _logger.LogInformation("No Next command for message {uid}", message.Uid);
     }
 
     public ICommandChainProcessor Next { get; set; }
+
+    private void ChangeState(Message message, string chatId)
+    {
+        _chatStates[chatId] = message.Type switch
+        {
+            Message.MessageType.Command   => State.WaitingForMessage,
+            Message.MessageType.Messaging => State.WaitingForCommand,
+            _                             => State.WaitingForCommand
+        };
+    }
+
+    private enum State
+    {
+        WaitingForCommand,
+        WaitingForMessage
+    }
 }
