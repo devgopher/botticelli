@@ -1,17 +1,18 @@
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
+using EasyCaching.Core;
 
 namespace TelegramCommandChainSample.Commands.CommandProcessors;
 
 public class SayHelloCommandProcessor : WaitForClientResponseCommandChainProcessor<SayHelloCommand>
 {
-    public SayHelloCommandProcessor(ILogger<CommandChainProcessor<SayHelloCommand>> logger, 
-                                    ICommandValidator<SayHelloCommand> validator, 
-                                    MetricsProcessor metricsProcessor) : base(logger, validator, metricsProcessor)
+    public SayHelloCommandProcessor(ILogger<CommandChainProcessor<SayHelloCommand>> logger,
+        ICommandValidator<SayHelloCommand> validator,
+        MetricsProcessor metricsProcessor,
+        IEasyCachingProviderFactory factory) : base(logger, validator, metricsProcessor, factory)
     {
     }
 
@@ -24,7 +25,7 @@ public class SayHelloCommandProcessor : WaitForClientResponseCommandChainProcess
             Subject = string.Empty,
             Body = "What's your name?"
         };
-        
+
         await Bot.SendMessageAsync(new SendMessageRequest
         {
             Message = responseMessage

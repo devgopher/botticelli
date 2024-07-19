@@ -52,6 +52,8 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
 
             if (SimpleCommandRegex().IsMatch(body))
             {
+                message.Type = Message.MessageType.Command;
+                
                 var match = SimpleCommandRegex().Matches(body)
                     .FirstOrDefault();
 
@@ -69,6 +71,8 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
             }
             else if (ArgsCommandRegex().IsMatch(body))
             {
+                message.Type = Message.MessageType.Command;
+                
                 var match = ArgsCommandRegex().Matches(body)
                     .FirstOrDefault();
 
@@ -85,6 +89,10 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
                     token);
 
                 SendMetric(MetricNames.CommandReceived);
+            }
+            else
+            {
+                message.Type = Message.MessageType.Messaging;
             }
 
             if (message.Location != default) await InnerProcessLocation(message, string.Empty, token);

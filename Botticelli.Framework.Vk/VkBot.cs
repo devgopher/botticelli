@@ -39,6 +39,7 @@ public class VkBot : BaseBot<VkBot>
         _secureStorage = secureStorage;
         _handler = handler;
         _vkUploader = vkUploader;
+        BotUserId = null; // TODO get it from VK
     }
 
     public override BotType Type => BotType.Vk;

@@ -8,6 +8,7 @@ using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.Extensions;
+using EasyCaching.InMemory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +20,27 @@ public static class StartupExtensions
         services.AddSingleton<ClientProcessorFactory>()
                 .AddSingleton<CommandProcessorFactory>()
                 .AddSharedValidation()
-                .AddMetrics(config);
+                .AddMetrics(config)
+                .AddEasyCaching(options => 
+                {
+                    options.UseInMemory(config => 
+                    {
+                        config.DBConfig = new InMemoryCachingOptions
+                        {
+                            ExpirationScanFrequency = 10, 
+                            // total count of cache items, default value is 10000
+                            SizeLimit = 5000 
+                        };
+                        // the max random second will be added to cache's expiration, default value is 120
+                        config.MaxRdSecond = 10;
+                        // whether enable logging, default is false
+                        config.EnableLogging = false;
+                        // mutex key's alive time(ms), default is 5000
+                        config.LockMs = 500;
+                        // when mutex key alive, it will sleep some time, default is 300
+                        config.SleepMs = 30;
+                    }, "botticelli_wait_for_response");
+                });
 
     public static IServiceCollection AddBotCommand<TCommand,
         TCommandProcessor,

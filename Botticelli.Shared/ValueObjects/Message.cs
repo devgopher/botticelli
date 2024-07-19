@@ -6,6 +6,25 @@
 [Serializable]
 public class Message
 {
+    /// <summary>
+    /// Type of message
+    /// </summary>
+    public enum MessageType
+    {
+        /// <summary>
+        /// Not defined
+        /// </summary>
+        NotClassified,
+        /// <summary>
+        /// A simple texting message
+        /// </summary>
+        Messaging,
+        /// <summary>
+        /// A command message
+        /// </summary>
+        Command
+    }
+    
     public Message()
     {
         Uid = Guid.NewGuid().ToString();
@@ -20,6 +39,11 @@ public class Message
         ProcessingArgs = new List<string>(1);
     }
 
+    /// <summary>
+    ///     Message type
+    /// </summary>
+    public virtual MessageType Type { get ; set; } =  MessageType.Messaging;
+    
     /// <summary>
     ///     Message uid
     /// </summary>

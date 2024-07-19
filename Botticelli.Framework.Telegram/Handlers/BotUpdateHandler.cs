@@ -50,7 +50,16 @@ public class BotUpdateHandler : IBotUpdateHandler
                         ChatIds = [update.CallbackQuery?.Message.Chat?.Id.ToString()],
                         CallbackData = update.CallbackQuery?.Data ?? string.Empty,
                         CreatedAt = update.Message?.Date ?? DateTime.Now,
-                        LastModifiedAt = update.Message?.Date ?? DateTime.Now
+                        LastModifiedAt = update.Message?.Date ?? DateTime.Now,
+                        From = new User
+                        {
+                            Id = botMessage.From?.Id.ToString(),
+                            Name = botMessage.From?.FirstName,
+                            Surname = botMessage.From?.LastName,
+                            Info = string.Empty,
+                            IsBot = botMessage.From?.IsBot,
+                            NickName = botMessage.From?.Username
+                        },
                     };
                 else
                     return;

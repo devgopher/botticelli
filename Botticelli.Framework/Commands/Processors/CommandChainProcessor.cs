@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Framework.Commands.Processors;
 
 /// <summary>
-/// A command chain processor means, that we've a command on on input and several step to process it
+/// A command chain processor means, that we've a command on input and several step to process it
 /// During a processing every processor changes values in 
 /// </summary>
 /// <typeparam name="TInputCommand"></typeparam>

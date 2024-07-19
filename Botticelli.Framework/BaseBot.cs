@@ -138,6 +138,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
     }
 
     public abstract BotType Type { get; }
+    public string BotUserId { get; set; }
 
     protected abstract Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token);
 

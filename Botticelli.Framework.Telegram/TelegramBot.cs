@@ -45,6 +45,8 @@ public class TelegramBot : BaseBot<TelegramBot>
         _handler = handler;
         _secureStorage = secureStorage;
 
+        BotUserId = _client.BotId.ToString();
+
         // Migration to a bot context instead of simple bot key
         _secureStorage.MigrateToBotContext(BotDataUtils.GetBotId());
     }
