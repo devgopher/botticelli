@@ -30,11 +30,28 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         _command = GetOldFashionedCommandName(typeof(TCommand).Name);
     }
 
+    protected void Classify(ref Message message)
+    {
+        var body = GetBody(message);
+        
+        if (SimpleCommandRegex().IsMatch(body))
+            message.Type = Message.MessageType.Command;
+        else if (ArgsCommandRegex().IsMatch(body))
+            message.Type = Message.MessageType.Command;
+        else message.Type = Message.MessageType.Messaging;
+    }
+
+    private static string GetBody(Message message) =>
+            !string.IsNullOrWhiteSpace(message.CallbackData) ? message.CallbackData : !string.IsNullOrWhiteSpace(message.Body) 
+                    ? message.Body : string.Empty;
+
     public virtual async Task ProcessAsync(Message message, CancellationToken token)
     {
         try
         {
             if (message.From!.Id!.Equals(Bot.BotUserId, StringComparison.InvariantCulture)) return;
+
+            Classify(ref message);
             
             if (string.IsNullOrWhiteSpace(message.Body) &&
                 message.Attachments == default &&
@@ -49,13 +66,10 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
             }
 
             // if we've any callback data, lets assume , that it is a command, if not - see in a message body
-            var body = !string.IsNullOrWhiteSpace(message.CallbackData) ? message.CallbackData : !string.IsNullOrWhiteSpace(message.Body) 
-                    ? message.Body : string.Empty;
+            var body = GetBody(message);
 
             if (SimpleCommandRegex().IsMatch(body))
             {
-                message.Type = Message.MessageType.Command;
-                
                 var match = SimpleCommandRegex().Matches(body)
                     .FirstOrDefault();
 
@@ -73,8 +87,6 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
             }
             else if (ArgsCommandRegex().IsMatch(body))
             {
-                message.Type = Message.MessageType.Command;
-                
                 var match = ArgsCommandRegex().Matches(body)
                     .FirstOrDefault();
 
@@ -94,7 +106,9 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
             }
             else
             {
-                message.Type = Message.MessageType.Messaging;
+                await ValidateAndProcess(message,
+                                         string.Empty,
+                                         token);
             }
 
             if (message.Location != default) await InnerProcessLocation(message, string.Empty, token);
@@ -127,6 +141,15 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         string args,
         CancellationToken token)
     {
+        if (message.Type == Message.MessageType.Messaging)
+        {
+            SendMetric();
+
+            await InnerProcess(message, args, token);
+
+            return;
+        }
+        
         if (await _validator.Validate(message.ChatIds, message.Body))
         {
             SendMetric();

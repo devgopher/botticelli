@@ -2,17 +2,25 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Framework.Commands.Processors;
 
-public class CommandChainProcessorBuilder<TInputCommand>(IServiceCollection services)
-        where TInputCommand : class, ICommand
+public class CommandChainProcessorBuilder<TInputCommand> where TInputCommand : class, ICommand
 {
     private ICommandChainProcessor<TInputCommand> _chainProcessor;
-    private readonly List<Type> _typesChain = new(2);
+    private readonly List<Type> _typesChain = new(3);
+    private readonly IServiceCollection _services;
+
+    public CommandChainProcessorBuilder(IServiceCollection services)
+    {
+        _services = services;
+        
+        _typesChain.Add(typeof(CommandChainFirstElementProcessor<TInputCommand>));
+        _services.AddScoped<CommandChainFirstElementProcessor<TInputCommand>>();
+    }
 
     public CommandChainProcessorBuilder<TInputCommand> AddNext<TNextProcessor>()
             where TNextProcessor : class, ICommandChainProcessor<TInputCommand>
     {
         _typesChain.Add(typeof(TNextProcessor));
-        services.AddScoped<TNextProcessor>();
+        _services.AddScoped<TNextProcessor>();
         
         return this;
     }
@@ -23,7 +31,7 @@ public class CommandChainProcessorBuilder<TInputCommand>(IServiceCollection serv
         
         // initializing chain processors...
  
-        var sp = services.BuildServiceProvider();
+        var sp = _services.BuildServiceProvider();
         
         _chainProcessor ??= sp.GetRequiredService(_typesChain.First()) as ICommandChainProcessor<TInputCommand>;
 

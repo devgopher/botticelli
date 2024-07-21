@@ -12,7 +12,7 @@ public class SayHelloCommandProcessor : WaitForClientResponseCommandChainProcess
     public SayHelloCommandProcessor(ILogger<CommandChainProcessor<SayHelloCommand>> logger,
         ICommandValidator<SayHelloCommand> validator,
         MetricsProcessor metricsProcessor,
-        IEasyCachingProviderFactory factory) : base(logger, validator, metricsProcessor, factory)
+        IEasyCachingProviderFactory factory) : base(logger, validator, metricsProcessor)
     {
     }
 

@@ -123,12 +123,15 @@ public class BotUpdateHandler : IBotUpdateHandler
 
         if (token is { CanBeCanceled: true, IsCancellationRequested: true }) return;
 
-        var clientTasks = _processorFactory
-            .GetProcessors()
+        var clientNonChainedTasks = _processorFactory
+            .GetProcessors(excludeChain: true)
             .Select(p => p.ProcessAsync(request, token));
 
+        var clientChainedTasks = _processorFactory
+                                    .GetCommandChainProcessors()
+                                    .Select(p => p.ProcessAsync(request, token));
 
-        Task.WaitAll(clientTasks.ToArray());
+        Task.WaitAll(clientNonChainedTasks.Concat(clientChainedTasks).ToArray());
 
         _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
     }

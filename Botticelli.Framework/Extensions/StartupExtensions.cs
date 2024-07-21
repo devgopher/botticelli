@@ -74,12 +74,12 @@ public static class StartupExtensions
         
         var clientProcessorFactory = sp.GetRequiredService<ClientProcessorFactory>();
         
-        clientProcessorFactory.AddProcessor<TBot>(sp, processor);
+        clientProcessorFactory.AddSingleProcessor<TBot>(sp, processor);
         var nextProcessor = processor.Next;
 
         while (nextProcessor != default)
         {
-            clientProcessorFactory.AddProcessor<TBot>(sp, nextProcessor);
+            clientProcessorFactory.AddSingleProcessor<TBot>(sp, nextProcessor);
             nextProcessor = nextProcessor.Next;
         }
       
