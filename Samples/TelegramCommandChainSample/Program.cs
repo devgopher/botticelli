@@ -51,7 +51,8 @@ builder.Services
 
 // Command processing chain is being initialized here...
 builder.Services.AddBotChainProcessedCommand<SayHelloCommand, PassValidator<SayHelloCommand>>()
-       .AddNext<SayHelloCommandProcessor>()
+       .AddNext<GetNameCommandProcessor>()
+       .AddNext<GetSurnameCommandProcessor>()
        .AddNext<SayHelloFinalCommandProcessor>();
 
 
