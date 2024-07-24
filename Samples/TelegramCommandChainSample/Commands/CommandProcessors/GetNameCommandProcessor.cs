@@ -6,10 +6,10 @@ using Botticelli.Shared.ValueObjects;
 
 namespace TelegramCommandChainSample.Commands.CommandProcessors;
 
-public class GetNameCommandProcessor : WaitForClientResponseCommandChainProcessor<SayHelloCommand>
+public class GetNameCommandProcessor : WaitForClientResponseCommandChainProcessor<GetNameCommand>
 {
-    public GetNameCommandProcessor(ILogger<CommandChainProcessor<SayHelloCommand>> logger,
-        ICommandValidator<SayHelloCommand> validator,
+    public GetNameCommandProcessor(ILogger<CommandChainProcessor<GetNameCommand>> logger,
+        ICommandValidator<GetNameCommand> validator,
         MetricsProcessor metricsProcessor) : base(logger, validator, metricsProcessor)
     {
     }

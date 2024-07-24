@@ -2,7 +2,7 @@ using Botticelli.Framework.Commands;
 
 namespace TelegramCommandChainSample.Commands;
 
-public class SayHelloCommand : ICommand
+public class GetNameCommand : ICommand
 {
     public Guid Id { get; }
 }

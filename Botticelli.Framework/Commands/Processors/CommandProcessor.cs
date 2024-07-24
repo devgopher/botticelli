@@ -14,7 +14,7 @@ namespace Botticelli.Framework.Commands.Processors;
 public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     where TCommand : class, ICommand
 {
-    private readonly string _command;
+    protected readonly string Command;
     protected readonly ILogger _logger;
     private readonly MetricsProcessor _metricsProcessor;
     private readonly ICommandValidator<TCommand> _validator;
@@ -27,7 +27,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         _logger = logger;
         _validator = validator;
         _metricsProcessor = metricsProcessor;
-        _command = GetOldFashionedCommandName(typeof(TCommand).Name);
+        Command = GetOldFashionedCommandName(typeof(TCommand).Name);
     }
 
     protected void Classify(ref Message message)
@@ -77,7 +77,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
 
                 var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
-                if (commandName != _command) return;
+                if (commandName != Command) return;
 
                 await ValidateAndProcess(message,
                     string.Empty,
@@ -96,7 +96,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
 
                 var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
-                if (commandName != _command) return;
+                if (commandName != Command) return;
 
                 await ValidateAndProcess(message,
                     argsString,
