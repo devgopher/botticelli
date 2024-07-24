@@ -6,18 +6,22 @@ using Botticelli.Shared.ValueObjects;
 
 namespace TelegramCommandChainSample.Commands.CommandProcessors;
 
-public class SayHelloFinalCommandProcessor : CommandChainProcessor<SayHelloCommand>
+public class SayHelloFinalCommandProcessor : CommandChainProcessor<GetNameCommand>
 {
-    public SayHelloFinalCommandProcessor(ILogger<CommandChainProcessor<SayHelloCommand>> logger, ICommandValidator<SayHelloCommand> validator, MetricsProcessor metricsProcessor) : base(logger, validator, metricsProcessor)
+    public SayHelloFinalCommandProcessor(ILogger<CommandChainProcessor<GetNameCommand>> logger,
+        ICommandValidator<GetNameCommand> validator, MetricsProcessor metricsProcessor) : base(logger, validator,
+        metricsProcessor)
     {
     }
 
-    protected override async Task InnerProcess(Message message, string args, CancellationToken token)
+    public override async Task ProcessAsync(Message message, CancellationToken token)
     {
-        message.Body = $"Have a nice day, dear {message.Body ?? string.Empty}!";
+        message.Body = $"Have a nice day, dear {string.Join(' ', message.ProcessingArgs ?? new List<string>())}!";
         await Bot.SendMessageAsync(new SendMessageRequest
         {
             Message = message
         }, token);
     }
+
+    protected override Task InnerProcess(Message message, string args, CancellationToken token) => Task.CompletedTask;
 }

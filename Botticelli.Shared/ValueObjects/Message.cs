@@ -12,10 +12,6 @@ public class Message
     public enum MessageType
     {
         /// <summary>
-        /// Not defined
-        /// </summary>
-        NotClassified,
-        /// <summary>
         /// A simple texting message
         /// </summary>
         Messaging,

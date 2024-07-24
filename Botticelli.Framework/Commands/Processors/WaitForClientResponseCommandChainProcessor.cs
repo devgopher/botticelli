@@ -31,19 +31,21 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
         if (message.Type != Message.MessageType.Messaging)
         {
             await base.ProcessAsync(message, token);
+            
             return;
         }
 
+        if (DateTime.UtcNow - message.LastModifiedAt > Timeout)
+            return;
+        
         foreach (var chatId in message.ChatIds)
         {
-            if (DateTime.UtcNow - message.LastModifiedAt > Timeout) continue;
-
-            var responseMessage = message;
-            responseMessage.ChatIds = [chatId];
-            responseMessage.ProcessingArgs ??= new List<string>();
-
+            message.ChatIds = [chatId];
+            message.ProcessingArgs ??= new List<string>();
+            message.ProcessingArgs.Add(message.Body);
+          
             if (Next != null)
-                await Next.ProcessAsync(responseMessage, token);
+                await Next.ProcessAsync(message, token);
             else
                 _logger.LogInformation("No Next command for message {uid}", message.Uid);
         }

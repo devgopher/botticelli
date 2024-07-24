@@ -50,9 +50,8 @@ builder.Services
 
 
 // Command processing chain is being initialized here...
-builder.Services.AddBotChainProcessedCommand<SayHelloCommand, PassValidator<SayHelloCommand>>()
+builder.Services.AddBotChainProcessedCommand<GetNameCommand, PassValidator<GetNameCommand>>()
        .AddNext<GetNameCommandProcessor>()
-       .AddNext<GetSurnameCommandProcessor>()
        .AddNext<SayHelloFinalCommandProcessor>();
 
 
@@ -61,7 +60,7 @@ builder.Services.AddEndpointsApiExplorer()
 
 var app = builder.Build();
 
-app.Services.RegisterBotChainedCommand<SayHelloCommand, TelegramBot>();
+app.Services.RegisterBotChainedCommand<GetNameCommand, TelegramBot>();
 
 if (app.Environment.IsDevelopment())
 {
