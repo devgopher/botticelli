@@ -43,17 +43,19 @@ public class BotUpdateHandler : IBotUpdateHandler
             if (botMessage == null)
             {
                 if (update.CallbackQuery != null)
+                {
+                    botMessage = update.CallbackQuery.Message;
                     botticelliMessage = new Message()
                     {
                         ChatIdInnerIdLinks = new Dictionary<string, List<string>>
-                                {{update.CallbackQuery?.Message.Chat?.Id.ToString(), [update.CallbackQuery.Message?.MessageId.ToString()]}},
-                        ChatIds = [update.CallbackQuery?.Message.Chat?.Id.ToString()],
+                                {{botMessage.Chat?.Id.ToString(), [botMessage.MessageId.ToString()]}},
+                        ChatIds = [botMessage.Chat?.Id.ToString()],
                         CallbackData = update.CallbackQuery?.Data ?? string.Empty,
                         CreatedAt = update.Message?.Date ?? DateTime.Now,
                         LastModifiedAt = update.Message?.Date ?? DateTime.Now,
                         From = new User
                         {
-                            Id = botMessage.From?.Id.ToString(),
+                            Id = "-1", //botMessage.From?.Id.ToString(),
                             Name = botMessage.From?.FirstName,
                             Surname = botMessage.From?.LastName,
                             Info = string.Empty,
@@ -61,6 +63,7 @@ public class BotUpdateHandler : IBotUpdateHandler
                             NickName = botMessage.From?.Username
                         },
                     };
+                }
                 else
                     return;
             }
@@ -132,14 +135,6 @@ public class BotUpdateHandler : IBotUpdateHandler
 
         if (token is { CanBeCanceled: true, IsCancellationRequested: true })
             return;
-
-        var tt = _processorFactory
-                 .GetCommandChainProcessors()
-                 .ToArray();
-
-        var yy = _processorFactory
-                 .GetProcessors(excludeChain: true)
-                 .ToArray();
         
         var clientNonChainedTasks = _processorFactory
                                     .GetProcessors(excludeChain: true)
