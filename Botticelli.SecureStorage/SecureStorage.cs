@@ -96,4 +96,11 @@ public class SecureStorage
 
         return db.GetCollection<T>().FindAll().ToArray();
     }
+
+    public void CleanData<T>(Func<T, bool> func)
+    {
+        using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
+
+        db.GetCollection<T>().DeleteMany(t => func(t));
+    }
 }
