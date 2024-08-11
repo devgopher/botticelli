@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 
 namespace Botticelli.AI.GptJ.Provider;
 
-public class GptJProvider : GenericAiProvider<AiGptSettings>
+public class GptJProvider : ChatGptProvider<AiGptSettings>
 {
     public GptJProvider(IOptionsSnapshot<AiGptSettings> gptSettings,
         IHttpClientFactory factory,

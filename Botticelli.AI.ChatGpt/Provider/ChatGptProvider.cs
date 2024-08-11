@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 namespace Botticelli.AI.ChatGpt.Provider;
 
-public class ChatGptProvider : GenericAiProvider<GptSettings>
+public class ChatGptProvider : ChatGptProvider<GptSettings>
 {
     public ChatGptProvider(IOptions<GptSettings> gptSettings,
         IHttpClientFactory factory,

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace Botticelli.AI.DeepSeekGpt.Provider;
 
-public class DeepSeekGptProvider : GenericAiProvider<DeepSeekGptSettings>
+public class DeepSeekGptProvider : ChatGptProvider<DeepSeekGptSettings>
 {
     private const string SystemRole = "system";
     private const string UserRole = "user";
