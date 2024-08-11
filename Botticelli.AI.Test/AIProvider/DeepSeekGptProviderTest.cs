@@ -5,6 +5,7 @@ using Botticelli.AI.ChatGpt.Provider;
 using Botticelli.AI.ChatGpt.Settings;
 using Botticelli.AI.DeepSeekGpt.Message.DeepSeek;
 using Botticelli.AI.DeepSeekGpt.Provider;
+using Botticelli.AI.DeepSeekGpt.Settings;
 using NUnit.Framework;
 using Shared;
 using WireMock.RequestBuilders;
@@ -17,6 +18,16 @@ namespace Botticelli.AI.Test.AIProvider;
 [TestOf(typeof(DeepSeekGptProvider))]
 public class DeepSeekGptProviderTest : BaseAiProviderTest
 {
+    private DeepSeekGptSettings DeepSeekGptSettings => new()
+    {
+        Url = AiSettings.Url,
+        AiName = AiSettings.AiName,
+        StreamGeneration = AiSettings.StreamGeneration,
+        ApiKey = AiSettings.ApiKey,
+        Model = "none"
+    };
+
+    
     [SetUp]
     public void StartMockServer()
     {
@@ -58,17 +69,14 @@ public class DeepSeekGptProviderTest : BaseAiProviderTest
                                    .WithBody(JsonSerializer.Serialize(responseMessage))
                           );
 
-        AiProvider = new ChatGptProvider(new OptionsMock<GptSettings>(GptSettings),
-                                         ClientFactory,
-                                         LoggerMocks.CreateConsoleLogger<ChatGptProvider>(),
-                                         BusClient,
-                                         Validator);
+        AiProvider = new DeepSeekGptProvider(new OptionsMock<DeepSeekGptSettings>(DeepSeekGptSettings),
+                                                       ClientFactory,
+                                                       LoggerMocks.CreateConsoleLogger<DeepSeekGptProvider>(),
+                                                       BusClient,
+                                                       Validator);
     }
 
     [Test]
     [TestCase("test query")]
     public async Task SendAsyncTest(string query) => await InnerSendAsyncTest(query);
-
-    [TearDown]
-    public void TearDown() => Server.Stop();
 }

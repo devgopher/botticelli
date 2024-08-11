@@ -19,12 +19,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Botticelli.AI.ChatGpt\Botticelli.AI.ChatGpt.csproj" />
     <ProjectReference Include="..\Botticelli.AI.DeepSeekGpt\Botticelli.AI.DeepSeekGpt.csproj" />
+    <ProjectReference Include="..\Botticelli.AI.YaGpt\Botticelli.AI.YaGpt.csproj" />
     <ProjectReference Include="..\Botticelli.AI\Botticelli.AI.csproj" />
     <ProjectReference Include="..\Tests\Shared\Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mocks\" />
   </ItemGroup>
   
 </Project>

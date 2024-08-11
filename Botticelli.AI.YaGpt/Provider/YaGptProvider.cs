@@ -25,11 +25,11 @@ public class YaGptProvider : ChatGptProvider<YaGptSettings>
         IHttpClientFactory factory,
         ILogger<YaGptProvider> logger,
         IBusClient bus, 
-        IValidator<Shared.ValueObjects.Message> messageValidator) : base(gptSettings,
-        factory,
-        logger,
-        bus,
-        messageValidator)
+        IValidator<AiMessage> messageValidator) : base(gptSettings,
+                                      factory,
+                                      logger,
+                                      bus,
+                                      messageValidator)
     {
     }
 

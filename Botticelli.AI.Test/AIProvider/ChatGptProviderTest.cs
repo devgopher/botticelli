@@ -16,6 +16,15 @@ namespace Botticelli.AI.Test.AIProvider;
 [TestOf(typeof(ChatGptProvider))]
 public class ChatGptProviderTest : BaseAiProviderTest
 {
+    private GptSettings ChatGptSettings => new()
+    {
+        Url = AiSettings.Url,
+        AiName = AiSettings.AiName,
+        StreamGeneration = AiSettings.StreamGeneration,
+        ApiKey = AiSettings.ApiKey,
+        Model = "none"
+    };
+    
     [SetUp]
     public void StartMockServer()
     {
@@ -55,7 +64,7 @@ public class ChatGptProviderTest : BaseAiProviderTest
                                     .WithBody(JsonSerializer.Serialize(responseMessage))
                            );
 
-        AiProvider = new ChatGptProvider(new OptionsMock<GptSettings>(GptSettings),
+        AiProvider = new ChatGptProvider(new OptionsMock<GptSettings>(ChatGptSettings),
                                                ClientFactory,
                                                LoggerMocks.CreateConsoleLogger<ChatGptProvider>(),
                                                BusClient,
@@ -65,7 +74,4 @@ public class ChatGptProviderTest : BaseAiProviderTest
     [Test]
     [TestCase("test query")]
     public async Task SendAsyncTest(string query) => await InnerSendAsyncTest(query);
-
-    [TearDown]
-    public void TearDown() => Server.Stop();
 }

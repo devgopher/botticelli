@@ -3,13 +3,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Botticelli.AI.AIProvider;
 using Botticelli.AI.ChatGpt.Settings;
+using Botticelli.AI.DeepSeekGpt.Settings;
 using Botticelli.AI.Message;
+using Botticelli.AI.Settings;
 using Botticelli.AI.Validation;
 using Botticelli.Bot.Interfaces.Client;
 using Botticelli.Bus.None.Bus;
 using Botticelli.Bus.None.Client;
 using FluentAssertions;
 using FluentValidation;
+using NUnit.Framework;
 using Shared;
 using WireMock.Server;
 
@@ -19,15 +22,13 @@ public abstract class BaseAiProviderTest
 {
     protected WireMockServer Server;
     protected IAiProvider AiProvider;
-    protected IValidator<AiMessage> Validator;
+    protected AbstractValidator<AiMessage> Validator;
     protected IBusClient BusClient;
-    protected readonly GptSettings GptSettings = new()
+    protected readonly AiSettings AiSettings = new()
     {
         AiName = "mock_gpt_ai",
         StreamGeneration = false,
         ApiKey = "API9767432",
-        Model = "none",
-        Temperature = 1
     };
 
     protected HttpClientFactoryMock ClientFactory;
@@ -65,6 +66,9 @@ public abstract class BaseAiProviderTest
         BusClient = new PassClient();
         
         ClientFactory = new HttpClientFactoryMock();
-        GptSettings.Url = Server.Url;
+        AiSettings.Url = Server.Url;
     }
+    
+    [TearDown]
+    public void TearDown() => Server.Stop();
 }
