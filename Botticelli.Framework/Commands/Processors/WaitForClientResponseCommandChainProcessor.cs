@@ -47,7 +47,7 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
             if (Next != null)
                 await Next.ProcessAsync(message, token);
             else
-                _logger.LogInformation("No Next command for message {uid}", message.Uid);
+                Logger.LogInformation("No Next command for message {uid}", message.Uid);
         }
     }
 
