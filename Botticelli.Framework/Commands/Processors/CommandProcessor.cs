@@ -14,20 +14,20 @@ namespace Botticelli.Framework.Commands.Processors;
 public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
     where TCommand : class, ICommand
 {
-    protected readonly string Command;
-    protected readonly ILogger _logger;
+    private readonly string _command;
+    protected readonly ILogger Logger;
     private readonly MetricsProcessor _metricsProcessor;
     private readonly ICommandValidator<TCommand> _validator;
     protected IBot Bot;
 
     protected CommandProcessor(ILogger logger,
-        ICommandValidator<TCommand> validator,
-        MetricsProcessor metricsProcessor)
+                               ICommandValidator<TCommand> validator,
+                               MetricsProcessor metricsProcessor)
     {
-        _logger = logger;
+        Logger = logger;
         _validator = validator;
         _metricsProcessor = metricsProcessor;
-        Command = GetOldFashionedCommandName(typeof(TCommand).Name);
+        _command = GetOldFashionedCommandName(typeof(TCommand).Name);
     }
 
     protected void Classify(ref Message message)
@@ -60,7 +60,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
                 message.Poll == default &&
                 message.CallbackData == default)
             {
-                _logger.LogWarning("Message {msgId} is empty! Skipping...", message.Uid);
+                Logger.LogWarning("Message {msgId} is empty! Skipping...", message.Uid);
 
                 return;
             }
@@ -77,7 +77,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
 
                 var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
-                if (commandName != Command) return;
+                if (commandName != _command) return;
 
                 await ValidateAndProcess(message,
                     string.Empty,
@@ -96,7 +96,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
 
                 var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
-                if (commandName != Command) return;
+                if (commandName != _command) return;
 
                 await ValidateAndProcess(message,
                     argsString,
@@ -106,9 +106,10 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
             }
             else
             {
-                await ValidateAndProcess(message,
-                                         string.Empty,
-                                         token);
+                if (GetType().IsAssignableTo(typeof(CommandChainProcessor<TCommand>)))
+                    await ValidateAndProcess(message,
+                                             string.Empty,
+                                             token);
             }
 
             if (message.Location != default) await InnerProcessLocation(message, string.Empty, token);
@@ -118,7 +119,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         catch (Exception ex)
         {
             _metricsProcessor.Process(MetricNames.BotError, BotDataUtils.GetBotId());
-            _logger.LogError(ex, $"Error in {GetType().Name}: {ex.Message}");
+            Logger.LogError(ex, $"Error in {GetType().Name}: {ex.Message}");
         }
     }
 
