@@ -41,7 +41,8 @@ public class CommandChainProcessorBuilder<TInputCommand> where TInputCommand : c
         {
             var proc = sp.GetRequiredService(type) as ICommandChainProcessor<TInputCommand>;
 
-            prev.Next = proc;
+            if (prev != null) 
+                prev.Next = proc;
 
             prev = proc;
         }

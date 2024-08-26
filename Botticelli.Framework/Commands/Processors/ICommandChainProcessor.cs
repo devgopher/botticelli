@@ -13,5 +13,7 @@ public interface ICommandChainProcessor<TInputCommand> : ICommandChainProcessor
 
 public interface ICommandChainProcessor : ICommandProcessor
 {
+    public HashSet<Guid> ChainIds { get; }
+
     public ICommandChainProcessor Next { get; set; }
 }
