@@ -5,6 +5,7 @@ using Botticelli.Client.Analytics;
 using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
+using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Framework.Telegram.HostedService;
 using Botticelli.Framework.Telegram.Layout;
@@ -66,7 +67,7 @@ public static class ServiceCollectionExtensions
 
         var sp = services.BuildServiceProvider();
 
-        var telegramClient = new TelegramBotClient(token)
+        var telegramClient = new TelegramClientDecorator(token)
         {
             Timeout = TimeSpan.FromMilliseconds(settings.Timeout)
         };
