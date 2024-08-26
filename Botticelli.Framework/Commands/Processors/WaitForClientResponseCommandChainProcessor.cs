@@ -26,7 +26,13 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
 
     public override async Task ProcessAsync(Message message, CancellationToken token)
     {
+        // filters 'not our' chains
+        if (message.ChainId != null && !ChainIds.Contains(message.ChainId.Value))
+            return;
+            
         Classify(ref message);
+        message.ChainId = Guid.NewGuid();
+        ChainIds.Add(message.ChainId.Value);
 
         if (message.Type != Message.MessageType.Messaging)
         {
@@ -37,19 +43,19 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
 
         if (DateTime.UtcNow - message.LastModifiedAt > Timeout)
             return;
-        
-        foreach (var chatId in message.ChatIds)
+
+        message.ProcessingArgs ??= new List<string>();
+        message.ProcessingArgs.Add(message.Body);
+
+        if (Next != null)
         {
-            message.ChatIds = [chatId];
-            message.ProcessingArgs ??= new List<string>();
-            message.ProcessingArgs.Add(message.Body);
-          
-            if (Next != null)
-                await Next.ProcessAsync(message, token);
-            else
-                _logger.LogInformation("No Next command for message {uid}", message.Uid);
+            Next.ChainIds.Add(message.ChainId.Value);
+            await Next.ProcessAsync(message, token);
         }
+        else
+            Logger.LogInformation("No Next command for message {uid}", message.Uid);
     }
 
+    public HashSet<Guid> ChainIds { get; } = new(1000);
     public ICommandChainProcessor Next { get; set; }
 }

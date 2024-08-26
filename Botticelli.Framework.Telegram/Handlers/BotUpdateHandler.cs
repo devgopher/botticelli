@@ -48,14 +48,14 @@ public class BotUpdateHandler : IBotUpdateHandler
                     botticelliMessage = new Message()
                     {
                         ChatIdInnerIdLinks = new Dictionary<string, List<string>>
-                                {{botMessage.Chat?.Id.ToString(), [botMessage.MessageId.ToString()]}},
-                        ChatIds = [botMessage.Chat?.Id.ToString()],
+                                {{update.CallbackQuery?.Message.Chat?.Id.ToString(), [update.CallbackQuery.Message?.MessageId.ToString()]}},
+                        ChatIds = [update.CallbackQuery?.Message.Chat?.Id.ToString()],
                         CallbackData = update.CallbackQuery?.Data ?? string.Empty,
                         CreatedAt = update.Message?.Date ?? DateTime.Now,
                         LastModifiedAt = update.Message?.Date ?? DateTime.Now,
                         From = new User
                         {
-                            Id = "-1", // Special value in order to bypass "Not-bot-Id" filters in further processing
+                            Id = botMessage.From?.Id.ToString(),
                             Name = botMessage.From?.FirstName,
                             Surname = botMessage.From?.LastName,
                             Info = string.Empty,
@@ -135,14 +135,6 @@ public class BotUpdateHandler : IBotUpdateHandler
 
         if (token is { CanBeCanceled: true, IsCancellationRequested: true })
             return;
-
-        var tt = _processorFactory
-                 .GetCommandChainProcessors()
-                 .ToArray();
-
-        var yy = _processorFactory
-                 .GetProcessors(excludeChain: true)
-                 .ToArray();
         
         var clientNonChainedTasks = _processorFactory
                                     .GetProcessors(excludeChain: true)

@@ -19,7 +19,7 @@ public class CommandChainFirstElementProcessor<TInputCommand> : CommandChainProc
 
     public override async Task ProcessAsync(Message message, CancellationToken token)
     {
-        _logger.LogDebug(Next == default ?
+        Logger.LogDebug(Next == default ?
                                  $"{nameof(CommandChainProcessor<TInputCommand>)} : no next step, returning" :
                                  $"{nameof(CommandChainProcessor<TInputCommand>)} : next step is '{Next?.GetType().Name}'");
 

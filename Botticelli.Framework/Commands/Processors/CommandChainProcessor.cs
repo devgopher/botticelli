@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Botticelli.Bot.Interfaces.Processors;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Validators;
@@ -21,7 +22,6 @@ public abstract class CommandChainProcessor<TInputCommand> : CommandProcessor<TI
     {
     }
 
+    public HashSet<Guid> ChainIds { get; } = new(100);
     public ICommandChainProcessor Next { get; set; }
-    
-
 }

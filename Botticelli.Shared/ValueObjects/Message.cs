@@ -7,20 +7,21 @@
 public class Message
 {
     /// <summary>
-    /// Type of message
+    ///     Type of message
     /// </summary>
     public enum MessageType
     {
         /// <summary>
-        /// A simple texting message
+        ///     A simple texting message
         /// </summary>
         Messaging,
+
         /// <summary>
-        /// A command message
+        ///     A command message
         /// </summary>
         Command
     }
-    
+
     public Message()
     {
         Uid = Guid.NewGuid().ToString();
@@ -38,18 +39,18 @@ public class Message
     /// <summary>
     ///     Message type
     /// </summary>
-    public virtual MessageType Type { get ; set; } =  MessageType.Messaging;
-    
+    public virtual MessageType Type { get; set; } = MessageType.Messaging;
+
     /// <summary>
     ///     Message uid
     /// </summary>
     public string? Uid { get; set; }
 
     /// <summary>
-    /// Chat Id <=> Inner message id links
+    ///     Chat Id <=> Inner message id links
     /// </summary>
     public Dictionary<string, List<string>> ChatIdInnerIdLinks { get; init; } = new();
-    
+
     /// <summary>
     ///     Chat ids
     /// </summary>
@@ -66,7 +67,7 @@ public class Message
     public string? Body { get; set; }
 
     /// <summary>
-    /// Message arguments for processing
+    ///     Message arguments for processing
     /// </summary>
     public IList<string>? ProcessingArgs { get; set; }
 
@@ -104,19 +105,24 @@ public class Message
     ///     GeoLocation
     /// </summary>
     public GeoLocation Location { get; set; }
-    
+
     /// <summary>
-    /// Callback data if exists
+    ///     Callback data if exists
     /// </summary>
     public string? CallbackData { get; set; }
 
     /// <summary>
-    /// Message creation date
+    ///     Message creation date
     /// </summary>
     public DateTime CreatedAt { get; init; }
-    
+
     /// <summary>
-    /// Message modification date
+    ///     Message modification date
     /// </summary>
     public DateTime LastModifiedAt { get; set; }
+
+    /// <summary>
+    ///     Chain id for chained command processing
+    /// </summary>
+    public Guid? ChainId { get; set; }
 }
