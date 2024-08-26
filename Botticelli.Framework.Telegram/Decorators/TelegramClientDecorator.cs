@@ -16,7 +16,7 @@ public class TelegramClientDecorator : ITelegramBotClient
     private readonly TelegramBotClient _bot;
     private readonly RetryPolicy _policy = Policy
         .Handle<ApiRequestException>(e => e.ErrorCode == (int)HttpStatusCode.TooManyRequests)
-        .WaitAndRetry(10, (i , _) => TimeSpan.FromMilliseconds(1000 * Math.Exp(i)));
+        .WaitAndRetry(10, (i , _) => TimeSpan.FromMilliseconds(10000 * Math.Exp(i)));
     
     public TelegramClientDecorator(string token,
         HttpClient? httpClient = null) =>
