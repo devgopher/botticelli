@@ -32,7 +32,7 @@ public class TelegramClientDecorator : ITelegramBotClient
     private readonly TelegramBotClient _bot;
     private readonly RetryPolicy _policy = Policy
         .Handle<ApiRequestException>(e => e.ErrorCode == (int)HttpStatusCode.TooManyRequests)
-        .WaitAndRetry(10, (i , _) => TimeSpan.FromSeconds(10 * Math.Exp(i)));
+        .WaitAndRetry(100, (i , _) => TimeSpan.FromSeconds(10 * Math.Exp(i)));
 
     private readonly Throttler _throttler = new Throttler();
     
@@ -46,7 +46,8 @@ public class TelegramClientDecorator : ITelegramBotClient
         try
         {
             await _throttler.Throttle(cancellationToken);
-            return await _policy.Execute(() => _bot.MakeRequestAsync(request, cancellationToken)).ConfigureAwait(false);
+            
+            return await _policy.Execute(async () => await _bot.MakeRequestAsync(request, cancellationToken)).ConfigureAwait(false);
         }
         catch (ApiRequestException ex)
         {
@@ -62,7 +63,7 @@ public class TelegramClientDecorator : ITelegramBotClient
     {
         try
         {
-            await _policy.Execute(() => _bot.DownloadFileAsync(filePath, destination, cancellationToken)).ConfigureAwait(false);
+            await _policy.Execute(async () => await _bot.DownloadFileAsync(filePath, destination, cancellationToken)).ConfigureAwait(false);
         }
         catch (ApiRequestException ex)
         {
