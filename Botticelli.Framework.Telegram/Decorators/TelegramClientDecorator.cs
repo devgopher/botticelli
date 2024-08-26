@@ -31,7 +31,6 @@ public class TelegramClientDecorator : ITelegramBotClient
         }
         catch (ApiRequestException ex)
         {
-            
             Console.WriteLine(ex);
             throw;
         }
