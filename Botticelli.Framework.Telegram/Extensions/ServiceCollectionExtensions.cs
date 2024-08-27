@@ -67,10 +67,14 @@ public static class ServiceCollectionExtensions
 
         var sp = services.BuildServiceProvider();
 
-        var telegramClient = new TelegramClientDecorator(token)
-        {
-            Timeout = TimeSpan.FromMilliseconds(settings.Timeout)
-        };
+        var telegramClientBuilder = TelegramClientDecoratorBuilder.Instance(services)
+                                                                  .AddToken(token);
+
+        if (settings.UseThrottling is true) telegramClientBuilder.AddThrottler(new Throttler());
+        
+        var telegramClient = telegramClientBuilder.Build();
+        
+        telegramClient.Timeout = TimeSpan.FromMilliseconds(settings.Timeout);
 
         var bot = new TelegramBot(telegramClient,
             sp.GetRequiredService<IBotUpdateHandler>(),

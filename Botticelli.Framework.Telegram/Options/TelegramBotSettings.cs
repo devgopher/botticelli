@@ -9,4 +9,9 @@ public class TelegramBotSettings : BotSettings
     /// Timeout in ms
     /// </summary>
     public int Timeout { get; set; } = 60000;
+
+    /// <summary>
+    /// Use throttling or not?
+    /// </summary>
+    public bool? UseThrottling { get; set; } = true;
 }
