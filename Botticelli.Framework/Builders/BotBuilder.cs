@@ -41,35 +41,28 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
             throw new NullReferenceException($"{nameof(MetricsProcessor)} is null!");
     }
     
-    protected TBotBuilder? AddServices(IServiceCollection services)
+    protected TBotBuilder AddServices(IServiceCollection services)
     {
         Services = services;
 
-        return this as TBotBuilder;
+        return (this as TBotBuilder)!;
     }
 
     public abstract TBotBuilder AddBotSettings<TBotSettings>(BotOptionsBuilder<TBotSettings> optionsBuilder)
         where TBotSettings : BotSettings, new();
 
 
-    public TBotBuilder? AddStorage(SecureStorage.SecureStorage secureStorage)
+    public TBotBuilder AddStorage(SecureStorage.SecureStorage secureStorage)
     {
         SecureStorage = secureStorage;
 
-        return this as TBotBuilder;
+        return  (this as TBotBuilder)!;
     }
 
-    public TBotBuilder? AddStorage()
+    public TBotBuilder AddStorage()
     {
         SecureStorage = new SecureStorage.SecureStorage(GetStorageSettings());
 
-        return this as TBotBuilder;
-    }
-
-    public TBotBuilder? AddMetricsProcessor(MetricsProcessor metricsProcessor)
-    {
-        MetricsProcessor = metricsProcessor;
-
-        return this as TBotBuilder;
+        return  (this as TBotBuilder)!;
     }
 }

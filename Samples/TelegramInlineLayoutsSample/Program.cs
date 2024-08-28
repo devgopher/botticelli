@@ -4,6 +4,7 @@ using Botticelli.Framework.Controls.Layouts.Extensions;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
+using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
@@ -28,7 +29,10 @@ builder.Services.AddTelegramBot(builder.Configuration,
                                             ConnectionString = settings.SecureStorageConnectionString
                                         })
                                         .Set(s => s.Timeout = 20000)
-                                        .Set(s => s.Name = "test_bot"))
+                                        .Set(s => s.Name = "test_bot")
+                                ,
+                                TelegramClientDecoratorBuilder.Instance(builder.Services)
+                                                              .AddThrottler(new Throttler()))
        .AddLogging(cfg => cfg.AddNLog())
        .AddBotCommand<GetCalendarCommand, GetCalendarCommandProcessor, PassValidator<GetCalendarCommand>>()
        .AddInlineCalendar<InlineKeyboardMarkup, InlineTelegramLayoutSupplier, DateChosenCommandProcessor>()

@@ -33,75 +33,16 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddTelegramBot(this IServiceCollection services,
         IConfiguration config,
-        BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
-    {
-        var settings = optionsBuilder.Build();
-        var secureStorage = new SecureStorage.SecureStorage(settings.SecureStorageSettings);
-        var botId = BotDataUtils.GetBotId();
-        var botContext = secureStorage.GetBotContext(botId);
-
-        if (string.IsNullOrWhiteSpace(botContext?.BotId))
-        {
-            botContext = new BotContext
-            {
-                BotId = botId,
-                BotKey = string.Empty,
-                Items = new Dictionary<string, string>()
-            };
-
-            secureStorage.SetBotContext(botContext);
-        }
-
-        var token = botContext.BotKey ?? string.Empty;
-
-        services.AddHttpClient<BotStatusService<TelegramBot>>()
-                .AddCertificates(settings);
-        services.AddHttpClient<BotKeepAliveService<TelegramBot>>()
-                .AddCertificates(settings);
-        
-        var serverConfig = new ServerSettings();
-        config.GetSection(nameof(ServerSettings)).Bind(serverConfig);
-        services.AddSingleton(serverConfig)
-                .AddScoped<ILayoutSupplier<ReplyMarkupBase>, ReplyTelegramLayoutSupplier>()
-                .AddScoped<IBotUpdateHandler, BotUpdateHandler>()
-                .AddBotticelliFramework(config);
-
-        var sp = services.BuildServiceProvider();
-
-        var telegramClientBuilder = TelegramClientDecoratorBuilder.Instance(services)
-                                                                  .AddToken(token);
-
-        if (settings.UseThrottling is true) telegramClientBuilder.AddThrottler(new Throttler());
-        
-        var telegramClient = telegramClientBuilder.Build();
-        
-        telegramClient.Timeout = TimeSpan.FromMilliseconds(settings.Timeout);
-
-        var bot = new TelegramBot(telegramClient,
-            sp.GetRequiredService<IBotUpdateHandler>(),
-            sp.GetRequiredService<ILogger<TelegramBot>>(),
-            sp.GetRequiredService<MetricsProcessor>(),
-            secureStorage);
-
-        return services.AddSingleton<IBot<TelegramBot>>(bot)
-            .AddSingleton<IBot>(bot)
-            .AddHostedService<BotStatusService<IBot<TelegramBot>>>()
-            .AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>()
-            .AddHostedService<TelegramBotHostedService>();
-    }
-
-
-    public static IServiceCollection AddTelegramBotNew(this IServiceCollection services,
-        IConfiguration config,
-        BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
+        BotOptionsBuilder<TelegramBotSettings> optionsBuilder,
+        TelegramClientDecoratorBuilder telegramClientBuilder)
     {
         var bot = TelegramBotBuilder.Instance(services, optionsBuilder, config)
             .AddStorage()
-            .AddMetricsProcessor(new MetricsProcessor())
-            .AddBotKeepAliveService()
+            .AddClient(telegramClientBuilder)
             .Build();
 
-        return services;
+        return services.AddSingleton<IBot<TelegramBot>>(bot)
+                       .AddSingleton<IBot>(bot);
     }
 
     public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services) =>

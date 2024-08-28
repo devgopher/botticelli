@@ -23,18 +23,14 @@ namespace Botticelli.Framework.Telegram.Builders;
 
 public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
 {
-    private BotKeepAliveService<TelegramBot> _botKeepAliveService;
-    private BotStatusService<TelegramBot> _botStatusService;
     private TelegramClientDecoratorBuilder _builder;
     private TelegramClientDecorator _client;
     private readonly ServerSettings _serverSettings;
-    private IBotUpdateHandler _botUpdateHandler;
 
-
-    protected TelegramBotBuilder()
+    private TelegramBotBuilder()
     {
         _serverSettings = new ServerSettings();
-        Configuration.GetSection(nameof(ServerSettings)).Bind(_serverSettings);
+        Configuration!.GetSection(nameof(ServerSettings)).Bind(_serverSettings);
     }
     
     public static TelegramBotBuilder Instance(IServiceCollection services,
@@ -46,7 +42,7 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
             .AddBotSettings(optionsBuilder);
         builder.Configuration = configuration;
         
-        return (TelegramBotBuilder)builder;
+        return builder;
     }
 
     protected TelegramBotSettings Settings { get; set; }
@@ -56,39 +52,11 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
         _builder = builder;
 
         if (Settings.UseThrottling is true) _builder.AddThrottler(new Throttler());
-        
+        var token = BotContext!.BotKey ?? string.Empty;
+        _builder.AddToken(token);
         _client = _builder.Build();
         _client.Timeout = TimeSpan.FromMilliseconds(Settings.Timeout);
         
-        return this;
-    }
-
-
-    public TelegramBotBuilder AddBotStatusService(BotStatusService<TelegramBot> botStatusService)
-    {
-        Services.AddHttpClient<BotStatusService<TelegramBot>>()
-            .AddCertificates(Settings);
-
-        Services.AddHostedService<BotStatusService<IBot<TelegramBot>>>();
-
-        return this;
-    }
-
-
-    public TelegramBotBuilder AddBotKeepAliveService()
-    {
-        Services.AddHttpClient<BotKeepAliveService<TelegramBot>>()
-            .AddCertificates(Settings);
-        Services.AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>();
-
-        return this;
-    }
-
-
-    public TelegramBotBuilder AddUpdateHandler(IBotUpdateHandler botUpdateHandler)
-    {
-        _botUpdateHandler = botUpdateHandler;
-
         return this;
     }
 
@@ -98,17 +66,20 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
         
         if (_client == default)
             throw new NullReferenceException($"{nameof(_client)} is null!");
-        if (_botStatusService == default)
-            throw new NullReferenceException($"{nameof(_botStatusService)} is null!");
-        if (_botUpdateHandler == default)
-            throw new NullReferenceException($"{nameof(_botUpdateHandler)} is null!");
     }
     
     protected override TelegramBot InnerBuild()
     {
+        Services!.AddHttpClient<BotStatusService<TelegramBot>>()
+                 .AddCertificates(Settings);
+        Services!.AddHostedService<BotStatusService<IBot<TelegramBot>>>();
+        Services!.AddHttpClient<BotKeepAliveService<TelegramBot>>()
+                 .AddCertificates(Settings);
+        Services.AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>();
+        
         Services.AddHostedService<TelegramBotHostedService>();
         var botId = BotDataUtils.GetBotId();
-        
+       
         if (string.IsNullOrWhiteSpace(BotContext?.BotId))
         {
             BotContext = new BotContext
@@ -123,15 +94,16 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
         
         Services.AddSingleton(_serverSettings)
             .AddScoped<ILayoutSupplier<ReplyMarkupBase>, ReplyTelegramLayoutSupplier>()
-            .AddBotticelliFramework(Configuration);
-
-        var sp = Services.BuildServiceProvider();
+            .AddBotticelliFramework(Configuration)
+            .AddMetrics();
         
+        var sp = Services.BuildServiceProvider();
+
         var bot = new TelegramBot(_client,
-            _botUpdateHandler,
-            sp.GetRequiredService<ILogger<TelegramBot>>(),
-            MetricsProcessor,
-            SecureStorage);
+                                  sp.GetRequiredService<IBotUpdateHandler>(),
+                                  sp.GetRequiredService<ILogger<TelegramBot>>(),
+                                  MetricsProcessor,
+                                  SecureStorage);
 
         return bot;
     }
