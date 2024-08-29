@@ -21,10 +21,14 @@
         <PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
         <Content Remove="appsettings.json"/>
+        <Content Include="..\.dockerignore">
+          <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>

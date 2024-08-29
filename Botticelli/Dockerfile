@@ -1,0 +1,27 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 5042
+EXPOSE 7247
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["Botticelli/Botticelli.Server.csproj", "Botticelli/"]
+COPY ["Botticelli.SecureStorage/Botticelli.SecureStorage.csproj", "Botticelli.SecureStorage/"]
+COPY ["Botticelli.Shared/Botticelli.Shared.csproj", "Botticelli.Shared/"]
+COPY ["Botticelli.Server.Data.Entities/Botticelli.Server.Data.Entities.csproj", "Botticelli.Server.Data.Entities/"]
+COPY ["Botticelli.Server.Data/Botticelli.Server.Data.csproj", "Botticelli.Server.Data/"]
+COPY ["Botticelli.Server.Models/Botticelli.Server.Models.csproj", "Botticelli.Server.Models/"]
+RUN dotnet restore "Botticelli/Botticelli.Server.csproj"
+COPY . .
+WORKDIR "/src/Botticelli"
+RUN dotnet build "Botticelli.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "Botticelli.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Botticelli.Server.dll"]
