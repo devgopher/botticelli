@@ -31,7 +31,7 @@ export ServerSettings__ServerUrl=$email_smtp_server
 mkdir Data
 cp database.db Data
 docker build --tag "botticelli_server_back_dev:0.6" . --no-cache --file DockerfileAdminBack
-docker run -it "botticelli_server_back_dev:0.6" -v Data:/data -e POSTGRES_ENV_POSTGRES_PASSWORD='foo' \
+docker run  -v Data:/data -it "botticelli_server_back_dev:0.6" \
     -e SecureStorageSettings__ConnectionString="$SecureStorageSettings__ConnectionString" \
     -e ServerSettings__TokenLifetimeMin="$ServerSettings__TokenLifetimeMin" \
     -e ServerSettings__SmtpClientOptions__Server = "$ServerSettings__SmtpClientOptions__Server" \
@@ -45,4 +45,4 @@ docker run -it "botticelli_server_back_dev:0.6" -v Data:/data -e POSTGRES_ENV_PO
     -e ServerSettings__SmtpClientOptions__MailPickupDirectory = "$ServerSettings__SmtpClientOptions__MailPickupDirectory" \
     -e ServerSettings__SmtpClientOptions__SocketOptions = "$ServerSettings__SmtpClientOptions__SocketOptions" \
     -e ServerSettings__ServerEmail = "$ServerSettings__ServerEmail" \
-    -e ServerSettings__ServerUrl = "$ServerSettings__ServerUrl"
+    -e ServerSettings__ServerUrl = "$ServerSettings__ServerUrl" 
