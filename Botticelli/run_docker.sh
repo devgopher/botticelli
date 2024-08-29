@@ -3,11 +3,6 @@ function check_and_setup()
   read -p "Enter $1 $2: " $1
 }
 
-rm -rf /tmp/tmp_docker_botticelli
-mkdir /tmp/tmp_docker_botticelli
-
-pushd Botticelli
-
 check_and_setup http_port "(example:80)"
 check_and_setup https_port "(example:8080)"
 check_and_setup db_password "(example:12345678)"
@@ -18,18 +13,21 @@ check_and_setup email_smtp_pwd "(smtp server/application password)"
 check_and_setup email_use_ssl "(true/false)"
 check_and_setup requires_authentification "(true/false)"
 
-cp Dockerfile /tmp/tmp_docker_botticelli/
+export SecureStorageSettings__ConnectionString="Filename=database.db;Connection=shared;Password=$db_password"
+export ServerSettings__TokenLifetimeMin=1000
+export ServerSettings__SmtpClientOptions__Server=$email_smtp_server
+export ServerSettings__SmtpClientOptions__Port=$email_smtp_port
+export ServerSettings__SmtpClientOptions__User=$email
+export ServerSettings__SmtpClientOptions__Password=$email_smtp_pwd
+export ServerSettings__SmtpClientOptions__UseSsl=$email_use_ssl
+export ServerSettings__SmtpClientOptions__RequiresAuthentication=$requires_authentification
+export ServerSettings__SmtpClientOptions__PreferredEncoding=null
+export ServerSettings__SmtpClientOptions__UsePickupDirectory=false
+export ServerSettings__SmtpClientOptions__MailPickupDirectory=/tmp
+export ServerSettings__SmtpClientOptions__SocketOptions=2
+export ServerSettings__ServerEmail=$email
+export ServerSettings__ServerUrl=$email_smtp_server
 
-sed -i "s/\$http_port/$http_port/g" /tmp/tmp_docker_botticelli/Dockerfile
-sed -i "s/\$https_port/$https_port/g" /tmp/tmp_docker_botticelli/Dockerfile
-sed -i "s/\$db_password/$db_password/g" /tmp/tmp_docker_botticelli/Dockerfile
-sed -i "s/\$email_addr/$email_addr/g" /tmp/tmp_docker_botticelli/Dockerfile
-sed -i "s/\$email_smtp_server/$email_smtp_server/g" /tmp/tmp_docker_botticelli/Dockerfile
-sed -i "s/\$email_smtp_port/$email_smtp_port/g" /tmp/tmp_docker_botticelli/Dockerfile
-sed -i "s/\$email_smtp_pwd/$email_smtp_pwd/g" /tmp/tmp_docker_botticelli/Dockerfile
-sed -i "s/\$email_use_ssl/$email_use_ssl/g" /tmp/tmp_docker_botticelli/Dockerfile
-sed -i "s/\$requires_authentification/$requires_authentification/g" /tmp/tmp_docker_botticelli/Dockerfile
 
-docker build --tag "botticelli_server_back_dev:0.4" . --no-cache
-
-#docker image push --all-tags <registry-host:5000/myname/myimage>
+docker build --tag "botticelli_server_back_dev:0.6" . --no-cache
+docker run "botticelli_server_back_dev:0.6"
