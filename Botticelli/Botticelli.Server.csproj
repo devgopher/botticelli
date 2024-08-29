@@ -26,9 +26,6 @@
 
     <ItemGroup>
         <Content Remove="appsettings.json"/>
-        <Content Include="..\.dockerignore">
-          <Link>.dockerignore</Link>
-        </Content>
     </ItemGroup>
 
     <ItemGroup>
