@@ -4,6 +4,7 @@ using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
+using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.LoadTests.Receiver.Controller;
@@ -35,7 +36,8 @@ builder.Services
                                {
                                    ConnectionString = settings?.SecureStorageConnectionString
                                })
-                               .Set(s => s.Name = settings?.BotName))
+                               .Set(s => s.Name = settings?.BotName), 
+                       TelegramClientDecoratorBuilder.Instance(builder.Services))
        .AddLogging(cfg => cfg.AddNLog())
        .AddQuartzScheduler(builder.Configuration)
        .AddHostedService<TestBotHostedService>()

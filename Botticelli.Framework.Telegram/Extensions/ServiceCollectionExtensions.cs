@@ -27,18 +27,20 @@ public static class ServiceCollectionExtensions
                                                     TelegramClientDecoratorBuilder telegramClientBuilder)
     {
         var bot = TelegramBotBuilder.Instance(services, optionsBuilder, config)
-            .AddStorage()
-            .AddClient(telegramClientBuilder)
-            .Build();
+                                    .AddStorage()
+                                    .AddClient(telegramClientBuilder)
+                                    .Build();
 
         return services.AddSingleton<IBot<TelegramBot>>(bot)
                        .AddSingleton<IBot>(bot);
     }
 
-    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services) =>
-        services.AddScoped<ILayoutParser, JsonLayoutParser>()
-            .AddScoped<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
-            .AddScoped<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
-            .AddScoped<ILayoutLoader<ReplyKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>()
-            .AddScoped<ILayoutLoader<InlineKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<InlineKeyboardMarkup>, InlineKeyboardMarkup>>();
+    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services)
+    {
+        return services.AddScoped<ILayoutParser, JsonLayoutParser>()
+                       .AddScoped<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
+                       .AddScoped<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
+                       .AddScoped<ILayoutLoader<ReplyKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>()
+                       .AddScoped<ILayoutLoader<InlineKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<InlineKeyboardMarkup>, InlineKeyboardMarkup>>();
+    }
 }

@@ -29,7 +29,8 @@ builder.Services.AddTelegramBot(builder.Configuration,
             {
                 ConnectionString = settings?.SecureStorageConnectionString
             })
-            .Set(s => s.Name = "test_bot"))
+            .Set(s => s.Name = "test_bot"),
+                                Te)
     .AddLogging(cfg => cfg.AddNLog())
     .AddDeepSeekProvider(builder.Configuration)
     .AddAiValidation()
