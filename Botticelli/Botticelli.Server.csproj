@@ -39,7 +39,7 @@
             <PackagePath></PackagePath>
             <Link>new_logo_compact.png</Link>
         </None>
-        <None Include="appsettings.Debug.json">
+        <None Include="appsettings.Development.json">
           <DependentUpon>appsettings.json</DependentUpon>
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

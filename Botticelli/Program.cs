@@ -30,7 +30,7 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(builder =>
 
 
 builder.Configuration
-    .AddJsonFile("appsettings.json")
+    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
     .AddEnvironmentVariables();
 
 var secureStorageSettings = builder.Configuration
@@ -50,7 +50,7 @@ builder.Services.AddEndpointsApiExplorer()
             new OpenApiSecurityScheme
             {
                 Name = "Authorization",
-                Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+                Description = "Example: `Bearer Generated-JWT-Token`",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
                 Scheme = "Bearer"
@@ -87,7 +87,7 @@ builder.Services
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Authorization:Issuer"],
         ValidAudience = builder.Configuration["Authorization:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authorization:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authorization:Key"] ?? string.Empty))
     });
 
 builder.Services
