@@ -39,6 +39,13 @@
             <PackagePath></PackagePath>
             <Link>new_logo_compact.png</Link>
         </None>
+        <None Include="appsettings.Debug.json">
+          <DependentUpon>appsettings.json</DependentUpon>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Include="appsettings.Release.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <None Include="nlog.config">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

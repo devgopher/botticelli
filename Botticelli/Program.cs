@@ -107,7 +107,8 @@ builder.Services
         .RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<BotInfoContext>();
 
-builder.WebHost.AddSsl(builder.Configuration);
+if (serverSettings.UseSsl)
+    builder.WebHost.AddSsl(builder.Configuration);
 
 #if !DEBUG
 builder.Services.AddIdentity();

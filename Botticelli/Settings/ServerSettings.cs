@@ -16,4 +16,5 @@ public class ServerSettings
     public int HttpsPort { get; set; } 
     public string ServerUrl { get; set; }
     public string AnalyticsUrl { get; set; }
+    public bool UseSsl { get; set; }
 }
