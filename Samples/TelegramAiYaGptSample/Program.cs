@@ -9,6 +9,7 @@ using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
+using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
@@ -28,7 +29,8 @@ builder.Services.AddTelegramBot(builder.Configuration,
             {
                 ConnectionString = settings.SecureStorageConnectionString
             })
-            .Set(s => s.Name = "test_bot"))
+            .Set(s => s.Name = "test_bot"),
+        TelegramClientDecoratorBuilder.Instance(builder.Services))
     .AddLogging(cfg => cfg.AddNLog())
     .AddYaGptProvider(builder.Configuration)
     .AddAiValidation()
