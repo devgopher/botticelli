@@ -53,18 +53,8 @@ builder.Services.AddBotChainProcessedCommand<GetNameCommand, PassValidator<GetNa
        .AddNext<GetNameCommandProcessor>()
        .AddNext<SayHelloFinalCommandProcessor>();
 
-
-builder.Services.AddEndpointsApiExplorer()
-       .AddSwaggerGen();
-
 var app = builder.Build();
 
 app.Services.RegisterBotChainedCommand<GetNameCommand, TelegramBot>();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.Run();
