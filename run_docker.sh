@@ -28,10 +28,12 @@ export ServerSettings__SmtpClientOptions__SocketOptions=2
 export ServerSettings__ServerEmail=$email
 export ServerSettings__ServerUrl=$email_smtp_server
 
-mkdir Data
+mkdir /data
+mkdir /logs
+
 cp database.db Data
 docker build --tag "botticelli_server_back_dev:0.6" . --no-cache --file DockerfileAdminBack
-docker run  -v Data:/data -it "botticelli_server_back_dev:0.6" \
+docker run -v /data:/data -v /logs:/logs -it "botticelli_server_back_dev:0.6" \
     -e SecureStorageSettings__ConnectionString="$SecureStorageSettings__ConnectionString" \
     -e ServerSettings__TokenLifetimeMin="$ServerSettings__TokenLifetimeMin" \
     -e ServerSettings__SmtpClientOptions__Server = "$ServerSettings__SmtpClientOptions__Server" \
