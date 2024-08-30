@@ -30,8 +30,9 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(builder =>
 
 
 builder.Configuration
-    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
-    .AddEnvironmentVariables();
+       .AddJsonFile($"appsettings.json")
+       .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
+       .AddEnvironmentVariables();
 
 var secureStorageSettings = builder.Configuration
     .GetSection(nameof(SecureStorageSettings))

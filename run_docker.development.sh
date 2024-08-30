@@ -28,14 +28,21 @@ export ServerSettings__SmtpClientOptions__SocketOptions=2
 export ServerSettings__ServerEmail=$email
 export ServerSettings__ServerUrl=$email_smtp_server
 
+
 mkdir /data
 mkdir /logs
 mkdir /tmp
 
 cp database.db Data
+dotnet dev-certs https --clean
+dotnet dev-certs https -ep /usr/local/share/ca-certificates/botticelli_server_dev_cert.crt -p 12345678 --format PEM
+sudo update-ca-certificates
+
 docker build --tag "botticelli_server_back_dev:0.6" . --file dockerfile_admin_back.development
-docker run -v /data:/data -v /logs:/logs -it -v /tmp:/tmp "botticelli_server_back_dev:0.6" \
-	-e "ASPNETCORE_ENVIRONMENT=Development" \
+docker run --rm -it botticelli_server_back_dev:0.6 \
+	-p 7247:7247 \
+	-p 5042:5042 \
+	-e ASPNETCORE_ENVIRONMENT="Development" \
     -e SecureStorageSettings__ConnectionString="$SecureStorageSettings__ConnectionString" \
     -e ServerSettings__TokenLifetimeMin="$ServerSettings__TokenLifetimeMin" \
     -e ServerSettings__SmtpClientOptions__Server = "$ServerSettings__SmtpClientOptions__Server" \
@@ -49,4 +56,7 @@ docker run -v /data:/data -v /logs:/logs -it -v /tmp:/tmp "botticelli_server_bac
     -e ServerSettings__SmtpClientOptions__MailPickupDirectory = "$ServerSettings__SmtpClientOptions__MailPickupDirectory" \
     -e ServerSettings__SmtpClientOptions__SocketOptions = "$ServerSettings__SmtpClientOptions__SocketOptions" \
     -e ServerSettings__ServerEmail = "$ServerSettings__ServerEmail" \
-    -e ServerSettings__ServerUrl = "$ServerSettings__ServerUrl"
+    -e ServerSettings__ServerUrl = "$ServerSettings__ServerUrl" \
+	-v /data:/data \
+	-v /logs:/logs \
+	-v /tmp:/tmp
