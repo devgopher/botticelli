@@ -23,4 +23,5 @@ RUN dotnet publish "Botticelli.Server.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 
 FROM base AS final
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_ENVIRONMENT=Release
 ENTRYPOINT ["dotnet", "Botticelli.Server.dll"]
