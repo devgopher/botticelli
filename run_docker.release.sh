@@ -33,7 +33,7 @@ mkdir /logs
 mkdir /tmp
 
 cp database.db Data
-docker build --tag "botticelli_server_back_dev:0.6" . --no-cache --file dockerfile_admin_back.release
+docker build --tag "botticelli_server_back_dev:0.6" . --file dockerfile_admin_back.release
 docker run -v /data:/data -v /logs:/logs -it -v /tmp:/tmp "botticelli_server_back_dev:0.6" \
     -e SecureStorageSettings__ConnectionString="$SecureStorageSettings__ConnectionString" \
     -e ServerSettings__TokenLifetimeMin="$ServerSettings__TokenLifetimeMin" \
