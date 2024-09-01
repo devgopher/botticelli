@@ -17,4 +17,6 @@ public class ServerSettings
     public string ServerUrl { get; set; }
     public string AnalyticsUrl { get; set; }
     public bool UseSsl { get; set; }
+
+    public string BotInfoDb { get; set; }
 }

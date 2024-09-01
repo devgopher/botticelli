@@ -26,7 +26,7 @@ public class PasswordSender : IPasswordSender
             .Subject("BotticelliBots user credentials")
             .Body($"Your login/password: {email} / {password}");
 
-        if (ct.CanBeCanceled && ct.IsCancellationRequested)
+        if (ct is { CanBeCanceled: true, IsCancellationRequested: true })
             return;
 
         var sendResult = await _fluentEmail.SendAsync(message, ct);
