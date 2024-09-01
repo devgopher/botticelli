@@ -36,9 +36,6 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
     {
         if (SecureStorage == default)
             throw new NullReferenceException($"{nameof(SecureStorage)} is null!");
-
-        if (MetricsProcessor == default)
-            throw new NullReferenceException($"{nameof(MetricsProcessor)} is null!");
     }
     
     protected TBotBuilder AddServices(IServiceCollection services)

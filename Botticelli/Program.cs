@@ -28,6 +28,7 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(builder =>
         .WithExposedHeaders("Content-Disposition");
 }));
 
+Environment.SetEnvironmentVariable("ServerSettings__SmtpClientOptions__Server", "smt.sps.ru");
 
 builder.Configuration
        .AddJsonFile($"appsettings.json")
