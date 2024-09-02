@@ -12,7 +12,7 @@ check_and_setup email_smtp_port "(example:465)"
 check_and_setup email_smtp_pwd "(smtp server/application password)"
 check_and_setup email_use_ssl "(true/false)"
 check_and_setup requires_authentification "(true/false)"
-check_and_setup bot_info_db "(example: /data/)"
+check_and_setup bot_info_db "(example: /data/botInfo.db)"
 
 export SecureStorageSettings__ConnectionString="Filename=/data/database.db;Connection=shared;Password=$db_password"
 export ServerSettings__TokenLifetimeMin=1000

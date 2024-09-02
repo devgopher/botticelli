@@ -103,7 +103,7 @@ builder.Services
     .AddScoped<IPasswordSender, PasswordSender>()
     .AddSingleton<IMapper, Mapper>()
     .AddScoped<ISender, SslMailKitSender>()
-    .AddDbContext<BotInfoContext>(c => c.UseSqlite(serverSettings.BotInfoDb))
+    .AddDbContext<BotInfoContext>(c => c.UseSqlite($"Data source={serverSettings.BotInfoDb}"))
     .AddDefaultIdentity<IdentityUser<string>>(options => options
         .SignIn
         .RequireConfirmedAccount = true)
