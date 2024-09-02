@@ -19,21 +19,19 @@ using NLog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(o => o.AddDefaultPolicy(builder =>
+builder.Services.AddCors(o => o.AddDefaultPolicy(cors =>
 {
-    builder.SetIsOriginAllowed(_ => true)
+    cors.SetIsOriginAllowed(_ => true)
         .AllowCredentials()
         .AllowAnyMethod()
         .AllowAnyHeader()
         .WithExposedHeaders("Content-Disposition");
 }));
 
-Environment.SetEnvironmentVariable("ServerSettings__SmtpClientOptions__Server", "smt.sps.ru");
-
 builder.Configuration
-       .AddJsonFile($"appsettings.json")
-       .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
-       .AddEnvironmentVariables();
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
+    .AddEnvironmentVariables();
 
 var secureStorageSettings = builder.Configuration
     .GetSection(nameof(SecureStorageSettings))
@@ -89,7 +87,8 @@ builder.Services
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Authorization:Issuer"],
         ValidAudience = builder.Configuration["Authorization:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authorization:Key"] ?? string.Empty))
+        IssuerSigningKey =
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authorization:Key"] ?? string.Empty))
     });
 
 builder.Services
@@ -124,7 +123,6 @@ builder.ApplyMigrations<BotInfoContext>();
 var app = builder.Build();
 
 
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -132,14 +130,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-if (OperatingSystem.IsWindows())
-{
-    app.UseHttpsRedirection();
-}
+if (OperatingSystem.IsWindows()) app.UseHttpsRedirection();
 
 app.UseHsts();
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

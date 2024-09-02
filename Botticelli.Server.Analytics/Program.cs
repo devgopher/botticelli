@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
     .AddJsonFile("appsettings.json")
+    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
     .AddEnvironmentVariables();
 
 var analyticsSettings = builder.Configuration
@@ -56,7 +57,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 
-app.UseCors(builder => builder.AllowAnyMethod()
+app.UseCors(cors => cors.AllowAnyMethod()
     .AllowAnyOrigin()
     .AllowAnyHeader());
 app.Run();
