@@ -12,7 +12,7 @@ check_and_setup email_smtp_port "(example:465)"
 check_and_setup email_smtp_pwd "(smtp server/application password)"
 check_and_setup email_use_ssl "(true/false)"
 check_and_setup requires_authentification "(true/false)"
-check_and_setup bot_info_db "(true/false)"
+check_and_setup bot_info_db "(example: /data/)"
 
 export SecureStorageSettings__ConnectionString="Filename=/data/database.db;Connection=shared;Password=$db_password"
 export ServerSettings__TokenLifetimeMin=1000
@@ -30,7 +30,6 @@ export ServerSettings__SmtpClientOptions__SocketOptions=2
 export ServerSettings__ServerEmail=$email
 export ServerSettings__ServerUrl=$email_smtp_server
 export ServerSettings__BotInfoDb=$bot_info_db
-
 
 mkdir /data
 mkdir /logs
@@ -60,7 +59,7 @@ docker run --net=host \
 	-e ServerSettings__SmtpClientOptions__MailPickupDirectory="${ServerSettings__SmtpClientOptions__MailPickupDirectory}" \
 	-e ServerSettings__SmtpClientOptions__SocketOptions="${ServerSettings__SmtpClientOptions__SocketOptions}" \
 	-e ServerSettings__ServerEmail="${ServerSettings__ServerEmail}" \
-	-e ServerSettings__BotIndoDb="${ServerSettings_BotInfoDb}" \
+	-e ServerSettings__BotInfoDb="${ServerSettings_BotInfoDb}" \
     	-e ServerSettings__ServerUrl="${ServerSettings__ServerUrl}" \
    	-v /data:/data \
     	-v /logs:/logs \
