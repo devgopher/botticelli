@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
 using Botticelli.Audio;
 using Botticelli.Framework.Exceptions;
 using Botticelli.Framework.Vk.Messages.API.Requests;
@@ -54,9 +55,7 @@ public class VkStorageUploader
                     }));
 
             var response = await httpClient.SendAsync(request, token);
-            var resultString = await response.Content.ReadAsStreamAsync(token);
-
-            return await JsonSerializer.DeserializeAsync<GetUploadAddress>(resultString, cancellationToken: token);
+            return await response.Content.ReadFromJsonAsync<GetUploadAddress>(cancellationToken: token);
         }
         catch (Exception ex)
         {
@@ -95,9 +94,7 @@ public class VkStorageUploader
                     }));
 
             var response = await httpClient.SendAsync(request, token);
-            var resultString = await response.Content.ReadAsStreamAsync(token);
-
-            return await JsonSerializer.DeserializeAsync<GetUploadAddress>(resultString, cancellationToken: token);
+            return await response.Content.ReadFromJsonAsync<GetUploadAddress>(cancellationToken: token);
         }
         catch (Exception ex)
         {
@@ -125,9 +122,7 @@ public class VkStorageUploader
         var content = new MultipartFormDataContent { { new StreamContent(memoryContentStream), "photo", name } };
 
         var response = await httpClient.PostAsync(uploadUrl, content, token);
-        var resultString = await response.Content.ReadAsStreamAsync(token);
-
-        return await JsonSerializer.DeserializeAsync<UploadPhotoResult>(resultString, cancellationToken: token);
+        return await response.Content.ReadFromJsonAsync<UploadPhotoResult>(cancellationToken: token);
     }
 
 
@@ -165,9 +160,7 @@ public class VkStorageUploader
         };
 
         var response = await httpClient.PostAsync(uploadUrl, content, token);
-        var resultStream = await response.Content.ReadAsStreamAsync(token);
-
-        return await JsonSerializer.DeserializeAsync<TResult>(resultStream, cancellationToken: token);
+        return await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: token);
     }
 
     /// <summary>
@@ -200,9 +193,7 @@ public class VkStorageUploader
         var content = new MultipartFormDataContent { { new StreamContent(memoryContentStream), "video", name } };
 
         var response = await httpClient.PostAsync(uploadUrl, content, token);
-        var resultStream = await response.Content.ReadAsStreamAsync(token);
-
-        return await JsonSerializer.DeserializeAsync<UploadVideoResult>(resultStream, cancellationToken: token);
+        return await response.Content.ReadFromJsonAsync<UploadVideoResult>(cancellationToken: token);
     }
 
     /// <summary>
@@ -244,9 +235,7 @@ public class VkStorageUploader
             });
 
             var response = await httpClient.SendAsync(request, token);
-            var resultString = await response.Content.ReadAsStreamAsync(token);
-
-            return await JsonSerializer.DeserializeAsync<VkSendPhotoResponse>(resultString, cancellationToken: token);
+            return await response.Content.ReadFromJsonAsync<VkSendPhotoResponse>(cancellationToken: token);
         }
         catch (Exception ex)
         {
@@ -298,9 +287,7 @@ public class VkStorageUploader
             });
 
             var response = await httpClient.SendAsync(request, token);
-            var resultStream = await response.Content.ReadAsStreamAsync(token);
-
-            return await JsonSerializer.DeserializeAsync<VkSendAudioResponse>(resultStream, cancellationToken: token);
+            return await response.Content.ReadFromJsonAsync<VkSendAudioResponse>(cancellationToken: token);
         }
         catch (Exception ex)
         {
@@ -340,9 +327,7 @@ public class VkStorageUploader
             });
 
             var response = await httpClient.SendAsync(request, token);
-            var resultStream = await response.Content.ReadAsStreamAsync(token);
-
-            return await JsonSerializer.DeserializeAsync<VkSendDocumentResponse>(resultStream, cancellationToken: token);
+            return await response.Content.ReadFromJsonAsync<VkSendDocumentResponse>(cancellationToken: token);
         }
         catch (Exception ex)
         {

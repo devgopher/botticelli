@@ -64,10 +64,7 @@ public abstract class BotActualizationService<TBot> : IHostedService
                                                       content,
                                                       cancellationToken);
 
-            var responseJson = await response.Content.ReadAsStreamAsync(cancellationToken);
-            Logger.LogDebug($"InnerSend response {responseJson}");
-
-            return await JsonSerializer.DeserializeAsync<TResp>(responseJson, cancellationToken: cancellationToken);
+            return await response.Content.ReadFromJsonAsync<TResp>(cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {

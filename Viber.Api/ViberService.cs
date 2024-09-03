@@ -140,9 +140,7 @@ namespace Viber.Api
                 throw new ViberClientException(
                     $"Error sending request {nameof(SetWebHook)}: {httpResponse.StatusCode}!");
 
-            var responseJson = await httpResponse.Content.ReadAsStreamAsync();
-
-            return await JsonSerializer.DeserializeAsync<TResp>(responseJson, cancellationToken: cancellationToken);
+            return await httpResponse.Content.ReadFromJsonAsync<TResp>(cancellationToken: cancellationToken);
         }
     }
 }
