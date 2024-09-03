@@ -10,10 +10,6 @@ check_and_setup analytics_url "(example: https://10.10.10.10:50055)"
 
 mkdir /logs
 
-dotnet dev-certs https --clean
-dotnet dev-certs https -ep /usr/local/share/ca-certificates/botticelli_server_dev_cert.crt -p 12345678 --format pem
-sudo update-ca-certificates
-
 docker build --tag "botticelli_server_front_release:0.6" . --file dockerfile_admin_front.release
 
 docker run --restart=always --net=host \

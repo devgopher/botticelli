@@ -33,11 +33,6 @@ mkdir /data
 mkdir /logs
 mkdir /tmp
 
-cp database.db Data
-dotnet dev-certs https --clean
-dotnet dev-certs https -ep /usr/local/share/ca-certificates/botticelli_server_dev_cert.crt -p 12345678 --format PEM
-sudo update-ca-certificates
-
 docker build --tag "botticelli_server_back_release:0.6" . --file dockerfile_admin_back.release
 docker run --restart=always --net=host \
 	-p 7247:7247 \
