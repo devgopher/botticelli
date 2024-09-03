@@ -59,7 +59,7 @@ docker run --restart=always --net=host \
 	-e ServerSettings__SmtpClientOptions__MailPickupDirectory="${ServerSettings__SmtpClientOptions__MailPickupDirectory}" \
 	-e ServerSettings__SmtpClientOptions__SocketOptions="${ServerSettings__SmtpClientOptions__SocketOptions}" \
 	-e ServerSettings__ServerEmail="${ServerSettings__ServerEmail}" \
-	-e ServerSettings__BotInfoDb="${ServerSettings_BotInfoDb}" \
+	-e ServerSettings__BotInfoDb="${ServerSettings__BotInfoDb}" \
     	-e ServerSettings__ServerUrl="${ServerSettings__ServerUrl}" \
    	-v /data:/data \
     	-v /logs:/logs \
