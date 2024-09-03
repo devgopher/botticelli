@@ -78,9 +78,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{7FF17C87-CC2B-4CD6-B667-18B7BED78850}"
 	ProjectSection(SolutionItems) = preProject
 		deploy\linux\server\front\run_standalone.sh = deploy\linux\server\front\run_standalone.sh
-		deploy\linux\server\front\Dockerfile = deploy\linux\server\front\Dockerfile
-		deploy\linux\server\front\build_docker.sh = deploy\linux\server\front\build_docker.sh
-		deploy\linux\server\front\run_docker.sh = deploy\linux\server\front\run_docker.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{5961DAF1-951C-4140-AEC1-648539E4D487}"

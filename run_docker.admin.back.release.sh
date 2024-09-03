@@ -3,8 +3,6 @@ function check_and_setup()
   read -p "Enter $1 $2: " $1
 }
 
-check_and_setup http_port "(example:80)"
-check_and_setup https_port "(example:8080)"
 check_and_setup db_password "(example:12345678)"
 check_and_setup email_addr "(example:foo@bar.com)"
 check_and_setup email_smtp_server "(example:smtp.bar.com)"
@@ -40,12 +38,12 @@ dotnet dev-certs https --clean
 dotnet dev-certs https -ep /usr/local/share/ca-certificates/botticelli_server_dev_cert.crt -p 12345678 --format PEM
 sudo update-ca-certificates
 
-docker build --tag "botticelli_server_back_dev:0.6" . --file dockerfile_admin_back.development
+docker build --tag "botticelli_server_back_release:0.6" . --file dockerfile_admin_back.release
 docker run --restart=always --net=host \
 	-p 7247:7247 \
 	-p 5042:5042 \
 	-p 465:465 \
-	-e ASPNETCORE_ENVIRONMENT="Development" \
+	-e ASPNETCORE_ENVIRONMENT="Release" \
 	-e SecureStorageSettings__ConnectionString="${SecureStorageSettings__ConnectionString}" \
 	-e ServerSettings__TokenLifetimeMin="${ServerSettings__TokenLifetimeMin}" \
 	-e ServerSettings__SmtpClientOptions__Server="${ServerSettings__SmtpClientOptions__Server}" \
@@ -61,7 +59,7 @@ docker run --restart=always --net=host \
 	-e ServerSettings__ServerEmail="${ServerSettings__ServerEmail}" \
 	-e ServerSettings__BotInfoDb="${ServerSettings__BotInfoDb}" \
     	-e ServerSettings__ServerUrl="${ServerSettings__ServerUrl}" \
-   	-v /data:/data \
+    	-v /data:/data \
     	-v /logs:/logs \
     	-v /tmp:/tmp \
-    	-d  botticelli_server_back_dev:0.6
+    	-d  botticelli_server_back_release:0.6

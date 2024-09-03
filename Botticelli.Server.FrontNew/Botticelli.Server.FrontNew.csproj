@@ -13,6 +13,7 @@
         <PackageIcon>logo.jpg</PackageIcon>
         <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
         <OutputType>Exe</OutputType>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
