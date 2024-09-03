@@ -60,7 +60,7 @@ public static class StartupExtensions
         
         services.AddScoped<TCommand>()
                 .AddScoped<ICommandValidator<TCommand>, TCommandValidator>()
-                .AddSingleton(builder);
+                .AddSingleton(_ => builder);
         
       return builder;
     }
