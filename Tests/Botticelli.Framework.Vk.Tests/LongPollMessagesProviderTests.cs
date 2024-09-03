@@ -53,7 +53,7 @@ public class LongPollMessagesProviderTests
     [Test]
     public void StopTest()
     {
-        var task = _provider.Start(CancellationToken.None);
+        _ = _provider.Start(CancellationToken.None);
 
         Thread.Sleep(2000);
 
