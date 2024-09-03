@@ -27,8 +27,7 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
     where TBotBuilder : BotBuilder<TBot>
 {
     protected BotContext? BotContext;
-    public IConfiguration? Configuration;
-    protected MetricsProcessor? MetricsProcessor;
+    protected IConfiguration? Configuration;
     protected SecureStorage.SecureStorage? SecureStorage;
     protected IServiceCollection? Services;
     
