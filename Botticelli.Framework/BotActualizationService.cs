@@ -1,13 +1,13 @@
 ﻿using System.Net.Http.Json;
-using Botticelli.BotBase.Settings;
+using System.Text.Json;
 using Botticelli.BotBase.Utils;
+using Botticelli.Framework.Options;
 using Botticelli.Interfaces;
 using Flurl;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
-namespace Botticelli.BotBase;
+namespace Botticelli.Framework;
 
 /// <summary>
 ///     This service is intended for sending keepalive/hello messages
@@ -18,7 +18,7 @@ public abstract class BotActualizationService<TBot> : IHostedService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ServerSettings _serverSettings;
-    protected readonly string BotId;
+    protected readonly string? BotId;
     protected readonly ILogger Logger;
     protected readonly TBot Bot;
 
@@ -48,7 +48,7 @@ public abstract class BotActualizationService<TBot> : IHostedService
     /// <param name="funcName">Response</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns></returns>
-    protected async Task<TResp> InnerSend<TReq, TResp>(TReq request,
+    protected async Task<TResp?> InnerSend<TReq, TResp>(TReq request,
                                                        string funcName,
                                                        CancellationToken cancellationToken)
     {
@@ -58,16 +58,16 @@ public abstract class BotActualizationService<TBot> : IHostedService
 
             var content = JsonContent.Create(request);
 
-            Logger.LogDebug($"InnerSend request: {JsonConvert.SerializeObject(request)}");
+            Logger.LogDebug($"InnerSend request: {JsonSerializer.Serialize(request)}");
 
             var response = await httpClient.PostAsync(Url.Combine(_serverSettings.ServerUri, funcName),
                                                       content,
                                                       cancellationToken);
 
-            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
+            var responseJson = await response.Content.ReadAsStreamAsync(cancellationToken);
             Logger.LogDebug($"InnerSend response {responseJson}");
 
-            return JsonConvert.DeserializeObject<TResp>(responseJson);
+            return await JsonSerializer.DeserializeAsync<TResp>(responseJson, cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {

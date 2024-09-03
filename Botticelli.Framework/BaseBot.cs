@@ -2,6 +2,7 @@
 using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
+using Botticelli.Framework.Global;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Admin.Requests;

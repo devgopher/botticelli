@@ -1,6 +1,5 @@
 ﻿using Botticelli.Audio;
 using Botticelli.BotBase;
-using Botticelli.BotBase.Settings;
 using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Controls.Parsers;

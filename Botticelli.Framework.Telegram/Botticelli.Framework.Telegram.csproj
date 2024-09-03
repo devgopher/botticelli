@@ -26,7 +26,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj" />
         <ProjectReference Include="..\Botticelli.SecureStorage\Botticelli.SecureStorage.csproj" />
-        <ProjectReference Include="..\Botticelli.API\Botticelli.BotBase.csproj"/>
         <ProjectReference Include="..\Botticelli.Bot.Utils\Botticelli.Bot.Utils.csproj"/>
         <ProjectReference Include="..\Botticelli.Framework.Common\Botticelli.Framework.Events.csproj"/>
         <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>

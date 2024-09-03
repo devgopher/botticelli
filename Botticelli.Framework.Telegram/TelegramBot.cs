@@ -3,6 +3,7 @@ using Botticelli.BotBase.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
+using Botticelli.Framework.Global;
 using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;

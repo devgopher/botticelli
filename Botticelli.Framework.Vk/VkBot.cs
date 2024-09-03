@@ -2,6 +2,7 @@
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
+using Botticelli.Framework.Global;
 using Botticelli.Framework.Vk.Messages.API.Requests;
 using Botticelli.Framework.Vk.Messages.API.Responses;
 using Botticelli.Framework.Vk.Messages.Handlers;
