@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
-using Botticelli.BotBase.Utils;
+using Botticelli.Bot.Utils;
 using Botticelli.Framework.Options;
 using Botticelli.Interfaces;
 using Flurl;

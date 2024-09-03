@@ -6,6 +6,7 @@
         <PackageIcon>new_logo_compact.png</PackageIcon>
         <AssemblyName>Botticelli.Scheduler.Hangfire</AssemblyName>
         <RootNamespace>Botticelli.Scheduler.Hangfire</RootNamespace>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>

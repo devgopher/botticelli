@@ -1,5 +1,5 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
-using Botticelli.BotBase.Utils;
+using Botticelli.Bot.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Global;

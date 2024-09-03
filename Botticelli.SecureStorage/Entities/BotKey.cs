@@ -11,11 +11,11 @@ namespace Botticelli.SecureStorage.Entities
         ///     botticelli bot id
         /// </summary>
         [BsonId]
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
         /// <summary>
         ///     A key for a concrete messenger
         /// </summary>
-        public string Key { get; set; }
+        public required string Key { get; set; }
     }
 }
