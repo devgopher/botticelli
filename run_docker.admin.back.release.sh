@@ -34,7 +34,7 @@ mkdir /logs
 mkdir /tmp
 
 docker build --tag "botticelli_server_back_release:0.6" . --file dockerfile_admin_back.release
-docker run --restart=always --net=host \
+docker run --restart=always \
 	-p 7247:7247 \
 	-p 5042:5042 \
 	-p 465:465 \

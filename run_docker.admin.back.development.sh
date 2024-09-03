@@ -39,7 +39,7 @@ dotnet dev-certs https -ep /usr/local/share/ca-certificates/botticelli_server_de
 sudo update-ca-certificates
 
 docker build --tag "botticelli_server_back_dev:0.6" . --file dockerfile_admin_back.development
-docker run --restart=always --net=host \
+docker run --restart=always \
 	-p 7247:7247 \
 	-p 5042:5042 \
 	-p 465:465 \

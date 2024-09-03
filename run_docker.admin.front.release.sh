@@ -12,7 +12,7 @@ mkdir /logs
 
 docker build --tag "botticelli_server_front_release:0.6" . --file dockerfile_admin_front.release
 
-docker run --restart=always --net=host \
+docker run --restart=always \
 	-p ${https_port}:7247 \
 	-p ${http_port}:5042 \
 	-e ASPNETCORE_ENVIRONMENT="Release" \
