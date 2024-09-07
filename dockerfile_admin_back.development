@@ -23,7 +23,7 @@ COPY . .
 WORKDIR "/src/Botticelli"
 
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Development
+ARG BUILD_CONFIGURATION=Debug
 RUN dotnet publish "Botticelli.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final

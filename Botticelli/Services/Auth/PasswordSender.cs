@@ -1,3 +1,4 @@
+using Botticelli.Server.Extensions;
 using Botticelli.Server.Settings;
 using FluentEmail.Core;
 using FluentEmail.Core.Interfaces;
@@ -21,12 +22,15 @@ public class PasswordSender : IPasswordSender
     {
         _logger.LogInformation($"Sending a password message to : {email}");
         
+        if (EnvironmentExtensions.IsDevelopment())
+            _logger.LogInformation($"!!! Email : {email} password: {password} !!! ONLY FOR DEVELOPMENT PURPOSES !!!");
+        
         var message = Email.From(_serverSettings.ServerEmail, "BotticelliBots Admin Service")
             .To(email)
             .Subject("BotticelliBots user credentials")
             .Body($"Your login/password: {email} / {password}");
 
-        if (ct.CanBeCanceled && ct.IsCancellationRequested)
+        if (ct is { CanBeCanceled: true, IsCancellationRequested: true })
             return;
 
         var sendResult = await _fluentEmail.SendAsync(message, ct);

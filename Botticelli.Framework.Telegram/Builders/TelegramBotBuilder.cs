@@ -1,7 +1,6 @@
-using Botticelli.BotBase;
-using Botticelli.BotBase.Settings;
-using Botticelli.BotBase.Utils;
+using Botticelli.Bot.Utils;
 using Botticelli.Client.Analytics;
+using Botticelli.Client.Analytics.Extensions;
 using Botticelli.Framework.Builders;
 using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Extensions;
@@ -27,9 +26,10 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
     private TelegramClientDecorator _client;
     private readonly ServerSettings _serverSettings;
 
-    private TelegramBotBuilder()
+    private TelegramBotBuilder(IConfiguration configuration)
     {
         _serverSettings = new ServerSettings();
+        Configuration = configuration;
         Configuration!.GetSection(nameof(ServerSettings)).Bind(_serverSettings);
     }
     
@@ -37,11 +37,10 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
         BotOptionsBuilder<TelegramBotSettings> optionsBuilder,
         IConfiguration configuration)
     {
-        var builder = new TelegramBotBuilder()
+        var builder = new TelegramBotBuilder(configuration)
             .AddServices(services)
             .AddBotSettings(optionsBuilder);
-        builder.Configuration = configuration;
-        
+
         return builder;
     }
 
@@ -51,23 +50,9 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
     {
         _builder = builder;
 
-        if (Settings.UseThrottling is true) _builder.AddThrottler(new Throttler());
-        var token = BotContext!.BotKey ?? string.Empty;
-        _builder.AddToken(token);
-        _client = _builder.Build();
-        _client.Timeout = TimeSpan.FromMilliseconds(Settings.Timeout);
-        
         return this;
     }
 
-    protected override void Assert()
-    {
-        base.Assert();
-        
-        if (_client == default)
-            throw new NullReferenceException($"{nameof(_client)} is null!");
-    }
-    
     protected override TelegramBot InnerBuild()
     {
         Services!.AddHttpClient<BotStatusService<TelegramBot>>()
@@ -92,17 +77,25 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
             SecureStorage!.SetBotContext(BotContext);
         }
         
+        var token = BotContext!.BotKey ?? string.Empty;
+        _builder.AddToken(token);
+        
+        if (Settings.UseThrottling is true) _builder.AddThrottler(new Throttler());
+        _client = _builder.Build();
+        _client.Timeout = TimeSpan.FromMilliseconds(Settings.Timeout);
+        
         Services.AddSingleton(_serverSettings)
             .AddScoped<ILayoutSupplier<ReplyMarkupBase>, ReplyTelegramLayoutSupplier>()
             .AddBotticelliFramework(Configuration)
-            .AddMetrics();
+            .AddMetrics(Configuration)
+            .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
         
         var sp = Services.BuildServiceProvider();
 
         var bot = new TelegramBot(_client,
                                   sp.GetRequiredService<IBotUpdateHandler>(),
                                   sp.GetRequiredService<ILogger<TelegramBot>>(),
-                                  MetricsProcessor,
+                                  sp.GetRequiredService<MetricsProcessor>(),
                                   SecureStorage);
 
         return bot;

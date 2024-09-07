@@ -27,7 +27,7 @@ public static class BotIdUtils
         return longest;
     }
 
-    public static string GenerateShortBotId()
+    public static string? GenerateShortBotId()
         => Regex.Replace(Convert.ToBase64String(BitWiseSum(Guid.NewGuid().ToByteArray(),
                 GenerateSalt(32))),
             "[/+=]",

@@ -1,12 +1,12 @@
-﻿using Botticelli.BotBase.Exceptions;
-using Botticelli.BotBase.Settings;
+﻿using Botticelli.Framework.Exceptions;
+using Botticelli.Framework.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Microsoft.Extensions.Logging;
 using Polly;
 
-namespace Botticelli.BotBase;
+namespace Botticelli.Framework;
 
 public class BotKeepAliveService<TBot> : BotActualizationService<TBot> where TBot : IBot
 {
@@ -78,7 +78,7 @@ public class BotKeepAliveService<TBot> : BotActualizationService<TBot> where TBo
                                _keepAliveTask.Exception);
     }
 
-    private async Task<KeepAliveNotificationResponse> Process(KeepAliveNotificationRequest request, CancellationToken ct)
+    private async Task<KeepAliveNotificationResponse?> Process(KeepAliveNotificationRequest request, CancellationToken ct)
     {
         try
         {

@@ -1,5 +1,4 @@
-﻿using Botticelli.BotBase.Exceptions;
-using Botticelli.BotBase.Settings;
+﻿using Botticelli.Framework.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
@@ -8,7 +7,7 @@ using Botticelli.Shared.API.Client.Responses;
 using Microsoft.Extensions.Logging;
 using Polly;
 
-namespace Botticelli.BotBase;
+namespace Botticelli.Framework;
 
 public class BotStatusService<TBot> : BotActualizationService<TBot> where TBot : IBot
 {
@@ -63,7 +62,7 @@ public class BotStatusService<TBot> : BotActualizationService<TBot> where TBot :
                                                                     cancellationToken);
     }
 
-    private Task<GetRequiredStatusFromServerResponse> Process(CancellationToken cancellationToken, GetRequiredStatusFromServerRequest request, CancellationToken ct)
+    private Task<GetRequiredStatusFromServerResponse?> Process(CancellationToken cancellationToken, GetRequiredStatusFromServerRequest request, CancellationToken ct)
     {
         var task = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
                                                                                                       "/bot/client/GetRequiredBotStatus",

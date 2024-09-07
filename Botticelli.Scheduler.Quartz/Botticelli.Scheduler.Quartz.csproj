@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <RootNamespace>Botticelli.Schedule.Quartz</RootNamespace>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>

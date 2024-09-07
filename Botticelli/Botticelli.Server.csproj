@@ -6,7 +6,7 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <Nullable>disable</Nullable>
+        <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <Version>0.6.0</Version>
         <Company>Botticelli</Company>
@@ -26,6 +26,12 @@
 
     <ItemGroup>
         <Content Remove="appsettings.json"/>
+        <Content Update="appsettings.Development.json">
+          <DependentUpon>appsettings.json</DependentUpon>
+        </Content>
+        <Content Update="appsettings.Release.json">
+          <DependentUpon>appsettings.json</DependentUpon>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>

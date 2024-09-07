@@ -41,5 +41,9 @@
             <PackagePath>\</PackagePath>
         </None>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Exceptions\" />
+      <Folder Include="Settings\" />
+    </ItemGroup>
 
 </Project>

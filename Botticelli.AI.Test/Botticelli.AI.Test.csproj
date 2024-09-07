@@ -6,6 +6,8 @@
     <IsPackable>false</IsPackable>
     
     <RootNamespace>Botticelli.AI.TEST</RootNamespace>
+    
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

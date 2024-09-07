@@ -6,5 +6,5 @@ public interface IMetricObject
     string BotId { get; set; }
     DateTime Timestamp { get; set; }
     string Name { get; set; }
-    Dictionary<string, string> AdditionalParameters { get; set; }
+    Dictionary<string, string>? AdditionalParameters { get; set; }
 }

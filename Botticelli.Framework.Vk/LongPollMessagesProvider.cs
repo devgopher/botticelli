@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using Botticelli.BotBase.Exceptions;
+using Botticelli.Framework.Exceptions;
 using Botticelli.Framework.Vk.Messages.API.Responses;
 using Botticelli.Framework.Vk.Messages.API.Utils;
 using Botticelli.Framework.Vk.Messages.Options;

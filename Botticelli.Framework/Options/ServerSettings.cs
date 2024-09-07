@@ -1,4 +1,4 @@
-﻿namespace Botticelli.BotBase.Settings;
+﻿namespace Botticelli.Framework.Options;
 
 public class ServerSettings
 {
