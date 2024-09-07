@@ -5,7 +5,7 @@ WORKDIR /app
 RUN git clone https://github.com/devgopher/botticelli.git
 WORKDIR /app/botticelli/Botticelli.Server.FrontNew 
 RUN git fetch --all
-RUN git switch release/0.5
+RUN git switch release/0.6
 RUN git pull
 
 

@@ -13,7 +13,7 @@ check_and_setup email_smtp_pwd "(smtp server/application password)"
 check_and_setup email_use_ssl "(true/false)"
 check_and_setup requires_authentification "(true/false)"
 
-export SecureStorageSettings__ConnectionString="Filename=/data/database.db;Connection=shared;Password=$db_password"
+export SecureStorageSettings__ConnectionString="Filename=/tmp/database.db;Connection=shared;Password=$db_password"
 export ServerSettings__TokenLifetimeMin=1000
 export ServerSettings__SmtpClientOptions__Server=$email_smtp_server
 export ServerSettings__SmtpClientOptions__Port=$email_smtp_port
@@ -33,30 +33,30 @@ mkdir /data
 mkdir /logs
 mkdir /tmp
 
-cp database.db Data
+cp database.db data
 dotnet dev-certs https --clean
 dotnet dev-certs https -ep /usr/local/share/ca-certificates/botticelli_server_dev_cert.crt -p 12345678 --format PEM
 sudo update-ca-certificates
 
 docker build --tag "botticelli_server_back_dev:0.6" . --file dockerfile_admin_back.development
-docker run --rm -it botticelli_server_back_dev:0.6 \
+docker run -d botticelli_server_back_dev:0.6 \
 	-p 7247:7247 \
 	-p 5042:5042 \
 	-e ASPNETCORE_ENVIRONMENT="Development" \
-    -e SecureStorageSettings__ConnectionString="$SecureStorageSettings__ConnectionString" \
-    -e ServerSettings__TokenLifetimeMin="$ServerSettings__TokenLifetimeMin" \
-    -e ServerSettings__SmtpClientOptions__Server = "$ServerSettings__SmtpClientOptions__Server" \
-    -e ServerSettings__SmtpClientOptions__Port = "$ServerSettings__SmtpClientOptions__Port" \
-    -e ServerSettings__SmtpClientOptions__User = "$ServerSettings__SmtpClientOptions__User" \
-    -e ServerSettings__SmtpClientOptions__Password = "$ServerSettings__SmtpClientOptions__Password" \
-    -e ServerSettings__SmtpClientOptions__UseSsl = "$ServerSettings__SmtpClientOptions__UseSsl" \
-    -e ServerSettings__SmtpClientOptions__RequiresAuthentication = "$ServerSettings__SmtpClientOptions__RequiresAuthentication" \
-    -e ServerSettings__SmtpClientOptions__PreferredEncoding = "$ServerSettings__SmtpClientOptions__PreferredEncoding" \
-    -e ServerSettings__SmtpClientOptions__UsePickupDirectory = "$ServerSettings__SmtpClientOptions__UsePickupDirectory" \
-    -e ServerSettings__SmtpClientOptions__MailPickupDirectory = "$ServerSettings__SmtpClientOptions__MailPickupDirectory" \
-    -e ServerSettings__SmtpClientOptions__SocketOptions = "$ServerSettings__SmtpClientOptions__SocketOptions" \
-    -e ServerSettings__ServerEmail = "$ServerSettings__ServerEmail" \
-    -e ServerSettings__ServerUrl = "$ServerSettings__ServerUrl" \
+    -e SecureStorageSettings__ConnectionString="${SecureStorageSettings__ConnectionString}" \
+    -e ServerSettings__TokenLifetimeMin="${ServerSettings__TokenLifetimeMin}" \
+    -e ServerSettings__SmtpClientOptions__Server = "${ServerSettings__SmtpClientOptions__Server}" \
+    -e ServerSettings__SmtpClientOptions__Port = "${ServerSettings__SmtpClientOptions__Port}" \
+    -e ServerSettings__SmtpClientOptions__User = "${ServerSettings__SmtpClientOptions__User}" \
+    -e ServerSettings__SmtpClientOptions__Password = "${ServerSettings__SmtpClientOptions__Password}" \
+    -e ServerSettings__SmtpClientOptions__UseSsl = "${ServerSettings__SmtpClientOptions__UseSsl}" \
+    -e ServerSettings__SmtpClientOptions__RequiresAuthentication = "${ServerSettings__SmtpClientOptions__RequiresAuthentication}" \
+    -e ServerSettings__SmtpClientOptions__PreferredEncoding = "${ServerSettings__SmtpClientOptions__PreferredEncoding}" \
+    -e ServerSettings__SmtpClientOptions__UsePickupDirectory = "${ServerSettings__SmtpClientOptions__UsePickupDirectory}" \
+    -e ServerSettings__SmtpClientOptions__MailPickupDirectory = "${ServerSettings__SmtpClientOptions__MailPickupDirectory}" \
+    -e ServerSettings__SmtpClientOptions__SocketOptions = "${ServerSettings__SmtpClientOptions__SocketOptions}" \
+    -e ServerSettings__ServerEmail = "${ServerSettings__ServerEmail}" \
+    -e ServerSettings__ServerUrl = "${ServerSettings__ServerUrl}" \
 	-v /data:/data \
 	-v /logs:/logs \
 	-v /tmp:/tmp

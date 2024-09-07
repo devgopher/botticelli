@@ -79,7 +79,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{7FF17C87
 	ProjectSection(SolutionItems) = preProject
 		deploy\linux\server\front\run_standalone.sh = deploy\linux\server\front\run_standalone.sh
 		deploy\linux\server\front\Dockerfile = deploy\linux\server\front\Dockerfile
-		deploy\linux\server\front\build_docker.sh = deploy\linux\server\front\build_docker.sh
 		deploy\linux\server\front\run_docker.sh = deploy\linux\server\front\run_docker.sh
 	EndProjectSection
 EndProject
