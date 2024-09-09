@@ -38,7 +38,6 @@ builder.Services
        .AddScoped<StartCommandProcessor<ReplyMarkupBase>>()
        .AddScoped<StopCommandProcessor<ReplyMarkupBase>>()
        .AddScoped<InfoCommandProcessor<ReplyMarkupBase>>()
-       .AddOpenTtsTalks(builder.Configuration)
        .AddScoped<ILayoutParser, JsonLayoutParser>()
        .AddBotCommand<InfoCommand, InfoCommandProcessor<ReplyMarkupBase>, PassValidator<InfoCommand>>()
        .AddBotCommand<StartCommand, StartCommandProcessor<ReplyMarkupBase>, PassValidator<StartCommand>>()

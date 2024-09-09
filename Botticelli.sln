@@ -222,11 +222,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Locations.Telegr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Locations.Vk", "Botticelli.Locations.Vk\Botticelli.Locations.Vk.csproj", "{89865D7E-8769-477B-8CED-C5B53C981178}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Load Testing", "Load Testing", "{A93536BA-C38B-4669-AE22-B5136B30D045}"
-	ProjectSection(SolutionItems) = preProject
-		Load Testing\SampleBotLoadTests.jmx = Load Testing\SampleBotLoadTests.jmx
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramCommandChainSample", "Samples\TelegramCommandChainSample\TelegramCommandChainSample.csproj", "{E33D4F38-48D2-44C7-A56B-4CE080A5B593}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.Test", "Botticelli.AI.Test\Botticelli.AI.Test.csproj", "{332A0B08-B1C9-4321-AD31-B2102B95AFEA}"
