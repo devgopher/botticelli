@@ -25,7 +25,6 @@ var settings = builder.Configuration
     .GetSection(nameof(SampleSettings))
     .Get<SampleSettings>();
 
-
 builder.Services
        .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
        .AddTelegramBot(builder.Configuration,
@@ -47,8 +46,6 @@ builder.Services
        .AddBotCommand<InfoCommand, InfoCommandProcessor<ReplyMarkupBase>, PassValidator<InfoCommand>>()
        .AddBotCommand<StartCommand, StartCommandProcessor<ReplyMarkupBase>, PassValidator<StartCommand>>()
        .AddBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, PassValidator<StopCommand>>();
-
-       builder.AddLoadTesting<TelegramBot>();
 
 builder.Services.AddEndpointsApiExplorer()
        .AddSwaggerGen();
