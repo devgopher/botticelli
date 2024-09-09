@@ -6,7 +6,6 @@ using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
-using Botticelli.LoadTests.Receiver.Controller;
 using Botticelli.Schedule.Quartz.Extensions;
 using Botticelli.SecureStorage.Settings;
 using Botticelli.Talks.Extensions;
@@ -16,14 +15,12 @@ using NLog.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramMessagingSample;
 using TelegramMessagingSample.Settings;
-using Botticelli.LoadTests.Receiver.Extensions;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var settings = builder.Configuration
-    .GetSection(nameof(SampleSettings))
-    .Get<SampleSettings>();
+                      .GetSection(nameof(SampleSettings))
+                      .Get<SampleSettings>();
 
 builder.Services
        .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
@@ -52,8 +49,8 @@ builder.Services.AddEndpointsApiExplorer()
 
 var app = builder.Build();
 app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor<ReplyMarkupBase>, TelegramBot>()
-            .RegisterBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, TelegramBot>()
-            .RegisterBotCommand<InfoCommand, InfoCommandProcessor<ReplyMarkupBase>, TelegramBot>();
+   .RegisterBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, TelegramBot>()
+   .RegisterBotCommand<InfoCommand, InfoCommandProcessor<ReplyMarkupBase>, TelegramBot>();
 
 if (app.Environment.IsDevelopment())
 {
