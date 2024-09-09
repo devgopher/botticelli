@@ -30,5 +30,8 @@
     <ItemGroup>
         <ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj"/>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Extensions\" />
+    </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
 ﻿using Botticelli.SecureStorage.Entities;
-using Botticelli.SecureStorage.Settings;
 using Botticelli.Shared.ValueObjects;
 using LiteDB;
 
@@ -10,14 +9,17 @@ namespace Botticelli.SecureStorage;
 /// </summary>
 public class SecureStorage
 {
-    private readonly SecureStorageSettings _settings;
+    private readonly string _connection;
 
-    public SecureStorage(SecureStorageSettings settings) => _settings = settings;
+    public SecureStorage(string connection)
+    {
+        _connection = connection;
+    }
 
     [Obsolete($"Use {nameof(GetBotContext)}")]
     public BotKey? GetBotKey(string botId)
     {
-        using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
+        using var db = new LiteDatabase(_connection, BsonMapper.Global);
 
         return db.GetCollection<BotKey>().FindById(botId);
     }
@@ -25,7 +27,7 @@ public class SecureStorage
     [Obsolete($"Use {nameof(SetBotContext)}")]
     public void SetBotKey(string botId, string key)
     {
-        using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
+        using var db = new LiteDatabase(_connection, BsonMapper.Global);
 
         db.GetCollection<BotKey>()
           .Upsert(botId,
@@ -38,14 +40,14 @@ public class SecureStorage
 
     public BotContext? GetBotContext(string botId)
     {
-        using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
+        using var db = new LiteDatabase(_connection, BsonMapper.Global);
 
         return db.GetCollection<BotContext>().FindById(botId);
     }
 
     public void SetBotContext(BotContext context)
     {
-        using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
+        using var db = new LiteDatabase(_connection, BsonMapper.Global);
 
         db.GetCollection<BotContext>()
           .Upsert(context.BotId, context);
@@ -63,7 +65,7 @@ public class SecureStorage
 
         if (botKey == null || string.IsNullOrWhiteSpace(botKey.Key)) return;
 
-        using (var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global))
+        using (var db = new LiteDatabase(_connection, BsonMapper.Global))
         {
             if (db.GetCollection<BotContext>().FindById(botId)?.BotKey != default) return;
         }
@@ -79,7 +81,7 @@ public class SecureStorage
     public void SetAnyData<T>(string id, T data)
             where T : IDbEntity
     {
-        using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
+        using var db = new LiteDatabase(_connection, BsonMapper.Global);
 
         db.GetCollection<T>()
           .Upsert(id, data);
@@ -87,19 +89,21 @@ public class SecureStorage
 
     public T GetAnyData<T>(string id)
             where T : IDbEntity
-        => GetAnyData<T>().FirstOrDefault(x => x.Id == id);
+    {
+        return GetAnyData<T>().FirstOrDefault(x => x.Id == id);
+    }
 
     public IEnumerable<T> GetAnyData<T>()
             where T : IDbEntity
     {
-        using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
+        using var db = new LiteDatabase(_connection, BsonMapper.Global);
 
         return db.GetCollection<T>().FindAll().ToArray();
     }
 
     public void CleanData<T>(Func<T, bool> func)
     {
-        using var db = new LiteDatabase(_settings.ConnectionString, BsonMapper.Global);
+        using var db = new LiteDatabase(_connection, BsonMapper.Global);
 
         db.GetCollection<T>().DeleteMany(t => func(t));
     }

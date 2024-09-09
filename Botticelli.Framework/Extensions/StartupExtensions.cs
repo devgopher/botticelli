@@ -16,11 +16,10 @@ namespace Botticelli.Framework.Extensions;
 
 public static class StartupExtensions
 {
-    public static IServiceCollection AddBotticelliFramework(this IServiceCollection services, IConfiguration config) =>
+    public static IServiceCollection AddBotticelliFramework(this IServiceCollection services) =>
         services.AddSingleton<ClientProcessorFactory>()
                 .AddSingleton<CommandProcessorFactory>()
                 .AddSharedValidation()
-                .AddMetrics(config)
                 .AddEasyCaching(options => 
                 {
                     options.UseInMemory(config => 

@@ -1,6 +1,7 @@
 using Botticelli.Bot.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Client.Analytics.Extensions;
+using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Builders;
 using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Extensions;
@@ -24,27 +25,24 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
 {
     private TelegramClientDecoratorBuilder _builder;
     private TelegramClientDecorator _client;
-    private readonly ServerSettings _serverSettings;
 
-    private TelegramBotBuilder(IConfiguration configuration)
+    private TelegramBotBuilder()
     {
-        _serverSettings = new ServerSettings();
-        Configuration = configuration;
-        Configuration!.GetSection(nameof(ServerSettings)).Bind(_serverSettings);
     }
     
     public static TelegramBotBuilder Instance(IServiceCollection services,
         BotOptionsBuilder<TelegramBotSettings> optionsBuilder,
-        IConfiguration configuration)
+        AnalyticsSettingsBuilder<AnalyticsSettings> analyticsSettingsBuilder)
     {
-        var builder = new TelegramBotBuilder(configuration)
+        var builder = new TelegramBotBuilder()
             .AddServices(services)
+            .AddAnalyticsSettings(analyticsSettingsBuilder)
             .AddBotSettings(optionsBuilder);
 
         return builder;
     }
 
-    protected TelegramBotSettings Settings { get; set; }
+    private TelegramBotSettings Settings { get; set; }
 
     public TelegramBotBuilder AddClient(TelegramClientDecoratorBuilder builder)
     {
@@ -60,10 +58,12 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
         Services!.AddHostedService<BotStatusService<IBot<TelegramBot>>>();
         Services!.AddHttpClient<BotKeepAliveService<TelegramBot>>()
                  .AddCertificates(Settings);
-        Services.AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>();
+        Services!.AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>();
         
-        Services.AddHostedService<TelegramBotHostedService>();
+        Services!.AddHostedService<TelegramBotHostedService>();
         var botId = BotDataUtils.GetBotId();
+
+        if (botId == null) throw new InvalidDataException($"{nameof(botId)} shouldn't be null!");
        
         if (string.IsNullOrWhiteSpace(BotContext?.BotId))
         {
@@ -77,37 +77,34 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
             SecureStorage!.SetBotContext(BotContext);
         }
         
-        var token = BotContext!.BotKey ?? string.Empty;
+        var token = BotContext.BotKey;
         _builder.AddToken(token);
         
-        if (Settings.UseThrottling is true) _builder.AddThrottler(new Throttler());
+        if (Settings.UseThrottling is true) 
+            _builder.AddThrottler(new Throttler());
         _client = _builder.Build();
         _client.Timeout = TimeSpan.FromMilliseconds(Settings.Timeout);
         
-        Services.AddSingleton(_serverSettings)
+        Services!.AddSingleton(_serverSettings)
             .AddScoped<ILayoutSupplier<ReplyMarkupBase>, ReplyTelegramLayoutSupplier>()
-            .AddBotticelliFramework(Configuration)
-            .AddMetrics(Configuration)
+            .AddBotticelliFramework()
+            .AddMetrics(_analyticsSettings)
             .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
         
-        var sp = Services.BuildServiceProvider();
+        var sp = Services!.BuildServiceProvider();
 
-        var bot = new TelegramBot(_client,
-                                  sp.GetRequiredService<IBotUpdateHandler>(),
-                                  sp.GetRequiredService<ILogger<TelegramBot>>(),
-                                  sp.GetRequiredService<MetricsProcessor>(),
-                                  SecureStorage);
-
-        return bot;
+        return new TelegramBot(_client,
+                               sp.GetRequiredService<IBotUpdateHandler>(),
+                               sp.GetRequiredService<ILogger<TelegramBot>>(),
+                               sp.GetRequiredService<MetricsProcessor>(),
+                               SecureStorage!);
     }
 
     public override TelegramBotBuilder AddBotSettings<TBotSettings>(
         BotOptionsBuilder<TBotSettings> optionsBuilder)
     {
-        Settings = optionsBuilder.Build() as TelegramBotSettings;
+        Settings = optionsBuilder.Build() as TelegramBotSettings ?? throw new InvalidOperationException();
 
         return this;
     }
-
-    protected override SecureStorageSettings GetStorageSettings() => Settings.SecureStorageSettings;
 }

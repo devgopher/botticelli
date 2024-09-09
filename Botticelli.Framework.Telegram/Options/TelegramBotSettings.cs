@@ -14,4 +14,14 @@ public class TelegramBotSettings : BotSettings
     /// Use throttling or not?
     /// </summary>
     public bool? UseThrottling { get; set; } = true;
+    
+    /// <summary>
+    /// Should we use test environment
+    /// </summary>
+    public bool? UseTestEnvironment { get; set; } = false;
+
+    /// <summary>
+    /// Base url for Telegram API
+    /// </summary>
+    public string? TelegramBaseUrl { get; set; } = "https://api.telegram.org";
 }

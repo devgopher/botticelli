@@ -32,7 +32,7 @@ public static class ServiceCollectionExtensions
         BotOptionsBuilder<VkBotSettings> optionsBuilder)
     {
         var settings = optionsBuilder.Build();
-        var secureStorage = new SecureStorage.SecureStorage(settings.SecureStorageSettings);
+        var secureStorage = new SecureStorage.SecureStorage(settings.SecureStorageConnectionString);
         var botId = BotDataUtils.GetBotId();
         var botContext = secureStorage.GetBotContext(botId);
 

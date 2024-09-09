@@ -19,12 +19,12 @@ public class TelegramClientDecorator : ITelegramBotClient
                                            .Handle<ApiRequestException>(e => e.ErrorCode == (int) HttpStatusCode.TooManyRequests)
                                            .WaitAndRetry(10, (i, _) => TimeSpan.FromSeconds(10 * Math.Exp(i)));
 
-    private readonly IThrottler _throttler;
+    private readonly IThrottler? _throttler;
 
-    internal TelegramClientDecorator(string token, IThrottler throttler, HttpClient? httpClient = null)
+    internal TelegramClientDecorator(TelegramBotClientOptions options, IThrottler? throttler, HttpClient? httpClient = null)
     {
         _throttler = throttler;
-        _bot = new TelegramBotClient(token, httpClient);
+        _bot = new TelegramBotClient(options, httpClient);
     }
 
     public async Task<TResponse> MakeRequestAsync<TResponse>(IRequest<TResponse> request,
@@ -32,10 +32,9 @@ public class TelegramClientDecorator : ITelegramBotClient
     {
         try
         {
-            // ReSharper disable once AsyncVoidLambda
             return await _policy.Execute(async () =>
                                 {
-                                    if (_throttler != default)
+                                    if (_throttler != null)
                                         return await _throttler.Throttle(async () => await _bot
                                                                                  .MakeRequestAsync(request, cancellationToken),
                                                                          cancellationToken);
@@ -76,7 +75,7 @@ public class TelegramClientDecorator : ITelegramBotClient
     public bool LocalBotServer { get; }
     public long? BotId { get; }
     public TimeSpan Timeout { get; set; }
-    public IExceptionParser ExceptionsParser { get; set; }
-    public event AsyncEventHandler<ApiRequestEventArgs> OnMakingApiRequest;
-    public event AsyncEventHandler<ApiResponseEventArgs> OnApiResponseReceived;
+    public IExceptionParser? ExceptionsParser { get; set; }
+    public event AsyncEventHandler<ApiRequestEventArgs>? OnMakingApiRequest;
+    public event AsyncEventHandler<ApiResponseEventArgs>? OnApiResponseReceived;
 }

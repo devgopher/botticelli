@@ -1,6 +1,5 @@
 using System.Text;
 using Botticelli.SecureStorage;
-using Botticelli.SecureStorage.Settings;
 using Botticelli.Server.Data;
 using Botticelli.Server.Extensions;
 using Botticelli.Server.Services;

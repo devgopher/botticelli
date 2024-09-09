@@ -7,13 +7,9 @@ using Botticelli.AI.YaGpt.Extensions;
 using Botticelli.Bus.None.Extensions;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
-using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
-using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Extensions;
-using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
-using Botticelli.SecureStorage.Settings;
 using NLog.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -23,14 +19,8 @@ var settings = builder.Configuration
     .GetSection(nameof(SampleSettings))
     .Get<SampleSettings>();
 
-builder.Services.AddTelegramBot(builder.Configuration,
-        new BotOptionsBuilder<TelegramBotSettings>()
-            .Set(s => s.SecureStorageSettings = new SecureStorageSettings
-            {
-                ConnectionString = settings.SecureStorageConnectionString
-            })
-            .Set(s => s.Name = "test_bot"),
-        TelegramClientDecoratorBuilder.Instance(builder.Services))
+builder.Services.AddTelegramBot(optionsBuilder => optionsBuilder.Set(s => s.SecureStorageConnectionString = settings.SecureStorageConnectionString)
+                                                                .Set(s => s.Name = "test_bot"))
     .AddLogging(cfg => cfg.AddNLog())
     .AddYaGptProvider(builder.Configuration)
     .AddAiValidation()

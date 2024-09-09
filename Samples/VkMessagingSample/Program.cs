@@ -7,8 +7,6 @@ using Botticelli.Framework.Vk.Messages.API.Markups;
 using Botticelli.Framework.Vk.Messages.Extensions;
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Schedule.Quartz.Extensions;
-using Botticelli.Scheduler.Hangfire.Extensions;
-using Botticelli.SecureStorage.Settings;
 using Botticelli.Talks.Extensions;
 using MessagingSample.Common.Commands;
 using MessagingSample.Common.Commands.Processors;
@@ -19,18 +17,15 @@ using VkMessagingSample.Settings;
 var builder = WebApplication.CreateBuilder(args);
 
 var settings = builder.Configuration
-    .GetSection(nameof(SampleSettings))
-    .Get<SampleSettings>();
+                      .GetSection(nameof(SampleSettings))
+                      .Get<SampleSettings>();
 
 builder.Services
        .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
        .AddVkBot(builder.Configuration,
-                       new BotOptionsBuilder<VkBotSettings>()
-                               .Set(s => s.SecureStorageSettings = new SecureStorageSettings
-                               {
-                                   ConnectionString = settings?.SecureStorageConnectionString
-                               })
-                               .Set(s => s.Name = settings?.BotName))
+                 new BotOptionsBuilder<VkBotSettings>()
+                         .Set(s => s.SecureStorageConnectionString = settings.SecureStorageConnectionString)
+                         .Set(s => s.Name = settings?.BotName))
        .AddLogging(cfg => cfg.AddNLog())
        .AddQuartzScheduler(builder.Configuration)
        .AddHostedService<TestBotHostedService>()

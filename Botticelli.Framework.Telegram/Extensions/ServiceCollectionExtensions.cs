@@ -5,7 +5,6 @@ using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -13,34 +12,31 @@ namespace Botticelli.Framework.Telegram.Extensions;
 
 public static class ServiceCollectionExtensions
 {
+    private static BotOptionsBuilder<TelegramBotSettings> _optionsBuilder = new();
+    
     /// <summary>
     ///     Adds a Telegram bot
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="config"></param>
-    /// <param name="optionsBuilder"></param>
-    /// <param name="telegramClientBuilder"></param>
+    /// <param name="optionsBuilderFunc"></param>
     /// <returns></returns>
     public static IServiceCollection AddTelegramBot(this IServiceCollection services,
-                                                    IConfiguration config,
-                                                    BotOptionsBuilder<TelegramBotSettings> optionsBuilder,
-                                                    TelegramClientDecoratorBuilder telegramClientBuilder)
+                                                    Action<BotOptionsBuilder<TelegramBotSettings>> optionsBuilderFunc)
     {
-        var bot = TelegramBotBuilder.Instance(services, optionsBuilder, config)
-                                    .AddStorage()
-                                    .AddClient(telegramClientBuilder)
-                                    .Build();
-
+        optionsBuilderFunc(_optionsBuilder);
+        var clientBuilder = TelegramClientDecoratorBuilder.Instance(services, _optionsBuilder);
+        var botBuilder = TelegramBotBuilder.Instance(services, _optionsBuilder)
+                                           .AddStorage()
+                                           .AddClient(clientBuilder);
+        var bot = botBuilder.Build();
         return services.AddSingleton<IBot<TelegramBot>>(bot)
                        .AddSingleton<IBot>(bot);
     }
 
-    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services)
-    {
-        return services.AddScoped<ILayoutParser, JsonLayoutParser>()
-                       .AddScoped<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
-                       .AddScoped<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
-                       .AddScoped<ILayoutLoader<ReplyKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>()
-                       .AddScoped<ILayoutLoader<InlineKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<InlineKeyboardMarkup>, InlineKeyboardMarkup>>();
-    }
+    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services) =>
+            services.AddScoped<ILayoutParser, JsonLayoutParser>()
+                    .AddScoped<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
+                    .AddScoped<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
+                    .AddScoped<ILayoutLoader<ReplyKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>()
+                    .AddScoped<ILayoutLoader<InlineKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<InlineKeyboardMarkup>, InlineKeyboardMarkup>>();
 }
