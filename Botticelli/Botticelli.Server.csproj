@@ -61,7 +61,6 @@
         <PackageReference Include="FluentEmail.MailKit" Version="3.0.2"/>
         <PackageReference Include="FluentEmail.Smtp" Version="3.0.2"/>
         <PackageReference Include="Flurl" Version="4.0.0"/>
-        <PackageReference Include="LiteDB.Identity" Version="1.0.8" />
         <PackageReference Include="Mapster" Version="7.4.0"/>
         <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.18"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4"/>

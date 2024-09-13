@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using Botticelli.Server.Data.Entities;
 using Botticelli.Server.Data.Entities.Bot;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +7,10 @@ namespace Botticelli.Server.Data;
 
 public class BotInfoContext : DbContext
 {
+    // public BotInfoContext() : base((new DbContextOptionsBuilder<BotInfoContext>().UseSqlite("Data Source=database.db")).Options)
+    // {
+    //
+    // }
     public BotInfoContext(DbContextOptions options) : base(options)
     {
     }

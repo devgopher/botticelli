@@ -161,7 +161,7 @@ public class BotManagementService : IBotManagementService
 
             botInfo.BotKey = botKey;
             botInfo.BotName = botName;
-            botInfo.Items = additionalParams;
+           // botInfo.Items = additionalParams;
            
             _context.BotInfos.Update(botInfo);
             _context.SaveChanges();

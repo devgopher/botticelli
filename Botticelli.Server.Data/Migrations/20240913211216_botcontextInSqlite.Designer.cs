@@ -3,6 +3,7 @@ using System;
 using Botticelli.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,44 +11,24 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Botticelli.Server.Data.Migrations
 {
     [DbContext(typeof(BotInfoContext))]
-    partial class BotInfoContextModelSnapshot : ModelSnapshot
+    [Migration("20240913211216_botcontextInSqlite")]
+    partial class botcontextInSqlite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
-
-            modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.BotAdditionalInfo", b =>
-                {
-                    b.Property<string>("BotId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ItemValue")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("BotId");
-
-                    b.ToTable("BotAdditionalInfo");
-                });
 
             modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.BotInfo", b =>
                 {
                     b.Property<string>("BotId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("AdditionalInfoBotId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("BotKey")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("BotName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastKeepAlive")
@@ -60,8 +41,6 @@ namespace Botticelli.Server.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("BotId");
-
-                    b.HasIndex("AdditionalInfoBotId");
 
                     b.ToTable("BotInfo");
                 });
@@ -87,22 +66,22 @@ namespace Botticelli.Server.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2cb59f48-3d78-4056-b43a-5042b67d8b8d",
-                            ConcurrencyStamp = "09/13/2024 21:15:18",
+                            Id = "91f76d24-9f30-446c-b3db-42a6cff5c1a6",
+                            ConcurrencyStamp = "09/13/2024 21:12:15",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "11594aea-0910-40f8-8e37-53efc5e1a80f",
-                            ConcurrencyStamp = "09/13/2024 21:15:18",
+                            Id = "4b585771-7feb-4e6a-aa05-09076415edf1",
+                            ConcurrencyStamp = "09/13/2024 21:12:15",
                             Name = "bot_manager",
                             NormalizedName = "BOT_MANAGER"
                         },
                         new
                         {
-                            Id = "e8bcf27d-e87d-462c-bbbd-3fc1a42c5701",
-                            ConcurrencyStamp = "09/13/2024 21:15:18",
+                            Id = "4997b014-6ca0-4736-aa14-db77741c9fbb",
+                            ConcurrencyStamp = "09/13/2024 21:12:15",
                             Name = "viewer",
                             NormalizedName = "VIEWER"
                         });
@@ -171,17 +150,6 @@ namespace Botticelli.Server.Data.Migrations
                     b.HasKey("UserId", "RoleId");
 
                     b.ToTable("ApplicationUserRoles");
-                });
-
-            modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.BotInfo", b =>
-                {
-                    b.HasOne("Botticelli.Server.Data.Entities.Bot.BotAdditionalInfo", "AdditionalInfo")
-                        .WithMany()
-                        .HasForeignKey("AdditionalInfoBotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AdditionalInfo");
                 });
 #pragma warning restore 612, 618
         }

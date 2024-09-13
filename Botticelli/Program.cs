@@ -8,7 +8,6 @@ using Botticelli.Server.Settings;
 using Botticelli.Server.Utils;
 using FluentEmail.Core.Interfaces;
 using FluentEmail.MailKitSmtp;
-using LiteDB.Identity.Extensions;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -100,8 +99,10 @@ builder.Services
     .AddScoped<IPasswordSender, PasswordSender>()
     .AddSingleton<IMapper, Mapper>()
     .AddScoped<ISender, SslMailKitSender>()
-    .AddDbContext<BotInfoContext>(c => c.UseSqlite($"Data source={serverSettings.BotInfoDb}"))
-    .AddLiteDBIdentity(options => options.ConnectionString = serverSettings.SecureStorageConnection)
+    .AddDbContext<BotInfoContext>(options => options.UseSqlite($"Data source={serverSettings.SecureStorageConnection}"))
+    .AddDefaultIdentity<IdentityUser<string>>(options => options
+        .SignIn
+        .RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<BotInfoContext>();
 
 if (serverSettings.UseSsl)

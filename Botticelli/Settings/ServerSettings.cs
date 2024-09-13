@@ -4,11 +4,6 @@ namespace Botticelli.Server.Settings;
 
 public class ServerSettings
 {
-    public ServerSettings(string botInfoDb)
-    {
-        BotInfoDb = botInfoDb;
-    }
-
     /// <summary>
     ///     Token lifetime minutes
     /// </summary>
@@ -23,6 +18,4 @@ public class ServerSettings
     public string? AnalyticsUrl { get; set; }
     public required string SecureStorageConnection { get; set; }
     public bool UseSsl { get; set; }
-
-    public string BotInfoDb { get; set; }
 }
