@@ -1,5 +1,6 @@
 ﻿using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities;
+using Botticelli.Server.Data.Entities.Bot;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
@@ -13,14 +14,11 @@ public class BotManagementService : IBotManagementService
 {
     private readonly BotInfoContext _context;
     private readonly ILogger<BotManagementService> _logger;
-    private readonly SecureStorage.SecureStorage _secureStorage;
 
     public BotManagementService(BotInfoContext context,
-        SecureStorage.SecureStorage secureStorage,
         ILogger<BotManagementService> logger)
     {
         _context = context;
-        _secureStorage = secureStorage;
         _logger = logger;
     }
 
@@ -43,24 +41,11 @@ public class BotManagementService : IBotManagementService
         {
             _logger.LogInformation($"{nameof(RegisterBot)}({botId}, {botKey}, {botName}, {botType}) started...");
 
-            botKey ??= _secureStorage.GetBotContext(botId)?.BotKey;
-
             if (GetBotInfo(botId) == default)
                 AddNewBotInfo(botId,
                     BotStatus.Unknown,
                     botType,
                     botName);
-
-            var botContext = new BotContext
-            {
-                BotId = botId,
-                BotKey = botKey,
-                Items = additionalParams ?? new Dictionary<string, string>()
-            };
-
-            _secureStorage.MigrateToBotContext(botId);
-
-            _secureStorage.SetBotContext(botContext);
 
             _logger.LogInformation($"{nameof(RegisterBot)} successful");
 
@@ -167,25 +152,20 @@ public class BotManagementService : IBotManagementService
             if (prevStatus is not BotStatus.Unlocked)
                 await SetRequiredBotStatus(botId, BotStatus.Unlocked);
 
-            botKey ??= _secureStorage.GetBotContext(botId)?.BotKey;
-
-            if (GetBotInfo(botId) == default)
+            var botInfo = GetBotInfo(botId);
+            if (botInfo == default)
             {
                 _logger.LogInformation($"{nameof(UpdateBot)}() : bot with id '{botId}' wasn't found!");
                 return false;
             }
 
-            var botContext = new BotContext
-            {
-                BotId = botId,
-                BotKey = botKey,
-                Items = additionalParams ?? new Dictionary<string, string>()
-            };
-
-            _secureStorage.MigrateToBotContext(botId);
-
-            _secureStorage.SetBotContext(botContext);
-
+            botInfo.BotKey = botKey;
+            botInfo.BotName = botName;
+            botInfo.Items = additionalParams;
+           
+            _context.BotInfos.Update(botInfo);
+            _context.SaveChanges();
+            
             await SetRequiredBotStatus(botId, prevStatus.Value);
 
             _logger.LogInformation($"{nameof(UpdateBot)} successful");
@@ -216,12 +196,13 @@ public class BotManagementService : IBotManagementService
     /// <param name="botId"></param>
     /// <param name="status"></param>
     /// <param name="botType"></param>
+    /// <param name="botName"></param>
     /// <param name="lastKeepAliveUtc"></param>
     private void AddNewBotInfo(string botId,
-        BotStatus status,
-        BotType botType,
-        string botName,
-        DateTime? lastKeepAliveUtc = null)
+                               BotStatus status,
+                               BotType botType,
+                               string botName,
+                               DateTime? lastKeepAliveUtc = null)
     {
         try
         {

@@ -36,6 +36,7 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
     {
         var builder = new TelegramBotBuilder()
             .AddServices(services)
+            .AddServerSettings(ser)
             .AddAnalyticsSettings(analyticsSettingsBuilder)
             .AddBotSettings(optionsBuilder);
 
@@ -88,7 +89,7 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
         Services!.AddSingleton(_serverSettings)
             .AddScoped<ILayoutSupplier<ReplyMarkupBase>, ReplyTelegramLayoutSupplier>()
             .AddBotticelliFramework()
-            .AddMetrics(_analyticsSettings)
+            .AddMetrics(zz)
             .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
         
         var sp = Services!.BuildServiceProvider();

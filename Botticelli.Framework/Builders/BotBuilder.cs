@@ -27,8 +27,9 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
     protected SecureStorage.SecureStorage? SecureStorage;
     protected IServiceCollection? Services;
     private readonly ServerSettings _serverSettings;
-    private AnalyticsSettingsBuilder<AnalyticsSettings> analyticsSettingsBuilder;
-
+    protected AnalyticsSettingsBuilder<AnalyticsSettings> AnalyticsSettingsBuilder;
+    protected ServerSettingsBuilder<ServerSettings> ServerSettingsBuilder;
+    
     protected override void Assert()
     {
         if (SecureStorage == default) throw new NullReferenceException($"{nameof(SecureStorage)} is null!");
@@ -54,14 +55,14 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
         
     public TBotBuilder AddAnalyticsSettings(AnalyticsSettingsBuilder<AnalyticsSettings> settingsBuilder)
     {
-        analyticsSettingsBuilder = settingsBuilder;
+        AnalyticsSettingsBuilder = settingsBuilder;
 
         return (this as TBotBuilder)!;
     }
     
     public TBotBuilder AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
     {
-        analyticsSettingsBuilder = settingsBuilder;
+        ServerSettingsBuilder = settingsBuilder;
 
         return (this as TBotBuilder)!;
     }

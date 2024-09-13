@@ -1,4 +1,6 @@
-﻿using Botticelli.Server.Data.Entities;
+﻿using System.Globalization;
+using Botticelli.Server.Data.Entities;
+using Botticelli.Server.Data.Entities.Bot;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,19 +33,19 @@ public class BotInfoContext : DbContext
                 Id = Guid.NewGuid().ToString(),
                 Name = "admin",
                 NormalizedName = "ADMIN",
-                ConcurrencyStamp = DateTime.UtcNow.ToString()
+                ConcurrencyStamp = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
             }, new IdentityRole<string>
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = "bot_manager",
                 NormalizedName = "BOT_MANAGER",
-                ConcurrencyStamp = DateTime.UtcNow.ToString()
+                ConcurrencyStamp = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
             }, new IdentityRole<string>
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = "viewer",
                 NormalizedName = "VIEWER",
-                ConcurrencyStamp = DateTime.UtcNow.ToString()
+                ConcurrencyStamp = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
             });
     }
 }
