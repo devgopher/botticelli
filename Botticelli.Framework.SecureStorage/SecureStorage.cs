@@ -11,10 +11,7 @@ public class SecureStorage
 {
     private readonly string _connection;
 
-    public SecureStorage(string connection)
-    {
-        _connection = connection;
-    }
+    public SecureStorage(string connection) => _connection = connection;
 
     [Obsolete($"Use {nameof(GetBotContext)}")]
     public BotKey? GetBotKey(string botId)

@@ -8,6 +8,7 @@ using Botticelli.Server.Settings;
 using Botticelli.Server.Utils;
 using FluentEmail.Core.Interfaces;
 using FluentEmail.MailKitSmtp;
+using LiteDB.Identity.Extensions;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -32,13 +33,11 @@ builder.Configuration
     .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
     .AddEnvironmentVariables();
 
-var secureStorageSettings = builder.Configuration
-    .GetSection(nameof(SecureStorageSettings))
-    .Get<SecureStorageSettings>();
-
 var serverSettings = builder.Configuration
     .GetSection(nameof(ServerSettings))
     .Get<ServerSettings>();
+
+if (serverSettings == null) throw new InvalidDataException("no ServerSettings in appsettings!");
 
 builder.Services.AddSingleton(serverSettings);
 
@@ -94,7 +93,7 @@ builder.Services
     .AddLogging(cfg => cfg.AddNLog())
     .AddScoped<IBotManagementService, BotManagementService>()
     .AddScoped<IBotStatusDataService, BotStatusDataService>()
-    .AddSingleton(new SecureStorage(secureStorageSettings))
+    .AddSingleton(new SecureStorage(serverSettings.SecureStorageConnection))
     .AddScoped<IAdminAuthService, AdminAuthService>()
     .AddScoped<IUserService, UserService>()
     .AddScoped<IConfirmationService, ConfirmationService>()
@@ -102,9 +101,7 @@ builder.Services
     .AddSingleton<IMapper, Mapper>()
     .AddScoped<ISender, SslMailKitSender>()
     .AddDbContext<BotInfoContext>(c => c.UseSqlite($"Data source={serverSettings.BotInfoDb}"))
-    .AddDefaultIdentity<IdentityUser<string>>(options => options
-        .SignIn
-        .RequireConfirmedAccount = true)
+    .AddLiteDBIdentity(options => options.ConnectionString = serverSettings.SecureStorageConnection)
     .AddEntityFrameworkStores<BotInfoContext>();
 
 if (serverSettings.UseSsl)
