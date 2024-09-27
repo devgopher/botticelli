@@ -77,7 +77,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Botticelli.Framework.SecureStorage\Botticelli.Framework.SecureStorage.csproj" />
         <ProjectReference Include="..\Botticelli.Server.Data.Entities\Botticelli.Server.Data.Entities.csproj"/>
         <ProjectReference Include="..\Botticelli.Server.Data\Botticelli.Server.Data.csproj"/>
         <ProjectReference Include="..\Botticelli.Server.Models\Botticelli.Server.Models.csproj"/>

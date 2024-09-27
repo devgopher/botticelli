@@ -12,13 +12,8 @@ namespace Botticelli.Server.Services;
 public class BotStatusDataService : IBotStatusDataService
 {
     private readonly BotInfoContext _context;
-    private readonly SecureStorage.SecureStorage _secureStorage;
 
-    public BotStatusDataService(BotInfoContext context, SecureStorage.SecureStorage secureStorage)
-    {
-        _context = context;
-        _secureStorage = secureStorage;
-    }
+    public BotStatusDataService(BotInfoContext context) => _context = context;
 
     public ICollection<BotInfo> GetBots() => _context.BotInfos.ToArray();
 
@@ -31,12 +26,10 @@ public class BotStatusDataService : IBotStatusDataService
         => _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
 
     [Obsolete("Use GetRequiredBotContext")]
-    public async Task<string> GetRequiredBotKey(string botId) => _secureStorage.GetBotContext(botId)?.BotKey;
+    public async Task<string> GetRequiredBotKey(string botId) => _context.BotInfos.FirstOrDefault(bi => bi.BotId == botId)?.BotKey ?? string.Empty;
 
-    public async Task<BotContext> GetRequiredBotContext(string botId)
+    public async Task<BotInfo> GetBotInfo(string botId)
     {
-        _secureStorage.MigrateToBotContext(botId);
-
-        return _secureStorage.GetBotContext(botId);
+        return _context.BotInfos.FirstOrDefault(bi => bi.BotId == botId);
     }
 }

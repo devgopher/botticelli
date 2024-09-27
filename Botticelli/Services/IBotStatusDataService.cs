@@ -35,5 +35,5 @@ public interface IBotStatusDataService
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
-    Task<BotContext> GetRequiredBotContext(string botId);
+    Task<BotInfo> GetBotInfo(string botId);
 }

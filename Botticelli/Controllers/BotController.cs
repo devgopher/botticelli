@@ -1,6 +1,7 @@
 using Botticelli.Server.Services;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,15 +38,25 @@ public class BotController
     [AllowAnonymous]
     [HttpPost("client/[action]")]
     public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus(
-        [FromBody] GetRequiredStatusFromServerRequest request) =>
-        new()
+        [FromBody] GetRequiredStatusFromServerRequest request)
+    {
+        var botInfo = await _botStatusDataService.GetBotInfo(request.BotId);
+        var context = new BotContext
+        {
+            BotId = botInfo.BotId,
+            BotKey = botInfo.BotKey,
+            Items = botInfo.AdditionalInfo?.ToDictionary(k => k.ItemName, k => k.ItemValue)
+        };
+        
+        return new GetRequiredStatusFromServerResponse
         {
             BotId = request.BotId,
+            BotKey = context.BotKey,
             IsSuccess = true,
             Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId),
-            BotKey = await _botStatusDataService.GetRequiredBotKey(request.BotId),
-            BotContext = await _botStatusDataService.GetRequiredBotContext(request.BotId)
+            BotContext = context
         };
+    }
 
     /// <summary>
     ///     Keep alive function

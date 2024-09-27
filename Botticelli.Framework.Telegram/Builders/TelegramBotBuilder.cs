@@ -36,7 +36,7 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
     {
         var builder = new TelegramBotBuilder()
             .AddServices(services)
-            .AddServerSettings(ser)
+            .AddServerSettings()
             .AddAnalyticsSettings(analyticsSettingsBuilder)
             .AddBotSettings(optionsBuilder);
 
@@ -75,6 +75,7 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
                 Items = new Dictionary<string, string>()
             };
 
+            _
             SecureStorage!.SetBotContext(BotContext);
         }
         

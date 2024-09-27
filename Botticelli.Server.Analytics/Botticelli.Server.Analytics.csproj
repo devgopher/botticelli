@@ -64,7 +64,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Botticelli.Framework.SecureStorage\Botticelli.Framework.SecureStorage.csproj" />
         <ProjectReference Include="..\Botticelli.Analytics.Shared\Botticelli.Analytics.Shared.csproj"/>
     </ItemGroup>
 
