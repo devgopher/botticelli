@@ -28,8 +28,5 @@ public class BotStatusDataService : IBotStatusDataService
     [Obsolete("Use GetRequiredBotContext")]
     public async Task<string> GetRequiredBotKey(string botId) => _context.BotInfos.FirstOrDefault(bi => bi.BotId == botId)?.BotKey ?? string.Empty;
 
-    public async Task<BotInfo> GetBotInfo(string botId)
-    {
-        return _context.BotInfos.FirstOrDefault(bi => bi.BotId == botId);
-    }
+    public async Task<BotInfo> GetBotInfo(string botId) => _context.BotInfos.FirstOrDefault(bi => bi.BotId == botId);
 }

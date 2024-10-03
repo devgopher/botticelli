@@ -1,4 +1,5 @@
-﻿using Botticelli.Framework.Controls.Parsers;
+﻿using Botticelli.Client.Analytics.Settings;
+using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Builders;
 using Botticelli.Framework.Telegram.Decorators;
@@ -13,6 +14,7 @@ namespace Botticelli.Framework.Telegram.Extensions;
 public static class ServiceCollectionExtensions
 {
     private static BotOptionsBuilder<TelegramBotSettings> _optionsBuilder = new();
+    private static AnalyticsSettingsBuilder<AnalyticsSettings> _analyticsOptionsBuilder = new();
     
     /// <summary>
     ///     Adds a Telegram bot
@@ -25,8 +27,7 @@ public static class ServiceCollectionExtensions
     {
         optionsBuilderFunc(_optionsBuilder);
         var clientBuilder = TelegramClientDecoratorBuilder.Instance(services, _optionsBuilder);
-        var botBuilder = TelegramBotBuilder.Instance(services, _optionsBuilder)
-                                           .AddStorage()
+        var botBuilder = TelegramBotBuilder.Instance(services, _optionsBuilder, _analyticsOptionsBuilder)
                                            .AddClient(clientBuilder);
         var bot = botBuilder.Build();
         return services.AddSingleton<IBot<TelegramBot>>(bot)

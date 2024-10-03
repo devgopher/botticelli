@@ -12,9 +12,7 @@ using Botticelli.Framework.Telegram.HostedService;
 using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
-using Botticelli.SecureStorage.Settings;
 using Botticelli.Shared.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -31,12 +29,13 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
     }
     
     public static TelegramBotBuilder Instance(IServiceCollection services,
-        BotOptionsBuilder<TelegramBotSettings> optionsBuilder,
+                                              ServerSettingsBuilder<ServerSettings> serverSettingsBuilder,
+                                              BotOptionsBuilder<TelegramBotSettings> optionsBuilder,
         AnalyticsSettingsBuilder<AnalyticsSettings> analyticsSettingsBuilder)
     {
         var builder = new TelegramBotBuilder()
             .AddServices(services)
-            .AddServerSettings()
+            .AddServerSettings(serverSettingsBuilder)
             .AddAnalyticsSettings(analyticsSettingsBuilder)
             .AddBotSettings(optionsBuilder);
 
@@ -74,8 +73,7 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
                 BotKey = string.Empty,
                 Items = new Dictionary<string, string>()
             };
-
-            _
+            
             SecureStorage!.SetBotContext(BotContext);
         }
         

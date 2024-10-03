@@ -1,5 +1,4 @@
 using System.Text;
-using Botticelli.SecureStorage;
 using Botticelli.Server.Data;
 using Botticelli.Server.Extensions;
 using Botticelli.Server.Services;
@@ -92,7 +91,6 @@ builder.Services
     .AddLogging(cfg => cfg.AddNLog())
     .AddScoped<IBotManagementService, BotManagementService>()
     .AddScoped<IBotStatusDataService, BotStatusDataService>()
-    .AddSingleton(new SecureStorage(serverSettings.SecureStorageConnection))
     .AddScoped<IAdminAuthService, AdminAuthService>()
     .AddScoped<IUserService, UserService>()
     .AddScoped<IConfirmationService, ConfirmationService>()
