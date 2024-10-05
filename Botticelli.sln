@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Server", "Botticelli.Server.Back\Botticelli.Server.csproj", "{36B50C90-9C92-42D8-AB33-F7726A528233}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Server.Back", "Botticelli.Server.Back\Botticelli.Server.Back.csproj", "{36B50C90-9C92-42D8-AB33-F7726A528233}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Admin", "Admin", "{A05D5A20-E0D3-4844-8311-C98E8B67DA7F}"
 EndProject
