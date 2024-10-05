@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Botticelli.Server.Data.Migrations
 {
-    [DbContext(typeof(BotInfoContext))]
+    [DbContext(typeof(ServerDataContext))]
     [Migration("20240913211216_botcontextInSqlite")]
     partial class botcontextInSqlite
     {

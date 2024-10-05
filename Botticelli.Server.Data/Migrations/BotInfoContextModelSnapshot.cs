@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Botticelli.Server.Data.Migrations
 {
-    [DbContext(typeof(BotInfoContext))]
+    [DbContext(typeof(ServerDataContext))]
     partial class BotInfoContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

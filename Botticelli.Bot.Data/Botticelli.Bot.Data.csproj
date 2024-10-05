@@ -14,4 +14,8 @@
       <ProjectReference Include="..\Botticelli.Bot.Data.Entities\Botticelli.Bot.Data.Entities.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Repositories\" />
+    </ItemGroup>
+
 </Project>

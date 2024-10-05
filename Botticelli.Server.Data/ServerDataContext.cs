@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Botticelli.Server.Data;
 
-public class BotInfoContext : DbContext
+public class ServerDataContext : DbContext
 {
     // public BotInfoContext() : base((new DbContextOptionsBuilder<BotInfoContext>().UseSqlite("Data Source=database.db")).Options)
     // {
     //
     // }
-    public BotInfoContext(DbContextOptions options) : base(options)
+    public ServerDataContext(DbContextOptions options) : base(options)
     {
     }
 
