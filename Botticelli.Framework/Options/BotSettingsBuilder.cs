@@ -1,13 +1,13 @@
-namespace Botticelli.Client.Analytics.Settings;
+﻿namespace Botticelli.Framework.Options;
 
-public class AnalyticsSettingsBuilder<T>
-        where T : AnalyticsSettings, new()
+public class BotSettingsBuilder<T>
+    where T : BotSettings, new()
 {
     private T _settings = new();
-
+    
     public void Set(T settings) => _settings = settings;
     
-    public AnalyticsSettingsBuilder<T> Set(Action<T> func)
+    public BotSettingsBuilder<T> Set(Action<T> func)
     {
         func(_settings);
 

@@ -1,5 +1,7 @@
 ﻿using System.Text;
+using Botticelli.Bot.Data.Repositories;
 using Botticelli.Bot.Utils;
+using Botticelli.Bot.Utils.TextUtils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
@@ -28,8 +30,9 @@ namespace Botticelli.Framework.Telegram;
 public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly IBotUpdateHandler _handler;
+    private readonly ITextTransformer _textTransformer;
 
-    private readonly SecureStorage.SecureStorage _secureStorage;
+    private readonly IBotDataAccess _data;
 
     // private static readonly IMemoryCache Cache;
     private ITelegramBotClient _client;
@@ -38,17 +41,15 @@ public class TelegramBot : BaseBot<TelegramBot>
         IBotUpdateHandler handler,
         ILogger<TelegramBot> logger,
         MetricsProcessor metrics,
-        SecureStorage.SecureStorage secureStorage) : base(logger, metrics)
+        ITextTransformer textTransformer,
+        IBotDataAccess data) : base(logger, metrics)
     {
         BotStatusKeeper.IsStarted = false;
         _client = client;
         _handler = handler;
-        _secureStorage = secureStorage;
-
+        _textTransformer = textTransformer;
+        _data = data;
         BotUserId = _client.BotId.ToString();
-
-        // Migration to a bot context instead of simple bot key
-        _secureStorage.MigrateToBotContext(BotDataUtils.GetBotId());
     }
 
     public override BotType Type => BotType.Telegram;
@@ -146,7 +147,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             if (request?.Message == default) throw new BotException("request/message is null!");
 
             var text = new StringBuilder($"{request.Message.Subject} {request.Message.Body}");
-            var retText = Escape(text).ToString();
+            var retText = _textTransformer.Escape(text).ToString();
             List<(string chatId, string innerId)> pairs = [];
 
             foreach (var link in request.Message.ChatIdInnerIdLinks)
@@ -391,34 +392,6 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     /// <summary>
-    ///     Autoescape for special symbols
-    /// </summary>
-    /// <param name="text"></param>
-    /// <returns></returns>
-    private static StringBuilder Escape(StringBuilder text) =>
-        text.Replace("!", @"\!")
-            .Replace("*", @"\*")
-            .Replace("'", @"\'")
-            .Replace(".", @"\.")
-            .Replace("+", @"\+")
-            .Replace("~", @"\~")
-            .Replace("@", @"\@")
-            .Replace("_", @"\_")
-            .Replace("(", @"\(")
-            .Replace(")", @"\)")
-            .Replace("-", @"\-")
-            .Replace("`", @"\`")
-            .Replace("=", @"\=")
-            .Replace(">", @"\>")
-            .Replace("<", @"\<")
-            .Replace("{", @"\{")
-            .Replace("}", @"\}")
-            .Replace("[", @"\[")
-            .Replace("]", @"\]")
-            .Replace("|", @"\|")
-            .Replace("#", @"\#");
-
-    /// <summary>
     ///     Starts a bot
     /// </summary>
     /// <param name="request"></param>
@@ -491,23 +464,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         return StopBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
     }
-
-    [Obsolete($"Use {nameof(SetBotContext)}")]
-    public override async Task SetBotKey(string key, CancellationToken token)
-    {
-        var currentKey = _secureStorage.GetBotKey(BotDataUtils.GetBotId());
-
-        if (currentKey?.Key != key)
-        {
-            await StopBot(token);
-
-            _secureStorage.SetBotKey(currentKey?.Id, key);
-            RecreateClient(key);
-
-            await StartBot(token);
-        }
-    }
-
+    
     private void RecreateClient(string key) => _client = new TelegramBotClient(key);
 
     private async Task StartBot(CancellationToken token)
@@ -522,17 +479,17 @@ public class TelegramBot : BaseBot<TelegramBot>
         await StopBotAsync(stopRequest, token);
     }
 
-    public override async Task SetBotContext(BotContext context, CancellationToken token)
+    public override async Task SetBotContext(BotData.Entities.Bot.BotData context, CancellationToken token)
     {
         if (context == default) return;
 
-        var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
+        var currentContext = _data.GetData();
 
         if (currentContext?.BotKey != context.BotKey)
         {
             await StopBot(token);
 
-            _secureStorage.SetBotContext(context);
+            _data.SetData(context);
             RecreateClient(context.BotKey);
 
 

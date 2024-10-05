@@ -1,3 +1,5 @@
+using Botticelli.Bot.Data.Repositories;
+using Botticelli.Bot.Data.Settings;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Options;
 using Botticelli.Shared.ValueObjects;
@@ -23,12 +25,12 @@ public abstract class BotBuilder<TBot>
 public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
         where TBotBuilder : BotBuilder<TBot>
 {
-    protected BotContext? BotContext;
+    protected DataAccessSettingsBuilder<DataAccessSettings> BotDataAccessSettingsBuilder;
     protected IServiceCollection? Services;
     private readonly ServerSettings _serverSettings;
     protected AnalyticsSettingsBuilder<AnalyticsSettings> AnalyticsSettingsBuilder;
     protected ServerSettingsBuilder<ServerSettings> ServerSettingsBuilder;
-    
+
     protected override void Assert()
     {
     }
@@ -40,7 +42,7 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
         return (this as TBotBuilder)!;
     }
 
-    public abstract TBotBuilder AddBotSettings<TBotSettings>(BotOptionsBuilder<TBotSettings> optionsBuilder)
+    public abstract TBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
             where TBotSettings : BotSettings, new();
         
     public TBotBuilder AddAnalyticsSettings(AnalyticsSettingsBuilder<AnalyticsSettings> settingsBuilder)
@@ -53,6 +55,13 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
     public TBotBuilder AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
     {
         ServerSettingsBuilder = settingsBuilder;
+
+        return (this as TBotBuilder)!;
+    }
+
+    public TBotBuilder AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder) 
+    {
+        BotDataAccessSettingsBuilder = botDataAccessBuilder;
 
         return (this as TBotBuilder)!;
     }

@@ -25,13 +25,13 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <param name="config"></param>
-    /// <param name="optionsBuilder"></param>
+    /// <param name="settingsBuilder"></param>
     /// <returns></returns>
     public static IServiceCollection AddVkBot(this IServiceCollection services,
         IConfiguration config,
-        BotOptionsBuilder<VkBotSettings> optionsBuilder)
+        BotSettingsBuilder<VkBotSettings> settingsBuilder)
     {
-        var settings = optionsBuilder.Build();
+        var settings = settingsBuilder.Build();
         var secureStorage = new SecureStorage.SecureStorage(settings.SecureStorageConnectionString);
         var botId = BotDataUtils.GetBotId();
         var botContext = secureStorage.GetBotContext(botId);

@@ -1,13 +1,13 @@
-namespace Botticelli.Framework.Options;
+namespace Botticelli.Bot.Data.Settings;
 
-public class ServerSettingsBuilder<T>
-        where T : ServerSettings, new()
+public class DataAccessSettingsBuilder<T>
+        where T : IDataAccessSettings, new()
 {
     private T _settings = new();
 
     public void Set(T settings) => _settings = settings;
-    
-    public ServerSettingsBuilder<T> Set(Action<T> func)
+
+    public DataAccessSettingsBuilder<T> Set(Action<T> func)
     {
         func(_settings);
 

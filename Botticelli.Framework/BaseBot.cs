@@ -84,7 +84,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
     [Obsolete($"Use {nameof(SetBotContext)}")]
     public abstract Task SetBotKey(string key, CancellationToken token);
 
-    public abstract Task SetBotContext(BotContext context, CancellationToken token);
+    public abstract Task SetBotContext(BotData.Entities.Bot.BotData botData, CancellationToken token);
 
     /// <summary>
     ///     Sends a message

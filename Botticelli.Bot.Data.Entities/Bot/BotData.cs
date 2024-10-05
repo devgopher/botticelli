@@ -5,8 +5,8 @@ using Botticelli.Shared.Constants;
 
 namespace Botticelli.BotData.Entities.Bot;
 
-[Table("BotInfo")]
-public class BotInfo
+[Table("BotData")]
+public class BotData
 {
     [Key] public required string BotId { get; set; }
 

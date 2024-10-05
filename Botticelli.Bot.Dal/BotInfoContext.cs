@@ -10,12 +10,13 @@ public class BotInfoContext : DbContext
     // {
     //
     // }
+    
     public BotInfoContext(DbContextOptions options) : base(options)
     {
     }
 
-    public DbSet<BotInfo> BotInfos { get; set; }
+    public DbSet<BotData.Entities.Bot.BotData> BotInfos { get; set; }
 
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) => modelBuilder.Entity<BotInfo>();
+    protected override void OnModelCreating(ModelBuilder modelBuilder) => modelBuilder.Entity<BotData.Entities.Bot.BotData>();
 }

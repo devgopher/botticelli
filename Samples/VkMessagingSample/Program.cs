@@ -23,7 +23,7 @@ var settings = builder.Configuration
 builder.Services
        .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
        .AddVkBot(builder.Configuration,
-                 new BotOptionsBuilder<VkBotSettings>()
+                 new BotSettingsBuilder<VkBotSettings>()
                          .Set(s => s.SecureStorageConnectionString = settings.SecureStorageConnectionString)
                          .Set(s => s.Name = settings?.BotName))
        .AddLogging(cfg => cfg.AddNLog())

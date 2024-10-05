@@ -10,17 +10,17 @@ public class TelegramClientDecoratorBuilder
     private TelegramClientDecorator? _telegramClient;
     private IThrottler? _throttler;
     private HttpClient? _httpClient;
-    private readonly BotOptionsBuilder<TelegramBotSettings> _optionsBuilder;
+    private readonly BotSettingsBuilder<TelegramBotSettings> _settingsBuilder;
     private readonly IServiceCollection _services;
     private string? _token;
 
-    public static TelegramClientDecoratorBuilder Instance(IServiceCollection services, BotOptionsBuilder<TelegramBotSettings> optionsBuilder) 
-        => new(services, optionsBuilder);
+    public static TelegramClientDecoratorBuilder Instance(IServiceCollection services, BotSettingsBuilder<TelegramBotSettings> settingsBuilder) 
+        => new(services, settingsBuilder);
 
-    private TelegramClientDecoratorBuilder(IServiceCollection services, BotOptionsBuilder<TelegramBotSettings> optionsBuilder)
+    private TelegramClientDecoratorBuilder(IServiceCollection services, BotSettingsBuilder<TelegramBotSettings> settingsBuilder)
     {
         _services = services;
-        _optionsBuilder = optionsBuilder;
+        _settingsBuilder = settingsBuilder;
     }
 
     public TelegramClientDecoratorBuilder AddHttpClient(HttpClient client)
@@ -57,7 +57,7 @@ public class TelegramClientDecoratorBuilder
             _httpClient = factory.CreateClient(nameof(TelegramClientDecorator));
         }
 
-        var botOptions = _optionsBuilder.Build();
+        var botOptions = _settingsBuilder.Build();
         var clientOptions = new TelegramBotClientOptions(_token, botOptions.TelegramBaseUrl, botOptions.UseTestEnvironment ?? false);
         _telegramClient = new TelegramClientDecorator(clientOptions, _throttler, _httpClient);
         
