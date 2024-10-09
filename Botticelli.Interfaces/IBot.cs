@@ -8,7 +8,7 @@ namespace Botticelli.Interfaces;
 public interface IBot : IEventBasedBotAdminApi, IEventBasedBotClientApi
 {
     BotType Type { get; }
-    string BotUserId { get; protected set; }
+    string? BotUserId { get; protected set; }
 }
 
 /// <summary>

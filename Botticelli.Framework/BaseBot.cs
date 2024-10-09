@@ -142,7 +142,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
     }
 
     public abstract BotType Type { get; }
-    public string BotUserId { get; set; }
+    public string? BotUserId { get; set; }
 
     protected abstract Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token);
 
@@ -157,6 +157,6 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
     protected abstract Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
                                                                            CancellationToken token);
 
-    public event StartedEventHandler Started;
-    public event StoppedEventHandler Stopped;
+    public event StartedEventHandler? Started;
+    public event StoppedEventHandler? Stopped;
 }
