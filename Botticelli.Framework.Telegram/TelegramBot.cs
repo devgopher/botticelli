@@ -56,7 +56,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     public override event MsgSentEventHandler MessageSent;
     public override event MsgReceivedEventHandler MessageReceived;
     public override event MsgRemovedEventHandler MessageRemoved;
-    public override event MessengerSpecificEventHandler MessengerSpecificEvent;
+    public virtual event MessengerSpecificEventHandler MessengerSpecificEvent;
 
     /// <summary>
     ///     Deletes a message
@@ -117,7 +117,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <exception cref="BotException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     protected override async Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
-                                                                                           ISendOptionsBuilder<TSendOptions> optionsBuilder,
+                                                                                           ISendOptionsBuilder<TSendOptions>? optionsBuilder,
                                                                                            bool isUpdate,
                                                                                            CancellationToken token)
     {

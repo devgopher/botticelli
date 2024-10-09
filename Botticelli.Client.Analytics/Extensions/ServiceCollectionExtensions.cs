@@ -1,4 +1,5 @@
-﻿using Botticelli.Client.Analytics.Settings;
+﻿using System.Configuration;
+using Botticelli.Client.Analytics.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,10 +24,12 @@ public static class ServiceCollectionExtensions
         where T: AnalyticsClientSettings, new()
     {
         var analyticsSettings = configuration
-            .GetSection(nameof(AnalyticsClientSettings))
-            .Get<AnalyticsClientSettings>();
+            .GetSection(typeof(T).Name)
+            .Get<T>();
+        if (analyticsSettings == null)
+            throw new ConfigurationErrorsException($"No section for: {typeof(T)}!");
 
-        return services.AddAnalyticsClient<T>(analyticsSettings);
+        return services.AddAnalyticsClient<T>(opt => opt.Set(analyticsSettings));
     }
 
     public static IServiceCollection AddAnalyticsClient(this IServiceCollection services,

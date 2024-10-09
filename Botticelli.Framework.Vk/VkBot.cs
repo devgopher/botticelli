@@ -163,7 +163,7 @@ public class VkBot : BaseBot<VkBot>
 
 
     protected override async Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
-        ISendOptionsBuilder<TSendOptions> optionsBuilder,
+        ISendOptionsBuilder<TSendOptions>? optionsBuilder,
         bool isUpdate,
         CancellationToken token)
     {
@@ -305,5 +305,5 @@ public class VkBot : BaseBot<VkBot>
     public override event MsgSentEventHandler MessageSent;
     public override event MsgReceivedEventHandler MessageReceived;
     public override event MsgRemovedEventHandler MessageRemoved;
-    public override event MessengerSpecificEventHandler MessengerSpecificEvent;
+    public virtual event MessengerSpecificEventHandler MessengerSpecificEvent;
 }
