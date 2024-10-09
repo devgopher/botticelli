@@ -1,4 +1,5 @@
 ﻿using Botticelli.Analytics.Shared.Metrics;
+using Botticelli.Bot.Data.Entities.Bot;
 using Botticelli.Bot.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
@@ -81,10 +82,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
         return result;
     }
 
-    [Obsolete($"Use {nameof(SetBotContext)}")]
-    public abstract Task SetBotKey(string key, CancellationToken token);
-
-    public abstract Task SetBotContext(BotData.Entities.Bot.BotData botData, CancellationToken token);
+    public abstract Task SetBotContext(BotData botData, CancellationToken token);
 
     /// <summary>
     ///     Sends a message

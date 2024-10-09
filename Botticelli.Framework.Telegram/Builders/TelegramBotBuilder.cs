@@ -34,11 +34,11 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
                                               ServerSettingsBuilder<ServerSettings> serverSettingsBuilder,
                                               BotSettingsBuilder<TelegramBotSettings> settingsBuilder,
                                               DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder,
-                                              AnalyticsSettingsBuilder<AnalyticsSettings> analyticsSettingsBuilder) =>
+                                              AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder) =>
             new TelegramBotBuilder()
                     .AddServices(services)
                     .AddServerSettings(serverSettingsBuilder)
-                    .AddAnalyticsSettings(analyticsSettingsBuilder)
+                    .AddAnalyticsSettings(analyticsClientSettingsBuilder)
                     .AddBotDataAccessSettings(dataAccessSettingsBuilder)
                     .AddBotSettings(settingsBuilder);
 
@@ -66,7 +66,7 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
         if (botId == null) throw new InvalidDataException($"{nameof(botId)} shouldn't be null!");
 
         #region Metrics
-        var metricsPublisher = new MetricsPublisher(AnalyticsSettingsBuilder.Build());
+        var metricsPublisher = new MetricsPublisher(AnalyticsClientSettingsBuilder.Build());
         var metricsProcessor = new MetricsProcessor(metricsPublisher);
         Services!.AddSingleton(metricsPublisher);
         Services!.AddSingleton(metricsProcessor);

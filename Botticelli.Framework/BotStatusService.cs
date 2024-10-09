@@ -1,4 +1,6 @@
-﻿using Botticelli.Framework.Options;
+﻿using Botticelli.Bot.Data.Entities.Bot;
+using Botticelli.Framework.Exceptions;
+using Botticelli.Framework.Options;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
@@ -69,7 +71,30 @@ public class BotStatusService<TBot> : BotActualizationService<TBot> where TBot :
                                                                                                       ct);
 
         task.Wait(cancellationToken);
-        Bot.SetBotContext(task.Result?.BotContext, ct);
+
+        var taskResult = task.Result;
+        if (taskResult == default)
+            throw new BotException("No result from server!");
+        
+        var botContext = taskResult?.BotContext;
+        if (botContext == default)
+            throw new BotException("No bot context from server!");
+        
+        var botData = new BotData
+        {
+            BotId = botContext.BotId,
+            Status = task.Result?.Status,
+            BotKey = botContext.BotKey,
+            AdditionalInfo = botContext.Items?.Select(it => new BotAdditionalInfo
+                {
+                    BotId = taskResult.BotId,
+                    ItemName = it.Key,
+                    ItemValue = it.Value
+                })
+                .ToList()
+        };
+
+        Bot.SetBotContext(botData, ct);
 
         if (task.Exception != default)
         {

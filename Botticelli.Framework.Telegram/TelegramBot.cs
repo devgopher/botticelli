@@ -479,7 +479,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         await StopBotAsync(stopRequest, token);
     }
 
-    public override async Task SetBotContext(BotData.Entities.Bot.BotData context, CancellationToken token)
+    public override async Task SetBotContext(Bot.Data.Entities.Bot.BotData context, CancellationToken token)
     {
         if (context == default) return;
 

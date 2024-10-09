@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
 {
     private static readonly BotSettingsBuilder<TelegramBotSettings> SettingsBuilder = new();
     private static readonly ServerSettingsBuilder<ServerSettings> ServerSettingsBuilder = new();
-    private static readonly AnalyticsSettingsBuilder<AnalyticsSettings> AnalyticsOptionsBuilder = new();
+    private static readonly AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientOptionsBuilder = new();
     private static readonly DataAccessSettingsBuilder<DataAccessSettings> DataAccessSettingsBuilder = new();
 
     public static IServiceCollection AddTelegramBot(this IServiceCollection services)
@@ -25,18 +25,18 @@ public static class ServiceCollectionExtensions
         var sp = services.BuildServiceProvider();
         
         return services.AddTelegramBot(o => o.Set(sp.GetRequiredService<TelegramBotSettings>()),
-                                       o => o.Set(sp.GetRequiredService<AnalyticsSettings>()),
+                                       o => o.Set(sp.GetRequiredService<AnalyticsClientSettings>()),
                                        o => o.Set(sp.GetRequiredService<ServerSettings>()),
                                        o => o.Set(sp.GetRequiredService<DataAccessSettings>()));
     }
 
     public static IServiceCollection AddTelegramBot(this IServiceCollection services,
                                                     TelegramBotSettings botSettings,
-                                                    AnalyticsSettings analyticsSettings,
+                                                    AnalyticsClientSettings analyticsClientSettings,
                                                     ServerSettings serverSettings,
                                                     DataAccessSettings dataAccessSettings) =>
             services.AddTelegramBot(o => o.Set(botSettings),
-                                    o => o.Set(analyticsSettings),
+                                    o => o.Set(analyticsClientSettings),
                                     o => o.Set(serverSettings),
                                     o => o.Set(dataAccessSettings));
 
@@ -50,13 +50,13 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddTelegramBot(this IServiceCollection services,
                                                     Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
-                                                    Action<AnalyticsSettingsBuilder<AnalyticsSettings>> analyticsOptionsBuilderFunc,
+                                                    Action<AnalyticsClientSettingsBuilder<AnalyticsClientSettings>> analyticsOptionsBuilderFunc,
                                                     Action<ServerSettingsBuilder<ServerSettings>> serverSettingsBuilderFunc,
                                                     Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc>)
     {
         optionsBuilderFunc(SettingsBuilder);
         serverSettingsBuilderFunc(ServerSettingsBuilder);
-        analyticsOptionsBuilderFunc(AnalyticsOptionsBuilder);
+        analyticsOptionsBuilderFunc(AnalyticsClientOptionsBuilder);
         dataAccessSettingsBuilderFunc(DataAccessSettingsBuilder);
         
         var clientBuilder = TelegramClientDecoratorBuilder.Instance(services, SettingsBuilder);
@@ -65,7 +65,7 @@ public static class ServiceCollectionExtensions
                                                      ServerSettingsBuilder,
                                                      SettingsBuilder, 
                                                      DataAccessSettingsBuilder,
-                                                     AnalyticsOptionsBuilder)
+                                                     AnalyticsClientOptionsBuilder)
                                            .AddClient(clientBuilder);
         var bot = botBuilder.Build();
         return services.AddSingleton<IBot<TelegramBot>>(bot)

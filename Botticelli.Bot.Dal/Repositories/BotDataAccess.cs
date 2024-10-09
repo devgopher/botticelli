@@ -1,3 +1,4 @@
+using Botticelli.Bot.Data.Entities.Bot;
 using Microsoft.EntityFrameworkCore;
 
 namespace Botticelli.Bot.Data.Repositories;
@@ -8,7 +9,7 @@ public class BotDataAccess : IBotDataAccess
 
     public BotDataAccess(BotInfoContext context) => _context = context;
 
-    public void SetData(BotData.Entities.Bot.BotData data) => _context.BotInfos.Upsert(data).Run();
+    public void SetData(BotData data) => _context.BotInfos.Upsert(data).Run();
 
-    public BotData.Entities.Bot.BotData GetData() => _context.BotInfos.Single();
+    public BotData GetData() => _context.BotInfos.Single();
 }

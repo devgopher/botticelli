@@ -3,7 +3,7 @@ using MetricsRandomGenerator;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMetrics(builder.Configuration);
+builder.Services.AddAnalyticsClient(opt => opt.Set());
 builder.Services.AddHostedService(sp => new MetricsSender(sp));
 
 var app = builder.Build();

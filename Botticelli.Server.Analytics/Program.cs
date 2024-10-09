@@ -14,8 +14,8 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 var analyticsSettings = builder.Configuration
-    .GetSection(nameof(AnalyticsSettings))
-    .Get<AnalyticsSettings>();
+    .GetSection(nameof(AnalyticsServerSettings))
+    .Get<AnalyticsServerSettings>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -40,7 +40,7 @@ builder.Services
     .AddSingleton<IMapper, Mapper>()
     .AddScoped<MetricsReaderWriter>()
     .AddDbContext<MetricsContext>(c => c.UseNpgsql(analyticsSettings.ConnectionString))
-    .AddMetrics(analyticsSettings);
+    .AddAnalytics(analyticsSettings);
 
 builder.Services.AddControllers();
 

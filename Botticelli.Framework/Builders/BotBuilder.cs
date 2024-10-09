@@ -28,7 +28,7 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
     protected DataAccessSettingsBuilder<DataAccessSettings> BotDataAccessSettingsBuilder;
     protected IServiceCollection? Services;
     private readonly ServerSettings _serverSettings;
-    protected AnalyticsSettingsBuilder<AnalyticsSettings> AnalyticsSettingsBuilder;
+    protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientSettingsBuilder;
     protected ServerSettingsBuilder<ServerSettings> ServerSettingsBuilder;
 
     protected override void Assert()
@@ -45,9 +45,9 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
     public abstract TBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
             where TBotSettings : BotSettings, new();
         
-    public TBotBuilder AddAnalyticsSettings(AnalyticsSettingsBuilder<AnalyticsSettings> settingsBuilder)
+    public TBotBuilder AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
     {
-        AnalyticsSettingsBuilder = settingsBuilder;
+        AnalyticsClientSettingsBuilder = clientSettingsBuilder;
 
         return (this as TBotBuilder)!;
     }

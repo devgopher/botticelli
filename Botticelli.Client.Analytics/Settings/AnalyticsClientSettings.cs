@@ -1,6 +1,6 @@
 ﻿namespace Botticelli.Client.Analytics.Settings;
 
-public class AnalyticsSettings
+public class AnalyticsClientSettings
 {
     public string TargetUrl { get; set; }
 }

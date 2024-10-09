@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Botticelli.BotData.Entities.Bot;
+using Botticelli.Bot.Data.Entities.Bot;
 using Microsoft.EntityFrameworkCore;
 
 namespace Botticelli.Bot.Data;
@@ -15,8 +15,8 @@ public class BotInfoContext : DbContext
     {
     }
 
-    public DbSet<BotData.Entities.Bot.BotData> BotInfos { get; set; }
+    public DbSet<BotData> BotInfos { get; set; }
 
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) => modelBuilder.Entity<BotData.Entities.Bot.BotData>();
+    protected override void OnModelCreating(ModelBuilder modelBuilder) => modelBuilder.Entity<BotData>();
 }

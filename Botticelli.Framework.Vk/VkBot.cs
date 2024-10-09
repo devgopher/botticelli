@@ -62,10 +62,6 @@ public class VkBot : BaseBot<VkBot>
         return StopBotResponse.GetInstance(request.Uid, "Error stopping a bot", AdminCommandStatus.Fail);
     }
 
-    [Obsolete($"Use {nameof(SetBotContext)}")]
-    public override async Task SetBotKey(string key, CancellationToken token)
-        => _messagesProvider.SetApiKey(key);
-
     protected override async Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token)
     {
         try

@@ -51,7 +51,6 @@ public class BotController
         return new GetRequiredStatusFromServerResponse
         {
             BotId = request.BotId,
-            BotKey = context.BotKey,
             IsSuccess = true,
             Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId),
             BotContext = context
