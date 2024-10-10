@@ -15,9 +15,9 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var settings = builder.Configuration
-                      .GetSection(nameof(SampleSettings))
-                      .Get<SampleSettings>();
+builder.Configuration
+    .GetSection(nameof(SampleSettings))
+    .Get<SampleSettings>();
 
 builder.Services.AddTelegramBot()
        .AddLogging(cfg => cfg.AddNLog())

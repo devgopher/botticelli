@@ -52,7 +52,7 @@ public static class ServiceCollectionExtensions
                                                     Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
                                                     Action<AnalyticsClientSettingsBuilder<AnalyticsClientSettings>> analyticsOptionsBuilderFunc,
                                                     Action<ServerSettingsBuilder<ServerSettings>> serverSettingsBuilderFunc,
-                                                    Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc>)
+                                                    Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc)
     {
         optionsBuilderFunc(SettingsBuilder);
         serverSettingsBuilderFunc(ServerSettingsBuilder);

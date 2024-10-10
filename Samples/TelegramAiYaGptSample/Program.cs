@@ -19,8 +19,7 @@ var settings = builder.Configuration
     .GetSection(nameof(SampleSettings))
     .Get<SampleSettings>();
 
-builder.Services.AddTelegramBot(optionsBuilder => optionsBuilder.Set(s => s.SecureStorageConnectionString = settings.SecureStorageConnectionString)
-                                                                .Set(s => s.Name = "test_bot"))
+builder.Services.AddTelegramBot()
     .AddLogging(cfg => cfg.AddNLog())
     .AddYaGptProvider(builder.Configuration)
     .AddAiValidation()

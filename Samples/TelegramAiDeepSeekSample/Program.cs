@@ -20,18 +20,17 @@ var settings = builder.Configuration
     .Get<SampleSettings>();
 
 builder.Services
-       .AddTelegramBot(optionsBuilder => optionsBuilder.Set(s => s.SecureStorageConnectionString = settings.SecureStorageConnectionString)
-                                                       .Set(s => s.Name = "test_bot"))
-       .AddLogging(cfg => cfg.AddNLog())
-       .AddDeepSeekProvider(builder.Configuration)
-       .AddAiValidation()
-       .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
-       .AddSingleton<AiHandler>()
-       .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
-       .UsePassBusClient<IBot<TelegramBot>>()
-       .UsePassEventBusClient<IBot<TelegramBot>>()
-       .AddBotCommand<AiCommand, AiCommandProcessor<ReplyMarkupBase>, PassValidator<AiCommand>>()
-       .AddTelegramLayoutsSupport();
+    .AddTelegramBot()
+    .AddLogging(cfg => cfg.AddNLog())
+    .AddDeepSeekProvider(builder.Configuration)
+    .AddAiValidation()
+    .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
+    .AddSingleton<AiHandler>()
+    .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
+    .UsePassBusClient<IBot<TelegramBot>>()
+    .UsePassEventBusClient<IBot<TelegramBot>>()
+    .AddBotCommand<AiCommand, AiCommandProcessor<ReplyMarkupBase>, PassValidator<AiCommand>>()
+    .AddTelegramLayoutsSupport();
 
 var app = builder.Build();
 app.Services.RegisterBotCommand<AiCommand, AiCommandProcessor<ReplyMarkupBase>, TelegramBot>();
