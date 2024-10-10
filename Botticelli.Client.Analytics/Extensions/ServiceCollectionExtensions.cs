@@ -8,6 +8,10 @@ namespace Botticelli.Client.Analytics.Extensions;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAnalyticsClient(this IServiceCollection services,
+        IConfiguration configuration)
+        => services.AddAnalyticsClient<AnalyticsClientSettings>(configuration);
+    
+    public static IServiceCollection AddAnalyticsClient(this IServiceCollection services,
         Action<AnalyticsClientSettingsBuilder<AnalyticsClientSettings>> func)
         => services.AddAnalyticsClient<AnalyticsClientSettings>(func);
     
