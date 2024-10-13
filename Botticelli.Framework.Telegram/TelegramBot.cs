@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Botticelli.Bot.Data.Entities.Bot;
 using Botticelli.Bot.Data.Repositories;
 using Botticelli.Bot.Utils;
 using Botticelli.Bot.Utils.TextUtils;
@@ -56,7 +57,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     public override event MsgSentEventHandler MessageSent;
     public override event MsgReceivedEventHandler MessageReceived;
     public override event MsgRemovedEventHandler MessageRemoved;
-    public virtual event MessengerSpecificEventHandler MessengerSpecificEvent;
+    public override event MessengerSpecificEventHandler MessengerSpecificEvent;
 
     /// <summary>
     ///     Deletes a message
@@ -117,7 +118,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <exception cref="BotException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     protected override async Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
-                                                                                           ISendOptionsBuilder<TSendOptions>? optionsBuilder,
+                                                                                           ISendOptionsBuilder<TSendOptions> optionsBuilder,
                                                                                            bool isUpdate,
                                                                                            CancellationToken token)
     {
@@ -479,7 +480,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         await StopBotAsync(stopRequest, token);
     }
 
-    public override async Task SetBotContext(Bot.Data.Entities.Bot.BotData context, CancellationToken token)
+    public override async Task SetBotContext(BotData context, CancellationToken token)
     {
         if (context == default) return;
 
