@@ -4,7 +4,6 @@ using Botticelli.Bot.Data.Settings;
 using Botticelli.Bot.Utils;
 using Botticelli.Bot.Utils.TextUtils;
 using Botticelli.Client.Analytics;
-using Botticelli.Client.Analytics.Extensions;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Builders;
 using Botticelli.Framework.Controls.Parsers;
@@ -17,7 +16,6 @@ using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Framework.Telegram.Utils;
 using Botticelli.Interfaces;
-using Botticelli.Shared.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -59,24 +57,26 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
         Services!.AddHttpClient<BotKeepAliveService<TelegramBot>>()
                  .AddCertificates(BotSettings);
         Services!.AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>();
-        
+
         Services!.AddHostedService<TelegramBotHostedService>();
         var botId = BotDataUtils.GetBotId();
 
         if (botId == null) throw new InvalidDataException($"{nameof(botId)} shouldn't be null!");
 
         #region Metrics
+
         var metricsPublisher = new MetricsPublisher(AnalyticsClientSettingsBuilder.Build());
         var metricsProcessor = new MetricsProcessor(metricsPublisher);
         Services!.AddSingleton(metricsPublisher);
         Services!.AddSingleton(metricsProcessor);
+
         #endregion
-        
+
         #region Data
 
         Services!.AddDbContext<BotInfoContext>(o => o.UseSqlite($"Data source={BotDataAccessSettingsBuilder.Build().ConnectionString}"));
         Services!.AddScoped<IBotDataAccess, BotDataAccess>();
-        
+
         #endregion
 
         #region TextTransformer
@@ -85,15 +85,14 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
 
         #endregion
 
-        if (BotSettings.UseThrottling is true) 
-            _builder.AddThrottler(new Throttler());
+        if (BotSettings.UseThrottling is true) _builder.AddThrottler(new Throttler());
         _client = _builder.Build();
         _client.Timeout = TimeSpan.FromMilliseconds(BotSettings.Timeout);
-        
+
         Services!.AddScoped<ILayoutSupplier<ReplyMarkupBase>, ReplyTelegramLayoutSupplier>()
-            .AddBotticelliFramework()
-            .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
-        
+                 .AddBotticelliFramework()
+                 .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
+
         var sp = Services!.BuildServiceProvider();
 
         return new TelegramBot(_client,
@@ -104,11 +103,10 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
                                sp.GetRequiredService<IBotDataAccess>());
     }
 
-    public override TelegramBotBuilder AddBotSettings<TBotSettings>(
-        BotSettingsBuilder<TBotSettings> settingsBuilder)
+    public override TelegramBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
     {
         BotSettings = settingsBuilder.Build() as TelegramBotSettings ?? throw new InvalidOperationException();
-
+        
         return this;
     }
 }

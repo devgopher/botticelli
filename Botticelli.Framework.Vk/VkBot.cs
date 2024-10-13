@@ -1,4 +1,7 @@
-﻿using Botticelli.Bot.Utils;
+﻿using Botticelli.Bot.Data;
+using Botticelli.Bot.Data.Entities.Bot;
+using Botticelli.Bot.Data.Repositories;
+using Botticelli.Bot.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
@@ -22,22 +25,22 @@ public class VkBot : BaseBot<VkBot>
 {
     private readonly IBotUpdateHandler _handler;
     private readonly MessagePublisher _messagePublisher;
+    private readonly IBotDataAccess _data;
     private readonly LongPollMessagesProvider _messagesProvider;
-    private readonly SecureStorage.SecureStorage _secureStorage;
     private readonly VkStorageUploader _vkUploader;
     private bool _eventsAttached;
 
     public VkBot(LongPollMessagesProvider messagesProvider,
-        MessagePublisher messagePublisher,
-        SecureStorage.SecureStorage secureStorage,
-        VkStorageUploader vkUploader,
-        IBotUpdateHandler handler,
-        MetricsProcessor metrics,
-        ILogger<VkBot> logger) : base(logger, metrics)
+                 MessagePublisher messagePublisher,
+                 VkStorageUploader vkUploader,
+                 IBotDataAccess data,
+                 IBotUpdateHandler handler,
+                 MetricsProcessor metrics,
+                 ILogger<VkBot> logger) : base(logger, metrics)
     {
         _messagesProvider = messagesProvider;
         _messagePublisher = messagePublisher;
-        _secureStorage = secureStorage;
+        _data = data;
         _handler = handler;
         _vkUploader = vkUploader;
         BotUserId = null; // TODO get it from VK
@@ -107,10 +110,10 @@ public class VkBot : BaseBot<VkBot>
         return StartBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
     }
 
-    public override async Task SetBotContext(BotContext context, CancellationToken token)
+    public override async Task SetBotContext(BotData context, CancellationToken token)
     {
         if (context == default) return;
-        var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
+        var currentContext = _data.GetData();
 
         if (currentContext?.BotKey != context.BotKey)
         {
@@ -118,7 +121,7 @@ public class VkBot : BaseBot<VkBot>
             var startRequest = StartBotRequest.GetInstance();
             await StopBotAsync(stopRequest, token);
 
-            _secureStorage.SetBotContext(context);
+            _data.SetData(context);
 
             await _messagesProvider.Stop();
             SetApiKey(context);
@@ -132,7 +135,7 @@ public class VkBot : BaseBot<VkBot>
         }
     }
 
-    private void SetApiKey(BotContext context)
+    private void SetApiKey(BotData context)
     {
         _messagesProvider.SetApiKey(context.BotKey);
         _messagePublisher.SetApiKey(context.BotKey);
@@ -197,7 +200,7 @@ public class VkBot : BaseBot<VkBot>
         string peerId,
         CancellationToken token)
     {
-        var currentContext = _secureStorage.GetBotContext(BotDataUtils.GetBotId());
+        var currentContext = _data.GetData();
         var result = new List<VkSendMessageRequest>(100);
         var first = true;
 
