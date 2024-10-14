@@ -1,4 +1,5 @@
-﻿using Botticelli.Bot.Data.Settings;
+﻿using System.Configuration;
+using Botticelli.Bot.Data.Settings;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Options;
@@ -20,14 +21,33 @@ public static class ServiceCollectionExtensions
     private static readonly AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientOptionsBuilder = new();
     private static readonly DataAccessSettingsBuilder<DataAccessSettings> DataAccessSettingsBuilder = new();
 
-    public static IServiceCollection AddTelegramBot(this IServiceCollection services)
+    public static IServiceCollection AddTelegramBot(this IServiceCollection services, IConfiguration configuration)
     {
-        var sp = services.BuildServiceProvider();
-        
-        return services.AddTelegramBot(o => o.Set(sp.GetRequiredService<TelegramBotSettings>()),
-                                       o => o.Set(sp.GetRequiredService<AnalyticsClientSettings>()),
-                                       o => o.Set(sp.GetRequiredService<ServerSettings>()),
-                                       o => o.Set(sp.GetRequiredService<DataAccessSettings>()));
+        var telegramBotSettings = configuration
+                                  .GetSection(BotSettings.Section)
+                                  .Get<TelegramBotSettings>() ??
+                                  throw new ConfigurationErrorsException($"Can't load configuration for {nameof(TelegramBotSettings)}!");
+
+        var analyticsClientSettings = configuration
+                                      .GetSection(AnalyticsClientSettings.Section)
+                                      .Get<AnalyticsClientSettings>() ??
+                                      throw new ConfigurationErrorsException($"Can't load configuration for {nameof(AnalyticsClientSettings)}!");
+
+        var serverSettings = configuration
+                             .GetSection(ServerSettings.Section)
+                             .Get<ServerSettings>() ??
+                             throw new ConfigurationErrorsException($"Can't load configuration for {nameof(ServerSettings)}!");
+
+        var dataAccessSettings = configuration
+                                 .GetSection(DataAccessSettings.Section)
+                                 .Get<DataAccessSettings>() ??
+                                 throw new ConfigurationErrorsException($"Can't load configuration for {nameof(DataAccessSettings)}!");
+        ;
+
+        return services.AddTelegramBot(telegramBotSettings,
+                                       analyticsClientSettings,
+                                       serverSettings,
+                                       dataAccessSettings);
     }
 
     public static IServiceCollection AddTelegramBot(this IServiceCollection services,

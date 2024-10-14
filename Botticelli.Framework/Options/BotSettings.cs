@@ -5,16 +5,12 @@
 /// </summary>
 public abstract class BotSettings
 {
+    public static string Section { get; protected set; }
+
     /// <summary>
     ///     Bot name
     /// </summary>
     public string? Name { get; set; }
-
-
-    /// <summary>
-    ///     Bot secure storage connection
-    /// </summary>
-    public string? SecureStorageConnectionString { get; set; }
-
+    
     public string BotCertificateName { get; set; } = "BotticelliBotsBot";
 }

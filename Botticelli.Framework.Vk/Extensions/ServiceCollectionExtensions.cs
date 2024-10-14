@@ -1,4 +1,5 @@
-﻿using Botticelli.Bot.Data.Settings;
+﻿using System.Configuration;
+using Botticelli.Bot.Data.Settings;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Options;
@@ -7,6 +8,7 @@ using Botticelli.Framework.Vk.Messages.Builders;
 using Botticelli.Framework.Vk.Messages.Layout;
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Framework.Vk.Messages.Extensions;
@@ -18,6 +20,44 @@ public static class ServiceCollectionExtensions
     private static readonly AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientOptionsBuilder = new();
     private static readonly DataAccessSettingsBuilder<DataAccessSettings> DataAccessSettingsBuilder = new();
     
+    public static IServiceCollection AddVkBot(this IServiceCollection services, IConfiguration configuration)
+    {
+        var vkBotSettings = configuration
+                                  .GetSection(BotSettings.Section)
+                                  .Get<VkBotSettings>() ??
+                                  throw new ConfigurationErrorsException($"Can't load configuration for {nameof(VkBotSettings)}!");
+
+        var analyticsClientSettings = configuration
+                                      .GetSection(AnalyticsClientSettings.Section)
+                                      .Get<AnalyticsClientSettings>() ??
+                                      throw new ConfigurationErrorsException($"Can't load configuration for {nameof(AnalyticsClientSettings)}!");
+
+        var serverSettings = configuration
+                             .GetSection(ServerSettings.Section)
+                             .Get<ServerSettings>() ??
+                             throw new ConfigurationErrorsException($"Can't load configuration for {nameof(ServerSettings)}!");
+
+        var dataAccessSettings = configuration
+                                 .GetSection(DataAccessSettings.Section)
+                                 .Get<DataAccessSettings>() ??
+                                 throw new ConfigurationErrorsException($"Can't load configuration for {nameof(DataAccessSettings)}!");
+        ;
+
+        return services.AddVkBot(vkBotSettings,
+                                       analyticsClientSettings,
+                                       serverSettings,
+                                       dataAccessSettings);
+    }
+    
+    public static IServiceCollection AddVkBot(this IServiceCollection services,
+                                                    VkBotSettings botSettings,
+                                                    AnalyticsClientSettings analyticsClientSettings,
+                                                    ServerSettings serverSettings,
+                                                    DataAccessSettings dataAccessSettings) =>
+            services.AddVkBot(o => o.Set(botSettings),
+                                    o => o.Set(analyticsClientSettings),
+                                    o => o.Set(serverSettings),
+                                    o => o.Set(dataAccessSettings));
     
     /// <summary>
     ///     Adds a Vk bot

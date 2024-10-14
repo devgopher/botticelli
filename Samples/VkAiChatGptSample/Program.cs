@@ -20,10 +20,7 @@ var settings = builder.Configuration
     .GetSection(nameof(SampleSettings))
     .Get<SampleSettings>();
 
-builder.Services.AddVkBot(builder.Configuration,
-        new BotSettingsBuilder<VkBotSettings>()
-            .Set(s => s.SecureStorageConnectionString = settings.SecureStorageConnectionString)
-            .Set(s => s.Name = "test_bot"))
+builder.Services.AddVkBot(builder.Configuration)
     .AddLogging(cfg => cfg.AddNLog())
     .AddChatGptProvider(builder.Configuration)
     .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()

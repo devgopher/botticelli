@@ -10,25 +10,11 @@ using MessagingSample.Common.Commands.Processors;
 using NLog.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramMessagingSample;
-using TelegramMessagingSample.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var settings = builder.Configuration
-                      .GetSection(nameof(SampleSettings))
-                      .Get<SampleSettings>();
-
-var serverSettings = builder.Configuration
-                      .GetSection(nameof(ServerSettings))
-                      .Get<ServerSettings>();
-
 builder.Services
-       .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
-       .AddTelegramBot(o => o.Set(s => s.SecureStorageConnectionString = settings.SecureStorageConnectionString)
-                                                       .Set(s => s.Name = settings?.BotName),
-                       o => o.Set(s => s.TargetUrl = "https://"),
-                       o => o.Set(s => s.ServerUri = serverSettings.ServerUri),
-                       o => o.Set(s => s.ConnectionString = settings.SecureStorageConnectionString))
+       .AddTelegramBot(builder.Configuration)
        .AddLogging(cfg => cfg.AddNLog())
        .AddQuartzScheduler(builder.Configuration)
        .AddHostedService<TestBotHostedService>()

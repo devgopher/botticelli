@@ -1,7 +1,6 @@
 using AiSample.Common;
 using AiSample.Common.Commands;
 using AiSample.Common.Handlers;
-using AiSample.Common.Settings;
 using Botticelli.AI.ChatGpt.Extensions;
 using Botticelli.AI.Extensions;
 using Botticelli.Bus.None.Extensions;
@@ -15,11 +14,8 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration
-    .GetSection(nameof(SampleSettings))
-    .Get<SampleSettings>();
-
-builder.Services.AddTelegramBot()
+builder.Services
+       .AddTelegramBot(builder.Configuration)
        .AddLogging(cfg => cfg.AddNLog())
        .AddChatGptProvider(builder.Configuration)
        .AddAiValidation()

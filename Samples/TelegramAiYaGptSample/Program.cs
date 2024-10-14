@@ -1,7 +1,6 @@
 using AiSample.Common;
 using AiSample.Common.Commands;
 using AiSample.Common.Handlers;
-using AiSample.Common.Settings;
 using Botticelli.AI.Extensions;
 using Botticelli.AI.YaGpt.Extensions;
 using Botticelli.Bus.None.Extensions;
@@ -15,20 +14,17 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var settings = builder.Configuration
-    .GetSection(nameof(SampleSettings))
-    .Get<SampleSettings>();
-
-builder.Services.AddTelegramBot()
-    .AddLogging(cfg => cfg.AddNLog())
-    .AddYaGptProvider(builder.Configuration)
-    .AddAiValidation()
-    .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
-    .AddSingleton<AiHandler>()
-    .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
-    .UsePassBusClient<IBot<TelegramBot>>()
-    .UsePassEventBusClient<IBot<TelegramBot>>()
-    .AddBotCommand<AiCommand, AiCommandProcessor<ReplyMarkupBase>, PassValidator<AiCommand>>();
+builder.Services
+       .AddTelegramBot(builder.Configuration)
+       .AddLogging(cfg => cfg.AddNLog())
+       .AddYaGptProvider(builder.Configuration)
+       .AddAiValidation()
+       .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
+       .AddSingleton<AiHandler>()
+       .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
+       .UsePassBusClient<IBot<TelegramBot>>()
+       .UsePassEventBusClient<IBot<TelegramBot>>()
+       .AddBotCommand<AiCommand, AiCommandProcessor<ReplyMarkupBase>, PassValidator<AiCommand>>();
 
 var app = builder.Build();
 app.Services.RegisterBotCommand<AiCommand, AiCommandProcessor<ReplyMarkupBase>, TelegramBot>();

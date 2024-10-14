@@ -12,20 +12,11 @@ using MessagingSample.Common.Commands;
 using MessagingSample.Common.Commands.Processors;
 using NLog.Extensions.Logging;
 using VkMessagingSample;
-using VkMessagingSample.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var settings = builder.Configuration
-                      .GetSection(nameof(SampleSettings))
-                      .Get<SampleSettings>();
-
 builder.Services
-       .Configure<SampleSettings>(builder.Configuration.GetSection(nameof(SampleSettings)))
-       .AddVkBot(builder.Configuration,
-                 new BotSettingsBuilder<VkBotSettings>()
-                         .Set(s => s.SecureStorageConnectionString = settings.SecureStorageConnectionString)
-                         .Set(s => s.Name = settings?.BotName))
+       .AddVkBot(builder.Configuration)
        .AddLogging(cfg => cfg.AddNLog())
        .AddQuartzScheduler(builder.Configuration)
        .AddHostedService<TestBotHostedService>()

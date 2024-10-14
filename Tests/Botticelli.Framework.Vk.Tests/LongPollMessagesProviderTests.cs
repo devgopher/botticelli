@@ -1,7 +1,6 @@
 ﻿using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Framework.Vk.Tests.Settings;
-using Botticelli.SecureStorage.Settings;
 using Microsoft.Extensions.Configuration;
 using Shared;
 using NUnit.Framework;
@@ -23,11 +22,10 @@ public class LongPollMessagesProviderTests
 
         _provider = new LongPollMessagesProvider(new OptionsMonitorMock<VkBotSettings>(new VkBotSettings
                                                  {
-                                                     SecureStorageConnectionString = settings.SecureStorageConnectionString,
                                                      Name = "test",
                                                      PollIntervalMs = 500,
                                                      GroupId = 221973506
-                                                 }),
+                                                 }).CurrentValue,
             new TestHttpClientFactory(),
             LoggerMocks.CreateConsoleLogger<LongPollMessagesProvider>());
     }
