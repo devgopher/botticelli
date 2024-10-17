@@ -5,7 +5,7 @@ namespace Botticelli.Framework.Telegram.Options;
 /// <inheritdoc />
 public class TelegramBotSettings : BotSettings
 {
-    static TelegramBotSettings() => Section = "TelegramBot";
+    public override string Section => "TelegramBot";
     
     /// <summary>
     /// Timeout in ms

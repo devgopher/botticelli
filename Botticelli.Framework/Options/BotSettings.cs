@@ -3,9 +3,9 @@
 /// <summary>
 ///     Bot general settings
 /// </summary>
-public abstract class BotSettings
+public abstract class BotSettings : IBotSettings
 {
-    public static string Section { get; protected set; }
+    public abstract string Section { get; }
 
     /// <summary>
     ///     Bot name
