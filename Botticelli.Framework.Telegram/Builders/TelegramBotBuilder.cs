@@ -97,6 +97,8 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
                  .AddBotticelliFramework()
                  .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
 
+        Services!.AddSingleton(ServerSettingsBuilder.Build());
+
         var sp = Services!.BuildServiceProvider();
 
         return new TelegramBot(_client,

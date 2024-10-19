@@ -3,7 +3,7 @@
 /// <summary>
 ///     Bot general settings
 /// </summary>
-public abstract class BotSettings
+public abstract class BotSettings : IBotSettings
 {
     /// <summary>
     ///     Bot name
