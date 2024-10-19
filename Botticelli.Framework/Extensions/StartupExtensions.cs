@@ -16,7 +16,6 @@ public static class StartupExtensions
 {
     public static IServiceCollection AddBotticelliFramework(this IServiceCollection services) =>
         services.AddSingleton<ClientProcessorFactory>()
-                .AddSingleton<CommandProcessorFactory>()
                 .AddSharedValidation()
                 .AddEasyCaching(options => 
                 {
@@ -97,10 +96,7 @@ public static class StartupExtensions
         where TCommandProcessor : class, ICommandProcessor
         where TBot : IBot<TBot>
     {
-        var commandProcessorFactory = sp.GetRequiredService<CommandProcessorFactory>();
         var clientProcessorFactory = sp.GetRequiredService<ClientProcessorFactory>();
-
-        commandProcessorFactory.AddCommandType(typeof(TCommand), typeof(TCommandProcessor));
         clientProcessorFactory.AddProcessor<TCommandProcessor, TBot>(sp);
 
         return sp;
@@ -111,10 +107,7 @@ public static class StartupExtensions
         where TCommandProcessor : class, ICommandProcessor
         where TBot : IBot<TBot>
     {
-        var commandProcessorFactory = sp.GetRequiredService<CommandProcessorFactory>();
         var clientProcessorFactory = sp.GetRequiredService<ClientProcessorFactory>();
-
-        commandProcessorFactory.AddCommandType(typeof(TCommand), typeof(TCommandProcessor));
         clientProcessorFactory.AddProcessor<TCommandProcessor, TBot>(sp);
 
         return sp;
