@@ -39,6 +39,15 @@ public static class StartupExtensions
                     }, "botticelli_wait_for_response");
                 });
 
+    public static CommandAddServices<TCommand> AddBotCommand<TCommand>(this IServiceCollection services) 
+            where TCommand : class, ICommand
+    {
+        services.AddScoped<TCommand>()
+                .AddSingleton<CommandAddServices<TCommand>>(_ => new CommandAddServices<TCommand>(services));
+        
+        return services.BuildServiceProvider().GetRequiredService<CommandAddServices<TCommand>>();
+    }
+    
     public static IServiceCollection AddBotCommand<TCommand,
         TCommandProcessor,
         TCommandValidator>(this IServiceCollection services)
