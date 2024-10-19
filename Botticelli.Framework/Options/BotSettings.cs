@@ -5,8 +5,6 @@
 /// </summary>
 public abstract class BotSettings
 {
-    public static string Section { get; protected set; }
-
     /// <summary>
     ///     Bot name
     /// </summary>

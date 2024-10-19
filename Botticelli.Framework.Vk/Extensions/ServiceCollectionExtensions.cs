@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddVkBot(this IServiceCollection services, IConfiguration configuration)
     {
         var vkBotSettings = configuration
-                                  .GetSection(BotSettings.Section)
+                                  .GetSection(VkBotSettings.Section)
                                   .Get<VkBotSettings>() ??
                                   throw new ConfigurationErrorsException($"Can't load configuration for {nameof(VkBotSettings)}!");
 

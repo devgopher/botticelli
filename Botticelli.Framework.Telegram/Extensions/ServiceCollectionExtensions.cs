@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddTelegramBot(this IServiceCollection services, IConfiguration configuration)
     {
         var telegramBotSettings = configuration
-                                  .GetSection(BotSettings.Section)
+                                  .GetSection(TelegramBotSettings.Section)
                                   .Get<TelegramBotSettings>() ??
                                   throw new ConfigurationErrorsException($"Can't load configuration for {nameof(TelegramBotSettings)}!");
 
@@ -42,7 +42,6 @@ public static class ServiceCollectionExtensions
                                  .GetSection(DataAccessSettings.Section)
                                  .Get<DataAccessSettings>() ??
                                  throw new ConfigurationErrorsException($"Can't load configuration for {nameof(DataAccessSettings)}!");
-        ;
 
         return services.AddTelegramBot(telegramBotSettings,
                                        analyticsClientSettings,

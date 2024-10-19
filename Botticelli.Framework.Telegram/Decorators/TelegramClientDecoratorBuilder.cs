@@ -46,8 +46,9 @@ public class TelegramClientDecoratorBuilder
     
     public TelegramClientDecorator Build()
     {
-        if (_token == default) throw new ArgumentNullException(nameof(_token));
-
+        // if (_token == default) throw new ArgumentNullException(nameof(_token));
+        _token ??= string.Empty;
+        
         if (_telegramClient != null) return _telegramClient;
         
         if (_httpClient == default)

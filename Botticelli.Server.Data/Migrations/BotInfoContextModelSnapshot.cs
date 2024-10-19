@@ -15,11 +15,14 @@ namespace Botticelli.Server.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
 
             modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.BotAdditionalInfo", b =>
                 {
                     b.Property<string>("BotId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BotInfoBotId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ItemName")
@@ -31,16 +34,14 @@ namespace Botticelli.Server.Data.Migrations
 
                     b.HasKey("BotId");
 
+                    b.HasIndex("BotInfoBotId");
+
                     b.ToTable("BotAdditionalInfo");
                 });
 
             modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.BotInfo", b =>
                 {
                     b.Property<string>("BotId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AdditionalInfoBotId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("BotKey")
@@ -60,8 +61,6 @@ namespace Botticelli.Server.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("BotId");
-
-                    b.HasIndex("AdditionalInfoBotId");
 
                     b.ToTable("BotInfo");
                 });
@@ -87,22 +86,22 @@ namespace Botticelli.Server.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2cb59f48-3d78-4056-b43a-5042b67d8b8d",
-                            ConcurrencyStamp = "09/13/2024 21:15:18",
+                            Id = "969600de-70d9-43e9-bc01-56415c57863b",
+                            ConcurrencyStamp = "10/14/2024 11:29:05",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "11594aea-0910-40f8-8e37-53efc5e1a80f",
-                            ConcurrencyStamp = "09/13/2024 21:15:18",
+                            Id = "b57f3fda-a6d3-4f93-8faa-ce99a06a476d",
+                            ConcurrencyStamp = "10/14/2024 11:29:05",
                             Name = "bot_manager",
                             NormalizedName = "BOT_MANAGER"
                         },
                         new
                         {
-                            Id = "e8bcf27d-e87d-462c-bbbd-3fc1a42c5701",
-                            ConcurrencyStamp = "09/13/2024 21:15:18",
+                            Id = "22c98256-7794-4d42-bdc8-4725445de3c9",
+                            ConcurrencyStamp = "10/14/2024 11:29:05",
                             Name = "viewer",
                             NormalizedName = "VIEWER"
                         });
@@ -173,14 +172,15 @@ namespace Botticelli.Server.Data.Migrations
                     b.ToTable("ApplicationUserRoles");
                 });
 
+            modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.BotAdditionalInfo", b =>
+                {
+                    b.HasOne("Botticelli.Server.Data.Entities.Bot.BotInfo", null)
+                        .WithMany("AdditionalInfo")
+                        .HasForeignKey("BotInfoBotId");
+                });
+
             modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.BotInfo", b =>
                 {
-                    b.HasOne("Botticelli.Server.Data.Entities.Bot.BotAdditionalInfo", "AdditionalInfo")
-                        .WithMany()
-                        .HasForeignKey("AdditionalInfoBotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("AdditionalInfo");
                 });
 #pragma warning restore 612, 618

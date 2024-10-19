@@ -6,6 +6,7 @@ using Botticelli.Interfaces;
 using Flurl;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Botticelli.Framework;
 

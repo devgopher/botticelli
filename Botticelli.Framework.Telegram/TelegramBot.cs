@@ -32,10 +32,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 {
     private readonly IBotUpdateHandler _handler;
     private readonly ITextTransformer _textTransformer;
-
     private readonly IBotDataAccess _data;
-
-    // private static readonly IMemoryCache Cache;
     private ITelegramBotClient _client;
 
     public TelegramBot(ITelegramBotClient client,

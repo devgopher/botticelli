@@ -51,11 +51,15 @@ public class TelegramBotBuilder : BotBuilder<TelegramBotBuilder, TelegramBot>
 
     protected override TelegramBot InnerBuild()
     {
+        Services!.AddSingleton(ServerSettingsBuilder.Build());
+        
         Services!.AddHttpClient<BotStatusService<TelegramBot>>()
                  .AddCertificates(BotSettings);
         Services!.AddHostedService<BotStatusService<IBot<TelegramBot>>>();
+        
         Services!.AddHttpClient<BotKeepAliveService<TelegramBot>>()
                  .AddCertificates(BotSettings);
+
         Services!.AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>();
 
         Services!.AddHostedService<TelegramBotHostedService>();

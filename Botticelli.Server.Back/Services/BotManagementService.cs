@@ -1,11 +1,10 @@
 ﻿using Botticelli.Server.Data;
-using Botticelli.Server.Data.Entities;
 using Botticelli.Server.Data.Entities.Bot;
+using Botticelli.Server.Services;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.Constants;
-using Botticelli.Shared.ValueObjects;
 
-namespace Botticelli.Server.Services;
+namespace Botticelli.Server.Back.Services;
 
 /// <summary>
 ///     This class is intended for managing bots state (start/ stop/ block/ remove)
@@ -164,7 +163,7 @@ public class BotManagementService : IBotManagementService
            // botInfo.Items = additionalParams;
            
             _context.BotInfos.Update(botInfo);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             
             await SetRequiredBotStatus(botId, prevStatus.Value);
 

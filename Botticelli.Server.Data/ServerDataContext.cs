@@ -7,7 +7,7 @@ namespace Botticelli.Server.Data;
 
 public class ServerDataContext : DbContext
 {
-    // public ServerDataContext() : base((new DbContextOptionsBuilder<BotInfoContext>().UseSqlite("Data Source=database.db")).Options)
+    // public ServerDataContext() : base((new DbContextOptionsBuilder<ServerDataContext>().UseSqlite("Data Source=database.db")).Options)
     // {
     //
     // }

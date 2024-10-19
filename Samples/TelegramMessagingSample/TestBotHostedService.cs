@@ -5,10 +5,6 @@
 /// </summary>
 public class TestBotHostedService : IHostedService
 {
-    public TestBotHostedService()
-    {
-    }
-
     public Task StartAsync(CancellationToken token)
     {
         Console.WriteLine("Start sending messages...");
