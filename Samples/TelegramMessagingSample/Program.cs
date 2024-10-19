@@ -1,7 +1,6 @@
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Extensions;
-using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Schedule.Quartz.Extensions;
@@ -14,25 +13,31 @@ using TelegramMessagingSample;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-       .AddTelegramBot(builder.Configuration)
-       .AddLogging(cfg => cfg.AddNLog())
-       .AddQuartzScheduler(builder.Configuration)
-       .AddHostedService<TestBotHostedService>()
-       .AddScoped<StartCommandProcessor<ReplyMarkupBase>>()
-       .AddScoped<StopCommandProcessor<ReplyMarkupBase>>()
-       .AddScoped<InfoCommandProcessor<ReplyMarkupBase>>()
-       .AddScoped<ILayoutParser, JsonLayoutParser>()
-       .AddBotCommand<InfoCommand, InfoCommandProcessor<ReplyMarkupBase>, PassValidator<InfoCommand>>()
-       .AddBotCommand<StartCommand, StartCommandProcessor<ReplyMarkupBase>, PassValidator<StartCommand>>()
-       .AddBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, PassValidator<StopCommand>>();
+    .AddTelegramBot(builder.Configuration)
+    .AddLogging(cfg => cfg.AddNLog())
+    .AddQuartzScheduler(builder.Configuration)
+    .AddHostedService<TestBotHostedService>()
+    .AddScoped<ILayoutParser, JsonLayoutParser>();
+
+builder.Services.AddBotCommand<InfoCommand>()
+    .AddProcessor<InfoCommandProcessor<ReplyMarkupBase>>()
+    .AddValidator<PassValidator<InfoCommand>>();
+
+builder.Services.AddBotCommand<StartCommand>()
+    .AddProcessor<StartCommandProcessor<ReplyMarkupBase>>()
+    .AddValidator<PassValidator<StartCommand>>();
+
+builder.Services.AddBotCommand<StopCommand>()
+    .AddProcessor<StopCommandProcessor<ReplyMarkupBase>>()
+    .AddValidator<PassValidator<StopCommand>>();
 
 builder.Services.AddEndpointsApiExplorer()
-       .AddSwaggerGen();
+    .AddSwaggerGen();
 
 var app = builder.Build();
 app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor<ReplyMarkupBase>, TelegramBot>()
-   .RegisterBotCommand<StopCommand, StopCommandProcessor<ReplyMarkupBase>, TelegramBot>()
-   .RegisterBotCommand<InfoCommand, InfoCommandProcessor<ReplyMarkupBase>, TelegramBot>();
+    .RegisterProcessor<StopCommandProcessor<ReplyMarkupBase>>()
+    .RegisterProcessor<InfoCommandProcessor<ReplyMarkupBase>>();
 
 if (app.Environment.IsDevelopment())
 {

@@ -28,6 +28,6 @@ builder.Services
        .AddTelegramLayoutsSupport();
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<AiCommand, AiCommandProcessor<ReplyMarkupBase>, TelegramBot>();
+app.Services.RegisterBotCommand<AiCommandProcessor<ReplyMarkupBase>, TelegramBot>();
 
 app.Run();

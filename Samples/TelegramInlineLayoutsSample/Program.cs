@@ -21,7 +21,7 @@ builder.Services
 
 var app = builder.Build();
 app.Services.UseInlineCalendar<TelegramBot, DateChosenCommandProcessor>()
-   .RegisterBotCommand<GetCalendarCommand, GetCalendarCommandProcessor, TelegramBot>()
+   .RegisterBotCommand<GetCalendarCommandProcessor, TelegramBot>()
    .RegisterOsmLocationsCommands();
 
 app.Run();

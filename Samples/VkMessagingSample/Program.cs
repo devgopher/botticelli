@@ -29,7 +29,7 @@ builder.Services
 
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor<VkKeyboardMarkup>, VkBot>();
-app.Services.RegisterBotCommand<StopCommand, StopCommandProcessor<VkKeyboardMarkup>, VkBot>();
+app.Services.RegisterBotCommand<StartCommandProcessor<VkKeyboardMarkup>, VkBot>();
+app.Services.RegisterBotCommand<StopCommandProcessor<VkKeyboardMarkup>, VkBot>();
 
 app.Run();

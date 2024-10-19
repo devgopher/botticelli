@@ -30,6 +30,6 @@ builder.Services.AddVkBot(builder.Configuration)
     .AddBotCommand<AiCommand, AiCommandProcessor<VkKeyboardMarkup>, PassValidator<AiCommand>>();
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<AiCommand, AiCommandProcessor<VkKeyboardMarkup>, VkBot>();
+app.Services.RegisterBotCommand<AiCommandProcessor<VkKeyboardMarkup>, VkBot>();
 
 app.Run();
