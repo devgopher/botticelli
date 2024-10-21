@@ -15,5 +15,5 @@ public interface IBotDataAccess
     /// Gets bot data
     /// </summary>
     /// <returns></returns>
-    public BotData GetData();
+    public BotData? GetData();
 }
