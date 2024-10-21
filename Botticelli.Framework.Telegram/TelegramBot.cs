@@ -490,8 +490,15 @@ public class TelegramBot : BaseBot<TelegramBot>
             _data.SetData(context);
             RecreateClient(context.BotKey);
 
-
             await StartBot(token);
+        } else if (currentContext != null)
+        {
+            if (_client.BotId is null)
+            {
+                await StopBot(token);
+                RecreateClient(context.BotKey);
+                await StartBot(token);
+            }
         }
     }
 }
