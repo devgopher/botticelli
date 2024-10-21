@@ -110,7 +110,7 @@ public static class StartupExtensions
         sp.GetRequiredService<ClientProcessorFactory>()
             .AddProcessor<TCommandProcessor, TBot>(sp);
 
-        return sp.GetRequiredService<CommandRegisterServices<TCommand, TBot>>();
+        return new CommandRegisterServices<TCommand, TBot>(sp);;
     }
 
     public static IServiceProvider RegisterFluentBotCommand<TCommandProcessor, TBot>(this IServiceProvider sp) 
@@ -131,7 +131,7 @@ public static class StartupExtensions
         sp.GetRequiredService<ClientProcessorFactory>()
             .AddProcessor<TCommandProcessor, TBot>(sp);
 
-        return sp.GetRequiredService<CommandRegisterServices<TCommand, TBot>>();
+        return new CommandRegisterServices<TCommand, TBot>(sp);
     }
 
     public static IHttpClientBuilder AddCertificates(this IHttpClientBuilder builder, BotSettings settings) =>
