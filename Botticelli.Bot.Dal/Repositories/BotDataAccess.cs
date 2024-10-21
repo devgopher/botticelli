@@ -11,5 +11,5 @@ public class BotDataAccess : IBotDataAccess
 
     public void SetData(BotData data) => _context.BotInfos.Upsert(data).Run();
 
-    public BotData GetData() => _context.BotInfos.Single();
+    public BotData GetData() => _context.BotInfos.FirstOrDefault();
 }
