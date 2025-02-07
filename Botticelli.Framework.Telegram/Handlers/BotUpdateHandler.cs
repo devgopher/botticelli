@@ -2,6 +2,7 @@
 using Botticelli.Framework.Events;
 using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -15,14 +16,13 @@ namespace Botticelli.Framework.Telegram.Handlers;
 public class BotUpdateHandler : IBotUpdateHandler
 {
     private readonly ILogger<BotUpdateHandler> _logger;
-    private readonly ClientProcessorFactory _processorFactory;
+    private readonly IServiceProvider _serviceProvider;
     private readonly List<IBotUpdateSubHandler> _subHandlers = [];
 
-    public BotUpdateHandler(ILogger<BotUpdateHandler> logger, 
-        ClientProcessorFactory processorFactory)
+    public BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
-        _processorFactory = processorFactory;
+        _serviceProvider = serviceProvider;
     }
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient,
@@ -177,12 +177,11 @@ public class BotUpdateHandler : IBotUpdateHandler
         if (token is { CanBeCanceled: true, IsCancellationRequested: true })
             return;
 
-        var clientNonChainedTasks = _processorFactory
-            .GetProcessors()
+        var clientNonChainedTasks = _serviceProvider.GetServices<ICommandChainProcessor>()
+            .Where(p => !p.GetType().IsAssignableTo(typeof(ICommandChainProcessor)))
             .Select(p => p.ProcessAsync(request, token));
 
-        var clientChainedTasks = _processorFactory
-            .GetCommandChainProcessors()
+        var clientChainedTasks = _serviceProvider.GetServices<ICommandChainFirstElementProcessor>()
             .Select(p => p.ProcessAsync(request, token));
 
         var clientTasks = clientNonChainedTasks.Concat(clientChainedTasks).ToArray();

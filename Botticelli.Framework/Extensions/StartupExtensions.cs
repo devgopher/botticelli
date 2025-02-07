@@ -5,7 +5,6 @@ using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.HostedService;
 using Botticelli.Interfaces;
 using Botticelli.Shared.Extensions;
-using Botticelli.Shared.Utils;
 using EasyCaching.InMemory;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,8 +13,7 @@ namespace Botticelli.Framework.Extensions;
 public static class StartupExtensions
 {
     public static IServiceCollection AddBotticelliFramework(this IServiceCollection services) =>
-        services.AddSingleton<ClientProcessorFactory>()
-            .AddSharedValidation()
+        services.AddSharedValidation()
             .AddHostedService<BotHostedService>()
             .AddEasyCaching(options =>
             {
@@ -75,63 +73,30 @@ public static class StartupExtensions
         where TBot : IBot<TBot>
     {
         var commandChainProcessorBuilder = sp.GetRequiredService<CommandChainProcessorBuilder<TCommand>>();
-        var processor = commandChainProcessorBuilder.Build();
-        var clientProcessorFactory = sp.GetRequiredService<ClientProcessorFactory>();
+        commandChainProcessorBuilder.Build();
 
-        processor.NotNull();
-        clientProcessorFactory.AddSingleProcessor<TBot>(sp, processor);
-        var nextProcessor = processor?.Next;
+        return sp;
+    }
 
-        while (nextProcessor != default)
+    public static IServiceCollection Add<TIService, TService>(this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        where TService : class, TIService where TIService : class =>
+        lifetime switch
         {
-            clientProcessorFactory.AddSingleProcessor<TBot>(sp, nextProcessor);
-            nextProcessor = nextProcessor.Next;
-        }
+            ServiceLifetime.Singleton => services.AddSingleton<TIService, TService>(),
+            ServiceLifetime.Scoped => services.AddScoped<TIService, TService>(),
+            ServiceLifetime.Transient => services.AddTransient<TIService, TService>(),
+            _ => services
+        };
 
-        return sp;
-    }
-
-    public static IServiceProvider RegisterBotCommand<TCommandProcessor, TBot>(this IServiceProvider sp)
-        where TCommandProcessor : class, ICommandProcessor
-        where TBot : IBot<TBot>
-    {
-        sp.GetRequiredService<ClientProcessorFactory>()
-            .AddProcessor<TCommandProcessor, TBot>(sp);
-
-        return sp;
-    }
-
-    public static CommandRegisterServices<TCommand, TBot> RegisterBotCommand<TCommand, TCommandProcessor, TBot>(
-        this IServiceProvider sp)
-        where TCommandProcessor : class, ICommandProcessor
-        where TBot : IBot<TBot>
-        where TCommand : ICommand
-    {
-        sp.GetRequiredService<ClientProcessorFactory>()
-            .AddProcessor<TCommandProcessor, TBot>(sp);
-
-        return new CommandRegisterServices<TCommand, TBot>(sp);
-    }
-
-    public static IServiceProvider RegisterFluentBotCommand<TCommandProcessor, TBot>(this IServiceProvider sp)
-        where TCommandProcessor : class, ICommandProcessor
-        where TBot : IBot<TBot>
-    {
-        sp.GetRequiredService<ClientProcessorFactory>()
-            .AddProcessor<TCommandProcessor, TBot>(sp);
-
-        return sp;
-    }
-
-    public static CommandRegisterServices<TCommand, TBot> RegisterFluentBotCommand<TCommand, TCommandProcessor, TBot>(
-        this IServiceProvider sp)
-        where TCommandProcessor : class, ICommandProcessor
-        where TBot : IBot<TBot>
-        where TCommand : ICommand
-    {
-        sp.GetRequiredService<ClientProcessorFactory>()
-            .AddProcessor<TCommandProcessor, TBot>(sp);
-
-        return new CommandRegisterServices<TCommand, TBot>(sp);
-    }
+    public static IServiceCollection Add<TService>(this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        where TService : class =>
+        lifetime switch
+        {
+            ServiceLifetime.Singleton => services.AddSingleton<TService>(),
+            ServiceLifetime.Scoped => services.AddScoped<TService>(),
+            ServiceLifetime.Transient => services.AddTransient<TService>(),
+            _ => services
+        };
 }

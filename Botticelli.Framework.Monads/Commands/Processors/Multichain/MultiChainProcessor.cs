@@ -3,22 +3,30 @@ using Botticelli.Interfaces;
 
 namespace Botticelli.Framework.Monads.Commands.Processors.Multichain;
 
-public abstract class MultiChainProcessor<TInChoise, TOutChoice>(IChoiseResolver choiceResolver)
-    : IMultiChainProcessor<TInChoise, TOutChoice>
-    where TOutChoice : IChoise, new()
+public abstract class MultiChainProcessor<TInChoise, TOutChoise>(IChoiseResolver ChoiseResolver)
+    : IMultiChainProcessor<TInChoise, TOutChoise>
+    where TOutChoise : IChoise, new()
     where TInChoise : IChoise
 {
     public IBot? Bot { get; set; }
 
     public void SetBot(IBot bot) => Bot = bot;
 
-    public virtual async Task<TOutChoice> Process(TInChoise choice, CancellationToken token = default)
-    {
-        if (!choiceResolver.Resolve(choice))
-            return new TOutChoice();
+    private IMultiChainProcessor<TOutChoise, IChoise> _next;
 
-        return await InnerProcess(choice, token).ConfigureAwait(false);
+    public virtual async Task<TOutChoise> Process(TInChoise choise, CancellationToken token = default)
+    {
+        if (!ChoiseResolver.Resolve(choise))
+            return new TOutChoise();
+
+        return await InnerProcess(choise, token).ConfigureAwait(false);
     }
 
-    protected abstract Task<TOutChoice> InnerProcess(IChoise choice, CancellationToken token = default);
+    public void SetNext<TNextOutChoise>(IMultiChainProcessor<TOutChoise, TNextOutChoise> next) where TNextOutChoise : IChoise 
+        => _next = (IMultiChainProcessor<TOutChoise, IChoise>)next;
+
+    public async Task<IChoise> RunNext(TOutChoise choise)
+        => await _next.Process(choise);
+
+    protected abstract Task<TOutChoise> InnerProcess(IChoise choise, CancellationToken token = default);
 }

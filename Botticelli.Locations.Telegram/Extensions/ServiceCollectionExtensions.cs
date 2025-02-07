@@ -49,9 +49,4 @@ public static class ServiceCollectionExtensions
                 new ReverseGeocoder(sp.GetRequiredService<INominatimWebInterface>(),
                     Url.Combine(url, "reverse")));
     }
-
-    public static IServiceProvider RegisterOsmLocationsCommands(this IServiceProvider sp,
-        string url = "https://nominatim.openstreetmap.org") =>
-        sp.RegisterBotCommand<FindLocationsCommandProcessor<InlineKeyboardMarkup>, TelegramBot>()
-            .RegisterBotCommand<MapCommandProcessor<ReplyKeyboardMarkup>, TelegramBot>();
 }

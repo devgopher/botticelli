@@ -30,8 +30,5 @@ builder.Services.AddBotCommand<StopCommand>()
     .AddValidator<PassValidator<StopCommand>>();
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<StartCommand, StartCommandProcessor<ReplyKeyboardMarkup>, TelegramBot>()
-    .RegisterProcessor<StopCommandProcessor<ReplyKeyboardMarkup>>()
-    .RegisterProcessor<InfoCommandProcessor<ReplyKeyboardMarkup>>();
 
 app.Run();

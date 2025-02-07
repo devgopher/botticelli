@@ -8,19 +8,31 @@ namespace Botticelli.Framework.Monads.Commands.Processors.Multichain;
 public class MultiChainBuilder<TCommand>(IServiceCollection services)
     where TCommand : IChainCommand
 {
-    private readonly List<IMultiChainProcessor<IChoise>> _chain = new(5);
+    private IMultiChainProcessor<IChoise, IChoise>? _element;
     private IBot? _bot;
     private MultiChainRunner<TCommand>? _runner;
 
-    public MultiChainBuilder<TCommand> Next(IMultiChainProcessor<IChoise> processor)
+    public MultiChainBuilder<TCommand> Next<TInChoise, TOutChoise>(IMultiChainProcessor<TInChoise, TOutChoise> processor) 
+        where TInChoise : IChoise
+        where TOutChoise : IChoise
     {
-        _chain.Add(processor);
+        if (_element == null)
+        {
+            _element = (IMultiChainProcessor<IChoise, IChoise>?)processor;
+
+            return this;
+        }
+
+        _element.SetNext<TOutChoise>((IMultiChainProcessor<IChoise, TOutChoise>)processor);
+        _element = (IMultiChainProcessor<IChoise, IChoise>)processor;
 
         return this;
     }
 
-    public MultiChainBuilder<TCommand> Next<TProcessor>()
-        where TProcessor : class, IMultiChainProcessor<IChoise>
+    public MultiChainBuilder<TCommand> Next<TProcessor, TInChoise, TOutChoise>()
+        where TProcessor : class, IMultiChainProcessor<TInChoise, TOutChoise>
+        where TInChoise : IChoise 
+        where TOutChoise : IChoise
     {
         services.AddScoped<TProcessor>();
         var processor = services.BuildServiceProvider()
@@ -29,8 +41,10 @@ public class MultiChainBuilder<TCommand>(IServiceCollection services)
         return Next(processor);
     }
 
-    public MultiChainBuilder<TCommand> Next<TProcessor>(Action<TProcessor> func)
-        where TProcessor : class, IMultiChainProcessor<IChoise>
+    public MultiChainBuilder<TCommand> Next<TProcessor, TInChoise, TOutChoise>(Action<TProcessor> func)
+        where TProcessor : class, IMultiChainProcessor<TInChoise, TOutChoise>
+        where TInChoise : IChoise 
+        where TOutChoise : IChoise
     {
         services.AddScoped<TProcessor>();
         var processor = services.BuildServiceProvider()
@@ -56,9 +70,9 @@ public class MultiChainBuilder<TCommand>(IServiceCollection services)
         if (_bot == default)
             throw new NullReferenceException($"Bot should be set up: call {nameof(SetBot)} to set a bot instance!");
 
-        foreach (var processor in _chain) processor.SetBot(_bot);
+        foreach (var processor in _element) processor.SetBot(_bot);
 
-        _runner ??= new MultiChainRunner<TCommand>(_chain, sp
+        _runner ??= new MultiChainRunner<TCommand>(_element, sp
             .GetRequiredService<ILogger<MultiChainRunner<TCommand>>>());
 
         return _runner;

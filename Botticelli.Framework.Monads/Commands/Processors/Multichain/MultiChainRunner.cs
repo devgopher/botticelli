@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Monads.Commands.Processors.Multichain;
 
-public class MultiChainRunner<TCommand>(List<IMultiChainProcessor<IChoise>> chain, ILogger<MultiChainRunner<TCommand>> logger)
+public class MultiChainRunner<TCommand>(ILogger<MultiChainRunner<TCommand>> logger)
     where TCommand : IChainCommand
 {
     public async Task<EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>>> Run(TCommand command)
@@ -19,10 +19,11 @@ public class MultiChainRunner<TCommand>(List<IMultiChainProcessor<IChoise>> chai
             logger.LogInformation("Chain processor {tc} for {TCommand} start...", tc.GetType().Name,
                 typeof(TCommand).Name);
 
-            await output.BiIter(r => tc.Process(r),
+            await output.BiIter(r => tc.Process(),
                 l => logger.LogInformation("Chain processor {tc}  for {TCommand} finished: fail!", tc.GetType().Name,
                     typeof(TCommand).Name));
 
+            tc.RunNext()
             logger.LogInformation("Chain processor {tc} for {TCommand} finished: success", tc.GetType().Name,
                 typeof(TCommand).Name);
         }

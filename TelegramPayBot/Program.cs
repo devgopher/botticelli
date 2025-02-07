@@ -27,7 +27,5 @@ builder.Services.AddBotCommand<SendInvoiceCommand>()
     .AddValidator<PassValidator<SendInvoiceCommand>>();
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<InfoCommand, InfoCommandProcessor<ReplyKeyboardMarkup>, TelegramBot>();
-app.Services.RegisterBotCommand<SendInvoiceCommand, SendInvoiceCommandProcessor<ReplyKeyboardMarkup>, TelegramBot>();
 
 app.Run();
