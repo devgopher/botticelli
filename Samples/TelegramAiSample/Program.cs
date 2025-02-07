@@ -27,6 +27,5 @@ builder.Services
     .AddBotCommand<AiCommand, AiCommandProcessor<ReplyKeyboardMarkup>, PassValidator<AiCommand>>();
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<AiCommandProcessor<ReplyKeyboardMarkup>, TelegramBot>();
 
 app.Run();

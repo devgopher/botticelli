@@ -28,6 +28,5 @@ builder.Services
     .AddTelegramLayoutsSupport();
 
 var app = builder.Build();
-app.Services.RegisterBotCommand<AiCommandProcessor<ReplyKeyboardMarkup>, TelegramBot>();
 
 app.Run();
