@@ -12,20 +12,20 @@ namespace Botticelli.Framework.Controls.Layouts.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInlineCalendar<TReplyMarkup, TLayoutSupplier, TDateChosenCommandProcessor>(this IServiceCollection services)
+    public static IServiceCollection AddInlineCalendar<TReplyMarkup, TLayoutSupplier, TDateChosenCommandProcessor>(this IServiceCollection services ,ServiceLifetime lifetime = ServiceLifetime.Scoped)
             where TLayoutSupplier : class, ILayoutSupplier<TReplyMarkup>
             where TDateChosenCommandProcessor : CommandProcessor<DateChosenCommand>
-        => services.AddScoped<ILayoutSupplier<TReplyMarkup>, TLayoutSupplier>()
-                   .AddScoped<ICCommandProcessor<MonthForwardCommand, InlineKeyboardMarkup>>()
-                   .AddScoped<ICCommandProcessor<MonthBackwardCommand, InlineKeyboardMarkup>>()
-                   .AddScoped<ICCommandProcessor<YearForwardCommand, InlineKeyboardMarkup>>()
-                   .AddScoped<ICCommandProcessor<YearBackwardCommand, InlineKeyboardMarkup>>()
-                   .AddScoped<TDateChosenCommandProcessor>()
-                   .AddScoped<ICommandValidator<YearForwardCommand>, PassValidator<YearForwardCommand>>()
-                   .AddScoped<ICommandValidator<YearBackwardCommand>, PassValidator<YearBackwardCommand>>()
-                   .AddScoped<ICommandValidator<MonthForwardCommand>, PassValidator<MonthForwardCommand>>()
-                   .AddScoped<ICommandValidator<MonthBackwardCommand>, PassValidator<MonthBackwardCommand>>()
-                   .AddScoped<ICommandValidator<DateChosenCommand>, PassValidator<DateChosenCommand>>();
+        => services.Add<ILayoutSupplier<TReplyMarkup>, TLayoutSupplier>(lifetime)
+                   .Add<ICCommandProcessor<MonthForwardCommand, InlineKeyboardMarkup>>(lifetime)
+                   .Add<ICCommandProcessor<MonthBackwardCommand, InlineKeyboardMarkup>>(lifetime)
+                   .Add<ICCommandProcessor<YearForwardCommand, InlineKeyboardMarkup>>(lifetime)
+                   .Add<ICCommandProcessor<YearBackwardCommand, InlineKeyboardMarkup>>(lifetime)
+                   .Add<TDateChosenCommandProcessor>(lifetime)
+                   .Add<ICommandValidator<YearForwardCommand>, PassValidator<YearForwardCommand>>(lifetime)
+                   .Add<ICommandValidator<YearBackwardCommand>, PassValidator<YearBackwardCommand>>(lifetime)
+                   .Add<ICommandValidator<MonthForwardCommand>, PassValidator<MonthForwardCommand>>(lifetime)
+                   .Add<ICommandValidator<MonthBackwardCommand>, PassValidator<MonthBackwardCommand>>(lifetime)
+                   .Add<ICommandValidator<DateChosenCommand>, PassValidator<DateChosenCommand>>(lifetime);
 
     public static IServiceProvider UseInlineCalendar<TBot, TDateChosenCommandProcessor>(this IServiceProvider sp)
             where TDateChosenCommandProcessor : CommandProcessor<DateChosenCommand>
@@ -35,4 +35,5 @@ public static class ServiceCollectionExtensions
               .RegisterBotCommand<ICCommandProcessor<YearForwardCommand, InlineKeyboardMarkup>, TBot>()
               .RegisterBotCommand<ICCommandProcessor<YearBackwardCommand, InlineKeyboardMarkup>, TBot>()
               .RegisterBotCommand<TDateChosenCommandProcessor, TBot>();
+   
 }

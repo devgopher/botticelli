@@ -2,6 +2,7 @@
 using Botticelli.Bot.Data.Settings;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Controls.Parsers;
+using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Builders;
 using Botticelli.Framework.Telegram.Decorators;
@@ -21,7 +22,7 @@ public static class ServiceCollectionExtensions
     private static readonly AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientOptionsBuilder = new();
     private static readonly DataAccessSettingsBuilder<DataAccessSettings> DataAccessSettingsBuilder = new();
 
-    public static IServiceCollection AddTelegramBot(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddTelegramBot(this IServiceCollection services, IConfiguration configuration, ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
         var telegramBotSettings = configuration
                                   .GetSection(TelegramBotSettings.Section)
@@ -46,18 +47,21 @@ public static class ServiceCollectionExtensions
         return services.AddTelegramBot(telegramBotSettings,
                                        analyticsClientSettings,
                                        serverSettings,
-                                       dataAccessSettings);
+                                       dataAccessSettings,
+                                       lifetime);
     }
 
     public static IServiceCollection AddTelegramBot(this IServiceCollection services,
                                                     TelegramBotSettings botSettings,
                                                     AnalyticsClientSettings analyticsClientSettings,
                                                     ServerSettings serverSettings,
-                                                    DataAccessSettings dataAccessSettings) =>
+                                                    DataAccessSettings dataAccessSettings,
+                                                    ServiceLifetime lifetime = ServiceLifetime.Scoped) =>
             services.AddTelegramBot(o => o.Set(botSettings),
                                     o => o.Set(analyticsClientSettings),
                                     o => o.Set(serverSettings),
-                                    o => o.Set(dataAccessSettings));
+                                    o => o.Set(dataAccessSettings),
+                                    lifetime);
 
     /// <summary>
     ///     Adds a Telegram bot
@@ -72,7 +76,8 @@ public static class ServiceCollectionExtensions
                                                     Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
                                                     Action<AnalyticsClientSettingsBuilder<AnalyticsClientSettings>> analyticsOptionsBuilderFunc,
                                                     Action<ServerSettingsBuilder<ServerSettings>> serverSettingsBuilderFunc,
-                                                    Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc)
+                                                    Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc,
+                                                    ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
         optionsBuilderFunc(SettingsBuilder);
         serverSettingsBuilderFunc(ServerSettingsBuilder);
@@ -91,13 +96,13 @@ public static class ServiceCollectionExtensions
         
         return services.AddSingleton<IBot<TelegramBot>>(bot)
                        .AddSingleton<IBot>(bot)
-                       .AddTelegramLayoutsSupport();
+                       .AddTelegramLayoutsSupport(lifetime);
     }
 
-    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services) =>
-            services.AddScoped<ILayoutParser, JsonLayoutParser>()
-                    .AddScoped<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
-                    .AddScoped<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
-                    .AddScoped<ILayoutLoader<ReplyKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>()
-                    .AddScoped<ILayoutLoader<InlineKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<InlineKeyboardMarkup>, InlineKeyboardMarkup>>();
+    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped) =>
+            services.Add<ILayoutParser, JsonLayoutParser>(lifetime)
+                    .Add<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>(lifetime)
+                    .Add<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>(lifetime)
+                    .Add<ILayoutLoader<ReplyKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>(lifetime)
+                    .Add<ILayoutLoader<InlineKeyboardMarkup>, LayoutLoader<ILayoutParser, ILayoutSupplier<InlineKeyboardMarkup>, InlineKeyboardMarkup>>(lifetime);
 }

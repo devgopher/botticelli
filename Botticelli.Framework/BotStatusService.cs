@@ -61,7 +61,7 @@ public class BotStatusService<TBot> : BotActualizationService<TBot> where TBot :
 
         _getRequiredStatusEventTask = Policy.HandleResult<GetRequiredStatusFromServerResponse>(r => true)
                                             .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(GetStatusPeriod))
-                                            .ExecuteAndCaptureAsync(ct => Process(cancellationToken, request, ct),
+                                            .ExecuteAndCaptureAsync(ct => Process(cancellationToken, request, ct)!,
                                                                     cancellationToken);
     }
 

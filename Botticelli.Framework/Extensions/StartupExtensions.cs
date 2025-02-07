@@ -61,13 +61,13 @@ public static class StartupExtensions
             .AddScoped<ICommandValidator<TCommand>, TCommandValidator>();
 
     public static CommandChainProcessorBuilder<TCommand> AddBotChainProcessedCommand<TCommand,
-        TCommandValidator>(this IServiceCollection services)
+        TCommandValidator>(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TCommand : class, ICommand where TCommandValidator : class, ICommandValidator<TCommand>
     {
         var builder = new CommandChainProcessorBuilder<TCommand>(services);
 
-        services.AddScoped<TCommand>()
-            .AddScoped<ICommandValidator<TCommand>, TCommandValidator>()
+        services.Add<TCommand>(lifetime)
+            .Add<ICommandValidator<TCommand>, TCommandValidator>(lifetime)
             .AddSingleton(_ => builder);
 
         return builder;
@@ -162,4 +162,44 @@ public static class StartupExtensions
                     }
             };
         });
+    
+     
+    
+    public static IServiceCollection Add<T>(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped) 
+        where T : class
+    {
+        switch (lifetime)
+        {
+            case ServiceLifetime.Singleton:
+                services.AddSingleton<T>();
+                break;
+            case ServiceLifetime.Scoped:
+                services.AddScoped<T>();
+                break;
+            case ServiceLifetime.Transient:
+                services.AddTransient<T>();
+                break;
+        }
+
+        return services;
+    }
+    
+    public static IServiceCollection Add<T,R>(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped) 
+        where T : class where R : class, T
+    {
+        switch (lifetime)
+        {
+            case ServiceLifetime.Singleton:
+                services.AddSingleton<T, R>();
+                break;
+            case ServiceLifetime.Scoped:
+                services.AddScoped<T, R>();
+                break;
+            case ServiceLifetime.Transient:
+                services.AddTransient<T, R>();
+                break;
+        }
+
+        return services;
+    }
 }
