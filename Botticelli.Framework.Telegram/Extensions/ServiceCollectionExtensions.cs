@@ -2,6 +2,7 @@
 using Botticelli.Bot.Data.Settings;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Controls.Parsers;
+using Botticelli.Framework.Extensions.Processors;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Builders;
 using Botticelli.Framework.Telegram.Decorators;
@@ -58,11 +59,11 @@ public static class ServiceCollectionExtensions
                                  throw new ConfigurationErrorsException(
                                      $"Can't load configuration for {nameof(DataAccessSettings)}!");
 
-        return services.AddTelegramBot<TBot>(telegramBotSettings,
-            analyticsClientSettings,
-            serverSettings,
-            dataAccessSettings,
-            telegramBotBuilderFunc);
+        return services.AddTelegramBot(telegramBotSettings,
+                analyticsClientSettings,
+                serverSettings,
+                dataAccessSettings,
+                telegramBotBuilderFunc);
     }
 
     public static IServiceCollection AddTelegramBot<TBot>(this IServiceCollection services,

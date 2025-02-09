@@ -1,6 +1,5 @@
-﻿using Botticelli.Framework.Commands.Processors;
-using Botticelli.Framework.Events;
-using Botticelli.Shared.Utils;
+﻿using Botticelli.Framework.Events;
+using Botticelli.Framework.Extensions.Processors;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,15 +15,13 @@ namespace Botticelli.Framework.Telegram.Handlers;
 public class BotUpdateHandler : IBotUpdateHandler
 {
     private readonly ILogger<BotUpdateHandler> _logger;
-    private readonly IServiceProvider _serviceProvider;
     private readonly List<IBotUpdateSubHandler> _subHandlers = [];
 
-    public BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider serviceProvider)
+    public BotUpdateHandler(ILogger<BotUpdateHandler> logger)
     {
         _logger = logger;
-        _serviceProvider = serviceProvider;
     }
-    
+
     public async Task HandleUpdateAsync(ITelegramBotClient botClient,
         Update update,
         CancellationToken cancellationToken)
@@ -32,7 +29,7 @@ public class BotUpdateHandler : IBotUpdateHandler
         try
         {
             _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
-            
+
             var botMessage = update.Message;
             Message botticelliMessage = null;
 
@@ -45,10 +42,10 @@ public class BotUpdateHandler : IBotUpdateHandler
                     if (botMessage == null)
                     {
                         _logger.LogError($"{nameof(HandleUpdateAsync)}() {nameof(botMessage)} is null!");
-                        
+
                         return;
                     }
-                    
+
                     botticelliMessage = new Message
                     {
                         ChatIdInnerIdLinks = new Dictionary<string, List<string>>
@@ -72,10 +69,9 @@ public class BotUpdateHandler : IBotUpdateHandler
                             NickName = update.CallbackQuery?.From.Username
                         }
                     };
-                } 
-                
+                }
+
                 if (update.Poll != null)
-                {
                     botticelliMessage = new Message
                     {
                         Subject = string.Empty,
@@ -86,11 +82,11 @@ public class BotUpdateHandler : IBotUpdateHandler
                             IsAnonymous = update.Poll.IsAnonymous,
                             Question = update.Poll.Question,
                             Type = update.Poll.Type.ToLower() == "regular" ? Poll.PollType.Regular : Poll.PollType.Quiz,
-                            Variants = update.Poll.Options.Select(o =>  new ValueTuple<string, int>(o.Text, o.VoterCount)),
+                            Variants = update.Poll.Options.Select(
+                                o => new ValueTuple<string, int>(o.Text, o.VoterCount)),
                             CorrectAnswerId = update.Poll.CorrectOptionId
                         }
                     };
-                } 
             }
             else
             {
@@ -131,7 +127,7 @@ public class BotUpdateHandler : IBotUpdateHandler
                         : null
                 };
             }
-         
+
             foreach (var subHandler in _subHandlers) await subHandler.Process(botClient, update, cancellationToken);
 
             if (botticelliMessage != null)
@@ -177,11 +173,12 @@ public class BotUpdateHandler : IBotUpdateHandler
         if (token is { CanBeCanceled: true, IsCancellationRequested: true })
             return;
 
-        var clientNonChainedTasks = _serviceProvider.GetServices<ICommandChainProcessor>()
-            .Where(p => !p.GetType().IsAssignableTo(typeof(ICommandChainProcessor)))
+        var processorFactory = ProcessorFactoryBuilder.Build();
+
+        var clientNonChainedTasks = processorFactory.GetProcessors()
             .Select(p => p.ProcessAsync(request, token));
 
-        var clientChainedTasks = _serviceProvider.GetServices<ICommandChainFirstElementProcessor>()
+        var clientChainedTasks = processorFactory.GetCommandChainProcessors()
             .Select(p => p.ProcessAsync(request, token));
 
         var clientTasks = clientNonChainedTasks.Concat(clientChainedTasks).ToArray();

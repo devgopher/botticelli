@@ -1,6 +1,7 @@
 using Botticelli.Bot.Interfaces.Processors;
 using Botticelli.Framework.Commands;
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.Extensions.Processors;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,7 +24,8 @@ public class CommandAddServices<TCommand>(IServiceCollection services)
         where TCommandProcessor : class, ICommandProcessor
     {
         services.AddScoped<TCommandProcessor>();
-
+        ProcessorFactoryBuilder.AddProcessor<TCommandProcessor>(services);
+        
         return this;
     }
 

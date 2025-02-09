@@ -194,6 +194,13 @@ public class VkBot : BaseBot<VkBot>
     protected override Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
         CancellationToken token) => throw new NotImplementedException();
 
+    protected override async Task AdditionalProcessing<TSendOptions>(SendMessageRequest request,
+        ISendOptionsBuilder<TSendOptions>? optionsBuilder, bool isUpdate,
+        string chatId, CancellationToken token)
+    {
+        Logger.LogError($"{nameof(AdditionalProcessing)} not implemented!");
+    }
+
     private async Task<IEnumerable<VkSendMessageRequest>> CreateRequestsWithAttachments(SendMessageRequest request,
         string peerId,
         CancellationToken token)
