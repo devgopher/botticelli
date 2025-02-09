@@ -18,16 +18,15 @@ namespace Botticelli.Framework.Services;
 public class GetBroadCastMessagesService<TBot>(
     IHttpClientFactory httpClientFactory,
     ServerSettings serverSettings,
-    TBot bot,
-    ILogger<BotActualizationService<TBot>> logger)
-    : PollActualizationService<TBot, GetBroadCastMessagesRequest, GetBroadCastMessagesResponse>(httpClientFactory,
+    IBot bot,
+    ILogger<BotActualizationService> logger)
+    : PollActualizationService<GetBroadCastMessagesRequest, GetBroadCastMessagesResponse>(httpClientFactory,
         "broadcast",
         serverSettings,
         bot,
         logger)
-    where TBot : IBot
 {
-    private TBot _bot = bot;
+    private IBot _bot = bot;
 
     protected override async Task InnerProcess(GetBroadCastMessagesResponse response, CancellationToken ct)
     {

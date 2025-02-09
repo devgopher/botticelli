@@ -12,11 +12,10 @@ namespace Botticelli.Framework.Services;
 ///     This service is intended for sending keepalive/hello messages
 ///     to Botticelli Admin server and receiving status messages from it
 /// </summary>
-public abstract class BotActualizationService<TBot> : IHostedService
-    where TBot : IBot
+public abstract class BotActualizationService : IHostedService
 {
     protected readonly ManualResetEventSlim ActualizationEvent = new(false);
-    protected readonly TBot Bot;
+    protected readonly IBot Bot;
     protected readonly string? BotId = BotDataUtils.GetBotId();
     protected readonly IHttpClientFactory HttpClientFactory;
     protected readonly ILogger Logger;
@@ -28,7 +27,7 @@ public abstract class BotActualizationService<TBot> : IHostedService
     /// </summary>
     protected BotActualizationService(IHttpClientFactory httpClientFactory,
         ServerSettings serverSettings,
-        TBot bot,
+        IBot bot,
         ILogger logger)
     {
         HttpClientFactory = httpClientFactory;

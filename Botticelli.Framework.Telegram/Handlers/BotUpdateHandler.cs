@@ -1,6 +1,7 @@
 ﻿using Botticelli.Framework.Events;
 using Botticelli.Framework.Extensions.Processors;
 using Botticelli.Shared.ValueObjects;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
@@ -16,7 +17,13 @@ public class BotUpdateHandler : IBotUpdateHandler
 {
     private readonly ILogger<BotUpdateHandler> _logger;
     private readonly List<IBotUpdateSubHandler> _subHandlers = [];
+    private readonly MemoryCacheEntryOptions _entryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(1));
 
+    private readonly MemoryCache _memoryCache = new(new MemoryCacheOptions
+    {
+        ExpirationScanFrequency = TimeSpan.FromSeconds(5),
+    });
+    
     public BotUpdateHandler(ILogger<BotUpdateHandler> logger)
     {
         _logger = logger;
@@ -31,7 +38,14 @@ public class BotUpdateHandler : IBotUpdateHandler
             _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
             var botMessage = update.Message;
-            Message botticelliMessage = null;
+            
+            // cacing in order to avoid message "cloning"
+            if (_memoryCache.TryGetValue(botMessage.MessageId, out _))
+                return;
+            
+            _memoryCache.Set(botMessage.MessageId, botMessage, _entryOptions);
+            
+            Message? botticelliMessage = null;
 
             if (botMessage == null)
             {

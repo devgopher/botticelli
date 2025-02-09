@@ -6,12 +6,9 @@ namespace Botticelli.Framework.Telegram.HostedService;
 
 public class TelegramBotHostedService : IHostedService
 {
-    private readonly IBot<TelegramBot> _bot;
+    private readonly IBot _bot;
 
-    public TelegramBotHostedService(IBot<TelegramBot> bot)
-    {
-        _bot = bot;
-    }
+    public TelegramBotHostedService(IBot bot) => _bot = bot;
 
     public Task StartAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 

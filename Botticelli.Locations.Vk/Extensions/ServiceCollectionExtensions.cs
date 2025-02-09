@@ -2,7 +2,6 @@
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Extensions;
-using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Messages.API.Markups;
 using Botticelli.Framework.Vk.Messages.Layout;
 using Botticelli.Locations.Commands;
@@ -47,9 +46,4 @@ public static class ServiceCollectionExtensions
                 new ReverseGeocoder(sp.GetRequiredService<INominatimWebInterface>(),
                     Url.Combine(url, "reverse")));
     }
-
-    public static IServiceProvider RegisterOsmLocationsCommands(this IServiceProvider sp,
-        string url = "https://nominatim.openstreetmap.org")
-        => sp.RegisterBotCommand<FindLocationsCommandProcessor<VkKeyboardMarkup>, VkBot>()
-            .RegisterBotCommand<MapCommandProcessor<VkKeyboardMarkup>, VkBot>();
 }

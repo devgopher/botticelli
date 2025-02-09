@@ -23,7 +23,7 @@ public class CommandAddServices<TCommand>(IServiceCollection services)
     public CommandAddServices<TCommand> AddProcessor<TCommandProcessor>()
         where TCommandProcessor : class, ICommandProcessor
     {
-        services.AddScoped<TCommandProcessor>();
+        services.AddSingleton<TCommandProcessor>();
         ProcessorFactoryBuilder.AddProcessor<TCommandProcessor>(services);
         
         return this;
@@ -45,8 +45,8 @@ public class CommandAddServices<TCommand>(IServiceCollection services)
         where TCommandValidator : class, ICommandValidator<TCommand>
     {
         // validator chain needs to be implemented!
-        services.AddScoped<TCommandValidator>()
-            .AddScoped<ICommandValidator<TCommand>, TCommandValidator>();
+        services.AddSingleton<TCommandValidator>()
+            .AddSingleton<ICommandValidator<TCommand>, TCommandValidator>();
 
         return this;
     }

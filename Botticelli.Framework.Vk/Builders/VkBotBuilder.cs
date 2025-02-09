@@ -34,14 +34,14 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
 
     protected override VkBot InnerBuild()
     {
-        Services!.AddHttpClient<BotStatusService<VkBot>>()
+        Services!.AddHttpClient<BotStatusService>()
             .AddServerCertificates(BotSettings);
-        Services!.AddHostedService<BotStatusService<IBot<VkBot>>>();
-        Services!.AddHttpClient<BotKeepAliveService<VkBot>>()
+        Services!.AddHostedService<BotStatusService>();
+        Services!.AddHttpClient<BotKeepAliveService>()
             .AddServerCertificates(BotSettings);
         Services!.AddHttpClient<GetBroadCastMessagesService<VkBot>>()
             .AddServerCertificates(BotSettings);
-        Services!.AddHostedService<BotKeepAliveService<IBot<VkBot>>>();
+        Services!.AddHostedService<BotKeepAliveService>();
         Services!.AddHostedService<GetBroadCastMessagesService<IBot<VkBot>>>();
 
         Services!.AddHostedService<VkBotHostedService>();

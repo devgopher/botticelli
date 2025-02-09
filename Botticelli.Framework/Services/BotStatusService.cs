@@ -11,16 +11,15 @@ using Polly;
 
 namespace Botticelli.Framework.Services;
 
-public class BotStatusService<TBot>(
+public class BotStatusService(
     IHttpClientFactory httpClientFactory,
     ServerSettings serverSettings,
-    TBot bot,
-    ILogger<BotStatusService<TBot>> logger)
-    : BotActualizationService<TBot>(httpClientFactory,
+    IBot bot,
+    ILogger<BotStatusService> logger)
+    : BotActualizationService(httpClientFactory,
         serverSettings,
         bot,
         logger)
-    where TBot : IBot
 {
     private const short GetStatusPeriod = 5000;
     private Task? _getRequiredStatusEventTask;

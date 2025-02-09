@@ -51,9 +51,9 @@ public static class StartupExtensions
         where TCommand : class, ICommand
         where TCommandProcessor : class, ICommandProcessor
         where TCommandValidator : class, ICommandValidator<TCommand>
-        => services.AddScoped<TCommand>()
-            .AddScoped<TCommandProcessor>()
-            .AddScoped<ICommandValidator<TCommand>, TCommandValidator>();
+        => services.AddSingleton<TCommand>()
+            .AddSingleton<TCommandProcessor>()
+            .AddSingleton<ICommandValidator<TCommand>, TCommandValidator>();
 
     public static CommandChainProcessorBuilder<TCommand> AddBotChainProcessedCommand<TCommand,
         TCommandValidator>(this IServiceCollection services)
@@ -61,8 +61,8 @@ public static class StartupExtensions
     {
         var builder = new CommandChainProcessorBuilder<TCommand>(services);
 
-        services.AddScoped<TCommand>()
-            .AddScoped<ICommandValidator<TCommand>, TCommandValidator>()
+        services.AddSingleton<TCommand>()
+            .AddSingleton<ICommandValidator<TCommand>, TCommandValidator>()
             .AddSingleton(_ => builder);
 
         return builder;
@@ -77,26 +77,4 @@ public static class StartupExtensions
 
         return sp;
     }
-
-    public static IServiceCollection Add<TIService, TService>(this IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Singleton)
-        where TService : class, TIService where TIService : class =>
-        lifetime switch
-        {
-            ServiceLifetime.Singleton => services.AddSingleton<TIService, TService>(),
-            ServiceLifetime.Scoped => services.AddScoped<TIService, TService>(),
-            ServiceLifetime.Transient => services.AddTransient<TIService, TService>(),
-            _ => services
-        };
-
-    public static IServiceCollection Add<TService>(this IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Singleton)
-        where TService : class =>
-        lifetime switch
-        {
-            ServiceLifetime.Singleton => services.AddSingleton<TService>(),
-            ServiceLifetime.Scoped => services.AddScoped<TService>(),
-            ServiceLifetime.Transient => services.AddTransient<TService>(),
-            _ => services
-        };
 }

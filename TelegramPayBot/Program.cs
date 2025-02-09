@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddTelegramPayBot<PayPreCheckoutHandler, DummyPayProcessor<PayPreCheckoutHandler, PreCheckoutQuery>>(builder.Configuration)
     .AddLogging(cfg => cfg.AddNLog())
-    .AddScoped<ILayoutParser, JsonLayoutParser>();
+    .AddSingleton<ILayoutParser, JsonLayoutParser>();
 
 builder.Services.AddBotCommand<InfoCommand>()
     .AddProcessor<InfoCommandProcessor<ReplyKeyboardMarkup>>()

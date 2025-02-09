@@ -15,10 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddTelegramBot(builder.Configuration)
     .AddLogging(cfg => cfg.AddNLog())
-    .AddScoped<StartCommandProcessor<ReplyKeyboardMarkup>>()
-    .AddScoped<StopCommandProcessor<ReplyKeyboardMarkup>>()
-    .AddScoped<InfoCommandProcessor<ReplyKeyboardMarkup>>()
-    .AddScoped<ILayoutParser, JsonLayoutParser>()
+    .AddSingleton<StartCommandProcessor<ReplyKeyboardMarkup>>()
+    .AddSingleton<StopCommandProcessor<ReplyKeyboardMarkup>>()
+    .AddSingleton<InfoCommandProcessor<ReplyKeyboardMarkup>>()
+    .AddSingleton<ILayoutParser, JsonLayoutParser>()
     .AddBotCommand<InfoCommand, InfoCommandProcessor<ReplyKeyboardMarkup>, PassValidator<InfoCommand>>()
     .AddBotCommand<StartCommand, StartCommandProcessor<ReplyKeyboardMarkup>, PassValidator<StartCommand>>()
     .AddBotCommand<StopCommand, StopCommandProcessor<ReplyKeyboardMarkup>, PassValidator<StopCommand>>();

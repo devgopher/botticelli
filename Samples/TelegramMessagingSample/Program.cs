@@ -13,9 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddTelegramBot(builder.Configuration)
+    .AddTelegramLayoutsSupport()
     .AddLogging(cfg => cfg.AddNLog())
-    .AddQuartzScheduler(builder.Configuration)
-    .AddScoped<ILayoutParser, JsonLayoutParser>();
+    .AddQuartzScheduler(builder.Configuration);
 
 builder.Services.AddBotCommand<InfoCommand>()
     .AddProcessor<InfoCommandProcessor<ReplyKeyboardMarkup>>()

@@ -75,13 +75,13 @@ public class TelegramBotBuilder<TBot> : BotBuilder<TelegramBotBuilder<TBot>, TBo
     {
         Services!.AddSingleton(ServerSettingsBuilder.Build());
 
-        Services!.AddHttpClient<BotStatusService<TelegramBot>>()
+        Services!.AddHttpClient<BotStatusService>()
             .AddServerCertificates(BotSettings);
-        Services!.AddHostedService<BotStatusService<IBot<TelegramBot>>>();
+        Services!.AddHostedService<BotStatusService>();
 
-        Services!.AddHttpClient<BotKeepAliveService<TelegramBot>>()
+        Services!.AddHttpClient<BotKeepAliveService>()
             .AddServerCertificates(BotSettings);
-        Services!.AddHostedService<BotKeepAliveService<IBot<TelegramBot>>>();
+        Services!.AddHostedService<BotKeepAliveService>();
 
         Services!.AddHttpClient<GetBroadCastMessagesService<TelegramBot>>()
             .AddServerCertificates(BotSettings);
@@ -119,7 +119,7 @@ public class TelegramBotBuilder<TBot> : BotBuilder<TelegramBotBuilder<TBot>, TBo
         _client = _builder.Build();
         _client.Timeout = TimeSpan.FromMilliseconds(BotSettings?.Timeout ?? 10000);
 
-        Services!.AddScoped<ILayoutSupplier<IReplyMarkup>, ReplyTelegramLayoutSupplier>()
+        Services!.AddSingleton<ILayoutSupplier<IReplyMarkup>, ReplyTelegramLayoutSupplier>()
             .AddBotticelliFramework()
             .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
 

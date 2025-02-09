@@ -9,14 +9,13 @@ using Polly;
 
 namespace Botticelli.Framework.Services;
 
-public class PollActualizationService<TBot, TRequest, TResponse>(
+public class PollActualizationService<TRequest, TResponse>(
     IHttpClientFactory httpClientFactory,
     string subPath,
     ServerSettings serverSettings,
-    TBot bot,
+    IBot bot,
     ILogger logger)
-    : BotActualizationService<TBot>(httpClientFactory, serverSettings, bot, logger)
-    where TBot : IBot
+    : BotActualizationService(httpClientFactory, serverSettings, bot, logger)
     where TRequest : IBotRequest, new()
 {
     private const short ActionPeriod = 5000;

@@ -100,8 +100,8 @@ public static class ServiceCollectionExtensions
     }
 
     public static IServiceCollection AddVkLayoutsSupport(this IServiceCollection services) =>
-        services.AddScoped<ILayoutParser, JsonLayoutParser>()
-            .AddScoped<ILayoutSupplier<VkKeyboardMarkup>, VkLayoutSupplier>()
-            .AddScoped<ILayoutLoader<VkKeyboardMarkup>,
+        services.AddSingleton<ILayoutParser, JsonLayoutParser>()
+            .AddSingleton<ILayoutSupplier<VkKeyboardMarkup>, VkLayoutSupplier>()
+            .AddSingleton<ILayoutLoader<VkKeyboardMarkup>,
                 LayoutLoader<ILayoutParser, ILayoutSupplier<VkKeyboardMarkup>, VkKeyboardMarkup>>();
 }
