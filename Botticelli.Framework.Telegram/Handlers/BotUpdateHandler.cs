@@ -39,7 +39,7 @@ public class BotUpdateHandler : IBotUpdateHandler
 
             var botMessage = update.Message;
             
-            // cacing in order to avoid message "cloning"
+            // caching in order to avoid message "cloning"
             if (_memoryCache.TryGetValue(botMessage.MessageId, out _))
                 return;
             
