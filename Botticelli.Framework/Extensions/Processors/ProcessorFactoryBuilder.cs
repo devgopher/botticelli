@@ -18,14 +18,17 @@ public static class ProcessorFactoryBuilder
 
     public static ProcessorFactory Build()
     {   
-        var sp = _serviceCollection?.BuildServiceProvider();
+        if (_serviceCollection == null)
+            throw new NullReferenceException("Service collection is null! PLease, call AddProcessor() first!");
+ 
+        var sp = _serviceCollection.BuildServiceProvider();
         
         var processors = ProcessorTypes
             .Select(pt =>
             {
-                var processor = sp?.GetRequiredService(pt) as ICommandProcessor;
-                processor.SetBot(sp.GetRequiredService<IBot>());
-                processor.SetServiceProvider(sp);
+                var processor = sp.GetRequiredService(pt) as ICommandProcessor;
+                processor?.SetBot(sp.GetRequiredService<IBot>());
+                processor?.SetServiceProvider(sp);
                 
                 return processor;
             })
