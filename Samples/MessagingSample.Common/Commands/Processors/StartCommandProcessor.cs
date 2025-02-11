@@ -78,18 +78,6 @@ public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand
                     Name = "Test",
                     Surname = "Botticelli"
                 },
-                Poll = new Poll
-                {
-                    Question = "To be or not to be?",
-                    Variants =
-                    [
-                        ("To be!", 0),
-                        ("Not to be!", 0)
-                    ],
-                    CorrectAnswerId = 0,
-                    IsAnonymous = false,
-                    Type = Poll.PollType.Quiz
-                },
                 Attachments =
                 [
                     new BinaryBaseAttachment(Guid.NewGuid().ToString(),

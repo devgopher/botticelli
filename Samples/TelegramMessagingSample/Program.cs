@@ -29,6 +29,4 @@ builder.Services.AddBotCommand<StopCommand>()
     .AddProcessor<StopCommandProcessor<ReplyKeyboardMarkup>>()
     .AddValidator<PassValidator<StopCommand>>();
 
-var app = builder.Build();
-
-app.Run();
+builder.Build().Run();
