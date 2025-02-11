@@ -10,8 +10,12 @@ namespace TelegramCommandChainSample.Commands.CommandProcessors;
 public class SayHelloFinalCommandProcessor : CommandChainProcessor<GetNameCommand>
 {
     public SayHelloFinalCommandProcessor(ILogger<CommandChainProcessor<GetNameCommand>> logger,
-        ICommandValidator<GetNameCommand> commandValidator, MetricsProcessor metricsProcessor,
-        IValidator<Message> messageValidator) : base(logger, commandValidator, metricsProcessor, messageValidator)
+                                         ICommandValidator<GetNameCommand> commandValidator,
+                                         MetricsProcessor metricsProcessor,
+                                         IValidator<Message> messageValidator) : base(logger,
+                                                                                      commandValidator,
+                                                                                      metricsProcessor,
+                                                                                      messageValidator)
     {
     }
 
@@ -19,10 +23,14 @@ public class SayHelloFinalCommandProcessor : CommandChainProcessor<GetNameComman
     {
         message.Body = $"Have a nice day, dear {string.Join(' ', message.ProcessingArgs ?? new List<string>())}!";
         await Bot.SendMessageAsync(new SendMessageRequest
-        {
-            Message = message
-        }, token);
+                                   {
+                                       Message = message
+                                   },
+                                   token);
     }
 
-    protected override Task InnerProcess(Message message, CancellationToken token) => Task.CompletedTask;
+    protected override Task InnerProcess(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 }

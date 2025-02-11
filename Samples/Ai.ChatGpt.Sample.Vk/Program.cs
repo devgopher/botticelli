@@ -15,17 +15,17 @@ using NLog.Extensions.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 var settings = builder.Configuration
-    .GetSection(nameof(SampleSettings))
-    .Get<SampleSettings>();
+                      .GetSection(nameof(SampleSettings))
+                      .Get<SampleSettings>();
 
 builder.Services.AddVkBot(builder.Configuration)
-    .AddLogging(cfg => cfg.AddNLog())
-    .AddChatGptProvider(builder.Configuration)
-    .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
-    .AddSingleton<AiHandler>()
-    .UsePassBusAgent<IBot<VkBot>, AiHandler>()
-    .UsePassBusClient<IBot<VkBot>>()
-    .AddBotCommand<AiCommand, AiCommandProcessor<VkKeyboardMarkup>, PassValidator<AiCommand>>();
+       .AddLogging(cfg => cfg.AddNLog())
+       .AddChatGptProvider(builder.Configuration)
+       .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
+       .AddSingleton<AiHandler>()
+       .UsePassBusAgent<IBot<VkBot>, AiHandler>()
+       .UsePassBusClient<IBot<VkBot>>()
+       .AddBotCommand<AiCommand, AiCommandProcessor<VkKeyboardMarkup>, PassValidator<AiCommand>>();
 
 var app = builder.Build();
 

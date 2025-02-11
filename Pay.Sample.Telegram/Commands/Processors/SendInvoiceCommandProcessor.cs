@@ -1,8 +1,6 @@
-using System.Reflection;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.SendOptions;
 using Botticelli.Pay.Message;
 using Botticelli.Pay.Models;
 using Botticelli.Pay.Utils;
@@ -23,16 +21,28 @@ public class SendInvoiceCommandProcessor<TReplyMarkup> : CommandProcessor<SendIn
                                        MetricsProcessor metricsProcessor,
                                        IValidator<Message> messageValidator,
                                        IOptionsMonitor<PaySettings> paySettingsAccessor)
-        : base(logger, commandValidator, metricsProcessor, messageValidator)
+            : base(logger,
+                   commandValidator,
+                   metricsProcessor,
+                   messageValidator)
     {
         _paySettingsAccessor = paySettingsAccessor;
     }
 
-    protected override Task InnerProcessContact(Message message, CancellationToken token) => Task.CompletedTask;
+    protected override Task InnerProcessContact(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 
-    protected override Task InnerProcessPoll(Message message, CancellationToken token) => Task.CompletedTask;
+    protected override Task InnerProcessPoll(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 
-    protected override Task InnerProcessLocation(Message message, CancellationToken token) => Task.CompletedTask;
+    protected override Task InnerProcessLocation(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 
     protected override async Task InnerProcess(Message message, CancellationToken token)
     {
