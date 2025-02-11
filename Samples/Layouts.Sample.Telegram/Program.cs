@@ -20,7 +20,5 @@ builder.Services
     .AddOsmLocations(builder.Configuration);
 
 var app = builder.Build();
-app.Services
-    .UseInlineCalendar<TelegramBot, DateChosenCommandProcessor>();
 
 app.Run();

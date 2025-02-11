@@ -9,7 +9,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Botticelli.AI.YaGpt\Botticelli.AI.YaGpt.csproj"/>
         <ProjectReference Include="..\..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
-        <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
+        <ProjectReference Include="..\Ai.Common.Sample\Ai.Common.Sample.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -28,6 +28,5 @@ builder.Services.AddBotCommand<MathCommand>()
             .Next<OutputCommandProcessor<ReplyKeyboardMarkup, MathCommand>>());
 
 var app = builder.Build();
-app.Services.UseMonadsChain<MathCommand, TelegramBot>();
 
 app.Run();

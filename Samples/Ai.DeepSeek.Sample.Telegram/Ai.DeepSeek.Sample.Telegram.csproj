@@ -4,12 +4,13 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>TelegramAiDeepSeekSample</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\Botticelli.AI.DeepSeekGpt\Botticelli.AI.DeepSeekGpt.csproj"/>
         <ProjectReference Include="..\..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
-        <ProjectReference Include="..\AiSample.Common\AiSample.Common.csproj"/>
+        <ProjectReference Include="..\Ai.Common.Sample\Ai.Common.Sample.csproj" />
     </ItemGroup>
 
     <ItemGroup>
