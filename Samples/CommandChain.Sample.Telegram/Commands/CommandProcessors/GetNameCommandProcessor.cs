@@ -10,9 +10,12 @@ namespace TelegramCommandChainSample.Commands.CommandProcessors;
 public class GetNameCommandProcessor : WaitForClientResponseCommandChainProcessor<GetNameCommand>
 {
     public GetNameCommandProcessor(ILogger<CommandChainProcessor<GetNameCommand>> logger,
-        ICommandValidator<GetNameCommand> commandValidator,
-        MetricsProcessor metricsProcessor,
-        IValidator<Message> messageValidator) : base(logger, commandValidator, metricsProcessor, messageValidator)
+                                   ICommandValidator<GetNameCommand> commandValidator,
+                                   MetricsProcessor metricsProcessor,
+                                   IValidator<Message> messageValidator) : base(logger,
+                                                                                commandValidator,
+                                                                                metricsProcessor,
+                                                                                messageValidator)
     {
     }
 
@@ -27,8 +30,9 @@ public class GetNameCommandProcessor : WaitForClientResponseCommandChainProcesso
         };
 
         await Bot.SendMessageAsync(new SendMessageRequest
-        {
-            Message = responseMessage
-        }, token);
+                                   {
+                                       Message = responseMessage
+                                   },
+                                   token);
     }
 }

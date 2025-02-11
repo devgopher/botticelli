@@ -16,12 +16,15 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
     private readonly SendOptionsBuilder<TReplyMarkup>? _options;
 
     public InfoCommandProcessor(ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
-        ICommandValidator<InfoCommand> commandValidator,
-        MetricsProcessor metricsProcessor,
-        ILayoutSupplier<TReplyMarkup> layoutSupplier,
-        ILayoutParser layoutParser,
-        IValidator<Message> messageValidator)
-        : base(logger, commandValidator, metricsProcessor, messageValidator)
+                                ICommandValidator<InfoCommand> commandValidator,
+                                MetricsProcessor metricsProcessor,
+                                ILayoutSupplier<TReplyMarkup> layoutSupplier,
+                                ILayoutParser layoutParser,
+                                IValidator<Message> messageValidator)
+            : base(logger,
+                   commandValidator,
+                   metricsProcessor,
+                   messageValidator)
     {
         var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
         var responseLayout = layoutParser.ParseFromFile(Path.Combine(location, "main_layout.json"));
@@ -30,11 +33,20 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
         _options = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
     }
 
-    protected override Task InnerProcessContact(Message message, CancellationToken token) => Task.CompletedTask;
+    protected override Task InnerProcessContact(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 
-    protected override Task InnerProcessPoll(Message message, CancellationToken token) => Task.CompletedTask;
+    protected override Task InnerProcessPoll(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 
-    protected override Task InnerProcessLocation(Message message, CancellationToken token) => Task.CompletedTask;
+    protected override Task InnerProcessLocation(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 
     protected override async Task InnerProcess(Message message, CancellationToken token)
     {

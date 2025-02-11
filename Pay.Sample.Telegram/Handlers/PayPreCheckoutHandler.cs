@@ -4,5 +4,4 @@ namespace TelegramPayBot.Handlers;
 
 public class PayPreCheckoutHandler : IPreCheckoutHandler
 {
-    
 }

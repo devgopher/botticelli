@@ -20,12 +20,15 @@ public class AiCommandProcessor<TReplyMarkup> : CommandProcessor<AiCommand> wher
     private readonly IEventBusClient _bus;
 
     public AiCommandProcessor(ILogger<AiCommandProcessor<TReplyMarkup>> logger,
-        ICommandValidator<AiCommand> commandValidator,
-        MetricsProcessor metricsProcessor,
-        IEventBusClient bus,
-        ILayoutSupplier<TReplyMarkup> layoutSupplier,
-        IValidator<Message> messageValidator)
-        : base(logger, commandValidator, metricsProcessor, messageValidator)
+                              ICommandValidator<AiCommand> commandValidator,
+                              MetricsProcessor metricsProcessor,
+                              IEventBusClient bus,
+                              ILayoutSupplier<TReplyMarkup> layoutSupplier,
+                              IValidator<Message> messageValidator)
+            : base(logger,
+                   commandValidator,
+                   metricsProcessor,
+                   messageValidator)
     {
         _bus = bus;
         var responseLayout = new AiLayout();
@@ -36,36 +39,39 @@ public class AiCommandProcessor<TReplyMarkup> : CommandProcessor<AiCommand> wher
         _bus.OnReceived += async (sender, response) =>
         {
             await Bot.SendMessageAsync(new SendMessageRequest(response.Uid)
-                {
-                    Message = response.Message,
-                    ExpectPartialResponse = response.IsPartial,
-                    SequenceNumber = response.SequenceNumber,
-                    IsFinal = response.IsFinal
-                },
-                options,
-                CancellationToken.None);
+                                       {
+                                           Message = response.Message,
+                                           ExpectPartialResponse = response.IsPartial,
+                                           SequenceNumber = response.SequenceNumber,
+                                           IsFinal = response.IsFinal
+                                       },
+                                       options,
+                                       CancellationToken.None);
         };
     }
 
     protected override async Task InnerProcessLocation(Message message, CancellationToken token)
     {
         message.Body =
-            $"{$"Coordinates {message.Location.Latitude:##.#####}".Replace(",", ".")},{$"{message.Location.Longitude:##.#####}".Replace(",", ".")}";
+                $"{$"Coordinates {message.Location.Latitude:##.#####}".Replace(",", ".")},{$"{message.Location.Longitude:##.#####}".Replace(",", ".")}";
         await InnerProcess(message, token);
     }
 
 
-    protected override async Task InnerProcess(Message message, CancellationToken token) =>
+    protected override async Task InnerProcess(Message message, CancellationToken token)
+    {
         await _bus.Send(new SendMessageRequest(message.Uid)
-        {
-            Message = new AiMessage(message.Uid)
-            {
-                ChatIds = message.ChatIds,
-                Subject = string.Empty,
-                Body = message.Body?.GetArguments(),
-                Attachments = null,
-                From = message.From,
-                ForwardedFrom = message.ForwardedFrom
-            }
-        }, token);
+                        {
+                            Message = new AiMessage(message.Uid)
+                            {
+                                ChatIds = message.ChatIds,
+                                Subject = string.Empty,
+                                Body = message.Body?.GetArguments(),
+                                Attachments = null,
+                                From = message.From,
+                                ForwardedFrom = message.ForwardedFrom
+                            }
+                        },
+                        token);
+    }
 }

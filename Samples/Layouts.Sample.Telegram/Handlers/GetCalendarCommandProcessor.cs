@@ -20,12 +20,15 @@ public class GetCalendarCommandProcessor : CommandProcessor<GetCalendarCommand>
     private SendOptionsBuilder<InlineKeyboardMarkup>? _options;
 
     public GetCalendarCommandProcessor(IBot bot,
-        ICommandValidator<GetCalendarCommand> commandValidator,
-        MetricsProcessor metricsProcessor,
-        ILayoutSupplier<InlineKeyboardMarkup> supplier,
-        ILogger<GetCalendarCommandProcessor> logger,
-        IValidator<Message> messageValidator)
-        : base(logger, commandValidator, metricsProcessor, messageValidator)
+                                       ICommandValidator<GetCalendarCommand> commandValidator,
+                                       MetricsProcessor metricsProcessor,
+                                       ILayoutSupplier<InlineKeyboardMarkup> supplier,
+                                       ILogger<GetCalendarCommandProcessor> logger,
+                                       IValidator<Message> messageValidator)
+            : base(logger,
+                   commandValidator,
+                   metricsProcessor,
+                   messageValidator)
     {
         _bot = bot;
 
