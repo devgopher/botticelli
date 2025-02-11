@@ -125,7 +125,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Vk.Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VK", "VK", "{5BB351E1-460B-48C1-912C-E13702968BB2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkMessagingSample", "Samples\VkMessagingSample\VkMessagingSample.csproj", "{B610D900-6713-4D8F-8E9D-23AA02F846FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ai.Messaging.Sample.Vk", "Samples\Ai.Messaging.Sample.Vk\Ai.Messaging.Sample.Vk.csproj", "{B610D900-6713-4D8F-8E9D-23AA02F846FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Audio", "Botticelli.Audio\Botticelli.Audio.csproj", "{0B5AB7F0-080D-49F3-A564-CE22F6F808AB}"
 EndProject
@@ -143,11 +143,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Analytics.Shared
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSignatures", "3dParty\FileSignatures\FileSignatures.csproj", "{6F38611B-7798-4514-91E3-B74A2FA228E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessagingSample.Common", "Samples\MessagingSample.Common\MessagingSample.Common.csproj", "{CB97DC2A-EE66-43A6-977F-6CB82C030D7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Sample.Common", "Samples\Messaging.Sample.Common\Messaging.Sample.Common.csproj", "{CB97DC2A-EE66-43A6-977F-6CB82C030D7A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AiSample.Common", "Samples\AiSample.Common\AiSample.Common.csproj", "{8A5ECE73-1529-4B53-8907-735ADA05C20A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ai.Common.Sample", "Samples\Ai.Common.Sample\Ai.Common.Sample.csproj", "{8A5ECE73-1529-4B53-8907-735ADA05C20A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAiChatGptSample", "Samples\VkAiChatGptSample\VkAiChatGptSample.csproj", "{AAD10628-7441-419D-8FE8-F37BF8FB4681}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ai.ChatGpt.Sample.Vk", "Samples\Ai.ChatGpt.Sample.Vk\Ai.ChatGpt.Sample.Vk.csproj", "{AAD10628-7441-419D-8FE8-F37BF8FB4681}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Botticelli.Framework.Events", "Botticelli.Framework.Common\Botticelli.Framework.Events.csproj", "{B0863634-2EE0-4F24-898F-6FB0154E3EB5}"
 EndProject
@@ -162,13 +162,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "analytics_back", "analytics
 		deploy\linux\server\analytics_back\run_standalone.sh = deploy\linux\server\analytics_back\run_standalone.sh
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiChatGptSample", "Samples\TelegramAiSample\TelegramAiChatGptSample.csproj", "{ECCC27F2-F7ED-406C-90B8-BD53A8A59B47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ai.ChatGpt.Sample.Telegram", "Samples\TelegramAiSample\Ai.ChatGpt.Sample.Telegram.csproj", "{ECCC27F2-F7ED-406C-90B8-BD53A8A59B47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramMessagingSample", "Samples\TelegramMessagingSample\TelegramMessagingSample.csproj", "{195344A3-DE14-4283-B7FB-3A5822C5C0FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Sample.Telegram", "Samples\Messaging.Sample.Telegram\Messaging.Sample.Telegram.csproj", "{195344A3-DE14-4283-B7FB-3A5822C5C0FC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiYaGptSample", "Samples\TelegramAiYaGptSample\TelegramAiYaGptSample.csproj", "{D44E775F-7474-4F49-8633-384DC87BE40B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkAiYaGptSample", "Samples\VkAiYaGptSample\VkAiYaGptSample.csproj", "{20AE866A-89D1-4C72-ADAC-545E44AB1354}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ai.YaGpt.Sample.Vk", "Samples\Ai.YaGpt.Sample.Vk\Ai.YaGpt.Sample.Vk.csproj", "{20AE866A-89D1-4C72-ADAC-545E44AB1354}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.AI", "Botticelli.AI", "{3B5A6BD8-2B94-42F9-B122-06D92C470B31}"
 EndProject
@@ -180,7 +180,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.DeepSeekGpt",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.GptJ", "Botticelli.AI.GptJ\Botticelli.AI.GptJ.csproj", "{1BC0B4EF-7C35-4BB7-B207-180FBC55681D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramAiDeepSeekSample", "Samples\TelegramAiDeepSeekSample\TelegramAiDeepSeekSample.csproj", "{3D52F777-3A84-4238-974F-A5969085B472}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ai.DeepSeek.Sample.Telegram", "Samples\Ai.DeepSeek.Sample.Telegram\Ai.DeepSeek.Sample.Telegram.csproj", "{3D52F777-3A84-4238-974F-A5969085B472}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.WeChat", "Botticelli.WeChat\Botticelli.WeChat.csproj", "{B8EE61E9-F029-49EA-81E5-D0BCBA265418}"
 EndProject
@@ -202,7 +202,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Contro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Controls.Layouts", "Botticelli.Framework.Controls.Layouts\Botticelli.Framework.Controls.Layouts.csproj", "{C693D17D-DEB1-43E9-9EE4-031D14696065}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramInlineLayoutsSample", "Samples\TelegramInlineLayoutsSample\TelegramInlineLayoutsSample.csproj", "{2DF28873-A172-42EB-8FBD-324DF8AD9323}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Layouts.Sample.Telegram", "Samples\Layouts.Sample.Telegram\Layouts.Sample.Telegram.csproj", "{2DF28873-A172-42EB-8FBD-324DF8AD9323}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Locations", "Botticelli.Locations\Botticelli.Locations.csproj", "{25B7376F-D770-4C4A-8EAB-73465BA962BA}"
 EndProject
@@ -223,7 +223,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Load Testing", "Load Testin
 		Load Testing\SampleBotLoadTests.jmx = Load Testing\SampleBotLoadTests.jmx
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramCommandChainSample", "Samples\TelegramCommandChainSample\TelegramCommandChainSample.csproj", "{E33D4F38-48D2-44C7-A56B-4CE080A5B593}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandChain.Sample.Telegram", "Samples\CommandChain.Sample.Telegram\CommandChain.Sample.Telegram.csproj", "{E33D4F38-48D2-44C7-A56B-4CE080A5B593}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.Test", "Botticelli.AI.Test\Botticelli.AI.Test.csproj", "{332A0B08-B1C9-4321-AD31-B2102B95AFEA}"
 EndProject
@@ -231,7 +231,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bot.Dal", "Botti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bot.Data.Entities", "Botticelli.Bot.Data.Entities\Botticelli.Bot.Data.Entities.csproj", "{8C96F00C-DD52-4808-9AC2-1C937257B47B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramMonadsBasedBot", "Samples\TelegramMonadsBasedBot\TelegramMonadsBasedBot.csproj", "{CBD02578-B208-4888-AB18-D9969A4082ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monads.Sample.Telegram", "Samples\Monads.Sample.Telegram\Monads.Sample.Telegram.csproj", "{CBD02578-B208-4888-AB18-D9969A4082ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Monads", "Botticelli.Framework.Monads\Botticelli.Framework.Monads.csproj", "{D159BBC6-8D73-44AB-A17B-B14AB7D56A0D}"
 EndProject
@@ -245,7 +245,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Pay.Telegram", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pay", "Pay", "{F4F6BA53-C40D-4168-9EE0-37DD9FC42665}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPayBot", "TelegramPayBot\TelegramPayBot.csproj", "{FEA7D21C-E494-4E9C-A2F5-6D1F79FC07A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pay.Sample.Telegram", "Pay.Sample.Telegram\Pay.Sample.Telegram.csproj", "{FEA7D21C-E494-4E9C-A2F5-6D1F79FC07A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
