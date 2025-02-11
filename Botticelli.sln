@@ -166,7 +166,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ai.ChatGpt.Sample.Telegram"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Sample.Telegram", "Samples\Messaging.Sample.Telegram\Messaging.Sample.Telegram.csproj", "{195344A3-DE14-4283-B7FB-3A5822C5C0FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramAiYaGptSample", "Samples\TelegramAiYaGptSample\TelegramAiYaGptSample.csproj", "{D44E775F-7474-4F49-8633-384DC87BE40B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ai.YaGpt.Sample.Telegram", "Samples\Ai.YaGpt.Sample.Telegram\Ai.YaGpt.Sample.Telegram.csproj", "{D44E775F-7474-4F49-8633-384DC87BE40B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ai.YaGpt.Sample.Vk", "Samples\Ai.YaGpt.Sample.Vk\Ai.YaGpt.Sample.Vk.csproj", "{20AE866A-89D1-4C72-ADAC-545E44AB1354}"
 EndProject
