@@ -40,7 +40,7 @@ public class Invoice
     /// <summary>
     /// Payment provider token
     /// </summary>
-    public required string ProviderToken{ get; set; }
+    public required string? ProviderToken{ get; set; }
     
     /// <summary>
     /// Payment provider data

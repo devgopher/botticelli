@@ -19,14 +19,13 @@
         <ProjectReference Include="..\Botticelli.Bus\Botticelli.Bus.None.csproj"/>
     </ItemGroup>
     <ItemGroup>
-      <None Include="..\3dParty\currency\currencies.json">
-        <Link>Currencies\currencies.json</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
       <None Include="..\logo.jpg">
         <Pack>True</Pack>
         <PackagePath>\</PackagePath>
         <Link>logo.jpg</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Currencies\currencies.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

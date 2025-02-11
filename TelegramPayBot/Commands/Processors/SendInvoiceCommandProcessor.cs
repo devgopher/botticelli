@@ -9,17 +9,23 @@ using Botticelli.Pay.Utils;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using FluentValidation;
+using Microsoft.Extensions.Options;
+using TelegramPayBot.Settings;
 
 namespace TelegramPayBot.Commands.Processors;
 
 public class SendInvoiceCommandProcessor<TReplyMarkup> : CommandProcessor<SendInvoiceCommand> where TReplyMarkup : class
 {
+    private readonly IOptionsMonitor<PaySettings> _paySettingsAccessor;
+
     public SendInvoiceCommandProcessor(ILogger<SendInvoiceCommandProcessor<TReplyMarkup>> logger,
-        ICommandValidator<SendInvoiceCommand> commandValidator,
-        MetricsProcessor metricsProcessor,
-        IValidator<Message> messageValidator)
+                                       ICommandValidator<SendInvoiceCommand> commandValidator,
+                                       MetricsProcessor metricsProcessor,
+                                       IValidator<Message> messageValidator,
+                                       IOptionsMonitor<PaySettings> paySettingsAccessor)
         : base(logger, commandValidator, metricsProcessor, messageValidator)
     {
+        _paySettingsAccessor = paySettingsAccessor;
     }
 
     protected override Task InnerProcessContact(Message message, CancellationToken token) => Task.CompletedTask;
@@ -56,7 +62,7 @@ public class SendInvoiceCommandProcessor<TReplyMarkup> : CommandProcessor<SendIn
                             Amount = 150
                         }
                     ],
-                    ProviderToken = "1744374395:TEST:ba361a2dee6c29728a34"
+                    ProviderToken = _paySettingsAccessor.CurrentValue.ProviderToken
                 }
             }
         };

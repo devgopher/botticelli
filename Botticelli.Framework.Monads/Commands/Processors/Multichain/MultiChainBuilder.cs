@@ -23,7 +23,7 @@ public class MultiChainBuilder<TCommand>(IServiceCollection services)
             return this;
         }
 
-        _element.SetNext<TOutChoise>((IMultiChainProcessor<IChoise, TOutChoise>)processor);
+        _element.SetNext((IMultiChainProcessor<IChoise, TOutChoise>)processor);
         _element = (IMultiChainProcessor<IChoise, IChoise>)processor;
 
         return this;
