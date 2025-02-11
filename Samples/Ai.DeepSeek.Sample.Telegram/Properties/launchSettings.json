@@ -1,0 +1,26 @@
+﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "TelegramAiDeepSeekGptSample": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "launchUrl": "",
+      "applicationUrl": "http://localhost:5074",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SampleSettings__SecureStorageConnectionString": "Filename=database.db;Password=123;Connection=Shared",
+        "DeepSeekGptSettings__ApiKey": "sk-366686492d644ce2b984a718011ac10e",
+        "DeepSeekGptSettings__Model": "deepseek-chat",
+        "DeepSeekGptSettings__Temperature": "0.8",
+        "DeepSeekGptSettings__Instruction": "Test bot",
+        "DeepSeekGptSettings__MaxTokens": "5000",
+        "DeepSeekGptSettings__StreamGeneration": "true",
+        "DeepSeekGptSettings__Url": "https://api.deepseek.com/v1/chat/",
+        "DeepSeekGptSettings__AiName": "DeepSeekGpt",
+        "ServerSettings__ServerUri": "http://localhost:53635/v1/",
+        "AnalyticsSettings__ServerUri": "http://localhost:5251/v1/"
+      }
+    }
+  }
+}
