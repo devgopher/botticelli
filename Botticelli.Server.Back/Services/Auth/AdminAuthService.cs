@@ -23,7 +23,6 @@ public class AdminAuthService : IAdminAuthService
     private readonly ServerDataContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<AdminAuthService> _logger;
-    private readonly IOptionsMonitor<ServerSettings> _settings;
 
     public AdminAuthService(IConfiguration config,
         IHttpContextAccessor httpContextAccessor,
@@ -35,7 +34,6 @@ public class AdminAuthService : IAdminAuthService
         _httpContextAccessor = httpContextAccessor;
         _context = context;
         _logger = logger;
-        _settings = settings;
     }
 
     /// <summary>

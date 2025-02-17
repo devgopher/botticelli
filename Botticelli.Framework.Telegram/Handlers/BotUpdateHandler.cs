@@ -40,11 +40,14 @@ public class BotUpdateHandler : IBotUpdateHandler
             var botMessage = update.Message;
             
             // caching in order to avoid message "cloning"
-            if (_memoryCache.TryGetValue(botMessage.MessageId, out _))
-                return;
-            
-            _memoryCache.Set(botMessage.MessageId, botMessage, _entryOptions);
-            
+            if (botMessage?.MessageId != null)
+            {
+                if (_memoryCache.TryGetValue(botMessage.MessageId, out _))
+                    return;
+
+                _memoryCache.Set(botMessage.MessageId, botMessage, _entryOptions);
+            }
+
             Message? botticelliMessage = null;
 
             if (botMessage == null)
