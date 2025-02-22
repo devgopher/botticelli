@@ -18,6 +18,7 @@ using Botticelli.Shared.Constants;
 using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
+using NLog;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
@@ -530,7 +531,21 @@ public sealed class TelegramBot : BaseBot<TelegramBot>
         return StopBotResponse.GetInstance(AdminCommandStatus.Fail, "error");
     }
     
-    private void RecreateClient(string key) => _client = new TelegramBotClient(key);
+    private void RecreateClient(string key)
+    {
+        if (_client.BotId == null)
+        {
+            Logger.LogError("CLIENT RECREATED111111");
+            _client?.CloseAsync();
+            _client = new TelegramBotClient(key);
+        }
+        else if (!key.StartsWith(_client.BotId.ToString()!))
+        {
+            Logger.LogError("CLIENT RECREATED22222");
+            _client?.CloseAsync();
+            _client = new TelegramBotClient(key);
+        }
+    }
 
     private async Task StartBot(CancellationToken token)
     {
