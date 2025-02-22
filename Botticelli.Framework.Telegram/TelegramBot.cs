@@ -7,6 +7,7 @@ using Botticelli.Client.Analytics;
 using Botticelli.Framework.Events;
 using Botticelli.Framework.Exceptions;
 using Botticelli.Framework.Global;
+using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API;
@@ -516,7 +517,8 @@ public sealed class TelegramBot : BaseBot<TelegramBot>
             if (!BotStatusKeeper.IsStarted) return response;
 
             BotStatusKeeper.IsStarted = false;
-            
+
+            await _client.DeleteWebhookAsync(dropPendingUpdates: true, cancellationToken: token);
             await _client.CloseAsync(token);
 
             Logger.LogInformation($"{nameof(StopBotAsync)}: stopped");
@@ -536,12 +538,15 @@ public sealed class TelegramBot : BaseBot<TelegramBot>
         if (_client.BotId == null)
         {
             Logger.LogError("CLIENT RECREATED111111");
+            _client.DeleteWebhookAsync(dropPendingUpdates: true);
             _client?.CloseAsync();
+            
             _client = new TelegramBotClient(key);
         }
         else if (!key.StartsWith(_client.BotId.ToString()!))
         {
             Logger.LogError("CLIENT RECREATED22222");
+            _client.DeleteWebhookAsync(dropPendingUpdates: true);
             _client?.CloseAsync();
             _client = new TelegramBotClient(key);
         }
