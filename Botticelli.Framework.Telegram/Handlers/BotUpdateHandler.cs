@@ -1,4 +1,5 @@
-﻿using Botticelli.Framework.Commands.Processors;
+﻿using System.Runtime.Caching;
+using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Events;
 using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
@@ -15,6 +16,11 @@ public class BotUpdateHandler : IBotUpdateHandler
 {
     private readonly ILogger<BotUpdateHandler> _logger;
     private readonly ClientProcessorFactory _processorFactory;
+    private static readonly MemoryCache Cache = MemoryCache.Default;
+    private static readonly CacheItemPolicy CacheItemPolicy = new()
+    {
+        AbsoluteExpiration = DateTime.Now.AddMinutes(5)
+    };
 
     public BotUpdateHandler(ILogger<BotUpdateHandler> logger, ClientProcessorFactory processorFactory)
     {
@@ -37,8 +43,12 @@ public class BotUpdateHandler : IBotUpdateHandler
     {
         try
         {
-            _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
+            if (Cache.Contains(update.Id.ToString()))
+                return;
 
+            Cache.Add(update.Id.ToString(), update, CacheItemPolicy);
+            _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
+            
             var botMessage = update.Message;
             Message botticelliMessage = null;
 
