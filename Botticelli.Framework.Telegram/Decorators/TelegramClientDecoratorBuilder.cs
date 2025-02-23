@@ -1,3 +1,4 @@
+using Botticelli.Bot.Data.Repositories;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Options;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,21 +8,23 @@ namespace Botticelli.Framework.Telegram.Decorators;
 
 public class TelegramClientDecoratorBuilder
 {
+    private readonly IServiceCollection _services;
+    private readonly BotSettingsBuilder<TelegramBotSettings> _settingsBuilder;
+    private HttpClient? _httpClient;
     private TelegramClientDecorator? _telegramClient;
     private IThrottler? _throttler;
-    private HttpClient? _httpClient;
-    private readonly BotSettingsBuilder<TelegramBotSettings> _settingsBuilder;
-    private readonly IServiceCollection _services;
     private string? _token;
 
-    public static TelegramClientDecoratorBuilder Instance(IServiceCollection services, BotSettingsBuilder<TelegramBotSettings> settingsBuilder) 
-        => new(services, settingsBuilder);
-
-    private TelegramClientDecoratorBuilder(IServiceCollection services, BotSettingsBuilder<TelegramBotSettings> settingsBuilder)
+    private TelegramClientDecoratorBuilder(IServiceCollection services,
+        BotSettingsBuilder<TelegramBotSettings> settingsBuilder)
     {
         _services = services;
         _settingsBuilder = settingsBuilder;
     }
+
+    public static TelegramClientDecoratorBuilder Instance(IServiceCollection services,
+        BotSettingsBuilder<TelegramBotSettings> settingsBuilder)
+        => new(services, settingsBuilder);
 
     public TelegramClientDecoratorBuilder AddHttpClient(HttpClient client)
     {
@@ -33,7 +36,7 @@ public class TelegramClientDecoratorBuilder
     public TelegramClientDecoratorBuilder AddThrottler(IThrottler throttler)
     {
         _throttler = throttler;
-        
+
         return this;
     }
 
@@ -43,13 +46,15 @@ public class TelegramClientDecoratorBuilder
 
         return this;
     }
-    
+
     public TelegramClientDecorator Build()
     {
-        _token ??= string.Empty;
+        var botDbContext = _services.BuildServiceProvider().GetRequiredService<IBotDataAccess>();
+        var botData = botDbContext.GetData();
+        _token ??= botData?.BotKey ?? string.Empty;
 
         if (_telegramClient != null) return _telegramClient;
-        
+
         if (_httpClient == default)
         {
             var factory = _services.BuildServiceProvider().GetRequiredService<IHttpClientFactory>();
@@ -58,9 +63,10 @@ public class TelegramClientDecoratorBuilder
         }
 
         var botOptions = _settingsBuilder.Build();
-        var clientOptions = new TelegramBotClientOptions(_token, botOptions.TelegramBaseUrl, botOptions.UseTestEnvironment ?? false);
+        var clientOptions =
+            new TelegramBotClientOptions(_token, botOptions.TelegramBaseUrl, botOptions.UseTestEnvironment ?? false);
         _telegramClient = new TelegramClientDecorator(clientOptions, _throttler, _httpClient);
-        
+
         return _telegramClient;
     }
 }
