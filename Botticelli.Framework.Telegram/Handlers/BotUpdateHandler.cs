@@ -19,7 +19,7 @@ public class BotUpdateHandler : IBotUpdateHandler
     private static readonly MemoryCache Cache = MemoryCache.Default;
     private static readonly CacheItemPolicy CacheItemPolicy = new()
     {
-        AbsoluteExpiration = DateTime.Now.AddDays(1)
+        SlidingExpiration = TimeSpan.FromDays(1)
     };
 
     public BotUpdateHandler(ILogger<BotUpdateHandler> logger, ClientProcessorFactory processorFactory)
