@@ -17,11 +17,12 @@ public class BotUpdateHandler : IBotUpdateHandler
 {
     private readonly ILogger<BotUpdateHandler> _logger;
     private readonly List<IBotUpdateSubHandler> _subHandlers = [];
-    private readonly MemoryCacheEntryOptions _entryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(1));
+    private readonly MemoryCacheEntryOptions _entryOptions 
+        = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(24));
 
     private readonly MemoryCache _memoryCache = new(new MemoryCacheOptions
     {
-        ExpirationScanFrequency = TimeSpan.FromSeconds(5),
+        ExpirationScanFrequency = TimeSpan.FromMinutes(1),
     });
     
     public BotUpdateHandler(ILogger<BotUpdateHandler> logger)
@@ -35,19 +36,16 @@ public class BotUpdateHandler : IBotUpdateHandler
     {
         try
         {
+            // caching updates in order to avoid message "cloning"
+            if (_memoryCache.TryGetValue(update.Id, out _))
+                return;
+
+            _memoryCache.Set(update.Id, update, _entryOptions);
+            
             _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
             var botMessage = update.Message;
             
-            // caching in order to avoid message "cloning"
-            if (botMessage?.MessageId != null)
-            {
-                if (_memoryCache.TryGetValue(botMessage.MessageId, out _))
-                    return;
-
-                _memoryCache.Set(botMessage.MessageId, botMessage, _entryOptions);
-            }
-
             Message? botticelliMessage = null;
 
             if (botMessage == null)
