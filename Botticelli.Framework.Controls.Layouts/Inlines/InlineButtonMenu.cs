@@ -10,6 +10,7 @@ public class InlineButtonMenu : ILayout
 
     public InlineButtonMenu(int rows, int columns)
     {
+        Console.WriteLine($"AAAA: {rows}");
         if (rows < 1) throw new InvalidDataException("rows count should be  > 1!");
         if (columns < 1) throw new InvalidDataException("columns count should be  > 1!");
 
