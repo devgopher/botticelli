@@ -3,6 +3,6 @@
 public class AnalyticsClientSettings
 {
     public static string Section => "AnalyticsClient";
-    public required string TargetUrl { get; set; }
-    public bool UseSsl { get; set; }
+    public string? TargetUrl { get; set; }
+    public bool? UseSsl { get; set; } = true;
 }
