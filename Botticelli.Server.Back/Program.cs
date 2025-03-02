@@ -17,14 +17,11 @@ using NLog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(o => o.AddDefaultPolicy(cors =>
-{
-    cors.SetIsOriginAllowed(_ => true)
-        .AllowCredentials()
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .WithExposedHeaders("Content-Disposition");
-}));
+builder.Services.AddCors(o => o.AddDefaultPolicy(cors => cors.SetIsOriginAllowed(_ => true)
+                                                             .AllowCredentials()
+                                                             .AllowAnyMethod()
+                                                             .AllowAnyHeader()
+                                                             .WithExposedHeaders("Content-Disposition")));
 
 builder.Configuration
     .AddJsonFile("appsettings.json")

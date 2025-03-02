@@ -63,7 +63,7 @@ public static class StartupExtensions
     public static IWebHostBuilder AddSsl(this IWebHostBuilder builder, IConfiguration config)
     {
         // in Linux put here: ~/.dotnet/corefx/cryptography/x509stores/
-        if (!OperatingSystem.IsWindows()) return builder;
+        // if (!OperatingSystem.IsWindows()) return builder;
 
         var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
         store.Open(OpenFlags.ReadOnly);
@@ -86,10 +86,9 @@ public static class StartupExtensions
                         {
                             ServerCertificate = certificate,
                             ClientCertificateMode = ClientCertificateMode.AllowCertificate,
-                            ClientCertificateValidation = (cert, chain, errors) =>
+                            ClientCertificateValidation = (_, _, errors) =>
                             {
                                 if (errors != SslPolicyErrors.None) return false;
-
 
                                 return true;
                             }
