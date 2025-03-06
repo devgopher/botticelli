@@ -26,15 +26,13 @@ public abstract class BotAuthService<TDto, TEntity, TUserInfo>(
         if (await _credentialsRules.Compare(dto))
         {
             response = await DoLogin(dto);
-
-            var userInfo = response.User.Adapt<TEntity>();
             
             await _accessHistory.AddAsync(new AccessHistory<TEntity>
             {
                 TimestampUtc = DateTime.UtcNow,
                 IsSuccess = true,
                 ErrorMessage = string.Empty,
-                Entity = null // TODO: temporary!
+                Entity = dto.Adapt<TEntity>()
             });
         }
         else

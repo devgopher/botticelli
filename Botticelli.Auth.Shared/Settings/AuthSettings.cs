@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Auth.Settings;
+﻿namespace Botticelli.Auth.Shared.Settings;
 
 public class AuthSettings
 {

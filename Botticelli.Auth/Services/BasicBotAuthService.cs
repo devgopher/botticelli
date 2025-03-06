@@ -9,16 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Botticelli.Auth.Services;
 
-public class DefaultBotAuthService : BotAuthService<BotAuthCredentials, BotUser, BotUserInfo>
+public class BasicBotAuthService : BotAuthService<BotAuthCredentials, BotUser, BotUserInfo>
 {
-    public DefaultBotAuthService(CredentialsRulesBuilder<BotAuthCredentials> credentialsRulesBuilder,
+    public BasicBotAuthService(CredentialsRulesBuilder<BotAuthCredentials> credentialsRulesBuilder,
                                  AuthDefaultDbContext authDefaultDbContext) :
-            base(credentialsRulesBuilder, authDefaultDbContext)
-    {
-        credentialsRulesBuilder.AddRule(r => Users.AsNoTracking().Any(e => e.UserId == r.UserId && e.IsActive));
-    }
+            base(credentialsRulesBuilder, authDefaultDbContext) =>
+            credentialsRulesBuilder.AddRule(r => Users.AsNoTracking().Any(e => e.UserId == r.UserId && e.IsActive));
 
-    protected override BotUserInfo? GetDefaultUser(string defaultRoleName = DefaultRoles.Guest)
+    protected override BotUserInfo GetDefaultUser(string defaultRoleName = DefaultRoles.Guest)
     {
        var defaultUser = Users.AsNoTracking().SingleOrDefault(e => e.UserId == defaultRoleName);
        
