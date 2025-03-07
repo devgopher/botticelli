@@ -6,7 +6,7 @@ namespace Botticelli.Auth.Data.Extensions;
 public static class ModelBuilderExtensions
 {
     /// <summary>
-    /// Adds auth database model for Botticelli Botticelli.Auth
+    /// Adds auth database model for Botticelli Botticelli.Auth.Sample.Telegram
     /// </summary>
     /// <param name="modelBuilder"></param>
     /// <returns></returns>

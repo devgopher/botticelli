@@ -15,7 +15,7 @@ public static class ServiceCollectionExtensions
     /// <param name="config"></param>
     /// <param name="dbParameters"></param>
     /// <returns></returns>
-    public static IServiceCollection AddPostgresBasicBotUserAuth(this IServiceCollection services, IConfiguration config, Action<DbContextOptionsBuilder> dbParameters)
+    public static IServiceCollection AddPostgresBasicBotUserAuth(this IServiceCollection services, IConfiguration config, Action<DbContextOptionsBuilder>? dbParameters = null)
     {
         services.AddBasicBotUserAuth();
         
@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
        
         return services.AddDbContext<AuthDefaultDbContext>(opt =>
                                             {
-                                                dbParameters.Invoke(opt);
+                                                dbParameters?.Invoke(opt);
                                                 opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                                                    .UseNpgsql(settings!.ConnectionString);
                                             },

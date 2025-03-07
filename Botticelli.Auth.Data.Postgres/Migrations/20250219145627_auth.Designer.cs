@@ -19,13 +19,13 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("Botticelli.Auth")
+                .HasDefaultSchema("Botticelli.Auth.Sample.Telegram")
                 .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Botticelli.Auth.Dal.AccessHistory<Botticelli.Auth.Dal.Models.BotUser>", b =>
+            modelBuilder.Entity("Botticelli.Auth.Sample.Telegram.Dal.AccessHistory<Botticelli.Auth.Sample.Telegram.Dal.Models.BotUser>", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -48,10 +48,10 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
 
                     b.HasIndex("EntityUserId");
 
-                    b.ToTable("AccessHistory", "Botticelli.Auth");
+                    b.ToTable("AccessHistory", "Botticelli.Auth.Sample.Telegram");
                 });
 
-            modelBuilder.Entity("Botticelli.Auth.Dal.Models.BotUser", b =>
+            modelBuilder.Entity("Botticelli.Auth.Sample.Telegram.Dal.Models.BotUser", b =>
                 {
                     b.Property<string>("UserId")
                         .HasMaxLength(256)
@@ -92,10 +92,10 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("BotUsers", "Botticelli.Auth");
+                    b.ToTable("BotUsers", "Botticelli.Auth.Sample.Telegram");
                 });
 
-            modelBuilder.Entity("Botticelli.Auth.Dal.Models.BotUserRole", b =>
+            modelBuilder.Entity("Botticelli.Auth.Sample.Telegram.Dal.Models.BotUserRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -119,7 +119,7 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
                     b.HasIndex("RoleName")
                         .IsUnique();
 
-                    b.ToTable("BotUserRoles", "Botticelli.Auth");
+                    b.ToTable("BotUserRoles", "Botticelli.Auth.Sample.Telegram");
 
                     b.HasData(
                         new
@@ -138,18 +138,18 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Botticelli.Auth.Dal.AccessHistory<Botticelli.Auth.Dal.Models.BotUser>", b =>
+            modelBuilder.Entity("Botticelli.Auth.Sample.Telegram.Dal.AccessHistory<Botticelli.Auth.Sample.Telegram.Dal.Models.BotUser>", b =>
                 {
-                    b.HasOne("Botticelli.Auth.Dal.Models.BotUser", "Entity")
+                    b.HasOne("Botticelli.Auth.Sample.Telegram.Dal.Models.BotUser", "Entity")
                         .WithMany()
                         .HasForeignKey("EntityUserId");
 
                     b.Navigation("Entity");
                 });
 
-            modelBuilder.Entity("Botticelli.Auth.Dal.Models.BotUser", b =>
+            modelBuilder.Entity("Botticelli.Auth.Sample.Telegram.Dal.Models.BotUser", b =>
                 {
-                    b.HasOne("Botticelli.Auth.Dal.Models.BotUserRole", "Role")
+                    b.HasOne("Botticelli.Auth.Sample.Telegram.Dal.Models.BotUserRole", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)

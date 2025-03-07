@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Botticelli.Auth.Data;
 
 /// <summary>
-/// Botticelli.Auth data context
+/// Botticelli.Auth.Sample.Telegram data context
 /// </summary>
 /// <param name="options"></param>
 public class AuthDefaultDbContext(DbContextOptions<AuthDefaultDbContext> options) : DbContext(options)
 {
-    private const string Schema = "Botticelli.Auth";
+    private const string Schema = "Botticelli.Auth.Sample.Telegram";
     private const string AdminUserId = "d9887829-61a7-4947-9eb6-7faa66363f08";
     private const string GuestUserId = "9947e363-4255-408d-b277-33402b9f07a1";
 
@@ -31,6 +31,13 @@ public class AuthDefaultDbContext(DbContextOptions<AuthDefaultDbContext> options
                                  Description = "A default user for guest",
                                  IsSuperUser = false,
                                  RoleName = DefaultRoles.Guest
+                             },
+                             new BotUserRole
+                             {
+                                 Id = Guid.Parse(GuestUserId),
+                                 Description = "A default authorized user role",
+                                 IsSuperUser = false,
+                                 RoleName = DefaultRoles.User
                              });
         base.OnModelCreating(modelBuilder);
 

@@ -14,11 +14,11 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "Botticelli.Auth");
+                name: "Botticelli.Auth.Sample.Telegram");
 
             migrationBuilder.CreateTable(
                 name: "BotUserRoles",
-                schema: "Botticelli.Auth",
+                schema: "Botticelli.Auth.Sample.Telegram",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -33,7 +33,7 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
 
             migrationBuilder.CreateTable(
                 name: "BotUsers",
-                schema: "Botticelli.Auth",
+                schema: "Botticelli.Auth.Sample.Telegram",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
@@ -52,7 +52,7 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
                     table.ForeignKey(
                         name: "FK_BotUsers_BotUserRoles_RoleId",
                         column: x => x.RoleId,
-                        principalSchema: "Botticelli.Auth",
+                        principalSchema: "Botticelli.Auth.Sample.Telegram",
                         principalTable: "BotUserRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -60,7 +60,7 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AccessHistory",
-                schema: "Botticelli.Auth",
+                schema: "Botticelli.Auth.Sample.Telegram",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -75,13 +75,13 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
                     table.ForeignKey(
                         name: "FK_AccessHistory_BotUsers_EntityUserId",
                         column: x => x.EntityUserId,
-                        principalSchema: "Botticelli.Auth",
+                        principalSchema: "Botticelli.Auth.Sample.Telegram",
                         principalTable: "BotUsers",
                         principalColumn: "UserId");
                 });
 
             migrationBuilder.InsertData(
-                schema: "Botticelli.Auth",
+                schema: "Botticelli.Auth.Sample.Telegram",
                 table: "BotUserRoles",
                 columns: new[] { "Id", "Description", "IsSuperUser", "RoleName" },
                 values: new object[,]
@@ -92,20 +92,20 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccessHistory_EntityUserId",
-                schema: "Botticelli.Auth",
+                schema: "Botticelli.Auth.Sample.Telegram",
                 table: "AccessHistory",
                 column: "EntityUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BotUserRoles_RoleName",
-                schema: "Botticelli.Auth",
+                schema: "Botticelli.Auth.Sample.Telegram",
                 table: "BotUserRoles",
                 column: "RoleName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_BotUsers_RoleId",
-                schema: "Botticelli.Auth",
+                schema: "Botticelli.Auth.Sample.Telegram",
                 table: "BotUsers",
                 column: "RoleId");
         }
@@ -115,15 +115,15 @@ namespace Botticelli.Auth.Data.Postgres.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AccessHistory",
-                schema: "Botticelli.Auth");
+                schema: "Botticelli.Auth.Sample.Telegram");
 
             migrationBuilder.DropTable(
                 name: "BotUsers",
-                schema: "Botticelli.Auth");
+                schema: "Botticelli.Auth.Sample.Telegram");
 
             migrationBuilder.DropTable(
                 name: "BotUserRoles",
-                schema: "Botticelli.Auth");
+                schema: "Botticelli.Auth.Sample.Telegram");
         }
     }
 }

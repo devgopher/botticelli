@@ -18,7 +18,7 @@ public class AuthDelegatingHandler : DelegatingHandler
     {
         var session = _sessionClient.GetSession();
 
-        Console.WriteLine($"Botticelli.Auth delegating got session: {session?.Token}");
+        Console.WriteLine($"Botticelli.Auth.Sample.Telegram delegating got session: {session?.Token}");
 
         if (session == default) throw new AuthenticationException("Can't find session!");
 
