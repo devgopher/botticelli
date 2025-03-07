@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Botticelli.Auth.Data.Migrations
+namespace Botticelli.Auth.Data.Postgres.Migrations
 {
     /// <inheritdoc />
     public partial class auth : Migration

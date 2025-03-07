@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Botticelli.Auth.Data.Migrations
+namespace Botticelli.Auth.Data.Postgres.Migrations
 {
     [DbContext(typeof(AuthDefaultDbContext))]
     partial class AuthDefaultDbContextModelSnapshot : ModelSnapshot
