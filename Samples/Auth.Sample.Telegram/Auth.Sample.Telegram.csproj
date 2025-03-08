@@ -16,4 +16,10 @@
       <ProjectReference Include="..\..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="main_layout.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

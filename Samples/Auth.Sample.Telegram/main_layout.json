@@ -1,0 +1,19 @@
+{
+  "Name": "MainLayout",
+  "Layout": [
+    [
+      {
+        "Button": {
+          "Content": "/info \u1F446"
+        }
+      }
+    ],
+    [
+      {
+        "Button": {
+          "Content": "/register \u1F935"
+        }
+      }
+    ]
+  ]
+}
