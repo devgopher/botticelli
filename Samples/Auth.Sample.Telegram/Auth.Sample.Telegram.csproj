@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Botticelli.Auth.Data.Postgres\Botticelli.Auth.Data.Postgres.csproj" />
+      <ProjectReference Include="..\..\Botticelli.Auth.Data.Sqlite\Botticelli.Auth.Data.Sqlite.csproj" />
       <ProjectReference Include="..\..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
     </ItemGroup>
 

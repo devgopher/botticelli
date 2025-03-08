@@ -1,6 +1,6 @@
 using Auth.Sample.Telegram.Commands;
 using Auth.Sample.Telegram.Commands.Processors;
-using Botticelli.Auth.Data.Postgres;
+using Botticelli.Auth.Data.Sqlite;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Telegram.Extensions;
@@ -13,7 +13,7 @@ builder.Services
        .AddTelegramBot(builder.Configuration)
        .AddTelegramLayoutsSupport()
        .AddLogging(cfg => cfg.AddNLog())
-       .AddPostgresBasicBotUserAuth(builder.Configuration);
+       .AddSqliteBasicBotUserAuth(builder.Configuration);
 
 builder.Services.AddBotCommand<StartCommand>()
        .AddProcessor<StartCommandProcessor<ReplyKeyboardMarkup>>()
