@@ -9,25 +9,26 @@ namespace Botticelli.Auth.Data.Postgres;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds a basic authorization implementation
+    ///     Adds a basic authorization implementation
     /// </summary>
     /// <param name="services"></param>
     /// <param name="config"></param>
     /// <param name="dbParameters"></param>
     /// <returns></returns>
-    public static IServiceCollection AddPostgresBasicBotUserAuth(this IServiceCollection services, IConfiguration config, Action<DbContextOptionsBuilder>? dbParameters = null)
+    public static IServiceCollection AddPostgresBasicBotUserAuth(this IServiceCollection services,
+        IConfiguration config, Action<DbContextOptionsBuilder>? dbParameters = null)
     {
         services.AddBasicBotUserAuth();
-        
+
         var settings = config.GetSection(nameof(AuthSettings))
-                             .Get<AuthSettings>();
-       
+            .Get<AuthSettings>();
+
         return services.AddDbContext<AuthDefaultDbContext>(opt =>
-                                            {
-                                                dbParameters?.Invoke(opt);
-                                                opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                                                   .UseNpgsql(settings!.ConnectionString);
-                                            },
-                                            ServiceLifetime.Singleton);
+            {
+                dbParameters?.Invoke(opt);
+                opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                    .UseNpgsql(settings!.ConnectionString, b => b.MigrationsAssembly("Botticelli.Auth.Data.Postgres"));
+            },
+            ServiceLifetime.Singleton);
     }
 }

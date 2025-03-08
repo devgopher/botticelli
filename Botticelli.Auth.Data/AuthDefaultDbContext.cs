@@ -13,6 +13,7 @@ public class AuthDefaultDbContext(DbContextOptions<AuthDefaultDbContext> options
     private const string Schema = "Botticelli.Auth.Sample.Telegram";
     private const string AdminUserId = "d9887829-61a7-4947-9eb6-7faa66363f08";
     private const string GuestUserId = "9947e363-4255-408d-b277-33402b9f07a1";
+    private const string UserUserId = "94854345-5355-4343-3447-1122244f55a8";
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,7 +35,7 @@ public class AuthDefaultDbContext(DbContextOptions<AuthDefaultDbContext> options
                              },
                              new BotUserRole
                              {
-                                 Id = Guid.Parse(GuestUserId),
+                                 Id = Guid.Parse(UserUserId),
                                  Description = "A default authorized user role",
                                  IsSuperUser = false,
                                  RoleName = DefaultRoles.User
