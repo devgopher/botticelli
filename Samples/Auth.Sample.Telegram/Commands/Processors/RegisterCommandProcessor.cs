@@ -1,5 +1,6 @@
 using Botticelli.Auth.Data;
 using Botticelli.Auth.Data.Models;
+using Botticelli.Auth.Dto.User;
 using Botticelli.Auth.Services;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
@@ -21,8 +22,8 @@ namespace Auth.Sample.Telegram.Commands.Processors;
 /// <param name="messageValidator"></param>
 /// <typeparam name="TReplyMarkup"></typeparam>
 public class RegisterCommandProcessor<TReplyMarkup>(
-    IManager<BotUser> userManager,
-    IManager<BotUserRole> roleManager,
+    IManager<BotUserInfo> userManager,
+    IManager<BotUserRoleInfo> roleManager,
     ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
     ICommandValidator<RegisterCommand> commandValidator,
     MetricsProcessor metricsProcessor,
@@ -83,12 +84,11 @@ public class RegisterCommandProcessor<TReplyMarkup>(
         {
             var role = await GetUserRole();
 
-            user = new BotUser
+            user = new BotUserInfo
             {
                 UserId = chatId,
                 UserName = string.Empty,
-                RoleId = role!.Id,
-                IsActive = true
+                RoleId = role!.Id
             };
 
             await userManager.Add(user);
@@ -107,7 +107,7 @@ public class RegisterCommandProcessor<TReplyMarkup>(
         await Bot.SendMessageAsync(registeredRequest, token)!;
     }
 
-    private async Task<BotUserRole?> GetUserRole()
+    private async Task<BotUserRoleInfo?> GetUserRole()
     {
         return (await roleManager.Get()).FirstOrDefault(r => r.RoleName == DefaultRoles.User);
     }

@@ -19,6 +19,10 @@ builder.Services.AddBotCommand<StartCommand>()
        .AddProcessor<StartCommandProcessor<ReplyKeyboardMarkup>>()
        .AddValidator<PassValidator<StartCommand>>();
 
+builder.Services.AddBotCommand<RegisterCommand>()
+       .AddProcessor<RegisterCommandProcessor<ReplyKeyboardMarkup>>()
+       .AddValidator<PassValidator<RegisterCommand>>();
+
 builder.Services.AddBotCommand<InfoCommand>()
        .AddProcessor<InfoCommandProcessor<ReplyKeyboardMarkup>>()
        .AddValidator<PassValidator<InfoCommand>>();
