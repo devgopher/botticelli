@@ -56,7 +56,7 @@ public abstract class BotActualizationService : IHostedService
     /// <param name="funcName">Response</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns></returns>
-    protected virtual async Task<TResp?> InnerSend<TReq, TResp>(TReq request,
+    protected virtual async Task<TResp?> InnerSendPost<TReq, TResp>(TReq request,
         string funcName,
         CancellationToken cancellationToken)
     {

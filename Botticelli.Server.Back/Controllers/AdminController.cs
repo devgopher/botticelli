@@ -1,5 +1,8 @@
-﻿using Botticelli.Server.Back.Services;
+﻿using System.Collections;
+using Botticelli.Server.Back.Services;
+using Botticelli.Server.Back.Services.Broadcasting;
 using Botticelli.Server.Data.Entities.Bot;
+using Botticelli.Server.Data.Entities.Bot.Broadcasting;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
@@ -17,16 +20,19 @@ namespace Botticelli.Server.Back.Controllers;
 public class AdminController
 {
     private readonly IBotManagementService _botManagementService;
+    private readonly IBroadcastService _broadcastService;
     private readonly IBotStatusDataService _botStatusDataService;
     private readonly ILogger<AdminController> _logger;
 
     public AdminController(IBotManagementService botManagementService,
         IBotStatusDataService botStatusDataService,
-        ILogger<AdminController> logger)
+        ILogger<AdminController> logger,
+        IBroadcastService broadcastService)
     {
         _botManagementService = botManagementService;
         _botStatusDataService = botStatusDataService;
         _logger = logger;
+        _broadcastService = broadcastService;
     }
 
     [HttpPost("[action]")]
@@ -64,6 +70,23 @@ public class AdminController
         };
     }
 
+    /// <summary>
+    ///     Sends a broadcast message
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    [HttpGet("[action]")]
+    public async Task SendBroadcast([FromQuery] string botId, [FromQuery] string message)
+    {
+        await _broadcastService.BroadcastMessage(new Broadcast
+        {
+            Id = Guid.NewGuid().ToString(),
+            BotId = botId,
+            Body = message
+        });
+    }
+    
     [HttpGet("[action]")]
     public async Task<ICollection<BotInfo>> GetBots()
         => _botStatusDataService.GetBots();
@@ -75,7 +98,6 @@ public class AdminController
     [HttpGet("[action]")]
     public async Task DeactivateBot([FromQuery] string botId)
         => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Locked);
-
 
     [HttpGet("[action]")]
     public async Task RemoveBot([FromQuery] string botId)

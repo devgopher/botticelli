@@ -37,7 +37,7 @@ public class PollActualizationService<TRequest, TResponse>(
     /// <param name="funcName">Method on a server</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns></returns>
-    protected override async Task<TResp?> InnerSend<TReq, TResp>(TReq request,
+    protected override async Task<TResp?> InnerSendPost<TReq, TResp>(TReq request,
         string funcName,
         CancellationToken cancellationToken) where TResp : default
     {
@@ -93,7 +93,7 @@ public class PollActualizationService<TRequest, TResponse>(
 
     private async Task<TResponse> Process(TRequest request, CancellationToken ct)
     {
-        var response = await InnerSend<TRequest, TResponse>(request,
+        var response = await InnerSendPost<TRequest, TResponse>(request,
             $"/bot/client/{subPath}",
             ct);
 

@@ -13,5 +13,6 @@ public class Broadcast
     public DateTime Timestamp { get; set; }
 
     public BroadcastAttachment[]? Attachments { get; set; }
-    // public bool ReceivedSuccessfully { get; set; } = false;
+    public bool Sent { get; set; } = false;
+    public bool Received { get; set; } = false;
 }

@@ -18,10 +18,38 @@ public class BroadcastService(ServerDataContext context) : IBroadcastService
     public async Task<IEnumerable<Broadcast>> GetMessages(string botId)
         => await context.BroadcastMessages.Where(m => m.BotId.Equals(botId)).ToArrayAsync();
 
-    public async Task DeleteReceived(string botId, string messageId)
+    public async Task MarkReceived(string botId, string messageId)
     {
-        context.BroadcastMessages.RemoveRange(
-            context.BroadcastMessages.Where(bm => bm.BotId == botId && bm.Id == messageId));
+        var messages = context.BroadcastMessages.Where(bm => bm.BotId == botId && bm.Id == messageId)
+                              .ToList();
+
+        foreach (var message in messages)
+        {
+            message.Received = true;
+        }
+        
+        context.UpdateRange(messages);
+        
+        await context.SaveChangesAsync();
+    }
+    
+    
+    public async Task<List<Broadcast>> GetBroadcasts(string botId)
+    {
+        var broadcasts = context.BroadcastMessages.Where(x => x.BotId == botId && !x.Sent && !x.Received).ToList();
+
+        return broadcasts;
+    }
+
+    public async Task MarkAsReceived(string messageId)
+    {
+        var broadcast = context.BroadcastMessages.FirstOrDefault(x => x.Id == messageId);
+        if (broadcast == null) return;
+
+        broadcast.Received = true;
+
+        context.Update(broadcast);
+
         await context.SaveChangesAsync();
     }
 }

@@ -26,7 +26,7 @@ public class GetBroadCastMessagesService<TBot>(
         bot,
         logger)
 {
-    private IBot _bot = bot;
+    private readonly IBot _bot = bot;
 
     protected override async Task InnerProcess(GetBroadCastMessagesResponse response, CancellationToken ct)
     {

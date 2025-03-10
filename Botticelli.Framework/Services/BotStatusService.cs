@@ -56,7 +56,7 @@ public class BotStatusService(
     private Task<GetRequiredStatusFromServerResponse?> Process(GetRequiredStatusFromServerRequest request,
         CancellationToken cancellationToken)
     {
-        var task = InnerSend<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
+        var task = InnerSendPost<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
             "/bot/client/GetRequiredBotStatus",
             cancellationToken);
 

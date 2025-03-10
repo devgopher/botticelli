@@ -139,7 +139,6 @@ public class BotController(
         }
     }
 
-
     /// <summary>
     ///     Gets broadcast messages received notifications
     /// </summary>
@@ -156,7 +155,7 @@ public class BotController(
             request.BotId?.NotNullOrEmpty();
 
             foreach (var messageId in request.MessageIds)
-                await broadcastService.DeleteReceived(request.BotId!, messageId);
+                await broadcastService.MarkReceived(request.BotId!, messageId);
 
             return new BroadCastMessagesReceivedResponse
             {

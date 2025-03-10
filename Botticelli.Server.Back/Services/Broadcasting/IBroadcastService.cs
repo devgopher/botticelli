@@ -28,5 +28,8 @@ public interface IBroadcastService
     /// <param name="botId"></param>
     /// <param name="messageId"></param>
     /// <returns></returns>
-    public Task DeleteReceived(string botId, string messageId);
+    public Task MarkReceived(string botId, string messageId);
+
+    public Task<List<Broadcast>> GetBroadcasts(string botId);
+    public Task MarkAsReceived(string messageId);
 }
