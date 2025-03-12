@@ -9,14 +9,16 @@ public static class CommandUtils
 
     public static string GetArguments(this string? body)
     {
-        if (body is null)
-            return string.Empty;
+        if (body is null) return string.Empty;
 
         var match = ArgsCommandRegex.Matches(body)
-            .FirstOrDefault();
+                                    .FirstOrDefault();
 
         return match == null ? string.Empty : match.Groups[2].Value;
     }
 
-    public static string[] GetArguments(this string? body, char separator) => GetArguments(body).Split(separator);
+    public static string[] GetArguments(this string? body, char separator)
+    {
+        return GetArguments(body).Split(separator);
+    }
 }

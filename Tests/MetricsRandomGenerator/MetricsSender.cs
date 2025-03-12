@@ -41,14 +41,13 @@ public class MetricsSender : IHostedService
     private void ThreadProc()
     {
         var token = _tokenSource.Token;
-        if (!token.CanBeCanceled)
-            return;
+
+        if (!token.CanBeCanceled) return;
 
         while (!token.IsCancellationRequested)
             try
             {
-                if (token.IsCancellationRequested)
-                    break;
+                if (token.IsCancellationRequested) break;
 
                 var metric = new MetricObject
                 {

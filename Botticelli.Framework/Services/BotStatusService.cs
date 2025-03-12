@@ -12,14 +12,14 @@ using Polly;
 namespace Botticelli.Framework.Services;
 
 public class BotStatusService(
-    IHttpClientFactory httpClientFactory,
-    ServerSettings serverSettings,
-    IBot bot,
-    ILogger<BotStatusService> logger)
-    : BotActualizationService(httpClientFactory,
-        serverSettings,
-        bot,
-        logger)
+        IHttpClientFactory httpClientFactory,
+        ServerSettings serverSettings,
+        IBot bot,
+        ILogger<BotStatusService> logger)
+        : BotActualizationService(httpClientFactory,
+                                  serverSettings,
+                                  bot,
+                                  logger)
 {
     private const short GetStatusPeriod = 5000;
     private Task? _getRequiredStatusEventTask;
@@ -48,27 +48,27 @@ public class BotStatusService(
         };
 
         _getRequiredStatusEventTask = Policy.HandleResult<GetRequiredStatusFromServerResponse>(_ => true)
-            .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(GetStatusPeriod))
-            .ExecuteAndCaptureAsync(ct => Process(request, ct)!,
-                cancellationToken);
+                                            .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(GetStatusPeriod))
+                                            .ExecuteAndCaptureAsync(ct => Process(request, ct)!,
+                                                                    cancellationToken);
     }
 
     private Task<GetRequiredStatusFromServerResponse?> Process(GetRequiredStatusFromServerRequest request,
-        CancellationToken cancellationToken)
+                                                               CancellationToken cancellationToken)
     {
         var task = InnerSendPost<GetRequiredStatusFromServerRequest, GetRequiredStatusFromServerResponse>(request,
-            "/bot/client/GetRequiredBotStatus",
-            cancellationToken);
+                                                                                                          "/bot/client/GetRequiredBotStatus",
+                                                                                                          cancellationToken);
 
         task.Wait(cancellationToken);
 
         var taskResult = task.Result;
-        if (taskResult == default)
-            throw new BotException("No result from server!");
+
+        if (taskResult == default) throw new BotException("No result from server!");
 
         var botContext = taskResult.BotContext;
-        if (botContext == default)
-            throw new BotException("No bot context from server!");
+
+        if (botContext == default) throw new BotException("No bot context from server!");
 
         var botData = new BotData.Entities.Bot.BotData
         {
@@ -76,12 +76,12 @@ public class BotStatusService(
             Status = task.Result?.Status,
             BotKey = botContext.BotKey,
             AdditionalInfo = botContext.Items?.Select(it => new BotAdditionalInfo
-                {
-                    BotId = taskResult!.BotId,
-                    ItemName = it.Key,
-                    ItemValue = it.Value
-                })
-                .ToList()
+                                       {
+                                           BotId = taskResult!.BotId,
+                                           ItemName = it.Key,
+                                           ItemValue = it.Value
+                                       })
+                                       .ToList()
         };
 
         Bot.SetBotContext(botData, cancellationToken);

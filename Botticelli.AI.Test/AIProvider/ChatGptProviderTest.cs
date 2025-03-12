@@ -49,17 +49,15 @@ public class ChatGptProviderTest : BaseAiProviderTest
         };
 
         Server?.Given(Request.Create().WithPath("/completions").UsingPost())
-            .RespondWith(
-                Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(JsonSerializer.Serialize(responseMessage))
-            );
+              .RespondWith(Response.Create()
+                                   .WithStatusCode(200)
+                                   .WithBody(JsonSerializer.Serialize(responseMessage)));
 
         AiProvider = new ChatGptProvider(new OptionsMock<GptSettings>(ChatGptSettings),
-            ClientFactory,
-            LoggerMocks.CreateConsoleLogger<ChatGptProvider>(),
-            BusClient,
-            Validator);
+                                         ClientFactory,
+                                         LoggerMocks.CreateConsoleLogger<ChatGptProvider>(),
+                                         BusClient,
+                                         Validator);
     }
 
     private GptSettings ChatGptSettings => new()
@@ -73,5 +71,8 @@ public class ChatGptProviderTest : BaseAiProviderTest
 
     [Test]
     [TestCase("test query")]
-    public async Task SendAsyncTest(string query) => await InnerSendAsyncTest(query);
+    public async Task SendAsyncTest(string query)
+    {
+        await InnerSendAsyncTest(query);
+    }
 }

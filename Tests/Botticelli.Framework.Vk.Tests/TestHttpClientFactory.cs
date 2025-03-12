@@ -12,8 +12,9 @@ internal class TestHttpClientFactory : IHttpClientFactory
         var mockHttp = new MockHttpMessageHandler();
 
         mockHttp.When(ApiUtils.GetMethodUri("https://api.vk.com",
-                "messages.send").ToString())
-            .Respond("application/json", "{'Result' : 'OK'}");
+                                            "messages.send")
+                              .ToString())
+                .Respond("application/json", "{'Result' : 'OK'}");
 
         var mockResponse = new GetMessageSessionDataResponse
         {
@@ -26,7 +27,7 @@ internal class TestHttpClientFactory : IHttpClientFactory
         };
 
         mockHttp.When(ApiUtils.GetMethodUri("https://api.vk.com", "groups.getLongPollServer").ToString())
-            .Respond("application/json", JsonSerializer.Serialize(mockResponse));
+                .Respond("application/json", JsonSerializer.Serialize(mockResponse));
 
         return mockHttp.ToHttpClient();
     }

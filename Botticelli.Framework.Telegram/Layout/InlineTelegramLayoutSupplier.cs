@@ -8,8 +8,7 @@ public class InlineTelegramLayoutSupplier : IInlineTelegramLayoutSupplier
 {
     public InlineKeyboardMarkup GetMarkup(ILayout layout)
     {
-        if (layout == default)
-            throw new LayoutException("Layout = null!");
+        if (layout == default) throw new LayoutException("Layout = null!");
 
         var elems = new List<List<InlineKeyboardButton>>(6);
 
@@ -17,10 +16,10 @@ public class InlineTelegramLayoutSupplier : IInlineTelegramLayoutSupplier
         {
             var keyboardElement = new List<InlineKeyboardButton>();
             keyboardElement.AddRange(layoutRow.Items.Select(item =>
-                new InlineKeyboardButton(item.Control?.Content ?? "no_text")
-                {
-                    CallbackData = item.Control?.Params?.GetValueOrDefault("CallbackData", "none") ?? null
-                }));
+                                                                    new InlineKeyboardButton(item.Control?.Content ?? "no_text")
+                                                                    {
+                                                                        CallbackData = item.Control?.Params?.GetValueOrDefault("CallbackData", "none") ?? null
+                                                                    }));
 
             elems.Add(keyboardElement);
         }

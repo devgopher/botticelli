@@ -15,14 +15,17 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Locations.Commands.CommandProcessors;
 
 public class FindLocationsCommandProcessor<TReplyMarkup>(
-    ILogger<FindLocationsCommandProcessor<TReplyMarkup>> logger,
-    ICommandValidator<FindLocationsCommand> commandValidator,
-    MetricsProcessor metricsProcessor,
-    ILocationProvider locationProvider,
-    ILayoutSupplier<TReplyMarkup> layoutSupplier,
-    IValidator<Message> messageValidator)
-    : CommandProcessor<FindLocationsCommand>(logger, commandValidator, metricsProcessor, messageValidator)
-    where TReplyMarkup : class
+        ILogger<FindLocationsCommandProcessor<TReplyMarkup>> logger,
+        ICommandValidator<FindLocationsCommand> commandValidator,
+        MetricsProcessor metricsProcessor,
+        ILocationProvider locationProvider,
+        ILayoutSupplier<TReplyMarkup> layoutSupplier,
+        IValidator<Message> messageValidator)
+        : CommandProcessor<FindLocationsCommand>(logger,
+                                                 commandValidator,
+                                                 metricsProcessor,
+                                                 messageValidator)
+        where TReplyMarkup : class
 {
     protected override async Task InnerProcess(Message message, CancellationToken token)
     {

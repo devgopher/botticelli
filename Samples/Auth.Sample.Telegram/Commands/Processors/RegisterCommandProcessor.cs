@@ -1,5 +1,4 @@
 using Botticelli.Auth.Data;
-using Botticelli.Auth.Data.Models;
 using Botticelli.Auth.Dto.User;
 using Botticelli.Auth.Services;
 using Botticelli.Client.Analytics;
@@ -22,17 +21,17 @@ namespace Auth.Sample.Telegram.Commands.Processors;
 /// <param name="messageValidator"></param>
 /// <typeparam name="TReplyMarkup"></typeparam>
 public class RegisterCommandProcessor<TReplyMarkup>(
-    IManager<BotUserInfo> userManager,
-    IManager<BotUserRoleInfo> roleManager,
-    ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
-    ICommandValidator<RegisterCommand> commandValidator,
-    MetricsProcessor metricsProcessor,
-    IValidator<Message> messageValidator)
-    : CommandProcessor<RegisterCommand>(logger,
-        commandValidator,
-        metricsProcessor,
-        messageValidator)
-    where TReplyMarkup : class
+        IManager<BotUserInfo> userManager,
+        IManager<BotUserRoleInfo> roleManager,
+        ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
+        ICommandValidator<RegisterCommand> commandValidator,
+        MetricsProcessor metricsProcessor,
+        IValidator<Message> messageValidator)
+        : CommandProcessor<RegisterCommand>(logger,
+                                            commandValidator,
+                                            metricsProcessor,
+                                            messageValidator)
+        where TReplyMarkup : class
 {
     protected override Task InnerProcessContact(Message message, CancellationToken token)
     {

@@ -10,13 +10,16 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Framework.Monads.Commands.Processors;
 
 public class ChainRunProcessor<TCommand>(
-    ILogger<ChainRunProcessor<TCommand>> logger,
-    ICommandValidator<TCommand> validator,
-    MetricsProcessor metricsProcessor,
-    ChainRunner<TCommand> chainRunner,
-    IValidator<Message> messageValidator)
-    : CommandProcessor<TCommand>(logger, validator, metricsProcessor, messageValidator)
-    where TCommand : class, IChainCommand, new()
+        ILogger<ChainRunProcessor<TCommand>> logger,
+        ICommandValidator<TCommand> validator,
+        MetricsProcessor metricsProcessor,
+        ChainRunner<TCommand> chainRunner,
+        IValidator<Message> messageValidator)
+        : CommandProcessor<TCommand>(logger,
+                                     validator,
+                                     metricsProcessor,
+                                     messageValidator)
+        where TCommand : class, IChainCommand, new()
 {
     protected override async Task InnerProcess(Message message, CancellationToken token)
     {

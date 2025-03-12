@@ -16,19 +16,20 @@ public static class ServiceCollectionExtensions
     /// <param name="dbParameters"></param>
     /// <returns></returns>
     public static IServiceCollection AddPostgresBasicBotUserAuth(this IServiceCollection services,
-        IConfiguration config, Action<DbContextOptionsBuilder>? dbParameters = null)
+                                                                 IConfiguration config,
+                                                                 Action<DbContextOptionsBuilder>? dbParameters = null)
     {
         services.AddBasicBotUserAuth();
 
         var settings = config.GetSection(nameof(AuthSettings))
-            .Get<AuthSettings>();
+                             .Get<AuthSettings>();
 
         return services.AddDbContext<AuthDefaultDbContext>(opt =>
-            {
-                dbParameters?.Invoke(opt);
-                opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    .UseNpgsql(settings!.ConnectionString, b => b.MigrationsAssembly("Botticelli.Auth.Data.Postgres"));
-            },
-            ServiceLifetime.Singleton);
+                                                           {
+                                                               dbParameters?.Invoke(opt);
+                                                               opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                                                                  .UseNpgsql(settings!.ConnectionString, b => b.MigrationsAssembly("Botticelli.Auth.Data.Postgres"));
+                                                           },
+                                                           ServiceLifetime.Singleton);
     }
 }

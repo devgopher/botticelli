@@ -23,20 +23,21 @@ public class BotPreCheckoutSubHandler : IBotUpdateSubHandler, IPreCheckoutHandle
     }
 
     public BotPreCheckoutSubHandler(ILogger<BotPreCheckoutSubHandler> logger,
-        PayChainRunner<BotPreCheckoutSubHandler, PreCheckoutQuery> runner)
+                                    PayChainRunner<BotPreCheckoutSubHandler, PreCheckoutQuery> runner)
     {
         _logger = logger;
         _runner = runner;
     }
 
-    public async Task Process(ITelegramBotClient botClient, Update update,
-        CancellationToken cancellationToken)
+    public async Task Process(ITelegramBotClient botClient,
+                              Update update,
+                              CancellationToken cancellationToken)
     {
         try
         {
             update.NotNull();
-            if (update.PreCheckoutQuery is null)
-                return;
+
+            if (update.PreCheckoutQuery is null) return;
 
             update.PreCheckoutQuery!.InvoicePayload.NotNullOrEmpty();
 
@@ -62,7 +63,8 @@ public class BotPreCheckoutSubHandler : IBotUpdateSubHandler, IPreCheckoutHandle
             var procResult = await _runner.Run(preCheckoutQuery, cancellationToken);
 
             await botClient.AnswerPreCheckoutQuery(preCheckoutQuery.Id,
-                procResult.isSuccessful ? default : procResult.errorMessage, cancellationToken);
+                                                   procResult.isSuccessful ? default : procResult.errorMessage,
+                                                   cancellationToken);
 
             _logger.LogDebug($"{nameof(Process)}() finished...");
         }

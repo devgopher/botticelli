@@ -3,7 +3,7 @@
 namespace Botticelli.Auth.Rules;
 
 /// <summary>
-/// Credentials checking rules builder
+///     Credentials checking rules builder
 /// </summary>
 /// <typeparam name="TDto">Credentials DTO</typeparam>
 public class CredentialsRulesBuilder<TDto> where TDto : IBotAuthCredentials

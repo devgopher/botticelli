@@ -15,7 +15,10 @@ public class MetricsPublisher
     }
 
     public async Task Publish(IMetricObject metric, CancellationToken token)
-        => await Url.Combine(_clientSettings.TargetUrl, "/metrics/receiver/ReceiveMetric")
-            .SetQueryParams(metric)
-            .SendAsync(HttpMethod.Get, cancellationToken: token); // polly!
+    {
+        await Url.Combine(_clientSettings.TargetUrl, "/metrics/receiver/ReceiveMetric")
+                 .SetQueryParams(metric)
+                 .SendAsync(HttpMethod.Get, cancellationToken: token);
+        // polly!
+    }
 }

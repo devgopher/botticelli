@@ -4,9 +4,11 @@ using Botticelli.Framework.Commands;
 namespace Botticelli.Framework.Monads.Commands.Result;
 
 public interface IResult<out TCommand>
-    where TCommand : ICommand
+        where TCommand : ICommand
 {
-    [Required] public bool IsSuccess { get; }
+    [Required]
+    public bool IsSuccess { get; }
 
-    [Required] public TCommand Command { get; }
+    [Required]
+    public TCommand Command { get; }
 }

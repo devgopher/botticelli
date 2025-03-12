@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 namespace Botticelli.AI.AIProvider;
 
 public abstract class ChatGptProvider<TSettings> : IAiProvider
-    where TSettings : AiSettings
+        where TSettings : AiSettings
 {
     private readonly IHttpClientFactory? _factory;
     private readonly IValidator<AiMessage>? _messageValidator;
@@ -19,10 +19,10 @@ public abstract class ChatGptProvider<TSettings> : IAiProvider
     protected readonly IOptions<TSettings> Settings;
 
     protected ChatGptProvider(IOptions<TSettings> settings,
-        IHttpClientFactory? factory,
-        ILogger logger,
-        IBusClient? bus,
-        IValidator<AiMessage>? messageValidator)
+                              IHttpClientFactory? factory,
+                              ILogger logger,
+                              IBusClient? bus,
+                              IValidator<AiMessage>? messageValidator)
     {
         Settings = settings;
         _factory = factory;
@@ -67,19 +67,19 @@ public abstract class ChatGptProvider<TSettings> : IAiProvider
     {
         Logger.LogError(ex, ex.Message);
         await Bus.SendResponse(new SendMessageResponse(message.Uid)
-            {
-                IsPartial = false,
-                Message = new Shared.ValueObjects.Message(message.Uid)
-                {
-                    ChatIds = message.ChatIds,
-                    Subject = message.Subject,
-                    Body = $"Error getting a response from {AiName}!",
-                    Attachments = null,
-                    From = null,
-                    ForwardedFrom = null
-                }
-            },
-            token);
+                               {
+                                   IsPartial = false,
+                                   Message = new Shared.ValueObjects.Message(message.Uid)
+                                   {
+                                       ChatIds = message.ChatIds,
+                                       Subject = message.Subject,
+                                       Body = $"Error getting a response from {AiName}!",
+                                       Attachments = null,
+                                       From = null,
+                                       ForwardedFrom = null
+                                   }
+                               },
+                               token);
     }
 
     protected async Task ValidateMessage(AiMessage message, CancellationToken token)
@@ -95,7 +95,7 @@ public abstract class ChatGptProvider<TSettings> : IAiProvider
 
         client.BaseAddress = new Uri(Settings.Value.Url);
         client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", Settings.Value.ApiKey);
+                new AuthenticationHeaderValue("Bearer", Settings.Value.ApiKey);
 
         return client;
     }
@@ -103,24 +103,26 @@ public abstract class ChatGptProvider<TSettings> : IAiProvider
     protected async Task SendErrorGptResponse(AiMessage message, string reason, CancellationToken token)
     {
         await Bus.SendResponse(new SendMessageResponse(message.Uid)
-            {
-                Message = new Shared.ValueObjects.Message(message.Uid)
-                {
-                    ChatIds = message.ChatIds,
-                    Subject = message.Subject,
-                    Body = $"Error getting a response from {AiName}: {reason}!",
-                    Attachments = null,
-                    From = null,
-                    ForwardedFrom = null,
-                    ReplyToMessageUid = message.ReplyToMessageUid
-                }
-            },
-            token);
+                               {
+                                   Message = new Shared.ValueObjects.Message(message.Uid)
+                                   {
+                                       ChatIds = message.ChatIds,
+                                       Subject = message.Subject,
+                                       Body = $"Error getting a response from {AiName}: {reason}!",
+                                       Attachments = null,
+                                       From = null,
+                                       ForwardedFrom = null,
+                                       ReplyToMessageUid = message.ReplyToMessageUid
+                                   }
+                               },
+                               token);
     }
 
-    protected abstract Task ProcessGptResponse(AiMessage message, CancellationToken token,
-        HttpResponseMessage response);
+    protected abstract Task ProcessGptResponse(AiMessage message,
+                                               CancellationToken token,
+                                               HttpResponseMessage response);
 
-    protected abstract Task<HttpResponseMessage> GetGptResponse(AiMessage message, CancellationToken token,
-        HttpClient client);
+    protected abstract Task<HttpResponseMessage> GetGptResponse(AiMessage message,
+                                                                CancellationToken token,
+                                                                HttpClient client);
 }

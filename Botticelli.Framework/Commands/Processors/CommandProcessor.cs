@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Framework.Commands.Processors;
 
 public abstract class CommandProcessor<TCommand> : ICommandProcessor
-    where TCommand : class, ICommand
+        where TCommand : class, ICommand
 {
     private readonly string _command;
     private readonly ICommandValidator<TCommand> _commandValidator;
@@ -23,9 +23,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     protected IBot Bot;
 
     protected CommandProcessor(ILogger logger,
-        ICommandValidator<TCommand> commandValidator,
-        MetricsProcessor metricsProcessor,
-        IValidator<Message> messageValidator)
+                               ICommandValidator<TCommand> commandValidator,
+                               MetricsProcessor metricsProcessor,
+                               IValidator<Message> messageValidator)
     {
         Logger = logger;
         _commandValidator = commandValidator;
@@ -33,17 +33,17 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         _messageValidator = messageValidator;
         _command = GetOldFashionedCommandName(typeof(TCommand).Name);
     }
-    
+
     public virtual async Task ProcessAsync(Message message, CancellationToken token)
     {
         try
         {
             var messageValidationResult = await _messageValidator.ValidateAsync(message, token);
+
             if (!messageValidationResult.IsValid)
             {
                 _metricsProcessor.Process(MetricNames.BotError, BotDataUtils.GetBotId());
-                Logger.LogError(
-                    $"Error in {GetType().Name} invalid input message: {messageValidationResult.Errors.Select(e => $"({e.PropertyName} : {e.ErrorCode} : {e.ErrorMessage})")}");
+                Logger.LogError($"Error in {GetType().Name} invalid input message: {messageValidationResult.Errors.Select(e => $"({e.PropertyName} : {e.ErrorCode} : {e.ErrorMessage})")}");
 
                 return;
             }
@@ -92,7 +92,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             else if (CommandUtils.ArgsCommandRegex.IsMatch(body))
             {
                 var match = CommandUtils.ArgsCommandRegex.Matches(body)
-                    .FirstOrDefault();
+                                        .FirstOrDefault();
 
                 if (match == default) return;
 
@@ -112,7 +112,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             }
 
             if (message.Location != default) await InnerProcessLocation(message, token);
-            if (message.Poll != default) await InnerProcessPoll(message,  token);
+            if (message.Poll != default) await InnerProcessPoll(message, token);
             if (message.Contact != default) await InnerProcessContact(message, token);
         }
         catch (Exception ex)
@@ -126,7 +126,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
 
     public virtual void SetBot(IBot bot)
-        => Bot = bot;
+    {
+        Bot = bot;
+    }
 
     public void SetServiceProvider(IServiceProvider sp)
     {
@@ -140,26 +142,34 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             message.Type = Message.MessageType.Command;
         else if (CommandUtils.ArgsCommandRegex.IsMatch(body))
             message.Type = Message.MessageType.Command;
-        else message.Type = Message.MessageType.Messaging;
+        else
+            message.Type = Message.MessageType.Messaging;
     }
 
-    private static string GetBody(Message message) =>
-        !string.IsNullOrWhiteSpace(message.CallbackData)
-            ? message.CallbackData
-            : !string.IsNullOrWhiteSpace(message.Body)
-                ? message.Body
+    private static string GetBody(Message message)
+    {
+        return !string.IsNullOrWhiteSpace(message.CallbackData) ? message.CallbackData
+                : !string.IsNullOrWhiteSpace(message.Body) ? message.Body
                 : string.Empty;
+    }
 
-    private void SendMetric(string metricName) => _metricsProcessor.Process(metricName, BotDataUtils.GetBotId()!);
+    private void SendMetric(string metricName)
+    {
+        _metricsProcessor.Process(metricName, BotDataUtils.GetBotId()!);
+    }
 
-    private void SendMetric() => _metricsProcessor.Process(GetOldFashionedCommandName(
-        $"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId()!);
+    private void SendMetric()
+    {
+        _metricsProcessor.Process(GetOldFashionedCommandName($"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId()!);
+    }
 
     private string GetOldFashionedCommandName(string fullCommand)
-        => fullCommand.ToLowerInvariant().Replace("command", "");
+    {
+        return fullCommand.ToLowerInvariant().Replace("command", "");
+    }
 
     private async Task ValidateAndProcess(Message message,
-        CancellationToken token)
+                                          CancellationToken token)
     {
         if (message.Type == Message.MessageType.Messaging)
         {
@@ -189,9 +199,25 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         }
     }
 
-    protected virtual Task InnerProcessContact(Message message, CancellationToken token) => Task.CompletedTask;
-    protected virtual Task InnerProcessPoll(Message message, CancellationToken token) => Task.CompletedTask;
-    protected virtual Task InnerProcessLocation(Message message, CancellationToken token) => Task.CompletedTask;
+    protected virtual Task InnerProcessContact(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
+
+    protected virtual Task InnerProcessPoll(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
+
+    protected virtual Task InnerProcessLocation(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
+
     protected abstract Task InnerProcess(Message message, CancellationToken token);
-    protected virtual Task InnerProcessError(Message message, Exception? ex, CancellationToken token) => Task.CompletedTask;
+
+    protected virtual Task InnerProcessError(Message message, Exception? ex, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 }

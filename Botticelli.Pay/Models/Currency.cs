@@ -6,7 +6,7 @@ public class Currency
 {
     [JsonIgnore]
     public string Iso { get; set; }
-    
+
     [JsonPropertyName("name")]
     public required string Name { get; set; }
 

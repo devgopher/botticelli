@@ -1,5 +1,3 @@
-using Telegram.Bot.Types.Payments;
-
 namespace Botticelli.Pay.Models;
 
 /// <summary>
@@ -21,7 +19,7 @@ public class Invoice
     ///     Payload
     /// </summary>
     public required string Payload { get; set; }
-    
+
     /// <summary>
     ///     Additional parameters for invoice
     /// </summary>
@@ -38,15 +36,15 @@ public class Invoice
     public required List<Price> Prices { get; set; }
 
     /// <summary>
-    /// Payment provider token
+    ///     Payment provider token
     /// </summary>
-    public required string? ProviderToken{ get; set; }
-    
+    public required string? ProviderToken { get; set; }
+
     /// <summary>
-    /// Payment provider data
+    ///     Payment provider data
     /// </summary>
     public string? ProviderData { get; set; }
-    
+
     /// <summary>
     ///     Total amount in format: 11.50
     /// </summary>

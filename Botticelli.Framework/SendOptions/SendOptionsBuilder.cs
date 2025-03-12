@@ -26,13 +26,12 @@ public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
         if (_innerObject != default) throw new BotException($"You shouldn't use {nameof(Create)}() method twice!");
 
         var constructors = typeof(T)
-            .GetConstructors()
-            .Where(c => c.IsPublic)
-            .ToArray();
+                           .GetConstructors()
+                           .Where(c => c.IsPublic)
+                           .ToArray();
 
         // no params? ok => let's seek a parameterless constructor!
-        if ((args != null && args.Length != 0) || constructors.All(c => c.GetParameters().Length != 0))
-            return this;
+        if (args != null && args.Length != 0 || constructors.All(c => c.GetParameters().Length != 0)) return this;
 
         _innerObject = Activator.CreateInstance<T>();
 
@@ -46,9 +45,18 @@ public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
         return this;
     }
 
-    public T? Build() => _innerObject;
+    public T? Build()
+    {
+        return _innerObject;
+    }
 
-    public static SendOptionsBuilder<T> CreateBuilder() => new();
+    public static SendOptionsBuilder<T> CreateBuilder()
+    {
+        return new SendOptionsBuilder<T>();
+    }
 
-    public static SendOptionsBuilder<T> CreateBuilder(T input) => new(input);
+    public static SendOptionsBuilder<T> CreateBuilder(T input)
+    {
+        return new SendOptionsBuilder<T>(input);
+    }
 }

@@ -1,10 +1,10 @@
 ﻿namespace Botticelli.Shared.API;
 
 public abstract class BaseRequest<T> : BaseRequest
-    where T : BaseRequest
+        where T : BaseRequest
 {
     protected BaseRequest(string? uid)
-        : base(uid)
+            : base(uid)
     {
     }
 }

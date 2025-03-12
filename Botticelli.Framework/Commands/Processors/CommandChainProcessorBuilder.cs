@@ -17,7 +17,7 @@ public class CommandChainProcessorBuilder<TInputCommand> where TInputCommand : c
     }
 
     public CommandChainProcessorBuilder<TInputCommand> AddNext<TNextProcessor>()
-        where TNextProcessor : class, ICommandChainProcessor<TInputCommand>
+            where TNextProcessor : class, ICommandChainProcessor<TInputCommand>
     {
         _typesChain.Add(typeof(TNextProcessor));
         _services.AddScoped<TNextProcessor>();
@@ -37,12 +37,12 @@ public class CommandChainProcessorBuilder<TInputCommand> where TInputCommand : c
 
         // making a chain...
         var prev = _chainProcessor;
+
         foreach (var type in _typesChain.Skip(1))
         {
             var proc = sp.GetRequiredService(type) as ICommandChainProcessor<TInputCommand>;
 
-            if (prev != null)
-                prev.Next = proc;
+            if (prev != null) prev.Next = proc;
 
             prev = proc;
         }

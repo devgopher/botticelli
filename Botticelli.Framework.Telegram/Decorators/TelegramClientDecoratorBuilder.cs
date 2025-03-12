@@ -15,15 +15,17 @@ public class TelegramClientDecoratorBuilder
     private string? _token;
 
     private TelegramClientDecoratorBuilder(IServiceCollection services,
-        BotSettingsBuilder<TelegramBotSettings> settingsBuilder)
+                                           BotSettingsBuilder<TelegramBotSettings> settingsBuilder)
     {
         _services = services;
         _settingsBuilder = settingsBuilder;
     }
 
     public static TelegramClientDecoratorBuilder Instance(IServiceCollection services,
-        BotSettingsBuilder<TelegramBotSettings> settingsBuilder)
-        => new(services, settingsBuilder);
+                                                          BotSettingsBuilder<TelegramBotSettings> settingsBuilder)
+    {
+        return new TelegramClientDecoratorBuilder(services, settingsBuilder);
+    }
 
     public TelegramClientDecoratorBuilder AddThrottler(IThrottler throttler)
     {
@@ -54,7 +56,7 @@ public class TelegramClientDecoratorBuilder
 
         var botOptions = _settingsBuilder.Build();
         var clientOptions =
-            new TelegramBotClientOptions(_token, botOptions.TelegramBaseUrl, botOptions.UseTestEnvironment ?? false);
+                new TelegramBotClientOptions(_token, botOptions.TelegramBaseUrl, botOptions.UseTestEnvironment ?? false);
         _telegramClient = new TelegramClientDecorator(clientOptions, _throttler, _httpClient);
 
         return _telegramClient;

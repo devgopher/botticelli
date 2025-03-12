@@ -7,7 +7,8 @@ public class MetricModel : IMetricModel, INotifyPropertyChanging, INotifyPropert
 {
     public string Name { get; set; }
 
-    [Key] public string Id { get; set; }
+    [Key]
+    public string Id { get; set; }
 
     public string? BotId { get; set; }
     public DateTime Timestamp { get; set; }

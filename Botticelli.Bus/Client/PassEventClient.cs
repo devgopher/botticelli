@@ -34,8 +34,7 @@ public class PassEventClient : IEventBusClient
     {
         while (_startedFlag)
         {
-            if (NoneBus.SendMessageResponses.TryDequeue(out var message))
-                OnReceived?.Invoke(this, message);
+            if (NoneBus.SendMessageResponses.TryDequeue(out var message)) OnReceived?.Invoke(this, message);
 
             Thread.Sleep(Pause);
         }

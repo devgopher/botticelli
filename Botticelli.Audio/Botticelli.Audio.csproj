@@ -1,43 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.7.0</Version>
-        <Title>Botticelli.Audio</Title>
-        <Authors>BotticelliBots</Authors>
-        <PackageIcon>new_logo_compact.png</PackageIcon>
-        <Description>Botticelli audio conversion tools</Description>
-        <Copyright>BotticelliBots</Copyright>
-        <PackageProjectUrl>http://botticellibots.com</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-        <PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>0.7.0</Version>
+		<Title>Botticelli.Audio</Title>
+		<Authors>BotticelliBots</Authors>
+		<PackageIcon>new_logo_compact.png</PackageIcon>
+		<Description>Botticelli audio conversion tools</Description>
+		<Copyright>BotticelliBots</Copyright>
+		<PackageProjectUrl>http://botticellibots.com</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+		<PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <None Include="..\new_logo_compact.png">
-            <Pack>True</Pack>
-            <PackagePath></PackagePath>
-            <Link>new_logo_compact.png</Link>
-        </None>
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="..\new_logo_compact.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+			<Link>new_logo_compact.png</Link>
+		</None>
+	</ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="FFmpeg.Win64.Static" Version="4.1.1.1"/>
-        <PackageReference Include="FFMpegCore" Version="5.1.0"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2"/>
-        <PackageReference Include="NAudio" Version="2.2.1"/>
-        <PackageReference Include="NAudio.Lame" Version="2.1.0"/>
-        <PackageReference Include="NAudio.Vorbis" Version="1.5.0"/>
-        <PackageReference Include="NAudio.WaveFormRenderer" Version="2.0.0"/>
-        <PackageReference Include="System.Text.Json" Version="8.0.5"/>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="FFmpeg.Win64.Static" Version="4.1.1.1"/>
+		<PackageReference Include="FFMpegCore" Version="5.1.0"/>
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2"/>
+		<PackageReference Include="NAudio" Version="2.2.1"/>
+		<PackageReference Include="NAudio.Lame" Version="2.1.0"/>
+		<PackageReference Include="NAudio.Vorbis" Version="1.5.0"/>
+		<PackageReference Include="NAudio.WaveFormRenderer" Version="2.0.0"/>
+		<PackageReference Include="System.Text.Json" Version="8.0.5"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\3dParty\FileSignatures\FileSignatures.csproj"/>
-        <ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj"/>
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\3dParty\FileSignatures\FileSignatures.csproj"/>
+		<ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj"/>
+	</ItemGroup>
 
 </Project>

@@ -3,12 +3,12 @@
 namespace Botticelli.Shared.ValueObjects;
 
 public class BinaryBaseAttachment(
-    string uid,
-    string name,
-    MediaType mediaType,
-    string url,
-    byte[] data)
-    : BaseAttachment(uid)
+        string uid,
+        string name,
+        MediaType mediaType,
+        string url,
+        byte[] data)
+        : BaseAttachment(uid)
 {
     public string Url { get; } = url;
     public MediaType MediaType { get; } = mediaType;

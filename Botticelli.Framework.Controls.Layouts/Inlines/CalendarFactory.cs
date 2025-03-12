@@ -11,8 +11,7 @@ public static class CalendarFactory
     {
         var key = (dt.Month, dt.Year, culture);
 
-        if (Cache.TryGetValue(key, out var calendar))
-            return calendar;
+        if (Cache.TryGetValue(key, out var calendar)) return calendar;
 
         var cultureInfo = new CultureInfo(culture);
 
@@ -24,14 +23,22 @@ public static class CalendarFactory
     }
 
     public static InlineCalendar GetMonthsForward(string culture, int months = 1)
-        => GetMonthsForward(DateTime.Today, culture, months);
+    {
+        return GetMonthsForward(DateTime.Today, culture, months);
+    }
 
     public static InlineCalendar GetMonthsForward(DateTime dt, string culture, int months = 1)
-        => Get(dt.AddMonths(months), culture);
+    {
+        return Get(dt.AddMonths(months), culture);
+    }
 
     public static InlineCalendar GetMonthsBackward(string culture, int months = 1)
-        => GetMonthsForward(DateTime.Today, culture, -months);
+    {
+        return GetMonthsForward(DateTime.Today, culture, -months);
+    }
 
     public static InlineCalendar GetMonthsBackward(DateTime dt, string culture, int months = 1)
-        => GetMonthsForward(dt, culture, -months);
+    {
+        return GetMonthsForward(dt, culture, -months);
+    }
 }

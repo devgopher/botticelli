@@ -16,7 +16,7 @@ using RabbitMQ.Client.Events;
 namespace Botticelli.Bus.Rabbit.Client;
 
 public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
-    where TBot : IBot
+        where TBot : IBot
 {
     private readonly ILogger<RabbitClient<TBot>> _logger;
     private readonly IConnectionFactory _rabbitConnectionFactory;
@@ -26,8 +26,8 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
     private EventingBasicConsumer _consumer;
 
     public RabbitClient(IConnectionFactory rabbitConnectionFactory,
-        RabbitBusSettings settings,
-        ILogger<RabbitClient<TBot>> logger)
+                        RabbitBusSettings settings,
+                        ILogger<RabbitClient<TBot>> logger)
     {
         _rabbitConnectionFactory = rabbitConnectionFactory;
         _settings = settings;
@@ -38,32 +38,30 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
     }
 
     public async IAsyncEnumerable<SendMessageResponse> SendAndGetResponseSeries(SendMessageRequest request,
-        [EnumeratorCancellation] CancellationToken token)
+                                                                                [EnumeratorCancellation] CancellationToken token)
     {
         using var connection = _rabbitConnectionFactory.CreateConnection();
         using var channel = connection.CreateModel();
 
         Send(request, channel, GetRequestQueueName());
 
-        if (!_responses.TryGetValue(request.Message.Uid, out var prevValue))
-            yield break;
+        if (!_responses.TryGetValue(request.Message.Uid, out var prevValue)) yield break;
 
         while (prevValue.IsPartial == true && prevValue.IsFinal)
             if (_responses.TryGetValue(request.Message.Uid, out var value))
             {
-                if (value.IsFinal)
-                    yield return value;
+                if (value.IsFinal) yield return value;
 
-                if (value.SequenceNumber > prevValue.SequenceNumber)
-                    continue;
+                if (value.SequenceNumber > prevValue.SequenceNumber) continue;
 
                 prevValue = value;
+
                 yield return value;
             }
     }
 
     public async Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request,
-        CancellationToken token)
+                                                              CancellationToken token)
     {
         try
         {
@@ -74,7 +72,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
 
             var timeoutPolicy = Policy.TimeoutAsync<SendMessageResponse>(_timeout, TimeoutStrategy.Pessimistic);
             var resultPolicy = Policy.HandleResult<SendMessageResponse>(s => s == null)
-                .WaitAndRetryAsync(int.MaxValue, _ => TimeSpan.FromMilliseconds(50));
+                                     .WaitAndRetryAsync(int.MaxValue, _ => TimeSpan.FromMilliseconds(50));
 
             var combined = Policy.WrapAsync(timeoutPolicy, resultPolicy);
 
@@ -88,7 +86,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
 
             if (result.FinalHandledResult != default)
                 throw new RabbitBusException($"Error getting a response: {result.FinalException.Message}",
-                    result.FinalException);
+                                             result.FinalException);
 
             return result.Result;
         }
@@ -132,10 +130,10 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
             channel.ExchangeDeclarePassive(exchange);
 
         var queueDeclareResult = _settings
-            .QueueSettings
-            .TryCreate
-            ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false)
-            : channel.QueueDeclarePassive(queue);
+                                 .QueueSettings
+                                 .TryCreate ?
+                channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
+                channel.QueueDeclarePassive(queue);
 
 
         channel.BasicConsume(queue, true, _consumer);
@@ -164,9 +162,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
 
     private void Send(object input, IModel channel, string queue)
     {
-        _ = _settings.QueueSettings is { TryCreate: true, CheckQueueOnPublish: true }
-            ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false)
-            : channel.QueueDeclarePassive(queue);
+        _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) : channel.QueueDeclarePassive(queue);
 
         channel.QueueBind(queue, _settings.Exchange, queue);
         channel.BasicPublish(_settings.Exchange, queue, body: JsonSerializer.SerializeToUtf8Bytes(input));

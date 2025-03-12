@@ -20,16 +20,19 @@ namespace Botticelli.Framework.Controls.Layouts.CommandProcessors.InlineCalendar
 /// <typeparam name="TCommand"></typeparam>
 /// <typeparam name="TReplyMarkup"></typeparam>
 public class ICCommandProcessor<TCommand, TReplyMarkup> : CommandProcessor<TCommand>
-    where TCommand : BaseCalendarCommand where TReplyMarkup : class
+        where TCommand : BaseCalendarCommand where TReplyMarkup : class
 {
     private readonly ILayoutSupplier<TReplyMarkup> _layoutSupplier;
 
     public ICCommandProcessor(ILogger<ICCommandProcessor<TCommand, TReplyMarkup>> logger,
-        ICommandValidator<TCommand> commandValidator,
-        ILayoutSupplier<TReplyMarkup> layoutSupplier,
-        MetricsProcessor metricsProcessor,
-        IValidator<Message> messageValidator)
-        : base(logger, commandValidator, metricsProcessor, messageValidator)
+                              ICommandValidator<TCommand> commandValidator,
+                              ILayoutSupplier<TReplyMarkup> layoutSupplier,
+                              MetricsProcessor metricsProcessor,
+                              IValidator<Message> messageValidator)
+            : base(logger,
+                   commandValidator,
+                   metricsProcessor,
+                   messageValidator)
     {
         _layoutSupplier = layoutSupplier;
     }
@@ -55,17 +58,17 @@ public class ICCommandProcessor<TCommand, TReplyMarkup> : CommandProcessor<TComm
         var options = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
 
         await Bot.UpdateMessageAsync(new SendMessageRequest
-            {
-                ExpectPartialResponse = false,
-                Message = new Message
-                {
-                    Body = message.CallbackData,
-                    Uid = message.Uid,
-                    ChatIds = message.ChatIds,
-                    ChatIdInnerIdLinks = message.ChatIdInnerIdLinks
-                }
-            },
-            options,
-            token);
+                                     {
+                                         ExpectPartialResponse = false,
+                                         Message = new Message
+                                         {
+                                             Body = message.CallbackData,
+                                             Uid = message.Uid,
+                                             ChatIds = message.ChatIds,
+                                             ChatIdInnerIdLinks = message.ChatIdInnerIdLinks
+                                         }
+                                     },
+                                     options,
+                                     token);
     }
 }

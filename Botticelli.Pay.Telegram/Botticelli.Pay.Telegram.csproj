@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
-      <ProjectReference Include="..\Botticelli.Pay\Botticelli.Pay.csproj" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
+		<ProjectReference Include="..\Botticelli.Pay\Botticelli.Pay.csproj"/>
+	</ItemGroup>
 
-    <ItemGroup>
-      <None Include="..\logo.jpg">
-        <Pack>True</Pack>
-        <PackagePath>\</PackagePath>
-        <Link>logo.jpg</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="..\logo.jpg">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+			<Link>logo.jpg</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

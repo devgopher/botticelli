@@ -3,13 +3,13 @@
 public class InvoiceBaseAttachment : BaseAttachment
 {
     public InvoiceBaseAttachment(string uid,
-        string name,
-        string url,
-        string title,
-        string description,
-        string startParameter,
-        string currency,
-        int totalAmount) : base(uid)
+                                 string name,
+                                 string url,
+                                 string title,
+                                 string description,
+                                 string startParameter,
+                                 string currency,
+                                 int totalAmount) : base(uid)
     {
         Name = name;
         Url = url;

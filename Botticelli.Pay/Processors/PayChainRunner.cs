@@ -1,5 +1,4 @@
 using Botticelli.Pay.Handlers;
-using Botticelli.Pay.Models;
 
 namespace Botticelli.Pay.Processors;
 
@@ -12,21 +11,26 @@ public class PayChainRunner<THandler, TQuery> where THandler : IPayHandler
 {
     private readonly List<IPayProcessor<THandler, TQuery>> _preCheckoutProcessors;
 
-    public PayChainRunner(IEnumerable<IPayProcessor<THandler, TQuery>> preCheckoutProcessors) 
-        => _preCheckoutProcessors = preCheckoutProcessors.ToList();
+    public PayChainRunner(IEnumerable<IPayProcessor<THandler, TQuery>> preCheckoutProcessors)
+    {
+        _preCheckoutProcessors = preCheckoutProcessors.ToList();
+    }
 
-    public PayChainRunner() => _preCheckoutProcessors = [];
-    
+    public PayChainRunner()
+    {
+        _preCheckoutProcessors = [];
+    }
+
     public async Task<(bool isSuccessful, string errorMessage)> Run(TQuery request,
-        CancellationToken token)
+                                                                    CancellationToken token)
     {
         (bool isSuccessful, string errorMessage) procResult = (true, string.Empty);
 
         foreach (var processor in _preCheckoutProcessors)
         {
             procResult = await processor.Process(request, token);
-            if (!procResult.isSuccessful)
-                break;
+
+            if (!procResult.isSuccessful) break;
         }
 
         return procResult;

@@ -7,7 +7,7 @@ public class Poll
         Quiz,
         Regular
     }
-    
+
     public string? Id { get; set; }
     public string? Question { get; set; }
     public IEnumerable<(string option, int votersCount)>? Variants { get; set; }

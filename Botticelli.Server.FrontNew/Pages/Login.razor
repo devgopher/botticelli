@@ -43,15 +43,17 @@
         <RadzenLabel Text="@_error.UserMessage" Style="color: red; font-weight: bold; border: none"/>
 
         @code
-        
+
         {
             public async Task DoLogin(LoginArgs args)
             {
                 await Cookies.SetValueAsync("SessionToken", string.Empty);
                 var sessionToken = await Cookies.GetValueAsync("SessionToken");
+
                 if (string.IsNullOrWhiteSpace(sessionToken))
                 {
                     var result = await SessionClient.CreateSession(args.Username, args.Password);
+
                     if (result.error != default && result.error.UserMessage.ToLowerInvariant() != "success")
                     {
                         await Cookies.SetValueAsync("SessionToken", string.Empty);
@@ -62,9 +64,9 @@
                         sessionToken = result.session.Token;
                         await Cookies.SetValueAsync("SessionToken", sessionToken + ";SameSite=None;Secure=True");
                         UriHelper.NavigateTo("/your_bots", true);
-#if DEBUG
+                        #if DEBUG
                         _error.UserMessage = await Cookies.GetValueAsync("SessionToken");
-#endif
+                        #endif
                     }
                 }
                 else
@@ -78,6 +80,7 @@
             public async Task DoReset(string userName)
             {
                 var result = await SessionClient.ResetPassword(userName);
+
                 if (result.UserMessage.ToLowerInvariant() != "success")
                 {
                     _error.UserMessage = result.UserMessage;

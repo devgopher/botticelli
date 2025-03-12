@@ -10,13 +10,16 @@ using Polly;
 namespace Botticelli.Framework.Services;
 
 public class PollActualizationService<TRequest, TResponse>(
-    IHttpClientFactory httpClientFactory,
-    string subPath,
-    ServerSettings serverSettings,
-    IBot bot,
-    ILogger logger)
-    : BotActualizationService(httpClientFactory, serverSettings, bot, logger)
-    where TRequest : IBotRequest, new()
+        IHttpClientFactory httpClientFactory,
+        string subPath,
+        ServerSettings serverSettings,
+        IBot bot,
+        ILogger logger)
+        : BotActualizationService(httpClientFactory,
+                                  serverSettings,
+                                  bot,
+                                  logger)
+        where TRequest : IBotRequest, new()
 {
     private const short ActionPeriod = 5000;
     private Task? _periodicTask;
@@ -38,8 +41,8 @@ public class PollActualizationService<TRequest, TResponse>(
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns></returns>
     protected override async Task<TResp?> InnerSendPost<TReq, TResp>(TReq request,
-        string funcName,
-        CancellationToken cancellationToken) where TResp : default
+                                                                     string funcName,
+                                                                     CancellationToken cancellationToken) where TResp : default
     {
         try
         {
@@ -50,8 +53,8 @@ public class PollActualizationService<TRequest, TResponse>(
             Logger.LogDebug("InnerSend request: {request}", request);
 
             var response = await httpClient.PostAsync(Url.Combine(ServerSettings.ServerUri, funcName),
-                content,
-                cancellationToken);
+                                                      content,
+                                                      cancellationToken);
 
             return await response.Content.ReadFromJsonAsync<TResp>(cancellationToken);
         }
@@ -70,8 +73,7 @@ public class PollActualizationService<TRequest, TResponse>(
     /// <exception cref="BotException" />
     private void ProcessRequest(CancellationToken cancellationToken)
     {
-        if (_periodicTask != default)
-            return;
+        if (_periodicTask != default) return;
 
         ActualizationEvent.Set();
         var request = new TRequest
@@ -82,28 +84,30 @@ public class PollActualizationService<TRequest, TResponse>(
         Logger.LogDebug("Poll botId: {botId}", BotId);
 
         _periodicTask = Policy.HandleResult<TResponse>(_ => true)
-            .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(ActionPeriod))
-            .ExecuteAndCaptureAsync(ct => Process(request, ct),
-                cancellationToken);
+                              .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(ActionPeriod))
+                              .ExecuteAndCaptureAsync(ct => Process(request, ct),
+                                                      cancellationToken);
 
-        if (_periodicTask.IsFaulted)
-            return;
+        if (_periodicTask.IsFaulted) return;
+
         Logger.LogTrace("{where} sent for bot: {botId}", typeof(TRequest).Name, BotId);
     }
 
     private async Task<TResponse> Process(TRequest request, CancellationToken ct)
     {
         var response = await InnerSendPost<TRequest, TResponse>(request,
-            $"/bot/client/{subPath}",
-            ct);
+                                                                $"/bot/client/{subPath}",
+                                                                ct);
 
         Logger.LogDebug("Poll botId: {botId} response: {response}", BotId, response);
 
-        if (response != null)
-            await InnerProcess(response, ct);
+        if (response != null) await InnerProcess(response, ct);
 
         return response!;
     }
 
-    protected virtual Task InnerProcess(TResponse response, CancellationToken ct) => Task.CompletedTask;
+    protected virtual Task InnerProcess(TResponse response, CancellationToken ct)
+    {
+        return Task.CompletedTask;
+    }
 }

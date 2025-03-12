@@ -25,10 +25,10 @@ public class AdminAuthService : IAdminAuthService
     private readonly ILogger<AdminAuthService> _logger;
 
     public AdminAuthService(IConfiguration config,
-        IHttpContextAccessor httpContextAccessor,
-        ServerDataContext context,
-        ILogger<AdminAuthService> logger,
-        IOptionsMonitor<ServerSettings> settings)
+                            IHttpContextAccessor httpContextAccessor,
+                            ServerDataContext context,
+                            ILogger<AdminAuthService> logger,
+                            IOptionsMonitor<ServerSettings> settings)
     {
         _config = config;
         _httpContextAccessor = httpContextAccessor;
@@ -42,9 +42,11 @@ public class AdminAuthService : IAdminAuthService
     /// <returns></returns>
     /// <exception cref="DataException"></exception>
     public async Task<bool> HasUsersAsync()
-        => await _context
-            .ApplicationUsers
-            .AnyAsync();
+    {
+        return await _context
+                     .ApplicationUsers
+                     .AnyAsync();
+    }
 
     /// <inheritdoc />
     public async Task RegisterAsync(UserAddRequest userRegister)
@@ -54,7 +56,7 @@ public class AdminAuthService : IAdminAuthService
             _logger.LogInformation($"{nameof(RegisterAsync)}({userRegister.UserName}) started...");
 
             if (_context.ApplicationUsers.AsQueryable()
-                .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email)))
+                        .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");
 
             var user = new IdentityUser
@@ -95,7 +97,7 @@ public class AdminAuthService : IAdminAuthService
             _logger.LogInformation($"{nameof(RegeneratePassword)}({userRegister.UserName}) started...");
 
             if (_context.ApplicationUsers.AsQueryable()
-                .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email)))
+                        .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");
 
             var user = new IdentityUser
@@ -145,8 +147,8 @@ public class AdminAuthService : IAdminAuthService
             }
 
             var user = _context.ApplicationUsers
-                .AsQueryable()
-                .FirstOrDefault(u => u.NormalizedEmail == GetNormalized(login.Email));
+                               .AsQueryable()
+                               .FirstOrDefault(u => u.NormalizedEmail == GetNormalized(login.Email));
 
             if (user == default)
                 return new GetTokenResponse
@@ -156,16 +158,16 @@ public class AdminAuthService : IAdminAuthService
                 };
 
             var userRole = _context.ApplicationUserRoles
-                .AsQueryable()
-                .FirstOrDefault(ur => ur.UserId == user.Id);
+                                   .AsQueryable()
+                                   .FirstOrDefault(ur => ur.UserId == user.Id);
 
             var roleName = string.Empty;
 
             if (userRole != null)
             {
                 var role = _context.ApplicationRoles
-                    .AsQueryable()
-                    .FirstOrDefault(r => r.Id == userRole.RoleId);
+                                   .AsQueryable()
+                                   .FirstOrDefault(r => r.Id == userRole.RoleId);
 
                 roleName = role?.Name;
             }
@@ -181,11 +183,11 @@ public class AdminAuthService : IAdminAuthService
             var signCreds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(_config["Authorization:Issuer"],
-                _config["Authorization:Audience"],
-                claims,
-                expires: DateTime.Now.AddHours(24), // NOTE!!! Temporary!
-                //.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
-                signingCredentials: signCreds);
+                                             _config["Authorization:Audience"],
+                                             claims,
+                                             expires: DateTime.Now.AddHours(24), // NOTE!!! Temporary!
+                                             //.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
+                                             signingCredentials: signCreds);
 
             return new GetTokenResponse
             {
@@ -212,13 +214,13 @@ public class AdminAuthService : IAdminAuthService
             var sign = _config["Authorization:Key"];
             var handler = new JwtSecurityTokenHandler();
             handler.ValidateToken(token,
-                new TokenValidationParameters
-                {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(sign)),
-                    ValidIssuer = _config["Authorization:Issuer"],
-                    ValidateAudience = false
-                },
-                out var validatedToken);
+                                  new TokenValidationParameters
+                                  {
+                                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(sign)),
+                                      ValidIssuer = _config["Authorization:Issuer"],
+                                      ValidateAudience = false
+                                  },
+                                  out var validatedToken);
 
 
             _logger.LogInformation($"{nameof(CheckToken)}() validate token: {validatedToken != default}");
@@ -240,21 +242,24 @@ public class AdminAuthService : IAdminAuthService
         var normalizedEmail = GetNormalized(login.Email);
         var user = _context.ApplicationUsers.FirstOrDefault(u => u.NormalizedEmail == normalizedEmail &&
                                                                  u.PasswordHash == hashedPassword);
-        if (user == default)
-            return (false, "user not found");
-        if (checkEmailConfirmed && !user.EmailConfirmed)
-            return (false, $"email {user.Email} not confirmed!");
+
+        if (user == default) return (false, "user not found");
+        if (checkEmailConfirmed && !user.EmailConfirmed) return (false, $"email {user.Email} not confirmed!");
 
         return (true, string.Empty);
     }
 
     public string? GetCurrentUserId()
-        => _httpContextAccessor.HttpContext
-            .User
-            .Claims
-            .FirstOrDefault(c => c.Type == "applicationUserId")
-            ?.Value;
+    {
+        return _httpContextAccessor.HttpContext
+                                   .User
+                                   .Claims
+                                   .FirstOrDefault(c => c.Type == "applicationUserId")
+                                   ?.Value;
+    }
 
     private static string GetNormalized(string input)
-        => input?.ToUpper();
+    {
+        return input?.ToUpper();
+    }
 }

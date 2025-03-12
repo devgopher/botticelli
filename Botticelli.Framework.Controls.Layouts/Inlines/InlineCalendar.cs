@@ -27,7 +27,10 @@ public class InlineCalendar : ILayout
     /// </summary>
     public string TodayMark { get; set; }
 
-    public void AddRow(Row row) => Rows.Add(row);
+    public void AddRow(Row row)
+    {
+        Rows.Add(row);
+    }
 
     public IList<Row>? Rows { get; }
 
@@ -41,18 +44,18 @@ public class InlineCalendar : ILayout
             {
                 Content = "<<", Params = new Dictionary<string, string>
                 {
-                    { "CallbackData", $"/YearBackward {dt:dd/MM/yyyy}" }
+                    {"CallbackData", $"/YearBackward {dt:dd/MM/yyyy}"}
                 }
             }
         });
-        yearNameRow.Items.Add(new Item { Control = new Button { Content = dt.ToString("yyyy") } });
+        yearNameRow.Items.Add(new Item {Control = new Button {Content = dt.ToString("yyyy")}});
         yearNameRow.Items.Add(new Item
         {
             Control = new Button
             {
                 Content = ">>", Params = new Dictionary<string, string>
                 {
-                    { "CallbackData", $"/YearForward {dt:dd/MM/yyyy}" }
+                    {"CallbackData", $"/YearForward {dt:dd/MM/yyyy}"}
                 }
             }
         });
@@ -67,18 +70,18 @@ public class InlineCalendar : ILayout
             {
                 Content = "<<", Params = new Dictionary<string, string>
                 {
-                    { "CallbackData", $"/MonthBackward {dt:dd/MM/yyyy}" }
+                    {"CallbackData", $"/MonthBackward {dt:dd/MM/yyyy}"}
                 }
             }
         });
-        monthNameRow.Items.Add(new Item { Control = new Button { Content = monthName } });
+        monthNameRow.Items.Add(new Item {Control = new Button {Content = monthName}});
         monthNameRow.Items.Add(new Item
         {
             Control = new Button
             {
                 Content = ">>", Params = new Dictionary<string, string>
                 {
-                    { "CallbackData", $"/MonthForward {dt:dd/MM/yyyy}" }
+                    {"CallbackData", $"/MonthForward {dt:dd/MM/yyyy}"}
                 }
             }
         });
@@ -87,12 +90,12 @@ public class InlineCalendar : ILayout
 
         // Displays a weekday names in a header
         var sortedDays = new DayOfWeek[Days.Length];
-        var fdw = (int)cultureInfo.DateTimeFormat.FirstDayOfWeek;
+        var fdw = (int) cultureInfo.DateTimeFormat.FirstDayOfWeek;
         for (var i = 0; i < Days.Length; ++i) sortedDays[i] = Days[(fdw + i) % Days.Length];
 
         var weekDaysRow = new Row();
         weekDaysRow.Items.AddRange(sortedDays.Select(sd => new Item
-            { Control = new Button { Content = sd.ToString("G") } }));
+                                                             {Control = new Button {Content = sd.ToString("G")}}));
         Rows.Add(weekDaysRow);
 
         // Displays dates
@@ -102,7 +105,7 @@ public class InlineCalendar : ILayout
 
         for (var day = 1; day <= days; ++day)
         {
-            var dayOfWeek = (int)CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(new DateTime(dt.Year, dt.Month, 1));
+            var dayOfWeek = (int) CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(new DateTime(dt.Year, dt.Month, 1));
             var offset = dayOfWeek - 1;
             var rowNum = (day + offset) / Days.Length;
 
@@ -123,16 +126,16 @@ public class InlineCalendar : ILayout
 
             var weekDayOffset = (day + offset) % Days.Length;
             rows[rowNum]!.Items[weekDayOffset].Control!.CallbackData
-                = $"/DateChosen {new DateTime(day: day, month: dt.Month, year: dt.Year):dd/MM/yyyy}";
+                    = $"/DateChosen {new DateTime(day: day, month: dt.Month, year: dt.Year):dd/MM/yyyy}";
         }
 
-        foreach (var row in rows)
-            Rows.Add(row!);
+        foreach (var row in rows) Rows.Add(row!);
     }
 
-    private string GetImage(DateTime buttonDt) => DateTime.Today == buttonDt.Date
-        ? !string.IsNullOrWhiteSpace(TodayMark) ? TodayMark : "✓"
-        : string.Empty;
+    private string GetImage(DateTime buttonDt)
+    {
+        return DateTime.Today == buttonDt.Date ? !string.IsNullOrWhiteSpace(TodayMark) ? TodayMark : "✓" : string.Empty;
+    }
 
     private static void PreloadItems(Row?[] rows, int rowNum)
     {

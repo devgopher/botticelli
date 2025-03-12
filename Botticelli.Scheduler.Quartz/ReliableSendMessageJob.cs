@@ -8,5 +8,8 @@ namespace Botticelli.Schedule.Quartz;
 [DisallowConcurrentExecution]
 public class ReliableSendMessageJob(IBot bot) : IJob
 {
-    public Task Execute(IJobExecutionContext context) => throw new NotImplementedException();
+    public Task Execute(IJobExecutionContext context)
+    {
+        throw new NotImplementedException();
+    }
 }

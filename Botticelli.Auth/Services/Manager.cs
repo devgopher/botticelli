@@ -9,11 +9,13 @@ public abstract class Manager<TEntityInfo, TEntity>(AuthDefaultDbContext authDef
 {
     private readonly DbSet<TEntity> _entities = authDefaultDbContext.Set<TEntity>();
 
-    public virtual Task<IEnumerable<TEntityInfo>> Get(int from = 0, int pageSize = 20) 
-        => Task.FromResult(_entities.Skip(from)
-                                   .Take(pageSize)
-                                   .ToList()
-                                   .Adapt<IEnumerable<TEntityInfo>>());
+    public virtual Task<IEnumerable<TEntityInfo>> Get(int from = 0, int pageSize = 20)
+    {
+        return Task.FromResult(_entities.Skip(from)
+                                        .Take(pageSize)
+                                        .ToList()
+                                        .Adapt<IEnumerable<TEntityInfo>>());
+    }
 
     public virtual async Task Add(TEntityInfo info)
     {

@@ -14,8 +14,7 @@ public class Button : IControl
         get => Params?["CallbackData"];
         set
         {
-            if (Params != null)
-                Params["CallbackData"] = value;
+            if (Params != null) Params["CallbackData"] = value;
         }
     }
 }

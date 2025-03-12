@@ -21,7 +21,7 @@ public class MetricsInputController : Controller
 
     [HttpGet("[action]")]
     public async Task<IActionResult> ReceiveMetric([FromQuery] PushMetricRequest<IMetricObject> request,
-        CancellationToken token)
+                                                   CancellationToken token)
     {
         try
         {

@@ -11,7 +11,7 @@ using RabbitMQ.Client.Events;
 namespace Botticelli.Bus.Rabbit.Client;
 
 public class RabbitEventBusClient<TBot> : BasicFunctions<TBot>, IEventBusClient
-    where TBot : IBot
+        where TBot : IBot
 {
     private readonly ILogger<RabbitEventBusClient<TBot>> _logger;
     private readonly IConnectionFactory _rabbitConnectionFactory;
@@ -19,8 +19,8 @@ public class RabbitEventBusClient<TBot> : BasicFunctions<TBot>, IEventBusClient
     private EventingBasicConsumer _consumer;
 
     public RabbitEventBusClient(IConnectionFactory rabbitConnectionFactory,
-        RabbitBusSettings settings,
-        ILogger<RabbitEventBusClient<TBot>> logger)
+                                RabbitBusSettings settings,
+                                ILogger<RabbitEventBusClient<TBot>> logger)
     {
         _rabbitConnectionFactory = rabbitConnectionFactory;
         _settings = settings;
@@ -69,10 +69,10 @@ public class RabbitEventBusClient<TBot> : BasicFunctions<TBot>, IEventBusClient
             channel.ExchangeDeclarePassive(exchange);
 
         var queueDeclareResult = _settings
-            .QueueSettings
-            .TryCreate
-            ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false)
-            : channel.QueueDeclarePassive(queue);
+                                 .QueueSettings
+                                 .TryCreate ?
+                channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
+                channel.QueueDeclarePassive(queue);
 
         channel.BasicConsume(queue, true, _consumer);
 
@@ -90,9 +90,7 @@ public class RabbitEventBusClient<TBot> : BasicFunctions<TBot>, IEventBusClient
 
     private void InnerSend(object input, IModel channel, string queue)
     {
-        _ = _settings.QueueSettings is { TryCreate: true, CheckQueueOnPublish: true }
-            ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false)
-            : channel.QueueDeclarePassive(queue);
+        _ = _settings.QueueSettings is {TryCreate: true, CheckQueueOnPublish: true} ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) : channel.QueueDeclarePassive(queue);
 
         channel.QueueBind(queue, _settings.Exchange, queue);
         channel.BasicPublish(_settings.Exchange, queue, body: JsonSerializer.SerializeToUtf8Bytes(input));

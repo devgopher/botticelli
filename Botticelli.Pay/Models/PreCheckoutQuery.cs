@@ -3,7 +3,7 @@ using Botticelli.Shared.ValueObjects;
 namespace Botticelli.Pay.Models;
 
 /// <summary>
-/// A pre checkout query after sending an invoice to a user
+///     A pre checkout query after sending an invoice to a user
 /// </summary>
 public class PreCheckoutQuery
 {

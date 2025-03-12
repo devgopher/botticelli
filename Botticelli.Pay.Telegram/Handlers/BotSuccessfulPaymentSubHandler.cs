@@ -20,7 +20,7 @@ public class BotSuccessfulPaymentSubHandler : IBotUpdateSubHandler, IPreCheckout
     }
 
     public BotSuccessfulPaymentSubHandler(ILogger<BotSuccessfulPaymentSubHandler> logger,
-        PayChainRunner<BotSuccessfulPaymentSubHandler, PreCheckoutQuery> runner)
+                                          PayChainRunner<BotSuccessfulPaymentSubHandler, PreCheckoutQuery> runner)
     {
         _logger = logger;
         _runner = runner;
@@ -28,7 +28,6 @@ public class BotSuccessfulPaymentSubHandler : IBotUpdateSubHandler, IPreCheckout
 
     public async Task Process(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-        if (update.Message?.SuccessfulPayment is null)
-            return;
+        if (update.Message?.SuccessfulPayment is null) return;
     }
 }

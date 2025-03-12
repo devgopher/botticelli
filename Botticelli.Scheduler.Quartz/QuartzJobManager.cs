@@ -26,13 +26,12 @@ public class QuartzJobManager(ISchedulerFactory schedulerFactory) : IJobManager,
     }
 
     public string AddJob(IBot bot,
-        Reliability reliability,
-        Message message,
-        Scheduler.Schedule schedule,
-        Action<Message>? preprocessFunc = default)
+                         Reliability reliability,
+                         Message message,
+                         Scheduler.Schedule schedule,
+                         Action<Message>? preprocessFunc = default)
     {
-        if (!CronExpression.IsValidExpression(schedule.Cron))
-            throw new InvalidDataException($"Cron {schedule.Cron ?? "null"} is invalid!");
+        if (!CronExpression.IsValidExpression(schedule.Cron)) throw new InvalidDataException($"Cron {schedule.Cron ?? "null"} is invalid!");
 
         _scheduler ??= schedulerFactory.GetScheduler().Result;
 
@@ -47,25 +46,25 @@ public class QuartzJobManager(ISchedulerFactory schedulerFactory) : IJobManager,
 
         preprocessFunc?.Invoke(request.Message);
 
-        var job = !reliability.IsEnabled
-            ? JobBuilder.Create<SendMessageJob>()
-                .WithIdentity(jobId, "sendMessageJobGroup")
-                .UsingJobData("sendMessageRequest", serialized)
-                .Build()
-            : JobBuilder.Create<ReliableSendMessageJob>()
-                .WithIdentity(jobId, "reliableSendMessageJobGroup")
-                .UsingJobData("sendMessageRequest", serialized)
-                .Build();
+        var job = !reliability.IsEnabled ?
+                JobBuilder.Create<SendMessageJob>()
+                          .WithIdentity(jobId, "sendMessageJobGroup")
+                          .UsingJobData("sendMessageRequest", serialized)
+                          .Build() :
+                JobBuilder.Create<ReliableSendMessageJob>()
+                          .WithIdentity(jobId, "reliableSendMessageJobGroup")
+                          .UsingJobData("sendMessageRequest", serialized)
+                          .Build();
 
         var triggerId = GetTriggerIdentity();
 
         var trigger = TriggerBuilder.Create()
-            .ForJob(job)
-            .StartNow()
-            .WithCronSchedule(schedule.Cron)
-            .WithIdentity(triggerId)
-            .StartNow()
-            .Build();
+                                    .ForJob(job)
+                                    .StartNow()
+                                    .WithCronSchedule(schedule.Cron)
+                                    .WithIdentity(triggerId)
+                                    .StartNow()
+                                    .Build();
 
         _scheduler.ScheduleJob(job, trigger, _tokenSource.Token);
         _scheduler.Start();
@@ -77,8 +76,8 @@ public class QuartzJobManager(ISchedulerFactory schedulerFactory) : IJobManager,
     public void RemoveJob(string triggerId)
     {
         var existingKey = _triggerKeys.FirstOrDefault(k => k.Name == triggerId);
-        if (existingKey is null)
-            return;
+
+        if (existingKey is null) return;
 
         _scheduler.UnscheduleJob(existingKey, _tokenSource.Token);
         _triggerKeys.Remove(existingKey);
@@ -90,9 +89,18 @@ public class QuartzJobManager(ISchedulerFactory schedulerFactory) : IJobManager,
         _triggerKeys.Clear();
     }
 
-    private static string GetTriggerIdentity() => $"sendMessageJobGroupTrigger_{GetGuid()}";
+    private static string GetTriggerIdentity()
+    {
+        return $"sendMessageJobGroupTrigger_{GetGuid()}";
+    }
 
-    private static string GetGuid() => Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+    private static string GetGuid()
+    {
+        return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+    }
 
-    private static string GetJobId() => $"botticelliJob_{GetGuid()}";
+    private static string GetJobId()
+    {
+        return $"botticelliJob_{GetGuid()}";
+    }
 }

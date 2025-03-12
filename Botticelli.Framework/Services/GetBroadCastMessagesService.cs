@@ -16,15 +16,15 @@ namespace Botticelli.Framework.Services;
 /// <param name="logger"></param>
 /// <typeparam name="TBot"></typeparam>
 public class GetBroadCastMessagesService<TBot>(
-    IHttpClientFactory httpClientFactory,
-    ServerSettings serverSettings,
-    IBot bot,
-    ILogger<BotActualizationService> logger)
-    : PollActualizationService<GetBroadCastMessagesRequest, GetBroadCastMessagesResponse>(httpClientFactory,
-        "broadcast",
-        serverSettings,
-        bot,
-        logger)
+        IHttpClientFactory httpClientFactory,
+        ServerSettings serverSettings,
+        IBot bot,
+        ILogger<BotActualizationService> logger)
+        : PollActualizationService<GetBroadCastMessagesRequest, GetBroadCastMessagesResponse>(httpClientFactory,
+                                                                                              "broadcast",
+                                                                                              serverSettings,
+                                                                                              bot,
+                                                                                              logger)
 {
     private readonly IBot _bot = bot;
 
@@ -35,7 +35,7 @@ public class GetBroadCastMessagesService<TBot>(
 
         foreach (var message in response.Messages)
         {
-            var sendMessageRequest = new SendMessageRequest { Message = message };
+            var sendMessageRequest = new SendMessageRequest {Message = message};
 
             await _bot.SendMessageAsync(sendMessageRequest, ct);
         }

@@ -15,9 +15,9 @@ public abstract class BotAuthService<TDto, TEntity, TUserInfo>(
         where TDto : IBotAuthCredentials
         where TEntity : class
 {
-    protected readonly DbSet<TEntity> Users = authDefaultDbContext.Set<TEntity>();
     private readonly DbSet<AccessHistory<TEntity>> _accessHistory = authDefaultDbContext.Set<AccessHistory<TEntity>>();
     private readonly CredentialsRules<TDto> _credentialsRules = credentialsRulesBuilder.Build();
+    protected readonly DbSet<TEntity> Users = authDefaultDbContext.Set<TEntity>();
 
     public async Task<IdentifyResponse<TUserInfo>> Identify(TDto dto)
     {
@@ -26,7 +26,7 @@ public abstract class BotAuthService<TDto, TEntity, TUserInfo>(
         if (await _credentialsRules.Compare(dto))
         {
             response = await DoLogin(dto);
-            
+
             await _accessHistory.AddAsync(new AccessHistory<TEntity>
             {
                 TimestampUtc = DateTime.UtcNow,
@@ -53,6 +53,6 @@ public abstract class BotAuthService<TDto, TEntity, TUserInfo>(
     }
 
     protected abstract TUserInfo? GetDefaultUser(string defaultRoleName = DefaultRoles.Guest);
-    
+
     protected abstract Task<IdentifyResponse<TUserInfo>> DoLogin(TDto dto);
 }

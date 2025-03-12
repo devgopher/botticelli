@@ -13,5 +13,7 @@ public class MetricsInputService : IMetricsInputService
     }
 
     public async Task PushMetricAsync(PushMetricRequest<IMetricObject> request, CancellationToken token)
-        => await _rw.WriteAsync(request.Object, token);
+    {
+        await _rw.WriteAsync(request.Object, token);
+    }
 }

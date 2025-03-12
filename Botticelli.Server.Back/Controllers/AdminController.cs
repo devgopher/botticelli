@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Botticelli.Server.Back.Services;
+﻿using Botticelli.Server.Back.Services;
 using Botticelli.Server.Back.Services.Broadcasting;
 using Botticelli.Server.Data.Entities.Bot;
 using Botticelli.Server.Data.Entities.Bot.Broadcasting;
@@ -20,14 +19,14 @@ namespace Botticelli.Server.Back.Controllers;
 public class AdminController
 {
     private readonly IBotManagementService _botManagementService;
-    private readonly IBroadcastService _broadcastService;
     private readonly IBotStatusDataService _botStatusDataService;
+    private readonly IBroadcastService _broadcastService;
     private readonly ILogger<AdminController> _logger;
 
     public AdminController(IBotManagementService botManagementService,
-        IBotStatusDataService botStatusDataService,
-        ILogger<AdminController> logger,
-        IBroadcastService broadcastService)
+                           IBotStatusDataService botStatusDataService,
+                           ILogger<AdminController> logger,
+                           IBroadcastService broadcastService)
     {
         _botManagementService = botManagementService;
         _botStatusDataService = botStatusDataService;
@@ -40,9 +39,9 @@ public class AdminController
     {
         _logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) started...");
         var success = await _botManagementService.RegisterBot(request.BotId,
-            request.BotKey,
-            request.BotName,
-            request.Type);
+                                                              request.BotKey,
+                                                              request.BotName,
+                                                              request.Type);
 
         _logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) success: {success}...");
 
@@ -58,8 +57,8 @@ public class AdminController
     {
         _logger.LogInformation($"{nameof(UpdateBot)}({request.BotId}) started...");
         var success = await _botManagementService.UpdateBot(request.BotId,
-            request.BotKey,
-            request.BotName);
+                                                            request.BotKey,
+                                                            request.BotName);
 
         _logger.LogInformation($"{nameof(UpdateBot)}({request.BotId}) success: {success}...");
 
@@ -86,20 +85,28 @@ public class AdminController
             Body = message
         });
     }
-    
+
     [HttpGet("[action]")]
     public async Task<ICollection<BotInfo>> GetBots()
-        => _botStatusDataService.GetBots();
+    {
+        return _botStatusDataService.GetBots();
+    }
 
     [HttpGet("[action]")]
     public async Task ActivateBot([FromQuery] string botId)
-        => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Unlocked);
+    {
+        await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Unlocked);
+    }
 
     [HttpGet("[action]")]
     public async Task DeactivateBot([FromQuery] string botId)
-        => await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Locked);
+    {
+        await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Locked);
+    }
 
     [HttpGet("[action]")]
     public async Task RemoveBot([FromQuery] string botId)
-        => await _botManagementService.RemoveBot(botId);
+    {
+        await _botManagementService.RemoveBot(botId);
+    }
 }

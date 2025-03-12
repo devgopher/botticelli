@@ -4,7 +4,7 @@ using Botticelli.Interfaces;
 namespace Botticelli.Framework.Events;
 
 public delegate void MessengerSpecificEventHandler<T>(object sender, MessengerSpecificBotEventArgs<T> e)
-    where T : IBot;
+        where T : IBot;
 
 public delegate void MsgReceivedEventHandler(object sender, MessageReceivedBotEventArgs e);
 

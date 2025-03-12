@@ -8,7 +8,8 @@ namespace Botticelli.Server.Data.Entities.Bot;
 [Table("BotInfo")]
 public class BotInfo
 {
-    [Key] public required string BotId { get; init; }
+    [Key]
+    public required string BotId { get; init; }
 
     public required string BotName { get; set; }
     public DateTime? LastKeepAlive { get; set; }

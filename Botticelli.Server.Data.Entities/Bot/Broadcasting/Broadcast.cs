@@ -6,7 +6,8 @@ namespace Botticelli.Server.Data.Entities.Bot.Broadcasting;
 [Table("Broadcasts")]
 public class Broadcast
 {
-    [Key] public required string Id { get; set; }
+    [Key]
+    public required string Id { get; set; }
 
     public required string BotId { get; set; }
     public required string Body { get; set; }

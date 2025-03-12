@@ -8,5 +8,8 @@ public class StartBotRequest : BaseRequest<StartBotRequest>
     {
     }
 
-    public static StartBotRequest GetInstance() => new(BotIdUtils.GenerateShortBotId());
+    public static StartBotRequest GetInstance()
+    {
+        return new StartBotRequest(BotIdUtils.GenerateShortBotId());
+    }
 }

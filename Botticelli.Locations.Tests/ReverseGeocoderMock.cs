@@ -7,7 +7,8 @@ namespace Botticelli.Locations.Tests;
 public class ReverseGeocoderMock : IReverseGeocoder
 {
     public async Task<GeocodeResponse> ReverseGeocode(ReverseGeocodeRequest req)
-        => new()
+    {
+        return new GeocodeResponse
         {
             Latitude = req.Latitude.Value,
             Longitude = req.Longitude.Value,
@@ -27,4 +28,5 @@ public class ReverseGeocoderMock : IReverseGeocoder
                 Name = string.Empty
             }
         };
+    }
 }

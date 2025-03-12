@@ -21,21 +21,22 @@ public class YaGptProvider : ChatGptProvider<YaGptSettings>
     private const string Completion = "completion";
 
     public YaGptProvider(IOptions<YaGptSettings> gptSettings,
-        IHttpClientFactory? factory,
-        ILogger<YaGptProvider> logger,
-        IBusClient? bus,
-        IValidator<AiMessage>? messageValidator) : base(gptSettings,
-        factory,
-        logger,
-        bus,
-        messageValidator)
+                         IHttpClientFactory? factory,
+                         ILogger<YaGptProvider> logger,
+                         IBusClient? bus,
+                         IValidator<AiMessage>? messageValidator) : base(gptSettings,
+                                                                         factory,
+                                                                         logger,
+                                                                         bus,
+                                                                         messageValidator)
     {
     }
 
     public override string AiName => "yagpt";
 
-    protected override async Task ProcessGptResponse(AiMessage message, CancellationToken token,
-        HttpResponseMessage response)
+    protected override async Task ProcessGptResponse(AiMessage message,
+                                                     CancellationToken token,
+                                                     HttpResponseMessage response)
     {
         var text = new StringBuilder();
 
@@ -49,30 +50,30 @@ public class YaGptProvider : ChatGptProvider<YaGptSettings>
 
         while (await reader.ReadAsync(token))
         {
-            if (reader.TokenType != JsonToken.StartObject)
-                continue;
+            if (reader.TokenType != JsonToken.StartObject) continue;
 
             var part = serializer.Deserialize<YaGptOutputMessage>(reader);
 
             text.AppendJoin(' ',
-                part?.Result?
-                    .Alternatives?
-                    .Select(c => c.Message.Text) ?? Array.Empty<string>());
+                            part?.Result?
+                                    .Alternatives?
+                                    .Select(c => c.Message.Text) ??
+                            Array.Empty<string>());
 
             await Bus.SendResponse(new SendMessageResponse(message.Uid)
-                {
-                    Message = new Shared.ValueObjects.Message(message.Uid)
-                    {
-                        ChatIds = message.ChatIds,
-                        Subject = message.Subject,
-                        Body = text.ToString(),
-                        Attachments = null,
-                        From = null,
-                        ForwardedFrom = null,
-                        ReplyToMessageUid = message.ReplyToMessageUid
-                    }
-                },
-                token);
+                                   {
+                                       Message = new Shared.ValueObjects.Message(message.Uid)
+                                       {
+                                           ChatIds = message.ChatIds,
+                                           Subject = message.Subject,
+                                           Body = text.ToString(),
+                                           Attachments = null,
+                                           From = null,
+                                           ForwardedFrom = null,
+                                           ReplyToMessageUid = message.ReplyToMessageUid
+                                       }
+                                   },
+                                   token);
 
             if (Settings.Value.StreamGeneration)
                 if (part?.Result?.Alternatives?.Any(c => c.Message.Text.Contains("ALTERNATIVE_STATUS_FINAL")) ==
@@ -81,8 +82,9 @@ public class YaGptProvider : ChatGptProvider<YaGptSettings>
         }
     }
 
-    protected override async Task<HttpResponseMessage> GetGptResponse(AiMessage message, CancellationToken token,
-        HttpClient client)
+    protected override async Task<HttpResponseMessage> GetGptResponse(AiMessage message,
+                                                                      CancellationToken token,
+                                                                      HttpClient client)
     {
         var yaGptMessage = new YaGptInputMessage
         {
@@ -109,17 +111,18 @@ public class YaGptProvider : ChatGptProvider<YaGptSettings>
         };
 
         yaGptMessage.Messages.AddRange(message.AdditionalMessages?.Select(m => new YaGptMessage
-        {
-            Role = UserRole,
-            Text = m.Body
-        }) ?? new List<YaGptMessage>());
+                                       {
+                                           Role = UserRole,
+                                           Text = m.Body
+                                       }) ??
+                                       new List<YaGptMessage>());
 
         var content = JsonContent.Create(yaGptMessage);
 
         Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
         return await client.PostAsync(Url.Combine($"{Settings.Value.Url}", Completion),
-            content,
-            token);
+                                      content,
+                                      token);
     }
 }

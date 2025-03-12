@@ -16,24 +16,23 @@ public class BroadcastService(ServerDataContext context) : IBroadcastService
     }
 
     public async Task<IEnumerable<Broadcast>> GetMessages(string botId)
-        => await context.BroadcastMessages.Where(m => m.BotId.Equals(botId)).ToArrayAsync();
+    {
+        return await context.BroadcastMessages.Where(m => m.BotId.Equals(botId)).ToArrayAsync();
+    }
 
     public async Task MarkReceived(string botId, string messageId)
     {
         var messages = context.BroadcastMessages.Where(bm => bm.BotId == botId && bm.Id == messageId)
                               .ToList();
 
-        foreach (var message in messages)
-        {
-            message.Received = true;
-        }
-        
+        foreach (var message in messages) message.Received = true;
+
         context.UpdateRange(messages);
-        
+
         await context.SaveChangesAsync();
     }
-    
-    
+
+
     public async Task<List<Broadcast>> GetBroadcasts(string botId)
     {
         var broadcasts = context.BroadcastMessages.Where(x => x.BotId == botId && !x.Sent && !x.Received).ToList();
@@ -44,6 +43,7 @@ public class BroadcastService(ServerDataContext context) : IBroadcastService
     public async Task MarkAsReceived(string messageId)
     {
         var broadcast = context.BroadcastMessages.FirstOrDefault(x => x.Id == messageId);
+
         if (broadcast == null) return;
 
         broadcast.Received = true;

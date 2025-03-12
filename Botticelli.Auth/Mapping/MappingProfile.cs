@@ -9,10 +9,10 @@ public static class MappingProfile
     public static void UseProfile()
     {
         TypeAdapterConfig<BotUser, BotUserInfo>.NewConfig()
-            .IgnoreNullValues(true);
+                                               .IgnoreNullValues(true);
 
         TypeAdapterConfig<BotUserInfo, BotUser>.NewConfig()
-            .Map(dest => dest.IsActive, src => true)
-            .IgnoreNullValues(true);
+                                               .Map(dest => dest.IsActive, src => true)
+                                               .IgnoreNullValues(true);
     }
 }

@@ -1,5 +1,4 @@
-﻿using Botticelli.Server.Data.Entities.Bot.Broadcasting;
-using Botticelli.Shared.API.Admin.Responses;
+﻿using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.Constants;
 
 namespace Botticelli.Server.Back.Services;
@@ -16,7 +15,7 @@ public interface IBotManagementService
                          string botKey,
                          string botName,
                          Dictionary<string, string> additionalParams = null);
-    
+
 
     Task SetRequiredBotStatus(string botId, BotStatus status);
     Task SetKeepAlive(string botId);

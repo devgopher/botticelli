@@ -12,11 +12,9 @@ public class JsonLayoutParser : ILayoutParser
         var jsonDoc = JsonSerializer.Deserialize<JsonElement>(jsonText);
         var layout = new BaseLayout();
 
-        if (!jsonDoc.TryGetProperty("Name", out var layoutNameElement))
-            throw new LayoutException("'Name' property wasn't found");
+        if (!jsonDoc.TryGetProperty("Name", out var layoutNameElement)) throw new LayoutException("'Name' property wasn't found");
 
-        if (!jsonDoc.TryGetProperty("Layout", out var layoutParams))
-            throw new LayoutException("'Layout' property wasn't found");
+        if (!jsonDoc.TryGetProperty("Layout", out var layoutParams)) throw new LayoutException("'Layout' property wasn't found");
 
         // rows
         var subElements = layoutParams.EnumerateArray().ToList();
@@ -38,18 +36,18 @@ public class JsonLayoutParser : ILayoutParser
                     item.Params = new ItemParams
                     {
                         Align = cellParams.TryGetProperty("Align", out var alignElem) &&
-                                alignElem.TryGetInt32(out var align)
-                            ? (CellAlign)align
-                            : CellAlign.Left,
+                                alignElem.TryGetInt32(out var align) ?
+                                (CellAlign) align :
+                                CellAlign.Left,
                         Stretch = cellParams.TryGetProperty("Stretch", out var stretchElem) &&
-                                  stretchElem.TryGetInt32(out var stretch)
-                            ? stretch
-                            : 1
+                                  stretchElem.TryGetInt32(out var stretch) ?
+                                stretch :
+                                1
                     };
 
                 if (itemElement.TryGetProperty("Specials", out var messengerSpecific))
                     item.Control.MessengerSpecificParams =
-                        messengerSpecific.Deserialize<Dictionary<string, Dictionary<string, object>>>();
+                            messengerSpecific.Deserialize<Dictionary<string, Dictionary<string, object>>>();
 
                 row.AddItem(item);
             }

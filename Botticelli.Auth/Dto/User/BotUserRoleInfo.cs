@@ -9,7 +9,7 @@ public class BotUserRoleInfo
 {
     [Key]
     public required Guid Id { get; set; }
-    
+
     [MaxLength(16)]
     public required string RoleName { get; set; }
 

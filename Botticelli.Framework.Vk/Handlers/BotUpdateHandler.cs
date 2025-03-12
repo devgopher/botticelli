@@ -23,15 +23,15 @@ public class BotUpdateHandler : IBotUpdateHandler
         _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
         var botMessages = update?
-            .Where(x => x.Type == "message_new")
-            .ToList();
+                          .Where(x => x.Type == "message_new")
+                          .ToList();
 
         var messagesText = botMessages?.Select(bm =>
-            new
-            {
-                eventId = bm.EventId,
-                message = bm.Object["message"]
-            });
+                                                       new
+                                                       {
+                                                           eventId = bm.EventId,
+                                                           message = bm.Object["message"]
+                                                       });
 
         foreach (var botMessage in messagesText.EmptyIfNull())
             try
@@ -81,18 +81,19 @@ public class BotUpdateHandler : IBotUpdateHandler
     {
         _logger.LogDebug($"{nameof(Process)}({message.Uid}) started...");
 
-        if (token is { CanBeCanceled: true, IsCancellationRequested: true }) return Task.CompletedTask;
+        if (token is {CanBeCanceled: true, IsCancellationRequested: true}) return Task.CompletedTask;
 
         var clientNonChainedTasks = _serviceProvider.GetServices<ICommandChainProcessor>()
-            .Where(p => !p.GetType().IsAssignableTo(typeof(ICommandChainProcessor)))
-            .Select(p => p.ProcessAsync(message, token));
+                                                    .Where(p => !p.GetType().IsAssignableTo(typeof(ICommandChainProcessor)))
+                                                    .Select(p => p.ProcessAsync(message, token));
 
         var clientChainedTasks = _serviceProvider.GetServices<ICommandChainFirstElementProcessor>()
-            .Select(p => p.ProcessAsync(message, token));
+                                                 .Select(p => p.ProcessAsync(message, token));
 
         Task.WaitAll(clientNonChainedTasks.Concat(clientChainedTasks).ToArray(), token);
 
         _logger.LogDebug($"{nameof(Process)}({message.Uid}) finished...");
+
         return Task.CompletedTask;
     }
 }

@@ -10,19 +10,20 @@ namespace Botticelli.Framework.Controls.Layouts.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInlineCalendar<TReplyMarkup, TLayoutSupplier, TDateChosenCommandProcessor>(
-        this IServiceCollection services)
-        where TLayoutSupplier : class, ILayoutSupplier<TReplyMarkup>
-        where TDateChosenCommandProcessor : CommandProcessor<DateChosenCommand>
-        => services.AddSingleton<ILayoutSupplier<TReplyMarkup>, TLayoutSupplier>()
-            .AddSingleton<ICCommandProcessor<MonthForwardCommand, InlineKeyboardMarkup>>()
-            .AddSingleton<ICCommandProcessor<MonthBackwardCommand, InlineKeyboardMarkup>>()
-            .AddSingleton<ICCommandProcessor<YearForwardCommand, InlineKeyboardMarkup>>()
-            .AddSingleton<ICCommandProcessor<YearBackwardCommand, InlineKeyboardMarkup>>()
-            .AddSingleton<TDateChosenCommandProcessor>()
-            .AddSingleton<ICommandValidator<YearForwardCommand>, PassValidator<YearForwardCommand>>()
-            .AddSingleton<ICommandValidator<YearBackwardCommand>, PassValidator<YearBackwardCommand>>()
-            .AddSingleton<ICommandValidator<MonthForwardCommand>, PassValidator<MonthForwardCommand>>()
-            .AddSingleton<ICommandValidator<MonthBackwardCommand>, PassValidator<MonthBackwardCommand>>()
-            .AddSingleton<ICommandValidator<DateChosenCommand>, PassValidator<DateChosenCommand>>();
+    public static IServiceCollection AddInlineCalendar<TReplyMarkup, TLayoutSupplier, TDateChosenCommandProcessor>(this IServiceCollection services)
+            where TLayoutSupplier : class, ILayoutSupplier<TReplyMarkup>
+            where TDateChosenCommandProcessor : CommandProcessor<DateChosenCommand>
+    {
+        return services.AddSingleton<ILayoutSupplier<TReplyMarkup>, TLayoutSupplier>()
+                       .AddSingleton<ICCommandProcessor<MonthForwardCommand, InlineKeyboardMarkup>>()
+                       .AddSingleton<ICCommandProcessor<MonthBackwardCommand, InlineKeyboardMarkup>>()
+                       .AddSingleton<ICCommandProcessor<YearForwardCommand, InlineKeyboardMarkup>>()
+                       .AddSingleton<ICCommandProcessor<YearBackwardCommand, InlineKeyboardMarkup>>()
+                       .AddSingleton<TDateChosenCommandProcessor>()
+                       .AddSingleton<ICommandValidator<YearForwardCommand>, PassValidator<YearForwardCommand>>()
+                       .AddSingleton<ICommandValidator<YearBackwardCommand>, PassValidator<YearBackwardCommand>>()
+                       .AddSingleton<ICommandValidator<MonthForwardCommand>, PassValidator<MonthForwardCommand>>()
+                       .AddSingleton<ICommandValidator<MonthBackwardCommand>, PassValidator<MonthBackwardCommand>>()
+                       .AddSingleton<ICommandValidator<DateChosenCommand>, PassValidator<DateChosenCommand>>();
+    }
 }

@@ -12,13 +12,18 @@ public class MetricsProcessor
     }
 
     public void Process(string name, string? botId)
-        => Task.Run(() => _publisher.Publish(new MetricObject
-        {
-            Name = name,
-            Timestamp = DateTime.Now,
-            BotId = botId
-        }, CancellationToken.None));
+    {
+        Task.Run(() => _publisher.Publish(new MetricObject
+                                          {
+                                              Name = name,
+                                              Timestamp = DateTime.Now,
+                                              BotId = botId
+                                          },
+                                          CancellationToken.None));
+    }
 
     public void Process(IMetricObject metricObject)
-        => Task.Run(() => _publisher.Publish(metricObject, CancellationToken.None));
+    {
+        Task.Run(() => _publisher.Publish(metricObject, CancellationToken.None));
+    }
 }

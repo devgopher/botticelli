@@ -7,9 +7,11 @@ namespace Botticelli.Server.Analytics.Extensions;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAnalytics(this IServiceCollection services,
-        AnalyticsServerSettings serverSettings) =>
-        services.AddScoped<MetricsReaderWriter>()
-            .AddScoped<IMetricsInputService, MetricsInputService>()
-            .AddScoped<IMetricsOutputService, MetricsOutputService>()
-            .AddScoped<ICacheAccessor, LocalCacheAccessor>(_ => new LocalCacheAccessor(serverSettings.MaxCacheSize));
+                                                  AnalyticsServerSettings serverSettings)
+    {
+        return services.AddScoped<MetricsReaderWriter>()
+                       .AddScoped<IMetricsInputService, MetricsInputService>()
+                       .AddScoped<IMetricsOutputService, MetricsOutputService>()
+                       .AddScoped<ICacheAccessor, LocalCacheAccessor>(_ => new LocalCacheAccessor(serverSettings.MaxCacheSize));
+    }
 }

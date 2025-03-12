@@ -15,7 +15,9 @@
     };
 
     protected override async Task OnInitializedAsync()
-        => _hasNoUsers = !await SessionClient.HasUsersAsync();
+    {
+        _hasNoUsers = !await SessionClient.HasUsersAsync();
+    }
 }
 
 <PageTitle>Register User</PageTitle>
@@ -63,7 +65,6 @@
     private async Task OnValidSubmit()
     {
         var result = _hasNoUsers ? await SessionClient.RegisterDefaultUser(_model.Email) : await SessionClient.RegisterUser(_model.Email, _model.Password);
-        if (result.Code == 0)
-            UriHelper.NavigateTo("/", true);
+        if (result.Code == 0) UriHelper.NavigateTo("/", true);
     }
 }

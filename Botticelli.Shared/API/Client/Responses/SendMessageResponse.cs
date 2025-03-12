@@ -16,10 +16,15 @@ public class SendMessageResponse : BaseResponse<SendMessageResponse>
 
     public Message Message { get; set; }
 
-    public static SendMessageResponse GetInstance(string? techMessage) =>
-        new(BotIdUtils.GenerateShortBotId(), techMessage);
+    public static SendMessageResponse GetInstance(string? techMessage)
+    {
+        return new SendMessageResponse(BotIdUtils.GenerateShortBotId(), techMessage);
+    }
 
-    public static SendMessageResponse GetInstance(string? uid, string? techMessage) => new(uid, techMessage);
+    public static SendMessageResponse GetInstance(string? uid, string? techMessage)
+    {
+        return new SendMessageResponse(uid, techMessage);
+    }
 
     #region PartialResponses
 

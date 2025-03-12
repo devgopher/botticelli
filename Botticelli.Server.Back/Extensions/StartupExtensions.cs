@@ -11,11 +11,11 @@ namespace Botticelli.Server.Back.Extensions;
 public static class StartupExtensions
 {
     public static void ApplyMigrations<TContext>(this WebApplicationBuilder webApplicationBuilder)
-        where TContext : DbContext
+            where TContext : DbContext
     {
         using var scope = webApplicationBuilder.Services
-            .BuildServiceProvider()
-            .CreateScope();
+                                               .BuildServiceProvider()
+                                               .CreateScope();
 
         var db = scope.ServiceProvider.GetRequiredService<TContext>();
         var pendingMigrations = db.Database.GetPendingMigrations();
@@ -42,7 +42,7 @@ public static class StartupExtensions
 
             // User settings.
             options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@";
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@";
             options.User.RequireUniqueEmail = true;
         });
 
@@ -71,32 +71,32 @@ public static class StartupExtensions
         var thumbprint = config["ServerSettings:thumbprint"]!;
 
         var certificate = store.Certificates
-            .FirstOrDefault(c => c.FriendlyName == "BotticelliBotsServerBack" && c.Thumbprint == thumbprint);
+                               .FirstOrDefault(c => c.FriendlyName == "BotticelliBotsServerBack" && c.Thumbprint == thumbprint);
 
         if (certificate == null) throw new KeyNotFoundException("Can't find SSL certificate!");
 
         return builder
-            .UseKestrel(options =>
-            {
-                options.Listen(IPAddress.Loopback,
-                    port,
-                    listenOptions =>
-                    {
-                        var connectionOptions = new HttpsConnectionAdapterOptions
-                        {
-                            ServerCertificate = certificate,
-                            ClientCertificateMode = ClientCertificateMode.AllowCertificate,
-                            ClientCertificateValidation = (_, _, errors) =>
-                            {
-                                if (errors != SslPolicyErrors.None) return false;
+                .UseKestrel(options =>
+                {
+                    options.Listen(IPAddress.Loopback,
+                                   port,
+                                   listenOptions =>
+                                   {
+                                       var connectionOptions = new HttpsConnectionAdapterOptions
+                                       {
+                                           ServerCertificate = certificate,
+                                           ClientCertificateMode = ClientCertificateMode.AllowCertificate,
+                                           ClientCertificateValidation = (_, _, errors) =>
+                                           {
+                                               if (errors != SslPolicyErrors.None) return false;
 
-                                return true;
-                            }
-                        };
+                                               return true;
+                                           }
+                                       };
 
-                        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                        listenOptions.UseHttps(connectionOptions);
-                    });
-            });
+                                       listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                                       listenOptions.UseHttps(connectionOptions);
+                                   });
+                });
     }
 }

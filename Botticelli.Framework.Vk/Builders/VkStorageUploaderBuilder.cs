@@ -19,7 +19,9 @@ public class VkStorageUploaderBuilder
     }
 
     public static VkStorageUploaderBuilder Instance(BotSettingsBuilder<VkBotSettings> settingsBuilder)
-        => new();
+    {
+        return new VkStorageUploaderBuilder();
+    }
 
     public VkStorageUploaderBuilder AddLogger(ILogger<MessagePublisher> logger)
     {
@@ -42,5 +44,8 @@ public class VkStorageUploaderBuilder
         return this;
     }
 
-    public VkStorageUploader? Build() => new(_httpClientFactory, _audioConvertor, _logger);
+    public VkStorageUploader? Build()
+    {
+        return new VkStorageUploader(_httpClientFactory, _audioConvertor, _logger);
+    }
 }

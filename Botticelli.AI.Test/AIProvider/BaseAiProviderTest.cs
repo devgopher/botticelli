@@ -20,10 +20,10 @@ namespace Botticelli.AI.Test.AIProvider;
 public abstract class BaseAiProviderTest
 {
     protected const string ResponseString =
-        "\"Wololo\" is the battle cry of the Priest unit featured in the 1997 historical real-time strategy " +
-        "game Age of Empires. Due to its association with the Priest's mystical ability to assume control of an opponent's unit" +
-        " through conversion, the sound effect has gained notoriety among the fans as one of the most dreaded stock lines " +
-        "from the game.";
+            "\"Wololo\" is the battle cry of the Priest unit featured in the 1997 historical real-time strategy " +
+            "game Age of Empires. Due to its association with the Priest's mystical ability to assume control of an opponent's unit" +
+            " through conversion, the sound effect has gained notoriety among the fans as one of the most dreaded stock lines " +
+            "from the game.";
 
     protected readonly AiSettings AiSettings = new()
     {

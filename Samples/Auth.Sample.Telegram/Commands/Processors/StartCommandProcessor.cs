@@ -17,8 +17,8 @@ namespace Auth.Sample.Telegram.Commands.Processors;
 public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand> where TReplyMarkup : class
 {
     private readonly SendOptionsBuilder<TReplyMarkup>? _options;
-    private readonly IIdentifier<BotAuthCredentials, BotUserInfo> _userInfo;
     private readonly IManager<BotUserRoleInfo> _roleManager;
+    private readonly IIdentifier<BotAuthCredentials, BotUserInfo> _userInfo;
 
     public StartCommandProcessor(ILogger<StartCommandProcessor<TReplyMarkup>> logger,
                                  ICommandValidator<StartCommand> commandValidator,
@@ -61,7 +61,7 @@ public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand
     {
         var user = await _userInfo.Identify(new BotAuthCredentials {UserId = message.ChatIds.First()});
         var role = (await _roleManager.Get()).FirstOrDefault(r => r.Id == user.User?.RoleId);
-        
+
         var greetingMessageRequest = new SendMessageRequest
         {
             Message = new Message

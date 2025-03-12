@@ -3,14 +3,13 @@
 namespace Botticelli.Framework.Controls.Parsers;
 
 public class LayoutLoader<TLayoutParser, TLayoutSupplier, TMarkup>(TLayoutParser parser, TLayoutSupplier supplier)
-    : ILayoutLoader<TMarkup>
-    where TLayoutParser : ILayoutParser
-    where TLayoutSupplier : ILayoutSupplier<TMarkup>
+        : ILayoutLoader<TMarkup>
+        where TLayoutParser : ILayoutParser
+        where TLayoutSupplier : ILayoutSupplier<TMarkup>
 {
     public TMarkup GetMarkup(string configPath)
     {
-        if (!File.Exists(configPath))
-            throw new LayoutException($"Can't find layout config file: {configPath}!");
+        if (!File.Exists(configPath)) throw new LayoutException($"Can't find layout config file: {configPath}!");
 
         try
         {

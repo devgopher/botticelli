@@ -4,13 +4,13 @@ namespace Botticelli.Shared.Utils;
 
 public static partial class BotIdUtils
 {
-    private static readonly Random Random = new((int)(DateTime.Now.Ticks % int.MaxValue));
+    private static readonly Random Random = new((int) (DateTime.Now.Ticks % int.MaxValue));
 
     private static byte[] GenerateSalt(int size)
     {
         var salt = new byte[size];
 
-        for (var i = 0; i < size; i++) salt[i] = (byte)(Random.Next() % (byte.MaxValue + 1));
+        for (var i = 0; i < size; i++) salt[i] = (byte) (Random.Next() % (byte.MaxValue + 1));
 
         return salt;
     }
@@ -27,10 +27,14 @@ public static partial class BotIdUtils
     }
 
     public static string? GenerateShortBotId()
-        => ReplaceSymbols().Replace(Convert.ToBase64String(BitWiseSum(Guid.NewGuid().ToByteArray(),
-                GenerateSalt(32))), string.Empty)
-            .Replace("\r", string.Empty)
-            .Replace("\n", string.Empty);
+    {
+        return ReplaceSymbols()
+               .Replace(Convert.ToBase64String(BitWiseSum(Guid.NewGuid().ToByteArray(),
+                                                          GenerateSalt(32))),
+                        string.Empty)
+               .Replace("\r", string.Empty)
+               .Replace("\n", string.Empty);
+    }
 
     [GeneratedRegex("[/+=]")]
     private static partial Regex ReplaceSymbols();

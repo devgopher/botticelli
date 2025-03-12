@@ -11,7 +11,7 @@ namespace Botticelli.Bus.None.Agent;
 /// </summary>
 /// <typeparam name="THandler"></typeparam>
 public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
-    where THandler : IHandler<SendMessageRequest, SendMessageResponse>
+        where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
     private readonly THandler _handler;
 
@@ -32,14 +32,21 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
     public async Task SendResponseAsync(SendMessageResponse response,
-        CancellationToken token,
-        int timeoutMs = 10000) =>
+                                        CancellationToken token,
+                                        int timeoutMs = 10000)
+    {
         NoneBus.SendMessageResponses.Enqueue(response);
+    }
 
     public Task StartAsync(CancellationToken token)
-        => Task.Run(async () => await InnerProcess(_handler, token));
+    {
+        return Task.Run(async () => await InnerProcess(_handler, token));
+    }
 
-    public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 
     private async Task InnerProcess(THandler handler, CancellationToken token)
     {

@@ -10,13 +10,16 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Locations.Commands.CommandProcessors;
 
 public class MapCommandProcessor<TReplyMarkup> : CommandProcessor<MapCommand>
-    where TReplyMarkup : class
+        where TReplyMarkup : class
 {
     public MapCommandProcessor(ILogger<MapCommandProcessor<TReplyMarkup>> logger,
-        ICommandValidator<MapCommand> commandValidator,
-        MetricsProcessor metricsProcessor,
-        IValidator<Message> messageValidator)
-        : base(logger, commandValidator, metricsProcessor, messageValidator)
+                               ICommandValidator<MapCommand> commandValidator,
+                               MetricsProcessor metricsProcessor,
+                               IValidator<Message> messageValidator)
+            : base(logger,
+                   commandValidator,
+                   metricsProcessor,
+                   messageValidator)
     {
     }
 

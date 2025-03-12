@@ -8,7 +8,9 @@ namespace Botticelli.BotData.Entities.Bot;
 [Table("BotData")]
 public class BotData
 {
-    [Key] public required string BotId { get; set; }
+    [Key]
+    public required string BotId { get; set; }
+
     public BotStatus? Status { get; set; }
     public BotType? Type { get; set; }
     public string? BotKey { get; set; }

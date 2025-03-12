@@ -16,15 +16,16 @@ public class TelegramClientDecorator : ITelegramBotClient
     private readonly HttpClient? _httpClient;
 
     private readonly RetryPolicy _policy = Policy
-        .Handle<ApiRequestException>(e => e.ErrorCode == (int)HttpStatusCode.TooManyRequests)
-        .WaitAndRetry(10, (i, _) => TimeSpan.FromSeconds(10 * Math.Exp(i)));
+                                           .Handle<ApiRequestException>(e => e.ErrorCode == (int) HttpStatusCode.TooManyRequests)
+                                           .WaitAndRetry(10, (i, _) => TimeSpan.FromSeconds(10 * Math.Exp(i)));
 
     private readonly IThrottler? _throttler;
     private TelegramBotClient? _innerClient;
     private TelegramBotClientOptions _options;
 
-    internal TelegramClientDecorator(TelegramBotClientOptions options, IThrottler? throttler,
-        HttpClient? httpClient = null)
+    internal TelegramClientDecorator(TelegramBotClientOptions options,
+                                     IThrottler? throttler,
+                                     HttpClient? httpClient = null)
     {
         _throttler = throttler;
         _options = options;
@@ -34,20 +35,19 @@ public class TelegramClientDecorator : ITelegramBotClient
 
 
     public async Task<TResponse> SendRequest<TResponse>(IRequest<TResponse> request,
-        CancellationToken cancellationToken = new())
+                                                        CancellationToken cancellationToken = new())
     {
         try
         {
             return await _policy.Execute(async () =>
-                {
-                    if (_throttler != null)
-                        return await _throttler.Throttle(
-                            async () => await _innerClient?.SendRequest(request, cancellationToken)!,
-                            cancellationToken);
+                                {
+                                    if (_throttler != null)
+                                        return await _throttler.Throttle(async () => await _innerClient?.SendRequest(request, cancellationToken)!,
+                                                                         cancellationToken);
 
-                    return await _innerClient?.SendRequest(request, cancellationToken)!;
-                })
-                .ConfigureAwait(false);
+                                    return await _innerClient?.SendRequest(request, cancellationToken)!;
+                                })
+                                .ConfigureAwait(false);
         }
         catch (ApiRequestException ex)
         {
@@ -59,28 +59,35 @@ public class TelegramClientDecorator : ITelegramBotClient
 
     [Obsolete("Use SendRequest")]
     public Task<TResponse> MakeRequest<TResponse>(IRequest<TResponse> request,
-        CancellationToken cancellationToken = new())
-        => SendRequest(request, cancellationToken);
+                                                  CancellationToken cancellationToken = new())
+    {
+        return SendRequest(request, cancellationToken);
+    }
 
     [Obsolete("Use SendRequest")]
     public async Task<TResponse> MakeRequestAsync<TResponse>(IRequest<TResponse> request,
-        CancellationToken cancellationToken = new())
-        => await SendRequest(request, cancellationToken);
+                                                             CancellationToken cancellationToken = new())
+    {
+        return await SendRequest(request, cancellationToken);
+    }
 
-    public Task<bool> TestApi(CancellationToken cancellationToken = new()) => throw new NotImplementedException();
+    public Task<bool> TestApi(CancellationToken cancellationToken = new())
+    {
+        throw new NotImplementedException();
+    }
 
 
     public async Task DownloadFile(string filePath,
-        Stream destination,
-        CancellationToken cancellationToken = new())
+                                   Stream destination,
+                                   CancellationToken cancellationToken = new())
     {
         try
         {
             await _policy.Execute(async () =>
-            {
-                if (_innerClient != null)
-                    await _innerClient?.DownloadFile(filePath, destination, cancellationToken)!;
-            }).ConfigureAwait(false);
+                         {
+                             if (_innerClient != null) await _innerClient?.DownloadFile(filePath, destination, cancellationToken)!;
+                         })
+                         .ConfigureAwait(false);
         }
         catch (ApiRequestException ex)
         {

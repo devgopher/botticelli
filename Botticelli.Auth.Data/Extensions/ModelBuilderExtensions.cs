@@ -6,7 +6,7 @@ namespace Botticelli.Auth.Data.Extensions;
 public static class ModelBuilderExtensions
 {
     /// <summary>
-    /// Adds auth database model for Botticelli Botticelli.Auth.Sample.Telegram
+    ///     Adds auth database model for Botticelli Botticelli.Auth.Sample.Telegram
     /// </summary>
     /// <param name="modelBuilder"></param>
     /// <returns></returns>
@@ -14,16 +14,16 @@ public static class ModelBuilderExtensions
     {
         modelBuilder.Entity<BotUser>()
                     .HasKey(u => u.UserId);
-        
+
         modelBuilder.Entity<BotUserRole>()
                     .HasMany<BotUser>()
                     .WithOne(r => r.Role)
                     .HasPrincipalKey(r => r.Id);
-        
+
         modelBuilder.Entity<BotUserRole>()
                     .HasIndex(i => i.RoleName)
                     .IsUnique();
-        
+
         return modelBuilder;
     }
 }

@@ -23,8 +23,7 @@ public class UniversalLowQualityConvertor : IConvertor
     {
         try
         {
-            if (tgtParams.AudioFormat is AudioFormat.M4a or AudioFormat.Aac or AudioFormat.Opus or AudioFormat.Ogg)
-                return ProcessByStreamEncoder(input, tgtParams);
+            if (tgtParams.AudioFormat is AudioFormat.M4a or AudioFormat.Aac or AudioFormat.Opus or AudioFormat.Ogg) return ProcessByStreamEncoder(input, tgtParams);
 
             var srcParams = _analyzer.Analyze(input);
 
@@ -37,6 +36,7 @@ public class UniversalLowQualityConvertor : IConvertor
         catch (Exception ex)
         {
             _logger.LogError($"{nameof(Convert)} => ({tgtParams.AudioFormat}, {tgtParams.Bitrate}) error", ex);
+
             throw new AudioConvertorException($"Audio conversion error: {ex.Message}", ex);
         }
     }
@@ -58,16 +58,20 @@ public class UniversalLowQualityConvertor : IConvertor
             {
                 case AudioFormat.Ogg:
                     codec = "ogg";
+
                     break;
                 case AudioFormat.Aac:
                 case AudioFormat.M4a:
                     codec = "aac";
+
                     break;
                 case AudioFormat.Opus:
                     codec = "opus";
+
                     break;
                 case AudioFormat.Wav:
                     codec = "wav";
+
                     break;
                 case AudioFormat.Unknown:
                 default:
@@ -76,20 +80,22 @@ public class UniversalLowQualityConvertor : IConvertor
 
             using var output = new MemoryStream();
             FFMpegArguments
-                .FromPipeInput(new StreamPipeSource(input))
-                .OutputToPipe(new StreamPipeSink(output), options => options
-                    .ForceFormat(codec)
-                    .WithAudioBitrate(tgtParams.Bitrate))
-                .ProcessSynchronously(ffMpegOptions: new FFOptions
-                {
-                    BinaryFolder = "ffmpeg"
-                });
+                    .FromPipeInput(new StreamPipeSource(input))
+                    .OutputToPipe(new StreamPipeSink(output),
+                                  options => options
+                                             .ForceFormat(codec)
+                                             .WithAudioBitrate(tgtParams.Bitrate))
+                    .ProcessSynchronously(ffMpegOptions: new FFOptions
+                    {
+                        BinaryFolder = "ffmpeg"
+                    });
 
             return output.ToArray();
         }
         catch (IOException ex)
         {
             _logger.LogError($"{nameof(Convert)} => ({tgtParams.AudioFormat}, {tgtParams.Bitrate}) error", ex);
+
             return Array.Empty<byte>();
         }
     }
@@ -100,7 +106,7 @@ public class UniversalLowQualityConvertor : IConvertor
         {
             AudioFormat.Mp3 => new Mp3FileReader(input),
             AudioFormat.Ogg => new VorbisWaveReader(input),
-            _ => new WaveFileReader(input)
+            _               => new WaveFileReader(input)
         };
     }
 
@@ -111,12 +117,13 @@ public class UniversalLowQualityConvertor : IConvertor
         Stream writerStream = srcParams.AudioFormat switch
         {
             AudioFormat.Mp3 => new LameMP3FileWriter(ms, input.WaveFormat, LAMEPreset.ABR_16),
-            _ => new WaveFileWriter(ms, input.WaveFormat)
+            _               => new WaveFileWriter(ms, input.WaveFormat)
         };
 
         input.CopyTo(writerStream);
 
         writerStream.Dispose();
+
         return ms;
     }
 }

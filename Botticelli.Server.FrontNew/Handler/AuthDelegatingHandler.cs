@@ -14,7 +14,7 @@ public class AuthDelegatingHandler : DelegatingHandler
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-        CancellationToken cancellationToken)
+                                                                 CancellationToken cancellationToken)
     {
         var session = _sessionClient.GetSession();
 

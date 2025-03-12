@@ -19,7 +19,9 @@ public class LongPollMessagesProviderBuilder
     }
 
     public static LongPollMessagesProviderBuilder Instance(BotSettingsBuilder<VkBotSettings> settingsBuilder)
-        => new(settingsBuilder);
+    {
+        return new LongPollMessagesProviderBuilder(settingsBuilder);
+    }
 
     public LongPollMessagesProviderBuilder AddLogger(ILogger<LongPollMessagesProvider> logger)
     {
@@ -35,5 +37,8 @@ public class LongPollMessagesProviderBuilder
         return this;
     }
 
-    public LongPollMessagesProvider Build() => new(_settingsBuilder.Build(), _httpClientFactory, _logger);
+    public LongPollMessagesProvider Build()
+    {
+        return new LongPollMessagesProvider(_settingsBuilder.Build(), _httpClientFactory, _logger);
+    }
 }

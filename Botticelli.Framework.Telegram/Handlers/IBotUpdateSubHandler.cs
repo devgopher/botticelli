@@ -9,6 +9,6 @@ namespace Botticelli.Framework.Telegram.Handlers;
 public interface IBotUpdateSubHandler
 {
     public Task Process(ITelegramBotClient botClient,
-        Update update,
-        CancellationToken cancellationToken);
+                        Update update,
+                        CancellationToken cancellationToken);
 }

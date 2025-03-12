@@ -51,17 +51,15 @@ public class DeepSeekGptProviderTest : BaseAiProviderTest
         };
 
         Server?.Given(Request.Create().WithPath("/completions").UsingPost())
-            .RespondWith(
-                Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(JsonSerializer.Serialize(responseMessage))
-            );
+              .RespondWith(Response.Create()
+                                   .WithStatusCode(200)
+                                   .WithBody(JsonSerializer.Serialize(responseMessage)));
 
         AiProvider = new DeepSeekGptProvider(new OptionsMock<DeepSeekGptSettings>(DeepSeekGptSettings),
-            ClientFactory,
-            LoggerMocks.CreateConsoleLogger<DeepSeekGptProvider>(),
-            BusClient,
-            Validator);
+                                             ClientFactory,
+                                             LoggerMocks.CreateConsoleLogger<DeepSeekGptProvider>(),
+                                             BusClient,
+                                             Validator);
     }
 
     private DeepSeekGptSettings DeepSeekGptSettings => new()
@@ -75,5 +73,8 @@ public class DeepSeekGptProviderTest : BaseAiProviderTest
 
     [Test]
     [TestCase("test query")]
-    public async Task SendAsyncTest(string query) => await InnerSendAsyncTest(query);
+    public async Task SendAsyncTest(string query)
+    {
+        await InnerSendAsyncTest(query);
+    }
 }

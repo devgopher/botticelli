@@ -20,7 +20,7 @@ public abstract class BotBuilder<TBot>
 }
 
 public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
-    where TBotBuilder : BotBuilder<TBot>
+        where TBotBuilder : BotBuilder<TBot>
 {
     private readonly ServerSettings _serverSettings;
     protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientSettingsBuilder;
@@ -40,10 +40,9 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
     }
 
     public abstract TBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
-        where TBotSettings : BotSettings, new();
+            where TBotSettings : BotSettings, new();
 
-    public TBotBuilder AddAnalyticsSettings(
-        AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
+    public TBotBuilder AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
     {
         AnalyticsClientSettingsBuilder = clientSettingsBuilder;
 

@@ -27,18 +27,21 @@ public class UniversalLowQualityConvertorTests
         AssertOutcome(outcome);
     }
 
-    private static void AssertOutcome(byte[]? outcome) => Assert.That(outcome != null && outcome.Any());
+    private static void AssertOutcome(byte[]? outcome)
+    {
+        Assert.That(outcome != null && outcome.Any());
+    }
 
     private byte[] GetOutcome(AudioInfo audioInfo)
     {
         using var stream = File.OpenRead("voice.mp3");
+
         return _convertor.Convert(stream, audioInfo);
     }
 
     private static void Check()
     {
-        if (!File.Exists("voice.mp3"))
-            Assert.Fail("no voice.mp3!");
+        if (!File.Exists("voice.mp3")) Assert.Fail("no voice.mp3!");
     }
 
     [Test]

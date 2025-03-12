@@ -13,19 +13,19 @@ public class MetricsContext : DbContext
         _cacheAccessor = cacheAccessor;
         ChangeTracker.DetectingEntityChanges += (sender, args) =>
         {
-            if (args.Entry.Entity is not MetricModel model)
-                return;
+            if (args.Entry.Entity is not MetricModel model) return;
 
             switch (args.Entry.State)
             {
                 case EntityState.Deleted:
                     _cacheAccessor.Remove(model);
+
                     break;
                 case EntityState.Added:
                     _cacheAccessor.Set(model);
+
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                default: throw new ArgumentOutOfRangeException();
             }
         };
     }

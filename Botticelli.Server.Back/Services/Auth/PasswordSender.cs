@@ -22,22 +22,21 @@ public class PasswordSender : IPasswordSender
     {
         _logger.LogInformation($"Sending a password message to : {email}");
 
-        if (EnvironmentExtensions.IsDevelopment())
-            _logger.LogInformation($"!!! Email : {email} password: {password} !!! ONLY FOR DEVELOPMENT PURPOSES !!!");
+        if (EnvironmentExtensions.IsDevelopment()) _logger.LogInformation($"!!! Email : {email} password: {password} !!! ONLY FOR DEVELOPMENT PURPOSES !!!");
 
         var message = Email.From(_serverSettings.ServerEmail, "BotticelliBots Admin Service")
-            .To(email)
-            .Subject("BotticelliBots user credentials")
-            .Body($"Your login/password: {email} / {password}");
+                           .To(email)
+                           .Subject("BotticelliBots user credentials")
+                           .Body($"Your login/password: {email} / {password}");
 
-        if (ct is { CanBeCanceled: true, IsCancellationRequested: true })
-            return;
+        if (ct is {CanBeCanceled: true, IsCancellationRequested: true}) return;
 
         var sendResult = await _fluentEmail.SendAsync(message, ct);
 
         if (!sendResult.Successful)
         {
             _logger.LogError($"Sending a password message to : {email} error", sendResult.ErrorMessages);
+
             throw new InvalidOperationException($"Sending mail errors:  {string.Join(',', sendResult.ErrorMessages)}");
         }
 

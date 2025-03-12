@@ -56,11 +56,15 @@
 
 @code {
 
-    [Parameter] public string BotId { get; set; }
+    [Parameter]
+    public string BotId { get; set; }
 
     readonly BotModel _model = new();
 
-    protected override bool ShouldRender() => true;
+    protected override bool ShouldRender()
+    {
+        return true;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -80,10 +84,10 @@
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
 
         var botStatusResponse = await http.PostAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/bot/client/GetRequiredBotStatus"),
-            new GetRequiredStatusFromServerRequest
-            {
-                BotId = BotId
-            });
+                                                           new GetRequiredStatusFromServerRequest
+                                                           {
+                                                               BotId = BotId
+                                                           });
 
         return await botStatusResponse.Content.ReadFromJsonAsync<GetRequiredStatusFromServerResponse>();
     }
@@ -113,7 +117,7 @@
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
         var response = await Http.PutAsJsonAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/UpdateBot"),
-            request);
+                                                 request);
 
         var updateBotResponse = await response.Content.ReadFromJsonAsync<UpdateBotResponse>();
 

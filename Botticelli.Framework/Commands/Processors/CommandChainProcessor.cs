@@ -12,13 +12,17 @@ namespace Botticelli.Framework.Commands.Processors;
 /// </summary>
 /// <typeparam name="TInputCommand"></typeparam>
 public abstract class CommandChainProcessor<TInputCommand> : CommandProcessor<TInputCommand>,
-    ICommandChainProcessor<TInputCommand>
-    where TInputCommand : class, ICommand
+                                                             ICommandChainProcessor<TInputCommand>
+        where TInputCommand : class, ICommand
 {
     public CommandChainProcessor(ILogger<CommandChainProcessor<TInputCommand>> logger,
-        ICommandValidator<TInputCommand> commandValidator,
-        MetricsProcessor metricsProcessor, IValidator<Message> messageValidator)
-        : base(logger, commandValidator, metricsProcessor, messageValidator)
+                                 ICommandValidator<TInputCommand> commandValidator,
+                                 MetricsProcessor metricsProcessor,
+                                 IValidator<Message> messageValidator)
+            : base(logger,
+                   commandValidator,
+                   metricsProcessor,
+                   messageValidator)
     {
     }
 

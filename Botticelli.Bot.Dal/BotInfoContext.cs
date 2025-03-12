@@ -23,6 +23,6 @@ public class BotInfoContext : DbContext
     {
         modelBuilder.Entity<BotData.Entities.Bot.BotData>();
         modelBuilder.Entity<BotAdditionalInfo>();
-        modelBuilder.Entity<Chat>().HasKey(c => new { c.ChatId, c.BotId });
+        modelBuilder.Entity<Chat>().HasKey(c => new {c.ChatId, c.BotId});
     }
 }

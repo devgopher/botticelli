@@ -19,7 +19,9 @@ public class MessagePublisherBuilder
     }
 
     public static MessagePublisherBuilder Instance(BotSettingsBuilder<VkBotSettings> settingsBuilder)
-        => new(settingsBuilder);
+    {
+        return new MessagePublisherBuilder(settingsBuilder);
+    }
 
     public MessagePublisherBuilder AddLogger(ILogger<MessagePublisher> logger)
     {
@@ -35,5 +37,8 @@ public class MessagePublisherBuilder
         return this;
     }
 
-    public MessagePublisher? Build() => new(_httpClientFactory, _logger);
+    public MessagePublisher? Build()
+    {
+        return new MessagePublisher(_httpClientFactory, _logger);
+    }
 }

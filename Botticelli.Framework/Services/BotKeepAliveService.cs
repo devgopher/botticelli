@@ -7,12 +7,12 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Framework.Services;
 
 public class BotKeepAliveService(
-    IHttpClientFactory httpClientFactory,
-    ServerSettings serverSettings,
-    IBot bot,
-    ILogger<BotActualizationService> logger)
-    : PollActualizationService<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(httpClientFactory,
-        "keepalive",
-        serverSettings,
-        bot,
-        logger);
+        IHttpClientFactory httpClientFactory,
+        ServerSettings serverSettings,
+        IBot bot,
+        ILogger<BotActualizationService> logger)
+        : PollActualizationService<KeepAliveNotificationRequest, KeepAliveNotificationResponse>(httpClientFactory,
+                                                                                                "keepalive",
+                                                                                                serverSettings,
+                                                                                                bot,
+                                                                                                logger);

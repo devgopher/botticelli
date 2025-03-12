@@ -16,49 +16,51 @@ namespace Botticelli.AI.GptJ.Provider;
 public class GptJProvider : ChatGptProvider<AiGptSettings>
 {
     public GptJProvider(IOptionsSnapshot<AiGptSettings> gptSettings,
-        IHttpClientFactory? factory,
-        ILogger<GptJProvider> logger,
-        IBusClient? bus,
-        IValidator<AiMessage>? messageValidator) : base(gptSettings,
-        factory,
-        logger,
-        bus,
-        messageValidator)
+                        IHttpClientFactory? factory,
+                        ILogger<GptJProvider> logger,
+                        IBusClient? bus,
+                        IValidator<AiMessage>? messageValidator) : base(gptSettings,
+                                                                        factory,
+                                                                        logger,
+                                                                        bus,
+                                                                        messageValidator)
     {
     }
 
     public override string AiName => "gptj";
 
-    protected override async Task ProcessGptResponse(AiMessage message, CancellationToken token,
-        HttpResponseMessage response)
+    protected override async Task ProcessGptResponse(AiMessage message,
+                                                     CancellationToken token,
+                                                     HttpResponseMessage response)
     {
         var outMessage = await response.Content.ReadFromJsonAsync<GptJOutputMessage>(token);
 
         await Bus.SendResponse(new SendMessageResponse(message.Uid)
-            {
-                IsPartial = false,
-                Message = new Shared.ValueObjects.Message(message.Uid)
-                {
-                    ChatIds = message.ChatIds,
-                    Subject = message.Subject,
-                    Body = outMessage?.Completion,
-                    Attachments = null,
-                    From = null,
-                    ForwardedFrom = null,
-                    ReplyToMessageUid = message.ReplyToMessageUid
-                }
-            },
-            token);
+                               {
+                                   IsPartial = false,
+                                   Message = new Shared.ValueObjects.Message(message.Uid)
+                                   {
+                                       ChatIds = message.ChatIds,
+                                       Subject = message.Subject,
+                                       Body = outMessage?.Completion,
+                                       Attachments = null,
+                                       From = null,
+                                       ForwardedFrom = null,
+                                       ReplyToMessageUid = message.ReplyToMessageUid
+                                   }
+                               },
+                               token);
     }
 
-    protected override async Task<HttpResponseMessage> GetGptResponse(AiMessage message, CancellationToken token,
-        HttpClient client)
+    protected override async Task<HttpResponseMessage> GetGptResponse(AiMessage message,
+                                                                      CancellationToken token,
+                                                                      HttpClient client)
     {
         client.BaseAddress = new Uri(Settings.Value.Url);
 
         if (!string.IsNullOrWhiteSpace(Settings.Value.ApiKey))
             client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", Settings.Value.ApiKey);
+                    new AuthenticationHeaderValue("Bearer", Settings.Value.ApiKey);
 
         var content = JsonContent.Create(new GptJInputMessage
         {
@@ -72,7 +74,7 @@ public class GptJProvider : ChatGptProvider<AiGptSettings>
         Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
         return await client.PostAsync(Url.Combine($"{Settings.Value.Url}", "generate"),
-            content,
-            token);
+                                      content,
+                                      token);
     }
 }

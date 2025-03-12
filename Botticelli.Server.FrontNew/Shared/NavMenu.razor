@@ -11,7 +11,10 @@
 
     private string? NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
 
-    private void ToggleNavMenu() => _collapseNavMenu = !_collapseNavMenu;
+    private void ToggleNavMenu()
+    {
+        _collapseNavMenu = !_collapseNavMenu;
+    }
 
     /// <summary>
     ///     Method invoked when the component is ready to start, having received its

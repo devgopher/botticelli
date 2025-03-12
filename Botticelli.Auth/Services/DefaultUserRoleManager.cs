@@ -7,5 +7,4 @@ namespace Botticelli.Auth.Services;
 public class DefaultUserRoleManager(AuthDefaultDbContext authDefaultDbContext)
         : Manager<BotUserRoleInfo, BotUserRole>(authDefaultDbContext)
 {
-    
 }

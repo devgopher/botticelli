@@ -18,10 +18,10 @@ namespace Botticelli.Server.Back.Controllers;
 [AllowAnonymous]
 [Route("/v1/bot")]
 public class BotController(
-    IBotManagementService botManagementService,
-    IBotStatusDataService botStatusDataService,
-    IBroadcastService broadcastService,
-    ILogger<BotController> logger)
+        IBotManagementService botManagementService,
+        IBotStatusDataService botStatusDataService,
+        IBroadcastService broadcastService,
+        ILogger<BotController> logger)
 {
     #region Client pane
 
@@ -32,8 +32,7 @@ public class BotController(
     /// <returns></returns>
     [AllowAnonymous]
     [HttpPost("client/[action]")]
-    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus(
-        [FromBody] GetRequiredStatusFromServerRequest request)
+    public async Task<GetRequiredStatusFromServerResponse> GetRequiredBotStatus([FromBody] GetRequiredStatusFromServerRequest request)
     {
         request.NotNull();
         request.BotId?.NotNullOrEmpty();
@@ -113,17 +112,19 @@ public class BotController(
                 BotId = request.BotId!,
                 IsSuccess = true,
                 Messages = broadcastMessages.Select(bm => new Message
-                {
-                    Type = Message.MessageType.Messaging,
-                    Subject = string.Empty,
-                    Body = bm.Body,
-                    Attachments = bm.Attachments?.Select<BroadcastAttachment, BaseAttachment>(a =>
-                        new BinaryBaseAttachment(Guid.NewGuid().ToString(),
-                            a.Filename,
-                            (MediaType)a.MediaType,
-                            string.Empty,
-                            a.Content)).ToList()
-                }).ToArray()
+                                            {
+                                                Type = Message.MessageType.Messaging,
+                                                Subject = string.Empty,
+                                                Body = bm.Body,
+                                                Attachments = bm.Attachments?.Select<BroadcastAttachment, BaseAttachment>(a =>
+                                                                                                                                  new BinaryBaseAttachment(Guid.NewGuid().ToString(),
+                                                                                                                                                           a.Filename,
+                                                                                                                                                           (MediaType) a.MediaType,
+                                                                                                                                                           string.Empty,
+                                                                                                                                                           a.Content))
+                                                                .ToList()
+                                            })
+                                            .ToArray()
             };
         }
         catch (Exception ex)
@@ -146,16 +147,14 @@ public class BotController(
     /// <returns></returns>
     [AllowAnonymous]
     [HttpPost("client/[action]")]
-    public async Task<BroadCastMessagesReceivedResponse> BroadcastReceived(
-        [FromBody] BroadCastMessagesReceivedRequest request)
+    public async Task<BroadCastMessagesReceivedResponse> BroadcastReceived([FromBody] BroadCastMessagesReceivedRequest request)
     {
         try
         {
             logger.LogTrace($"{nameof(Broadcast)}({request.BotId})...");
             request.BotId?.NotNullOrEmpty();
 
-            foreach (var messageId in request.MessageIds)
-                await broadcastService.MarkReceived(request.BotId!, messageId);
+            foreach (var messageId in request.MessageIds) await broadcastService.MarkReceived(request.BotId!, messageId);
 
             return new BroadCastMessagesReceivedResponse
             {

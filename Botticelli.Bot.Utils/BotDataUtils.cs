@@ -8,7 +8,10 @@ public static class BotDataUtils
     private const string SubDir = "Data";
     private static string? _botId;
 
-    private static string? GetPath() => Path.Combine(SubDir, "botId");
+    private static string? GetPath()
+    {
+        return Path.Combine(SubDir, "botId");
+    }
 
     public static string? GetBotId()
     {
@@ -21,8 +24,8 @@ public static class BotDataUtils
         else
         {
             _botId ??= File.ReadAllText(GetPath()!)
-                .Replace("\r", string.Empty)
-                .Replace("\n", string.Empty);
+                           .Replace("\r", string.Empty)
+                           .Replace("\n", string.Empty);
         }
 
         return _botId;

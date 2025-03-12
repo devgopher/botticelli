@@ -27,7 +27,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 namespace Botticelli.Framework.Telegram.Builders;
 
 public class TelegramBotBuilder<TBot> : BotBuilder<TelegramBotBuilder<TBot>, TBot>
-    where TBot : TelegramBot
+        where TBot : TelegramBot
 {
     private readonly List<Action<IServiceProvider>> _subHandlers = [];
     private TelegramClientDecoratorBuilder _builder = null!;
@@ -36,19 +36,21 @@ public class TelegramBotBuilder<TBot> : BotBuilder<TelegramBotBuilder<TBot>, TBo
     private TelegramBotSettings? BotSettings { get; set; }
 
     public static TelegramBotBuilder<TBot> Instance(IServiceCollection services,
-        ServerSettingsBuilder<ServerSettings> serverSettingsBuilder,
-        BotSettingsBuilder<TelegramBotSettings> settingsBuilder,
-        DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder,
-        AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder) =>
-        new TelegramBotBuilder<TBot>()
-            .AddServices(services)
-            .AddServerSettings(serverSettingsBuilder)
-            .AddAnalyticsSettings(analyticsClientSettingsBuilder)
-            .AddBotDataAccessSettings(dataAccessSettingsBuilder)
-            .AddBotSettings(settingsBuilder);
+                                                    ServerSettingsBuilder<ServerSettings> serverSettingsBuilder,
+                                                    BotSettingsBuilder<TelegramBotSettings> settingsBuilder,
+                                                    DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder,
+                                                    AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder)
+    {
+        return new TelegramBotBuilder<TBot>()
+               .AddServices(services)
+               .AddServerSettings(serverSettingsBuilder)
+               .AddAnalyticsSettings(analyticsClientSettingsBuilder)
+               .AddBotDataAccessSettings(dataAccessSettingsBuilder)
+               .AddBotSettings(settingsBuilder);
+    }
 
     public TelegramBotBuilder<TBot> AddSubHandler<T>()
-        where T : class, IBotUpdateSubHandler
+            where T : class, IBotUpdateSubHandler
     {
         Services.NotNull();
         Services!.AddSingleton<T>();
@@ -76,18 +78,18 @@ public class TelegramBotBuilder<TBot> : BotBuilder<TelegramBotBuilder<TBot>, TBo
         Services!.AddSingleton(ServerSettingsBuilder.Build());
 
         Services!.AddHttpClient<BotStatusService>()
-            .AddServerCertificates(BotSettings);
+                 .AddServerCertificates(BotSettings);
         Services!.AddHostedService<BotStatusService>();
 
         Services!.AddHttpClient<BotKeepAliveService>()
-            .AddServerCertificates(BotSettings);
+                 .AddServerCertificates(BotSettings);
         Services!.AddHostedService<BotKeepAliveService>();
 
         Services!.AddHttpClient<GetBroadCastMessagesService<TelegramBot>>()
-            .AddServerCertificates(BotSettings);
+                 .AddServerCertificates(BotSettings);
         Services!.AddHostedService<GetBroadCastMessagesService<IBot<TelegramBot>>>();
         Services!.AddHostedService<MarkAsReceivedService<IBot<TelegramBot>>>();
-        
+
         Services!.AddHostedService<TelegramBotHostedService>();
         var botId = BotDataUtils.GetBotId();
 
@@ -105,7 +107,7 @@ public class TelegramBotBuilder<TBot> : BotBuilder<TelegramBotBuilder<TBot>, TBo
         #region Data
 
         Services!.AddDbContext<BotInfoContext>(o =>
-            o.UseSqlite($"Data source={BotDataAccessSettingsBuilder.Build().ConnectionString}"));
+                                                       o.UseSqlite($"Data source={BotDataAccessSettingsBuilder.Build().ConnectionString}"));
         Services!.AddScoped<IBotDataAccess, BotDataAccess>();
 
         #endregion
@@ -121,25 +123,24 @@ public class TelegramBotBuilder<TBot> : BotBuilder<TelegramBotBuilder<TBot>, TBo
         _client.Timeout = TimeSpan.FromMilliseconds(BotSettings?.Timeout ?? 10000);
 
         Services!.AddSingleton<ILayoutSupplier<IReplyMarkup>, ReplyTelegramLayoutSupplier>()
-            .AddBotticelliFramework()
-            .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
+                 .AddBotticelliFramework()
+                 .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
 
         Services!.AddSingleton(ServerSettingsBuilder.Build());
 
         var sp = Services!.BuildServiceProvider();
-        foreach (var sh in _subHandlers)
-            sh.Invoke(sp);
+        foreach (var sh in _subHandlers) sh.Invoke(sp);
 
         ApplyMigrations(sp);
 
-        var telegramBot = Activator.CreateInstance(typeof(TBot), 
-            _client,
-            sp.GetRequiredService<IBotUpdateHandler>(),
-            sp.GetRequiredService<ILogger<TBot>>(),
-            sp.GetRequiredService<MetricsProcessor>(),
-            sp.GetRequiredService<ITextTransformer>(),
-            sp.GetRequiredService<IBotDataAccess>()) as TBot;
-        
+        var telegramBot = Activator.CreateInstance(typeof(TBot),
+                                                   _client,
+                                                   sp.GetRequiredService<IBotUpdateHandler>(),
+                                                   sp.GetRequiredService<ILogger<TBot>>(),
+                                                   sp.GetRequiredService<MetricsProcessor>(),
+                                                   sp.GetRequiredService<ITextTransformer>(),
+                                                   sp.GetRequiredService<IBotDataAccess>()) as TBot;
+
         return telegramBot;
     }
 
@@ -150,5 +151,8 @@ public class TelegramBotBuilder<TBot> : BotBuilder<TelegramBotBuilder<TBot>, TBo
         return this;
     }
 
-    private void ApplyMigrations(IServiceProvider sp) => sp.GetRequiredService<BotInfoContext>().Database.Migrate();
+    private void ApplyMigrations(IServiceProvider sp)
+    {
+        sp.GetRequiredService<BotInfoContext>().Database.Migrate();
+    }
 }

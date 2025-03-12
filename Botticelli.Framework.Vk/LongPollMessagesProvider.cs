@@ -35,8 +35,8 @@ public class LongPollMessagesProvider : IDisposable
     private string _server;
 
     public LongPollMessagesProvider(VkBotSettings settings,
-        IHttpClientFactory httpClientFactory,
-        ILogger<LongPollMessagesProvider> logger)
+                                    IHttpClientFactory httpClientFactory,
+                                    ILogger<LongPollMessagesProvider> logger)
     {
         _settings = settings;
         _httpClientFactory = httpClientFactory;
@@ -59,7 +59,9 @@ public class LongPollMessagesProvider : IDisposable
 
 
     public void SetApiKey(string key)
-        => _apiKey = key;
+    {
+        _apiKey = key;
+    }
 
     public async Task Start(CancellationToken token)
     {
@@ -91,61 +93,61 @@ public class LongPollMessagesProvider : IDisposable
             int[] codesForRetry = [408, 500, 502, 503, 504];
 
             var updatePolicy = Policy
-                .Handle<FlurlHttpException>(ex =>
-                {
-                    _logger.LogError(ex, $"Long polling error! session: {_key}, server: {_server}");
+                               .Handle<FlurlHttpException>(ex =>
+                               {
+                                   _logger.LogError(ex, $"Long polling error! session: {_key}, server: {_server}");
 
-                    return codesForRetry.Contains(ex.Call.Response.StatusCode);
-                })
-                .WaitAndRetryAsync(3, n => n * TimeSpan.FromMilliseconds(_settings.PollIntervalMs));
+                                   return codesForRetry.Contains(ex.Call.Response.StatusCode);
+                               })
+                               .WaitAndRetryAsync(3, n => n * TimeSpan.FromMilliseconds(_settings.PollIntervalMs));
 
 
             var repeatPolicy = Policy.HandleResult<UpdatesResponse>(r => true)
-                .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(_settings.PollIntervalMs));
+                                     .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(_settings.PollIntervalMs));
             var pollingTask = repeatPolicy.WrapAsync(updatePolicy)
-                .ExecuteAsync(async () =>
-                {
-                    try
-                    {
-                        var updatesResponse = await $"{_server}".SetQueryParams(new
-                            {
-                                act = "a_check",
-                                key = _key,
-                                wait = 90,
-                                ts = _lastTs,
-                                mode = 2,
-                                v = ApiVersion
-                            })
-                            .GetStringAsync(cancellationToken: _tokenSource.Token);
+                                          .ExecuteAsync(async () =>
+                                          {
+                                              try
+                                              {
+                                                  var updatesResponse = await $"{_server}".SetQueryParams(new
+                                                                                          {
+                                                                                              act = "a_check",
+                                                                                              key = _key,
+                                                                                              wait = 90,
+                                                                                              ts = _lastTs,
+                                                                                              mode = 2,
+                                                                                              v = ApiVersion
+                                                                                          })
+                                                                                          .GetStringAsync(cancellationToken: _tokenSource.Token);
 
-                        var updates = JsonSerializer.Deserialize<UpdatesResponse>(updatesResponse);
+                                                  var updates = JsonSerializer.Deserialize<UpdatesResponse>(updatesResponse);
 
 
-                        if (updates?.Updates == default)
-                        {
-                            var error = JsonSerializer.Deserialize<ErrorResponse>(updatesResponse);
+                                                  if (updates?.Updates == default)
+                                                  {
+                                                      var error = JsonSerializer.Deserialize<ErrorResponse>(updatesResponse);
 
-                            if (error == null) return default;
+                                                      if (error == null) return default;
 
-                            _lastTs = error.Ts ?? _lastTs;
-                            OnError?.Invoke(new VkErrorEventArgs(error), token);
+                                                      _lastTs = error.Ts ?? _lastTs;
+                                                      OnError?.Invoke(new VkErrorEventArgs(error), token);
 
-                            return default;
-                        }
+                                                      return default;
+                                                  }
 
-                        _lastTs = int.Parse(updates?.Ts ?? "0");
+                                                  _lastTs = int.Parse(updates?.Ts ?? "0");
 
-                        if (updates?.Updates != default) OnUpdates?.Invoke(new VkUpdatesEventArgs(updates), token);
+                                                  if (updates?.Updates != default) OnUpdates?.Invoke(new VkUpdatesEventArgs(updates), token);
 
-                        return updates;
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, $"Long polling error: {ex.Message}");
-                    }
+                                                  return updates;
+                                              }
+                                              catch (Exception ex)
+                                              {
+                                                  _logger.LogError(ex, $"Long polling error: {ex.Message}");
+                                              }
 
-                    return default;
-                });
+                                              return default;
+                                          });
 
             _isStarted = true;
             await pollingTask;
@@ -159,14 +161,14 @@ public class LongPollMessagesProvider : IDisposable
     private async Task GetSessionData()
     {
         var request = new HttpRequestMessage(HttpMethod.Get,
-            ApiUtils.GetMethodUri("https://api.vk.com",
-                "groups.getLongPollServer",
-                new
-                {
-                    access_token = _apiKey,
-                    group_id = _groupId,
-                    v = ApiVersion
-                }));
+                                             ApiUtils.GetMethodUri("https://api.vk.com",
+                                                                   "groups.getLongPollServer",
+                                                                   new
+                                                                   {
+                                                                       access_token = _apiKey,
+                                                                       group_id = _groupId,
+                                                                       v = ApiVersion
+                                                                   }));
         var response = await _client.SendAsync(request, _tokenSource.Token);
         var resultString = await response.Content.ReadAsStringAsync();
 

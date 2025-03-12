@@ -1,7 +1,7 @@
 ﻿namespace Botticelli.Auth.Dto;
 
 /// <summary>
-/// Indetify service response
+///     Indetify service response
 /// </summary>
 /// <param name="Success">Is success</param>
 /// <param name="ErrorMessage">Message for errors</param>

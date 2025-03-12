@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Framework.Monads.Commands.Processors;
 
 public class ChainBuilder<TCommand>(IServiceCollection services)
-    where TCommand : IChainCommand
+        where TCommand : IChainCommand
 {
     private readonly List<IChainProcessor<TCommand>> _chain = new(5);
     private IBot? _bot;
@@ -20,28 +20,28 @@ public class ChainBuilder<TCommand>(IServiceCollection services)
     }
 
     public ChainBuilder<TCommand> Next<TProcessor>()
-        where TProcessor : class, IChainProcessor<TCommand>
+            where TProcessor : class, IChainProcessor<TCommand>
     {
         services.AddScoped<TProcessor>();
         var processor = services.BuildServiceProvider()
-            .GetRequiredService<TProcessor>();
+                                .GetRequiredService<TProcessor>();
 
         return Next(processor);
     }
 
     public ChainBuilder<TCommand> Next<TProcessor>(Action<TProcessor> func)
-        where TProcessor : class, IChainProcessor<TCommand>
+            where TProcessor : class, IChainProcessor<TCommand>
     {
         services.AddScoped<TProcessor>();
         var processor = services.BuildServiceProvider()
-            .GetRequiredService<TProcessor>();
+                                .GetRequiredService<TProcessor>();
         func(processor);
 
         return Next(processor);
     }
 
     public ChainBuilder<TCommand> SetBot<TBot>(TBot bot)
-        where TBot : IBot<TBot>
+            where TBot : IBot<TBot>
     {
         _bot = bot;
 
@@ -53,13 +53,13 @@ public class ChainBuilder<TCommand>(IServiceCollection services)
         var sp = services.BuildServiceProvider();
         _bot ??= sp.GetServices<IBot>().FirstOrDefault();
 
-        if (_bot == default)
-            throw new NullReferenceException($"Bot should be set up: call {nameof(SetBot)} to set a bot instance!");
+        if (_bot == default) throw new NullReferenceException($"Bot should be set up: call {nameof(SetBot)} to set a bot instance!");
 
         foreach (var processor in _chain) processor.SetBot(_bot);
 
-        _runner ??= new ChainRunner<TCommand>(_chain, sp
-            .GetRequiredService<ILogger<ChainRunner<TCommand>>>());
+        _runner ??= new ChainRunner<TCommand>(_chain,
+                                              sp
+                                                      .GetRequiredService<ILogger<ChainRunner<TCommand>>>());
 
         return _runner;
     }

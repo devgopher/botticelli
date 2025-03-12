@@ -26,9 +26,9 @@ public abstract class BotActualizationService : IHostedService
     ///     to Botticelli Admin server and receiving status messages from it
     /// </summary>
     protected BotActualizationService(IHttpClientFactory httpClientFactory,
-        ServerSettings serverSettings,
-        IBot bot,
-        ILogger logger)
+                                      ServerSettings serverSettings,
+                                      IBot bot,
+                                      ILogger logger)
     {
         HttpClientFactory = httpClientFactory;
         ServerSettings = serverSettings;
@@ -57,8 +57,8 @@ public abstract class BotActualizationService : IHostedService
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns></returns>
     protected virtual async Task<TResp?> InnerSendPost<TReq, TResp>(TReq request,
-        string funcName,
-        CancellationToken cancellationToken)
+                                                                    string funcName,
+                                                                    CancellationToken cancellationToken)
     {
         try
         {
@@ -69,8 +69,8 @@ public abstract class BotActualizationService : IHostedService
             Logger.LogDebug("InnerSend request: {request}", request);
 
             var response = await httpClient.PostAsync(Url.Combine(ServerSettings.ServerUri, funcName),
-                content,
-                cancellationToken);
+                                                      content,
+                                                      cancellationToken);
 
             return await response.Content.ReadFromJsonAsync<TResp>(cancellationToken);
         }

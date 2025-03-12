@@ -23,5 +23,7 @@ public class AuthController
     [AllowAnonymous]
     [HttpPost("[action]")]
     public IActionResult GetToken(UserLoginRequest request)
-        => new OkObjectResult(_adminAuthService.GenerateToken(request));
+    {
+        return new OkObjectResult(_adminAuthService.GenerateToken(request));
+    }
 }

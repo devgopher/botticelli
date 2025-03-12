@@ -13,13 +13,13 @@ public class LongPollMessagesProviderTests
     public void Setup()
     {
         _provider = new LongPollMessagesProvider(new OptionsMonitorMock<VkBotSettings>(new VkBotSettings
-            {
-                Name = "test",
-                PollIntervalMs = 500,
-                GroupId = 221973506
-            }).CurrentValue,
-            new TestHttpClientFactory(),
-            LoggerMocks.CreateConsoleLogger<LongPollMessagesProvider>());
+                                                 {
+                                                     Name = "test",
+                                                     PollIntervalMs = 500,
+                                                     GroupId = 221973506
+                                                 }).CurrentValue,
+                                                 new TestHttpClientFactory(),
+                                                 LoggerMocks.CreateConsoleLogger<LongPollMessagesProvider>());
     }
 
     private LongPollMessagesProvider _provider;

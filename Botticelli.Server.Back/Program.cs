@@ -24,85 +24,83 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(cors => cors.SetIsOriginAllowed
                                                              .WithExposedHeaders("Content-Disposition")));
 
 builder.Configuration
-    .AddJsonFile("appsettings.json")
-    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
-    .AddEnvironmentVariables();
+       .AddJsonFile("appsettings.json")
+       .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
+       .AddEnvironmentVariables();
 
 var serverSettings = builder.Configuration
-    .GetSection(nameof(ServerSettings))
-    .Get<ServerSettings>();
+                            .GetSection(nameof(ServerSettings))
+                            .Get<ServerSettings>();
 
 if (serverSettings == null) throw new InvalidDataException("no ServerSettings in appsettings!");
 
 builder.Services.AddSingleton(serverSettings);
 
 builder.Services.AddEndpointsApiExplorer()
-    .AddSwaggerGen(options =>
-    {
-        options.AddSecurityDefinition("Bearer",
-            new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                Description = "Example: `Bearer Generated-JWT-Token`",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = "Bearer"
-            });
+       .AddSwaggerGen(options =>
+       {
+           options.AddSecurityDefinition("Bearer",
+                                         new OpenApiSecurityScheme
+                                         {
+                                             Name = "Authorization",
+                                             Description = "Example: `Bearer Generated-JWT-Token`",
+                                             In = ParameterLocation.Header,
+                                             Type = SecuritySchemeType.Http,
+                                             Scheme = "Bearer"
+                                         });
 
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                Array.Empty<string>()
-            }
-        });
-    });
+           options.AddSecurityRequirement(new OpenApiSecurityRequirement
+           {
+               {
+                   new OpenApiSecurityScheme
+                   {
+                       Reference = new OpenApiReference
+                       {
+                           Type = ReferenceType.SecurityScheme,
+                           Id = "Bearer"
+                       }
+                   },
+                   Array.Empty<string>()
+               }
+           });
+       });
 
-builder.Services.Configure<SmtpClientOptions>(
-    builder.Configuration.GetSection($"{nameof(ServerSettings)}:{nameof(SmtpClientOptions)}"));
-
-builder.Services
-    .Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration.GetSection(nameof(ServerSettings)))
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ClockSkew = TimeSpan.Zero,
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Authorization:Issuer"],
-        ValidAudience = builder.Configuration["Authorization:Audience"],
-        IssuerSigningKey =
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authorization:Key"] ?? string.Empty))
-    });
+builder.Services.Configure<SmtpClientOptions>(builder.Configuration.GetSection($"{nameof(ServerSettings)}:{nameof(SmtpClientOptions)}"));
 
 builder.Services
-    .AddLogging(cfg => cfg.AddNLog())
-    .AddScoped<IBotManagementService, BotManagementService>()
-    .AddScoped<IBotStatusDataService, BotStatusDataService>()
-    .AddScoped<IAdminAuthService, AdminAuthService>()
-    .AddScoped<IUserService, UserService>()
-    .AddScoped<IConfirmationService, ConfirmationService>()
-    .AddScoped<IPasswordSender, PasswordSender>()
-    .AddSingleton<IMapper, Mapper>()
-    .AddScoped<ISender, SslMailKitSender>()
-    .AddDbContext<ServerDataContext>(options =>
-        options.UseSqlite($"Data source={serverSettings.SecureStorageConnection}"))
-    .AddDefaultIdentity<IdentityUser<string>>(options => options
-        .SignIn
-        .RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ServerDataContext>();
+       .Configure<ServerSettings>(nameof(ServerSettings), builder.Configuration.GetSection(nameof(ServerSettings)))
+       .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+       .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
+       {
+           ClockSkew = TimeSpan.Zero,
+           ValidateIssuer = true,
+           ValidateAudience = true,
+           ValidateLifetime = true,
+           ValidateIssuerSigningKey = true,
+           ValidIssuer = builder.Configuration["Authorization:Issuer"],
+           ValidAudience = builder.Configuration["Authorization:Audience"],
+           IssuerSigningKey =
+                   new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authorization:Key"] ?? string.Empty))
+       });
 
-if (serverSettings.UseSsl)
-    builder.WebHost.AddSsl(builder.Configuration);
+builder.Services
+       .AddLogging(cfg => cfg.AddNLog())
+       .AddScoped<IBotManagementService, BotManagementService>()
+       .AddScoped<IBotStatusDataService, BotStatusDataService>()
+       .AddScoped<IAdminAuthService, AdminAuthService>()
+       .AddScoped<IUserService, UserService>()
+       .AddScoped<IConfirmationService, ConfirmationService>()
+       .AddScoped<IPasswordSender, PasswordSender>()
+       .AddSingleton<IMapper, Mapper>()
+       .AddScoped<ISender, SslMailKitSender>()
+       .AddDbContext<ServerDataContext>(options =>
+                                                options.UseSqlite($"Data source={serverSettings.SecureStorageConnection}"))
+       .AddDefaultIdentity<IdentityUser<string>>(options => options
+                                                            .SignIn
+                                                            .RequireConfirmedAccount = true)
+       .AddEntityFrameworkStores<ServerDataContext>();
+
+if (serverSettings.UseSsl) builder.WebHost.AddSsl(builder.Configuration);
 
 #if !DEBUG
 builder.Services.AddIdentity();

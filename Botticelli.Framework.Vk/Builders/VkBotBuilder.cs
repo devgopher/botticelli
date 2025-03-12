@@ -35,12 +35,12 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
     protected override VkBot InnerBuild()
     {
         Services!.AddHttpClient<BotStatusService>()
-            .AddServerCertificates(BotSettings);
+                 .AddServerCertificates(BotSettings);
         Services!.AddHostedService<BotStatusService>();
         Services!.AddHttpClient<BotKeepAliveService>()
-            .AddServerCertificates(BotSettings);
+                 .AddServerCertificates(BotSettings);
         Services!.AddHttpClient<GetBroadCastMessagesService<VkBot>>()
-            .AddServerCertificates(BotSettings);
+                 .AddServerCertificates(BotSettings);
         Services!.AddHostedService<BotKeepAliveService>();
         Services!.AddHostedService<GetBroadCastMessagesService<IBot<VkBot>>>();
 
@@ -61,7 +61,7 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
         #region Data
 
         Services!.AddDbContext<BotInfoContext>(o =>
-            o.UseSqlite($"Data source={BotDataAccessSettingsBuilder.Build().ConnectionString}"));
+                                                       o.UseSqlite($"Data source={BotDataAccessSettingsBuilder.Build().ConnectionString}"));
         Services!.AddScoped<IBotDataAccess, BotDataAccess>();
 
         #endregion
@@ -77,17 +77,17 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
         _vkStorageUploader = _vkStorageUploaderBuilder.Build();
 
         Services!.AddBotticelliFramework()
-            .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
+                 .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
 
         var sp = Services!.BuildServiceProvider();
 
         return new VkBot(_longPollMessagesProvider,
-            _messagePublisher,
-            _vkStorageUploader,
-            sp.GetRequiredService<IBotDataAccess>(),
-            sp.GetRequiredService<IBotUpdateHandler>(),
-            sp.GetRequiredService<MetricsProcessor>(),
-            sp.GetRequiredService<ILogger<VkBot>>());
+                         _messagePublisher,
+                         _vkStorageUploader,
+                         sp.GetRequiredService<IBotDataAccess>(),
+                         sp.GetRequiredService<IBotUpdateHandler>(),
+                         sp.GetRequiredService<MetricsProcessor>(),
+                         sp.GetRequiredService<ILogger<VkBot>>());
     }
 
     public override VkBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
@@ -105,14 +105,16 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
     }
 
     public static VkBotBuilder Instance(IServiceCollection services,
-        ServerSettingsBuilder<ServerSettings> serverSettingsBuilder,
-        BotSettingsBuilder<VkBotSettings> settingsBuilder,
-        DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder,
-        AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder) =>
-        new VkBotBuilder()
-            .AddServices(services)
-            .AddServerSettings(serverSettingsBuilder)
-            .AddAnalyticsSettings(analyticsClientSettingsBuilder)
-            .AddBotDataAccessSettings(dataAccessSettingsBuilder)
-            .AddBotSettings(settingsBuilder);
+                                        ServerSettingsBuilder<ServerSettings> serverSettingsBuilder,
+                                        BotSettingsBuilder<VkBotSettings> settingsBuilder,
+                                        DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder,
+                                        AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder)
+    {
+        return new VkBotBuilder()
+               .AddServices(services)
+               .AddServerSettings(serverSettingsBuilder)
+               .AddAnalyticsSettings(analyticsClientSettingsBuilder)
+               .AddBotDataAccessSettings(dataAccessSettingsBuilder)
+               .AddBotSettings(settingsBuilder);
+    }
 }

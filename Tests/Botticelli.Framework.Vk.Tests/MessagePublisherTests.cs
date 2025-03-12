@@ -13,7 +13,7 @@ public class MessagePublisherTests
     public void Setup()
     {
         _publisher = new MessagePublisher(new TestHttpClientFactory(),
-            LoggerMocks.CreateConsoleLogger<MessagePublisher>());
+                                          LoggerMocks.CreateConsoleLogger<MessagePublisher>());
     }
 
     public MessagePublisherTests()
@@ -32,11 +32,11 @@ public class MessagePublisherTests
     {
         _publisher.SetApiKey(EnvironmentDataProvider.GetApiKey());
         Assert.DoesNotThrowAsync(async () => await _publisher.SendAsync(new VkSendMessageRequest
-            {
-                AccessToken = EnvironmentDataProvider.GetApiKey(),
-                Body = $"test msg {DateTime.Now.ToString(CultureInfo.InvariantCulture)}",
-                UserId = EnvironmentDataProvider.GetTargetUserId().ToString()
-            },
-            CancellationToken.None));
+                                                                        {
+                                                                            AccessToken = EnvironmentDataProvider.GetApiKey(),
+                                                                            Body = $"test msg {DateTime.Now.ToString(CultureInfo.InvariantCulture)}",
+                                                                            UserId = EnvironmentDataProvider.GetTargetUserId().ToString()
+                                                                        },
+                                                                        CancellationToken.None));
     }
 }

@@ -5,8 +5,13 @@ namespace Botticelli.Bot.Data.Repositories;
 
 public class BroadCasting(BotInfoContext context) : IBroadCasting
 {
-    public void UpsertChat(Chat chat) => context.Upsert(chat);
+    public void UpsertChat(Chat chat)
+    {
+        context.Upsert(chat);
+    }
 
-    public IEnumerable<Chat> GetChats(Func<Chat, bool> predicate) =>
-        context.Set<Chat>().Where(predicate).AsEnumerable();
+    public IEnumerable<Chat> GetChats(Func<Chat, bool> predicate)
+    {
+        return context.Set<Chat>().Where(predicate).AsEnumerable();
+    }
 }

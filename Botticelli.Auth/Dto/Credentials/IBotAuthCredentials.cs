@@ -5,5 +5,4 @@ namespace Botticelli.Auth.Dto.Credentials;
 /// </summary>
 public interface IBotAuthCredentials
 {
-    
 }

@@ -4,5 +4,5 @@ namespace Botticelli.Pay.Message;
 
 public class PayInvoiceMessage : Shared.ValueObjects.Message
 {
-    public Invoice? Invoice { get; set; }    
+    public Invoice? Invoice { get; set; }
 }

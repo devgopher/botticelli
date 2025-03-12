@@ -38,17 +38,15 @@ public class YaGptProviderTest : BaseAiProviderTest
         };
 
         Server?.Given(Request.Create().WithPath("/completion").UsingPost())
-            .RespondWith(
-                Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(JsonSerializer.Serialize(responseMessage))
-            );
+              .RespondWith(Response.Create()
+                                   .WithStatusCode(200)
+                                   .WithBody(JsonSerializer.Serialize(responseMessage)));
 
         AiProvider = new YaGptProvider(new OptionsMock<YaGptSettings>(YaGptSettings),
-            ClientFactory,
-            LoggerMocks.CreateConsoleLogger<YaGptProvider>(),
-            BusClient,
-            Validator);
+                                       ClientFactory,
+                                       LoggerMocks.CreateConsoleLogger<YaGptProvider>(),
+                                       BusClient,
+                                       Validator);
     }
 
     private YaGptSettings YaGptSettings => new()
@@ -62,5 +60,8 @@ public class YaGptProviderTest : BaseAiProviderTest
 
     [Test]
     [TestCase("test query")]
-    public async Task SendAsyncTest(string query) => await InnerSendAsyncTest(query);
+    public async Task SendAsyncTest(string query)
+    {
+        await InnerSendAsyncTest(query);
+    }
 }

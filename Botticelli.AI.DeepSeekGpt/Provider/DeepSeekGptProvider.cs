@@ -19,48 +19,49 @@ public class DeepSeekGptProvider : ChatGptProvider<DeepSeekGptSettings>
     private const string Completion = "completions";
 
     public DeepSeekGptProvider(IOptions<DeepSeekGptSettings> gptSettings,
-        IHttpClientFactory? factory,
-        ILogger<DeepSeekGptProvider> logger,
-        IBusClient? bus,
-        IValidator<AiMessage>? messageValidator) : base(gptSettings,
-        factory,
-        logger,
-        bus,
-        messageValidator)
+                               IHttpClientFactory? factory,
+                               ILogger<DeepSeekGptProvider> logger,
+                               IBusClient? bus,
+                               IValidator<AiMessage>? messageValidator) : base(gptSettings,
+                                                                               factory,
+                                                                               logger,
+                                                                               bus,
+                                                                               messageValidator)
     {
     }
 
     public override string AiName => "deepseek";
 
 
-    protected override async Task ProcessGptResponse(AiMessage message, CancellationToken token,
-        HttpResponseMessage response)
+    protected override async Task ProcessGptResponse(AiMessage message,
+                                                     CancellationToken token,
+                                                     HttpResponseMessage response)
     {
         var outMessage =
-            await response.Content.ReadFromJsonAsync<DeepSeekOutputMessage>(token);
+                await response.Content.ReadFromJsonAsync<DeepSeekOutputMessage>(token);
 
-        if (outMessage == null)
-            throw new AiException($"{nameof(outMessage)} = null!");
+        if (outMessage == null) throw new AiException($"{nameof(outMessage)} = null!");
 
         await Bus.SendResponse(new SendMessageResponse(message.Uid)
-            {
-                Message = new Shared.ValueObjects.Message(message.Uid)
-                {
-                    ChatIds = message.ChatIds,
-                    Subject = message.Subject,
-                    Body = string.Join(" ",
-                        outMessage.Choices.Select(c => c.DeepSeekMessage?.Content ?? string.Empty)),
-                    Attachments = null,
-                    From = null,
-                    ForwardedFrom = null,
-                    ReplyToMessageUid = message.ReplyToMessageUid
-                }
-            },
-            token);
+                               {
+                                   Message = new Shared.ValueObjects.Message(message.Uid)
+                                   {
+                                       ChatIds = message.ChatIds,
+                                       Subject = message.Subject,
+                                       Body = string.Join(" ",
+                                                          outMessage.Choices.Select(c => c.DeepSeekMessage?.Content ?? string.Empty)),
+                                       Attachments = null,
+                                       From = null,
+                                       ForwardedFrom = null,
+                                       ReplyToMessageUid = message.ReplyToMessageUid
+                                   }
+                               },
+                               token);
     }
 
-    protected override async Task<HttpResponseMessage> GetGptResponse(AiMessage message, CancellationToken token,
-        HttpClient client)
+    protected override async Task<HttpResponseMessage> GetGptResponse(AiMessage message,
+                                                                      CancellationToken token,
+                                                                      HttpClient client)
     {
         var deepSeekGptMessage = new DeepSeekInputMessage
         {
@@ -93,7 +94,7 @@ public class DeepSeekGptProvider : ChatGptProvider<DeepSeekGptSettings>
         Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
 
         return await client.PostAsync(Completion,
-            content,
-            token);
+                                      content,
+                                      token);
     }
 }
