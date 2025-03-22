@@ -5,6 +5,7 @@ using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Requests.Abstractions;
+using Telegram.Bot.Types;
 
 namespace Botticelli.Framework.Telegram.Decorators;
 
@@ -95,6 +96,11 @@ public class TelegramClientDecorator : ITelegramBotClient
 
             throw;
         }
+    }
+
+    public Task DownloadFile(TGFile file, Stream destination, CancellationToken cancellationToken = new())
+    {
+        throw new NotImplementedException();
     }
 
     public bool LocalBotServer { get; }

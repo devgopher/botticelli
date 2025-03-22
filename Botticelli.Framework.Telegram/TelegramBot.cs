@@ -145,12 +145,12 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         SendMessageResponse response = new(request.Uid, string.Empty);
 
-        IReplyMarkup? replyMarkup;
+        ReplyMarkup? replyMarkup;
 
         if (optionsBuilder == null)
             replyMarkup = null;
-        else if (optionsBuilder.Build() is IReplyMarkup)
-            replyMarkup = optionsBuilder.Build() as IReplyMarkup;
+        else if (optionsBuilder.Build() is ReplyMarkup)
+            replyMarkup = optionsBuilder.Build() as ReplyMarkup;
         else
             replyMarkup = null;
 
@@ -236,7 +236,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                                            bool isUpdate,
                                                            CancellationToken token,
                                                            string retText,
-                                                           IReplyMarkup? replyMarkup,
+                                                           ReplyMarkup? replyMarkup,
                                                            (string chatId, string innerId) link)
     {
         if (!string.IsNullOrWhiteSpace(retText))
@@ -281,7 +281,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     protected virtual async Task<Message> ProcessAttachments(SendMessageRequest request,
                                                              CancellationToken token,
                                                              (string chatId, string innerId) link,
-                                                             IReplyMarkup? replyMarkup,
+                                                             ReplyMarkup? replyMarkup,
                                                              SendMessageResponse response,
                                                              Message? message)
     {
@@ -380,7 +380,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     protected virtual async Task<Message?> ProcessPoll<TSendOptions>(SendMessageRequest request,
                                                                      CancellationToken token,
                                                                      (string chatId, string innerId) link,
-                                                                     IReplyMarkup? replyMarkup,
+                                                                     ReplyMarkup? replyMarkup,
                                                                      SendMessageResponse response)
     {
         Message? message;
@@ -446,7 +446,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     protected virtual async Task ProcessContact(SendMessageRequest request,
                                                 SendMessageResponse response,
                                                 CancellationToken token,
-                                                IReplyMarkup? replyMarkup)
+                                                ReplyMarkup? replyMarkup)
     {
         request.Message.NotNull();
         request.Message.Contact.NotNull();
