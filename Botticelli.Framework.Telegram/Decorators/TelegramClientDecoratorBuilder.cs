@@ -56,7 +56,11 @@ public class TelegramClientDecoratorBuilder
 
         var botOptions = _settingsBuilder.Build();
         var clientOptions =
-                new TelegramBotClientOptions(_token, botOptions.TelegramBaseUrl, botOptions.UseTestEnvironment ?? false);
+                new TelegramBotClientOptions(_token, botOptions.TelegramBaseUrl, botOptions.UseTestEnvironment ?? false)
+                {
+                    RetryThreshold = 60,
+                    RetryCount = botOptions.RetryOnFailure
+                };
         _telegramClient = new TelegramClientDecorator(clientOptions, _throttler, _httpClient);
 
         return _telegramClient;

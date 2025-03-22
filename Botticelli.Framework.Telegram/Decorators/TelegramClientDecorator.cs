@@ -15,11 +15,6 @@ namespace Botticelli.Framework.Telegram.Decorators;
 public class TelegramClientDecorator : ITelegramBotClient
 {
     private readonly HttpClient? _httpClient;
-
-    private readonly RetryPolicy _policy = Policy
-                                           .Handle<ApiRequestException>(e => e.ErrorCode == (int) HttpStatusCode.TooManyRequests)
-                                           .WaitAndRetry(10, (i, _) => TimeSpan.FromSeconds(10 * Math.Exp(i)));
-
     private readonly IThrottler? _throttler;
     private TelegramBotClient? _innerClient;
     private TelegramBotClientOptions _options;
@@ -40,15 +35,11 @@ public class TelegramClientDecorator : ITelegramBotClient
     {
         try
         {
-            return await _policy.Execute(async () =>
-                                {
-                                    if (_throttler != null)
-                                        return await _throttler.Throttle(async () => await _innerClient?.SendRequest(request, cancellationToken)!,
-                                                                         cancellationToken);
+            if (_throttler != null)
+                return await _throttler.Throttle(async () => await _innerClient?.SendRequest(request, cancellationToken)!,
+                    cancellationToken);
 
-                                    return await _innerClient?.SendRequest(request, cancellationToken)!;
-                                })
-                                .ConfigureAwait(false);
+            return await _innerClient?.SendRequest(request, cancellationToken)!;
         }
         catch (ApiRequestException ex)
         {
@@ -84,11 +75,7 @@ public class TelegramClientDecorator : ITelegramBotClient
     {
         try
         {
-            await _policy.Execute(async () =>
-                         {
-                             if (_innerClient != null) await _innerClient?.DownloadFile(filePath, destination, cancellationToken)!;
-                         })
-                         .ConfigureAwait(false);
+            if (_innerClient != null) await _innerClient?.DownloadFile(filePath, destination, cancellationToken)!;
         }
         catch (ApiRequestException ex)
         {

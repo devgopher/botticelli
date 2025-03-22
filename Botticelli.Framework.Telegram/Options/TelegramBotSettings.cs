@@ -13,6 +13,11 @@ public class TelegramBotSettings : BotSettings
     public int Timeout { get; set; } = 60000;
 
     /// <summary>
+    ///     Retries count on errors
+    /// </summary>
+    public int RetryOnFailure { get; set; } = 5;
+
+    /// <summary>
     ///     Use throttling or not?
     /// </summary>
     public bool? UseThrottling { get; set; } = true;
