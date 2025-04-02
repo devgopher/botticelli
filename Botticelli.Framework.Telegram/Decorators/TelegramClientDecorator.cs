@@ -1,7 +1,4 @@
-﻿using System.Net;
-using Polly;
-using Polly.Retry;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Requests.Abstractions;
@@ -37,7 +34,7 @@ public class TelegramClientDecorator : ITelegramBotClient
         {
             if (_throttler != null)
                 return await _throttler.Throttle(async () => await _innerClient?.SendRequest(request, cancellationToken)!,
-                    cancellationToken);
+                                                 cancellationToken);
 
             return await _innerClient?.SendRequest(request, cancellationToken)!;
         }
@@ -90,10 +87,10 @@ public class TelegramClientDecorator : ITelegramBotClient
         throw new NotImplementedException();
     }
 
-    public bool LocalBotServer { get; }
-    public long BotId { get; }
+    public bool LocalBotServer { get; set; } = false;
+    public long BotId { get; set; } = -1;
     public TimeSpan Timeout { get; set; }
-    public IExceptionParser? ExceptionsParser { get; set; }
+    public IExceptionParser ExceptionsParser { get; set; } = new DefaultExceptionParser();
     public event AsyncEventHandler<ApiRequestEventArgs>? OnMakingApiRequest;
     public event AsyncEventHandler<ApiResponseEventArgs>? OnApiResponseReceived;
 
