@@ -22,13 +22,13 @@ public class LongPollMessagesProviderTests
                                                  LoggerMocks.CreateConsoleLogger<LongPollMessagesProvider>());
     }
 
-    private LongPollMessagesProvider _provider;
+    private LongPollMessagesProvider? _provider;
 
     [Test]
     public async Task StartTest()
     {
         _provider.NotNull();
-        await _provider.Stop();
+        await _provider!.Stop();
         _provider.SetApiKey(EnvironmentDataProvider.GetApiKey());
 
         var task = Task.Run(() => _provider.Start(CancellationToken.None));
@@ -41,7 +41,8 @@ public class LongPollMessagesProviderTests
     [Test]
     public void StopTest()
     {
-        _ = _provider.Start(CancellationToken.None);
+        _provider.NotNull();
+        _ = _provider!.Start(CancellationToken.None);
 
         Thread.Sleep(2000);
 

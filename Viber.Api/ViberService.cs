@@ -119,7 +119,7 @@ namespace Viber.Api
                                                        $"{context.Response.StatusDescription}");
                     }
                 }
-                catch (Exception ex)
+                catch (Exception? ex)
                 {
                     throw new ViberClientException(ex.Message, ex);
                 }
@@ -138,6 +138,8 @@ namespace Viber.Api
 
             if (!httpResponse.IsSuccessStatusCode) throw new ViberClientException($"Error sending request {nameof(SetWebHook)}: {httpResponse.StatusCode}!");
 
+            if (httpResponse.Content == null) throw new ViberClientException("");
+            
             return await httpResponse.Content.ReadFromJsonAsync<TResp>(cancellationToken);
         }
     }

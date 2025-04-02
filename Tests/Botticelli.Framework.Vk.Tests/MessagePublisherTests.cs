@@ -7,7 +7,7 @@ using Shared;
 namespace Botticelli.Framework.Vk.Tests;
 
 [TestFixture]
-public class MessagePublisherTests
+public class MessagePublisherTests(MessagePublisher publisher)
 {
     [SetUp]
     public void Setup()
@@ -15,20 +15,11 @@ public class MessagePublisherTests
         _publisher = new MessagePublisher(new TestHttpClientFactory(),
                                           LoggerMocks.CreateConsoleLogger<MessagePublisher>());
     }
-
-    public MessagePublisherTests()
-    {
-    }
-
-    private MessagePublisher _publisher;
-
-    public MessagePublisherTests(MessagePublisher publisher)
-    {
-        _publisher = publisher;
-    }
+    
+    private MessagePublisher _publisher = publisher;
 
     [Test]
-    public async Task SendAsyncTest()
+    public Task SendAsyncTest()
     {
         _publisher.SetApiKey(EnvironmentDataProvider.GetApiKey());
         Assert.DoesNotThrowAsync(async () => await _publisher.SendAsync(new VkSendMessageRequest
@@ -38,5 +29,7 @@ public class MessagePublisherTests
                                                                             UserId = EnvironmentDataProvider.GetTargetUserId().ToString()
                                                                         },
                                                                         CancellationToken.None));
+
+        return Task.CompletedTask;
     }
 }

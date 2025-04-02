@@ -6,7 +6,7 @@ public class BaseLayout : ILayout
 
     public void AddRow(Row row)
     {
-        _rows.Add(row);
+        _rows?.Add(row);
     }
 
     public IList<Row>? Rows => _rows;
