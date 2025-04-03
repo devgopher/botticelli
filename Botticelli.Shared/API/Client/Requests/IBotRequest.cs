@@ -2,5 +2,5 @@ namespace Botticelli.Shared.API.Client.Requests;
 
 public interface IBotRequest
 {
-    string? BotId { get; set; }
+    string BotId { get; set; }
 }
