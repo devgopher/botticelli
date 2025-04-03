@@ -87,9 +87,9 @@ public class AdminController
     }
 
     [HttpGet("[action]")]
-    public async Task<ICollection<BotInfo>> GetBots()
+    public Task<ICollection<BotInfo>> GetBots()
     {
-        return _botStatusDataService.GetBots();
+        return Task.FromResult(_botStatusDataService.GetBots());
     }
 
     [HttpGet("[action]")]

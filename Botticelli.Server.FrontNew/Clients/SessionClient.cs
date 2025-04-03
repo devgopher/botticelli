@@ -122,7 +122,7 @@ public class SessionClient
         var tokenResponse = await response.Content.ReadFromJsonAsync<GetTokenResponse>();
 
         if (tokenResponse is not {IsSuccess: true})
-            return new ValueTuple<Session, Error>(default!,
+            return new ValueTuple<Session, Error>(null!,
                                                   new Error
                                                   {
                                                       Code = 1,

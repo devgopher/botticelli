@@ -9,12 +9,12 @@ public interface IBotManagementService
                            string botKey,
                            string botName,
                            BotType botType,
-                           Dictionary<string, string> additionalParams = null);
+                           Dictionary<string, string>? additionalParams = null);
 
     Task<bool> UpdateBot(string botId,
                          string botKey,
                          string botName,
-                         Dictionary<string, string> additionalParams = null);
+                         Dictionary<string, string>? additionalParams = null);
 
 
     Task SetRequiredBotStatus(string botId, BotStatus status);

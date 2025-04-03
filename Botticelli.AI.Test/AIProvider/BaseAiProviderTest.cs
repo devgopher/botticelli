@@ -51,7 +51,7 @@ public abstract class BaseAiProviderTest
 
         AiProvider.NotNull();
 
-        await AiProvider.SendAsync(message, new CancellationToken());
+        await AiProvider.SendAsync(message, CancellationToken.None);
 
         Thread.Sleep(5000);
         var result = NoneBus.SendMessageResponses.Dequeue();

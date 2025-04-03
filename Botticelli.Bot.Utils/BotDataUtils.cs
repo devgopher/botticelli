@@ -8,7 +8,7 @@ public static class BotDataUtils
     private const string SubDir = "Data";
     private static string? _botId;
 
-    private static string? GetPath()
+    private static string GetPath()
     {
         return Path.Combine(SubDir, "botId");
     }

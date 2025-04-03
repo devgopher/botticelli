@@ -39,7 +39,7 @@ public class BotStatusService(
     /// <exception cref="BotException"></exception>
     private void GetRequiredStatus(CancellationToken cancellationToken)
     {
-        if (_getRequiredStatusEventTask != default) return;
+        if (_getRequiredStatusEventTask != null) return;
 
         ActualizationEvent.Set();
         var request = new GetRequiredStatusFromServerRequest
@@ -64,11 +64,11 @@ public class BotStatusService(
 
         var taskResult = task.Result;
 
-        if (taskResult == default) throw new BotException("No result from server!");
+        if (taskResult == null) throw new BotException("No result from server!");
 
         var botContext = taskResult.BotContext;
 
-        if (botContext == default) throw new BotException("No bot context from server!");
+        if (botContext == null) throw new BotException("No bot context from server!");
 
         var botData = new BotData.Entities.Bot.BotData
         {
@@ -86,7 +86,7 @@ public class BotStatusService(
 
         Bot.SetBotContext(botData, cancellationToken);
 
-        if (task.Exception != default)
+        if (task.Exception != null)
         {
             Logger.LogError($"GetRequiredStatus task error: {task.Exception?.Message}");
             Bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);

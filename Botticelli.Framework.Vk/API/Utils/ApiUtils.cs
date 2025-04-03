@@ -9,10 +9,10 @@ public static class ApiUtils
 {
     public static Uri GetMethodUri(string baseAddress,
                                    string method,
-                                   object methodParams = default,
+                                   object? methodParams = null,
                                    bool snakeCase = true)
     {
-        if (methodParams == default) return new Uri(Url.Combine(baseAddress, "method", method));
+        if (methodParams == null) return new Uri(Url.Combine(baseAddress, "method", method));
 
         if (!snakeCase) return new Uri(Url.Combine(baseAddress, "method", method).SetQueryParams(methodParams));
 
@@ -30,7 +30,7 @@ public static class ApiUtils
         return new Uri(Url.Combine(baseAddress, "method", method).SetQueryParams(snaked));
     }
 
-    public static MultipartFormDataContent GetMethodMultipartFormContent(object methodParams = default,
+    public static MultipartFormDataContent GetMethodMultipartFormContent(object? methodParams = null,
                                                                          bool snakeCase = true)
     {
         var props = methodParams.GetType().GetProperties();
@@ -46,7 +46,7 @@ public static class ApiUtils
         return content;
     }
 
-    public static Uri GetMethodUriWithJson(string baseAddress, string method, object methodParams = default)
+    public static Uri GetMethodUriWithJson(string baseAddress, string method, object? methodParams = null)
     {
         var snaked = new Dictionary<string, object>();
         var props = methodParams.GetType().GetProperties();

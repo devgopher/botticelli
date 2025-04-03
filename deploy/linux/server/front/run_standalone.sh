@@ -8,11 +8,12 @@ sudo apt-get install -y dotnet-sdk-8.0 dotnet-runtime-8.0 aspnetcore-runtime-8.0
 
 rm -rf botticelli/
 git clone https://github.com/devgopher/botticelli.git
-pushd botticelli/
-git checkout release/0.6
+
+pushd botticelli/ || exit
+git checkout release/0.7
 git pull
 
-pushd Botticelli.Server.FrontNew
+pushd Botticelli.Server.FrontNew || exit
 
 check_and_setup http_port "(example:80)"
 check_and_setup https_port "(example:8080)"
@@ -27,4 +28,4 @@ export BackSettings__AnalyticsUrl=$analytics_url/v1/
 
 nohup dotnet run Botticelli.Server.FrontNew.csproj >/dev/null 2>&1 &
 
-popd
+popd || exit

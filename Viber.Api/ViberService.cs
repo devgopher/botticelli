@@ -109,7 +109,7 @@ namespace Viber.Api
                         var content = await sr.ReadToEndAsync();
                         var deserialized = JsonSerializer.Deserialize<GetWebHookEvent>(content);
 
-                        if (deserialized == default) continue;
+                        if (deserialized == null) continue;
 
                         GotMessage?.Invoke(deserialized);
                     }

@@ -586,7 +586,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         }
         else if (currentContext != null)
         {
-            if (Client.BotId == default)
+            if (Client.BotId == 0)
             {
                 await StopBot(token);
                 RecreateClient(context.BotKey!);

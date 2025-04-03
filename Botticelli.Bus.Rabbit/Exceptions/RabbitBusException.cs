@@ -2,7 +2,7 @@
 
 public class RabbitBusException : Exception
 {
-    public RabbitBusException(string message, Exception ex = default) : base(message, ex)
+    public RabbitBusException(string message, Exception? ex = null) : base(message, ex)
     {
     }
 }

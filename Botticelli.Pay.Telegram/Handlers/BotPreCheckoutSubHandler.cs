@@ -63,7 +63,7 @@ public class BotPreCheckoutSubHandler : IBotUpdateSubHandler, IPreCheckoutHandle
             var procResult = await _runner.Run(preCheckoutQuery, cancellationToken);
 
             await botClient.AnswerPreCheckoutQuery(preCheckoutQuery.Id,
-                                                   procResult.isSuccessful ? default : procResult.errorMessage,
+                                                   procResult.isSuccessful ? null : procResult.errorMessage,
                                                    cancellationToken);
 
             _logger.LogDebug($"{nameof(Process)}() finished...");

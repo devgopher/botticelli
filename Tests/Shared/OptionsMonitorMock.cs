@@ -17,7 +17,7 @@ public class OptionsMonitorMock<T> : IOptionsMonitor<T>
 
     public IDisposable? OnChange(Action<T, string?> listener)
     {
-        return default;
+        return null;
     }
 
     public T CurrentValue { get; }

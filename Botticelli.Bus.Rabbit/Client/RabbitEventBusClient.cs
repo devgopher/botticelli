@@ -20,16 +20,18 @@ public class RabbitEventBusClient<TBot> : BasicFunctions<TBot>, IEventBusClient
 
     public RabbitEventBusClient(IConnectionFactory rabbitConnectionFactory,
                                 RabbitBusSettings settings,
-                                ILogger<RabbitEventBusClient<TBot>> logger)
+                                ILogger<RabbitEventBusClient<TBot>> logger, 
+                                EventingBasicConsumer consumer)
     {
         _rabbitConnectionFactory = rabbitConnectionFactory;
         _settings = settings;
         _logger = logger;
+        _consumer = consumer;
 
         Init();
     }
 
-    public event IEventBusClient.BusEventHandler OnReceived;
+    public event IEventBusClient.BusEventHandler? OnReceived;
 
     public Task Send(SendMessageRequest response, CancellationToken token)
     {
@@ -63,16 +65,17 @@ public class RabbitEventBusClient<TBot> : BasicFunctions<TBot>, IEventBusClient
         var queue = GetResponseQueueName();
         var exchange = _settings.Exchange;
 
-        if (_settings.QueueSettings.TryCreate)
-            channel.ExchangeDeclare(exchange, _settings.ExchangeType);
-        else
-            channel.ExchangeDeclarePassive(exchange);
 
-        var queueDeclareResult = _settings
-                                 .QueueSettings
-                                 .TryCreate ?
-                channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
-                channel.QueueDeclarePassive(queue);
+        if (_settings.QueueSettings is { TryCreate: true })
+        {
+            channel.ExchangeDeclare(exchange, _settings.ExchangeType);
+            channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false);
+        }
+        else
+        {
+            channel.QueueDeclarePassive(queue);
+            channel.ExchangeDeclarePassive(exchange);
+        }
 
         channel.BasicConsume(queue, true, _consumer);
 

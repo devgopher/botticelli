@@ -26,7 +26,7 @@ public static partial class BotIdUtils
         return longest;
     }
 
-    public static string? GenerateShortBotId()
+    public static string GenerateShortBotId()
     {
         return ReplaceSymbols()
                .Replace(Convert.ToBase64String(BitWiseSum(Guid.NewGuid().ToByteArray(),

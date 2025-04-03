@@ -52,7 +52,7 @@ public class InputAnalyzer : IAnalyzer
 
         fileFormat.NotNull();
 
-        switch (fileFormat.Extension.ToLowerInvariant())
+        switch (fileFormat?.Extension.ToLowerInvariant())
         {
             case "wav":
                 format = AudioFormat.Wav;
@@ -66,7 +66,7 @@ public class InputAnalyzer : IAnalyzer
                 break;
             case "m4a":
             case "aac":
-                reader = default!;
+                reader = null!;
                 format = default;
 
                 break;
@@ -77,14 +77,14 @@ public class InputAnalyzer : IAnalyzer
                 break;
             default:
                 format = AudioFormat.Unknown;
-                reader = default!;
+                reader = null!;
 
                 break;
         }
 
         if (format == AudioFormat.Unknown) throw new InvalidOperationException("Invalid format!");
 
-        if (reader == default) throw new InvalidOperationException("Reader is null!");
+        if (reader == null) throw new InvalidOperationException("Reader is null!");
 
         return new AudioInfo
         {

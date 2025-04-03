@@ -73,7 +73,7 @@ public class PollActualizationService<TRequest, TResponse>(
     /// <exception cref="BotException" />
     private void ProcessRequest(CancellationToken cancellationToken)
     {
-        if (_periodicTask != default) return;
+        if (_periodicTask != null) return;
 
         ActualizationEvent.Set();
         var request = new TRequest

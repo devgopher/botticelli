@@ -33,11 +33,11 @@ public class BroadcastService(ServerDataContext context) : IBroadcastService
     }
 
 
-    public async Task<List<Broadcast>> GetBroadcasts(string botId)
+    public Task<List<Broadcast>> GetBroadcasts(string botId)
     {
         var broadcasts = context.BroadcastMessages.Where(x => x.BotId == botId && !x.Sent && !x.Received).ToList();
 
-        return broadcasts;
+        return Task.FromResult(broadcasts);
     }
 
     public async Task MarkAsReceived(string messageId)

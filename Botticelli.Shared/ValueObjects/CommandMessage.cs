@@ -14,5 +14,5 @@ public class CommandMessage : Message
     /// <summary>
     ///     Command
     /// </summary>
-    public IBotCommand Command { get; set; }
+    public IBotCommand? Command { get; set; }
 }

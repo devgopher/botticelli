@@ -8,13 +8,13 @@ public static class StringUtils
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(dt)) return default;
+            if (string.IsNullOrWhiteSpace(dt)) return null;
 
             return DateTime.ParseExact(dt, format, culture);
         }
         catch (Exception ex)
         {
-            return default;
+            return null;
         }
     }
 }

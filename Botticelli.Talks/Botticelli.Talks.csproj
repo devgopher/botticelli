@@ -19,7 +19,6 @@
 	<ItemGroup>
 		<None Include="..\new_logo_compact.png">
 			<Pack>True</Pack>
-			<PackagePath></PackagePath>
 			<Link>new_logo_compact.png</Link>
 		</None>
 	</ItemGroup>

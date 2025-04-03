@@ -48,7 +48,7 @@ public abstract class ChainProcessor<TCommand>(ILogger logger)
         return command.Context.Get<Message>("message");
     }
 
-    protected string? GetArgs(TCommand command)
+    protected string GetArgs(TCommand command)
     {
         return command.Context.Get("args");
     }

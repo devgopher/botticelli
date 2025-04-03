@@ -65,7 +65,7 @@ public class VkStorageUploader
             _logger.LogError(ex, "Error getting an upload address!");
         }
 
-        return default;
+        return null;
     }
 
 
@@ -108,7 +108,7 @@ public class VkStorageUploader
             _logger.LogError(ex, "Error getting an upload address!");
         }
 
-        return default;
+        return null;
     }
 
     /// <summary>
@@ -243,14 +243,14 @@ public class VkStorageUploader
         {
             var address = await GetPhotoUploadAddress(vkMessageRequest, token);
 
-            if (address?.Response == default) throw new BotException("Sending photo error: no upload server address!");
+            if (address?.Response == null) throw new BotException("Sending photo error: no upload server address!");
 
             var uploadedPhoto = await UploadPhoto(address.Response.UploadUrl,
                                                   name,
                                                   binaryContent,
                                                   token);
 
-            if (uploadedPhoto?.Photo == default) throw new BotException("Sending photo error: no media uploaded!");
+            if (uploadedPhoto?.Photo == null) throw new BotException("Sending photo error: no media uploaded!");
 
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Post,
@@ -277,7 +277,7 @@ public class VkStorageUploader
             _logger.LogError(ex, "Error uploading media");
         }
 
-        return default;
+        return null;
     }
 
 
@@ -299,14 +299,14 @@ public class VkStorageUploader
         {
             var address = await GetAudioUploadAddress(vkMessageRequest, token);
 
-            if (address?.Response == default) throw new BotException("Sending audio error: no upload server address!");
+            if (address?.Response == null) throw new BotException("Sending audio error: no upload server address!");
 
             var uploadedAudio = await UploadAudioMessage(address.Response.UploadUrl,
                                                          name,
                                                          binaryContent,
                                                          token);
 
-            if (uploadedAudio?.File == default) throw new BotException("Sending audio error: no media uploaded!");
+            if (uploadedAudio?.File == null) throw new BotException("Sending audio error: no media uploaded!");
 
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Post,
@@ -335,7 +335,7 @@ public class VkStorageUploader
             _logger.LogError(ex, "Error uploading media");
         }
 
-        return default;
+        return null;
     }
 
 
@@ -348,14 +348,14 @@ public class VkStorageUploader
         {
             var address = await GetDocsUploadAddress(vkMessageRequest, "doc", token);
 
-            if (address?.Response == default) throw new BotException("Sending doc error: no upload server address!");
+            if (address?.Response == null) throw new BotException("Sending doc error: no upload server address!");
 
             var uploadedDoc = await UploadDocMessage(address.Response.UploadUrl,
                                                      name,
                                                      binaryContent,
                                                      token);
 
-            if (uploadedDoc?.File == default) throw new BotException("Sending doc error: no file uploaded!");
+            if (uploadedDoc?.File == null) throw new BotException("Sending doc error: no file uploaded!");
 
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Post,
@@ -381,6 +381,6 @@ public class VkStorageUploader
             _logger.LogError(ex, "Error uploading media");
         }
 
-        return default;
+        return null;
     }
 }

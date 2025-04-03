@@ -6,7 +6,7 @@ namespace Botticelli.Audio.Tests;
 [TestFixture]
 public class UniversalLowQualityConvertorTests
 {
-    private readonly IConvertor? _convertor;
+    private readonly IConvertor _convertor;
 
     public UniversalLowQualityConvertorTests()
     {

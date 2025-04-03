@@ -28,7 +28,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
     private readonly RabbitBusSettings _settings;
     private readonly IServiceProvider _sp;
     private EventingBasicConsumer? _consumer;
-    private bool _isActive;
+    private bool? _isActive;
 
     public RabbitAgent(IConnectionFactory rabbitConnectionFactory,
                        IServiceProvider sp,
@@ -75,31 +75,35 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         await Subscribe(cancellationToken);
     }
 
-    public async Task StopAsync(CancellationToken cancellationToken)
+    public Task StopAsync(CancellationToken cancellationToken)
     {
         _isActive = false;
         Thread.Sleep(3000);
+        return Task.CompletedTask;
     }
 
     /// <summary>
     ///     Subscribes with a new handler
     /// </summary>
-    public async Task Subscribe(CancellationToken token)
+    public Task Subscribe(CancellationToken token)
     {
         _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) start...");
         var handler = _sp.GetRequiredService<THandler>();
 
         ProcessSubscription(token, handler);
+        return Task.CompletedTask;
     }
 
     private void ProcessSubscription(CancellationToken token, THandler handler)
     {
-        if (_consumer == default)
+        if (_consumer == null)
         {
             var connection = _rabbitConnectionFactory.CreateConnection();
             var channel = connection.CreateModel();
             var queue = GetRequestQueueName();
-            var declareResult = _settings.QueueSettings.TryCreate ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) : channel.QueueDeclarePassive(queue);
+            var declareResult = _settings.QueueSettings is { TryCreate: true }
+                ? channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false)
+                : channel.QueueDeclarePassive(queue);
 
             _logger.LogDebug($"{nameof(Subscribe)}({typeof(THandler).Name}) queue declare: {declareResult.QueueName}");
 
@@ -121,7 +125,8 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
                 var policy = Policy.Handle<Exception>()
                                    .WaitAndRetry(3, n => TimeSpan.FromSeconds(0.5 * Math.Exp(n)));
 
-                policy.Execute(() => handler.Handle(deserialized, token));
+                if  (deserialized != null)
+                    policy.Execute(() => handler.Handle(deserialized, token));
             }
             catch (Exception ex)
             {
@@ -130,7 +135,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
         };
     }
 
-    private async Task InnerSend(SendMessageResponse response)
+    private Task InnerSend(SendMessageResponse response)
     {
         try
         {
@@ -151,5 +156,7 @@ public class RabbitAgent<TBot, THandler> : BasicFunctions<TBot>, IBotticelliBusA
 
             throw;
         }
+
+        return Task.CompletedTask;
     }
 }

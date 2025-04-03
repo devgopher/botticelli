@@ -12,7 +12,7 @@ public class VkLayoutSupplier : IVkLayoutSupplier
 {
     public VkKeyboardMarkup GetMarkup(ILayout layout)
     {
-        if (layout == default) throw new LayoutException("Layout = null!");
+        if (layout == null) throw new LayoutException("Layout = null!");
 
         layout.Rows.NotNull();
 
@@ -22,7 +22,7 @@ public class VkLayoutSupplier : IVkLayoutSupplier
         {
             var keyboardElement = new List<VkItem>();
 
-            keyboardElement.AddRange(layoutRow.Items.Where(i => i.Control != default)
+            keyboardElement.AddRange(layoutRow.Items.Where(i => i.Control != null)
                                               .Select(item =>
                                               {
                                                   item.Control.NotNull();

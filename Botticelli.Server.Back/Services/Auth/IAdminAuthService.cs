@@ -33,9 +33,9 @@ public interface IAdminAuthService
     /// <summary>
     ///     Generates auth token
     /// </summary>
-    /// <param name="login"></param>
+    /// <param name="userLogin"></param>
     /// <returns></returns>
-    GetTokenResponse GenerateToken(UserLoginRequest login);
+    GetTokenResponse? GenerateToken(UserLoginRequest userLogin);
 
     /// <summary>
     ///     Checks auth token
@@ -52,5 +52,5 @@ public interface IAdminAuthService
     /// <returns></returns>
     public (bool result, string err) CheckAccess(UserLoginRequest login, bool checkEmailConfirmed);
 
-    string GetCurrentUserId();
+    string? GetCurrentUserId();
 }
