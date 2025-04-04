@@ -535,21 +535,21 @@ public sealed class TelegramBot : BaseBot<TelegramBot>
     
     private void RecreateClient(string key)
     {
-        if (_client.BotId == null)
-        {
-            Logger.LogError("CLIENT RECREATED111111");
-            _client.DeleteWebhookAsync(dropPendingUpdates: true);
-            _client?.CloseAsync();
-            
-            _client = new TelegramBotClient(key);
-        }
-        else if (!key.StartsWith(_client.BotId.ToString()!))
-        {
-            Logger.LogError("CLIENT RECREATED22222");
-            _client.DeleteWebhookAsync(dropPendingUpdates: true);
-            _client?.CloseAsync();
-            _client = new TelegramBotClient(key);
-        }
+        // if (_client.BotId == null)
+        // {
+        //     Logger.LogError("CLIENT RECREATED111111");
+        //     _client.DeleteWebhookAsync(dropPendingUpdates: true);
+        //     _client?.CloseAsync();
+        //     
+        //     _client = new TelegramBotClient(key);
+        // }
+        // else if (!key.StartsWith(_client.BotId.ToString()!))
+        // {
+        //     Logger.LogError("CLIENT RECREATED22222");
+        //     _client.DeleteWebhookAsync(dropPendingUpdates: true);
+        //     _client?.CloseAsync();
+        //     _client = new TelegramBotClient(key);
+        // }
     }
 
     private async Task StartBot(CancellationToken token)
