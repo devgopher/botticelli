@@ -16,8 +16,7 @@ public class CookieStorageAccessor
     {
         if (_accessorJsRef.IsValueCreated is false)
             _accessorJsRef =
-                new Lazy<IJSObjectReference>(
-                    await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "/js/CookieStorageAccessor.js"));
+                    new Lazy<IJSObjectReference>(await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "/js/CookieStorageAccessor.js"));
     }
 
     public async Task<string> GetValueAsync(string key)
@@ -25,9 +24,9 @@ public class CookieStorageAccessor
         await WaitForReference();
         var result = await _accessorJsRef.Value.InvokeAsync<string>("get", key);
         result = result.Replace($"{key}=", "")
-            .Replace(";", string.Empty)
-            .Replace("\n", string.Empty)
-            .Replace("\r", string.Empty);
+                       .Replace(";", string.Empty)
+                       .Replace("\n", string.Empty)
+                       .Replace("\r", string.Empty);
         result = result[..(result.Contains(' ') ? result.IndexOf(' ') : result.Length)];
 
         return result.Trim();

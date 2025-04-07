@@ -5,7 +5,10 @@ public class DataAccessSettingsBuilder<T>
 {
     private T _settings = new();
 
-    public void Set(T settings) => _settings = settings;
+    public void Set(T settings)
+    {
+        _settings = settings;
+    }
 
     public DataAccessSettingsBuilder<T> Set(Action<T> func)
     {
@@ -14,5 +17,8 @@ public class DataAccessSettingsBuilder<T>
         return this;
     }
 
-    public T Build() => _settings;
+    public T Build()
+    {
+        return _settings;
+    }
 }

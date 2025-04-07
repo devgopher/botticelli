@@ -52,7 +52,7 @@ public class Address
 
     [JsonPropertyName("state_district")]
     public string? District { get; set; }
-    
+
     [JsonPropertyName("lat")]
     public double Latitude { get; set; }
 
@@ -62,11 +62,14 @@ public class Address
     public string DisplayName { get; set; }
 
     public override string ToString()
-        => ToString(CultureInfo.InvariantCulture);
+    {
+        return ToString(CultureInfo.InvariantCulture);
+    }
 
     public virtual string ToString(CultureInfo culture)
     {
         string result;
+
         switch (culture.Name.ToLowerInvariant())
         {
             case "ru-ru":
@@ -82,7 +85,8 @@ public class Address
                 if (Neighborhood != null) result += $", {Neighborhood}";
                 if (Road != null) result += $", {Road}";
                 if (HouseNumber != null) result += $", {HouseNumber}";
-                  return result;
+
+                return result;
             default:
                 result = $"{Road}, {HouseNumber}";
 
@@ -96,6 +100,7 @@ public class Address
                 if (County != null) result += $", {County}";
                 if (State != null) result += $", {State}";
                 if (Country != null) result += $", {Country}";
+
                 return result;
         }
     }

@@ -1,7 +1,5 @@
-﻿using Botticelli.Bot.Data.Entities.Bot;
-using Botticelli.Shared.API.Admin.Requests;
+﻿using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
-using Botticelli.Shared.ValueObjects;
 
 namespace Botticelli.Interfaces;
 
@@ -32,5 +30,5 @@ public interface IEventBasedBotAdminApi
     /// <param name="context"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task SetBotContext(BotData? context, CancellationToken token);
+    public Task SetBotContext(BotData.Entities.Bot.BotData? context, CancellationToken token);
 }

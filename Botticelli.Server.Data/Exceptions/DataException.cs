@@ -1,8 +1,3 @@
 ﻿namespace Botticelli.Server.Data.Exceptions;
 
-public class DataException : Exception
-{
-    public DataException(string message, Exception? inner = null) : base(message, inner)
-    {
-    }
-}
+public class DataException(string message, Exception? inner = null) : Exception(message, inner);

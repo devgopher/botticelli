@@ -12,31 +12,35 @@ public class CommandContext : ICommandContext
 
     public T? Get<T>(string name)
     {
-        if (_parameters.TryGetValue(name, out var parameter))
+        if (!_parameters.TryGetValue(name, out var parameter)) return default;
+
+        var type = typeof(T);
+
+        if (type == typeof(double) || type == typeof(float) || type == typeof(decimal))
         {
-            var type = typeof(T);
-            if (type == typeof(double) || type == typeof(float) || type == typeof(decimal))
-            {
-                var chunk = parameter.Replace('.', ',');
+            var chunk = parameter.Replace('.', ',');
 
-                if (type == typeof(double))
-                    return (T?)(object)(double.Parse(chunk));
-                if (type == typeof(float))
-                    return (T?)(object)(float.Parse(chunk));
-                if (type == typeof(decimal))
-                    return (T?)(object)(decimal.Parse(chunk));
-
-            } else  return JsonSerializer.Deserialize<T>(parameter);
+            if (type == typeof(double)) return (T?) (object) double.Parse(chunk);
+            if (type == typeof(float)) return (T?) (object) float.Parse(chunk);
+            if (type == typeof(decimal)) return (T?) (object) decimal.Parse(chunk);
         }
+        else
+        {
+            return JsonSerializer.Deserialize<T>(parameter);
+        }
+
         return default;
     }
 
-    public string Get(string name) => _parameters[name];
+    public string Get(string name)
+    {
+        return _parameters[name];
+    }
 
     public T Set<T>(string name, T value)
     {
         if (value is null) throw new ArgumentNullException(nameof(value));
-        
+
         if (name == Names.Args) // args are always string
             _parameters[name] = Stringify(value);
         else
@@ -45,31 +49,33 @@ public class CommandContext : ICommandContext
         return value;
     }
 
-    private static string Stringify<T>([DisallowNull] T value) =>
-        value switch
-        {
-            double dbl => dbl.ToString("G").Replace(',', '.'),
-            float flt => flt.ToString("G").Replace(',', '.'),
-            decimal dcm => dcm.ToString("G").Replace(',', '.'),
-            _ => value.ToString()!
-        };
-
     public string Set(string name, string value)
     {
         _parameters[name] = Stringify(value);
+
         return value;
     }
 
-    
+
     public T Transform<T>(string name, Func<T, T> func)
     {
-        if (!_parameters.TryGetValue(name, out var parameter)) 
-            throw new KeyNotFoundException(name);
-        
+        if (!_parameters.TryGetValue(name, out var parameter)) throw new KeyNotFoundException(name);
+
         var deserialized = JsonSerializer.Deserialize<T>(parameter);
-        
+
         _parameters[name] = JsonSerializer.Serialize(func(deserialized));
 
         return deserialized;
+    }
+
+    private static string Stringify<T>([DisallowNull] T value)
+    {
+        return value switch
+        {
+            double dbl  => dbl.ToString("G").Replace(',', '.'),
+            float flt   => flt.ToString("G").Replace(',', '.'),
+            decimal dcm => dcm.ToString("G").Replace(',', '.'),
+            _           => value.ToString()!
+        };
     }
 }

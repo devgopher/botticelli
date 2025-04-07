@@ -5,6 +5,13 @@ namespace Botticelli.Bus.Rabbit;
 
 public class BasicFunctions<TBot>
 {
-    protected static string GetRequestQueueName() => $"{nameof(SendMessageRequest)}_{typeof(TBot).Name}_request";
-    protected static string GetResponseQueueName() => $"{nameof(SendMessageResponse)}_{typeof(TBot).Name}_response";
+    protected static string GetRequestQueueName()
+    {
+        return $"{nameof(SendMessageRequest)}_{typeof(TBot).Name}_request";
+    }
+
+    protected static string GetResponseQueueName()
+    {
+        return $"{nameof(SendMessageResponse)}_{typeof(TBot).Name}_response";
+    }
 }

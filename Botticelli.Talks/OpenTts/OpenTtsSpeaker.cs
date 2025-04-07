@@ -11,9 +11,9 @@ namespace Botticelli.Talks.OpenTts;
 public class OpenTtsSpeaker : BaseTtsSpeaker
 {
     public OpenTtsSpeaker(IHttpClientFactory httpClientFactory,
-        ILogger<OpenTtsSpeaker> logger,
-        IOptionsMonitor<TtsSettings> settings)
-        : base(logger, httpClientFactory, settings)
+                          ILogger<OpenTtsSpeaker> logger,
+                          IOptionsMonitor<TtsSettings> settings)
+            : base(logger, httpClientFactory, settings)
     {
     }
 
@@ -27,13 +27,13 @@ public class OpenTtsSpeaker : BaseTtsSpeaker
     /// <param name="token"></param>
     /// <returns></returns>
     public override async Task<byte[]> Speak(string markedText,
-        string? voice,
-        string? lang,
-        double speed,
-        CancellationToken token)
+                                             string? voice,
+                                             string? lang,
+                                             double speed,
+                                             CancellationToken token)
     {
         var urlEncodedText =
-            $"?voice={voice}:{lang}&text={Url.Encode(markedText)}&vocoder=high&denoiserStrength=0.03&cache=true";
+                $"?voice={voice}:{lang}&text={Url.Encode(markedText)}&vocoder=high&denoiserStrength=0.03&cache=true";
 
         using var client = HttpClientFactory.CreateClient();
 
@@ -63,14 +63,16 @@ public class OpenTtsSpeaker : BaseTtsSpeaker
     /// <param name="token"></param>
     /// <returns></returns>
     public override Task<byte[]> Speak(string markedText,
-        string voice,
-        string lang,
-        CancellationToken token) =>
-        Speak(markedText,
-            voice,
-            lang,
-            1.0,
-            token);
+                                       string voice,
+                                       string lang,
+                                       CancellationToken token)
+    {
+        return Speak(markedText,
+                     voice,
+                     lang,
+                     1.0,
+                     token);
+    }
 
     /// <summary>
     ///     Speak function
@@ -79,9 +81,11 @@ public class OpenTtsSpeaker : BaseTtsSpeaker
     /// <param name="token"></param>
     /// <returns></returns>
     public override async Task<byte[]> Speak(string markedText, CancellationToken token)
-        => await Speak(markedText,
-            Settings.CurrentValue.DefaultVoice,
-            Settings.CurrentValue.Language,
-            Settings.CurrentValue.Speed,
-            token);
+    {
+        return await Speak(markedText,
+                           Settings.CurrentValue.DefaultVoice,
+                           Settings.CurrentValue.Language,
+                           Settings.CurrentValue.Speed,
+                           token);
+    }
 }

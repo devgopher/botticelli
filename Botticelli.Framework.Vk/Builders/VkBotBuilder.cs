@@ -1,4 +1,3 @@
-using Botticelli.Audio;
 using Botticelli.Bot.Data;
 using Botticelli.Bot.Data.Repositories;
 using Botticelli.Bot.Data.Settings;
@@ -9,6 +8,8 @@ using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Builders;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
+using Botticelli.Framework.Security;
+using Botticelli.Framework.Services;
 using Botticelli.Framework.Vk.Messages.Handlers;
 using Botticelli.Framework.Vk.Messages.HostedService;
 using Botticelli.Framework.Vk.Messages.Options;
@@ -22,23 +23,26 @@ namespace Botticelli.Framework.Vk.Messages.Builders;
 
 public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
 {
-    private LongPollMessagesProviderBuilder? _longPollMessagesProviderBuilder;
     private LongPollMessagesProvider? _longPollMessagesProvider;
-    private MessagePublisherBuilder? _messagePublisherBuilder;
+    private LongPollMessagesProviderBuilder? _longPollMessagesProviderBuilder;
     private MessagePublisher? _messagePublisher;
-    private VkStorageUploaderBuilder? _vkStorageUploaderBuilder;
+    private MessagePublisherBuilder? _messagePublisherBuilder;
     private VkStorageUploader? _vkStorageUploader;
-    
+    private VkStorageUploaderBuilder? _vkStorageUploaderBuilder;
+
     private VkBotSettings? BotSettings { get; set; }
-    
+
     protected override VkBot InnerBuild()
     {
-        Services!.AddHttpClient<BotStatusService<VkBot>>()
-                 .AddCertificates(BotSettings);
-        Services!.AddHostedService<BotStatusService<IBot<VkBot>>>();
-        Services!.AddHttpClient<BotKeepAliveService<VkBot>>()
-                 .AddCertificates(BotSettings);
-        Services!.AddHostedService<BotKeepAliveService<IBot<VkBot>>>();
+        Services!.AddHttpClient<BotStatusService>()
+                 .AddServerCertificates(BotSettings);
+        Services!.AddHostedService<BotStatusService>();
+        Services!.AddHttpClient<BotKeepAliveService>()
+                 .AddServerCertificates(BotSettings);
+        Services!.AddHttpClient<GetBroadCastMessagesService<VkBot>>()
+                 .AddServerCertificates(BotSettings);
+        Services!.AddHostedService<BotKeepAliveService>();
+        Services!.AddHostedService<GetBroadCastMessagesService<IBot<VkBot>>>();
 
         Services!.AddHostedService<VkBotHostedService>();
         var botId = BotDataUtils.GetBotId();
@@ -56,7 +60,8 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
 
         #region Data
 
-        Services!.AddDbContext<BotInfoContext>(o => o.UseSqlite($"Data source={BotDataAccessSettingsBuilder.Build().ConnectionString}"));
+        Services!.AddDbContext<BotInfoContext>(o =>
+                                                       o.UseSqlite($"Data source={BotDataAccessSettingsBuilder.Build().ConnectionString}"));
         Services!.AddScoped<IBotDataAccess, BotDataAccess>();
 
         #endregion
@@ -70,7 +75,7 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
         _longPollMessagesProvider = _longPollMessagesProviderBuilder.Build();
         _messagePublisher = _messagePublisherBuilder.Build();
         _vkStorageUploader = _vkStorageUploaderBuilder.Build();
-        
+
         Services!.AddBotticelliFramework()
                  .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
 
@@ -78,7 +83,7 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
 
         return new VkBot(_longPollMessagesProvider,
                          _messagePublisher,
-                        _vkStorageUploader,
+                         _vkStorageUploader,
                          sp.GetRequiredService<IBotDataAccess>(),
                          sp.GetRequiredService<IBotUpdateHandler>(),
                          sp.GetRequiredService<MetricsProcessor>(),
@@ -88,10 +93,10 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
     public override VkBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
     {
         BotSettings = settingsBuilder.Build() as VkBotSettings ?? throw new InvalidOperationException();
-        
+
         return this;
     }
-    
+
     public VkBotBuilder AddClient(LongPollMessagesProviderBuilder builder)
     {
         _longPollMessagesProviderBuilder = builder;

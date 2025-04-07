@@ -8,16 +8,19 @@ public class AuthDelegatingHandler : DelegatingHandler
 {
     private readonly SessionClient _sessionClient;
 
-    public AuthDelegatingHandler(SessionClient sessionClient) => _sessionClient = sessionClient;
+    public AuthDelegatingHandler(SessionClient sessionClient)
+    {
+        _sessionClient = sessionClient;
+    }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
                                                                  CancellationToken cancellationToken)
     {
         var session = _sessionClient.GetSession();
 
-        Console.WriteLine($"Auth delegating got session: {session?.Token}");
+        Console.WriteLine($"Botticelli.Auth.Sample.Telegram delegating got session: {session?.Token}");
 
-        if (session == default) throw new AuthenticationException("Can't find session!");
+        if (session == null) throw new AuthenticationException("Can't find session!");
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", session.Token);
 

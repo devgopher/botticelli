@@ -5,18 +5,23 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Framework.Vk.Messages.Builders;
 
 /// <summary>
-/// Builds a MessagePublisher
+///     Builds a MessagePublisher
 /// </summary>
 public class MessagePublisherBuilder
 {
+    private readonly BotSettingsBuilder<VkBotSettings> _settingsBuilder;
     private IHttpClientFactory _httpClientFactory;
     private ILogger<MessagePublisher> _logger;
-    private readonly BotSettingsBuilder<VkBotSettings> _settingsBuilder;
 
-    public static MessagePublisherBuilder Instance(BotSettingsBuilder<VkBotSettings> settingsBuilder) 
-        => new(settingsBuilder);
+    private MessagePublisherBuilder(BotSettingsBuilder<VkBotSettings> settingsBuilder)
+    {
+        _settingsBuilder = settingsBuilder;
+    }
 
-    private MessagePublisherBuilder(BotSettingsBuilder<VkBotSettings> settingsBuilder) => _settingsBuilder = settingsBuilder;
+    public static MessagePublisherBuilder Instance(BotSettingsBuilder<VkBotSettings> settingsBuilder)
+    {
+        return new MessagePublisherBuilder(settingsBuilder);
+    }
 
     public MessagePublisherBuilder AddLogger(ILogger<MessagePublisher> logger)
     {
@@ -31,6 +36,9 @@ public class MessagePublisherBuilder
 
         return this;
     }
-    
-    public MessagePublisher? Build() => new(_httpClientFactory, _logger);
+
+    public MessagePublisher Build()
+    {
+        return new MessagePublisher(_httpClientFactory, _logger);
+    }
 }

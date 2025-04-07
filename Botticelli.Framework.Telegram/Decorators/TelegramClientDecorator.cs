@@ -1,10 +1,8 @@
-﻿using System.Net;
-using Polly;
-using Polly.Retry;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Requests.Abstractions;
+using Telegram.Bot.Types;
 
 namespace Botticelli.Framework.Telegram.Decorators;
 
@@ -13,35 +11,32 @@ namespace Botticelli.Framework.Telegram.Decorators;
 /// </summary>
 public class TelegramClientDecorator : ITelegramBotClient
 {
-    private readonly TelegramBotClient _bot;
-
-    private readonly RetryPolicy _policy = Policy
-                                           .Handle<ApiRequestException>(e => e.ErrorCode == (int) HttpStatusCode.TooManyRequests)
-                                           .WaitAndRetry(10, (i, _) => TimeSpan.FromSeconds(10 * Math.Exp(i)));
-
+    private readonly HttpClient? _httpClient;
     private readonly IThrottler? _throttler;
+    private TelegramBotClient? _innerClient;
+    private TelegramBotClientOptions _options;
 
-    internal TelegramClientDecorator(TelegramBotClientOptions options, IThrottler? throttler, HttpClient? httpClient = null)
+    internal TelegramClientDecorator(TelegramBotClientOptions options,
+                                     IThrottler? throttler,
+                                     HttpClient? httpClient = null)
     {
         _throttler = throttler;
-        _bot = new TelegramBotClient(options, httpClient);
+        _options = options;
+        _httpClient = httpClient;
+        _innerClient = !string.IsNullOrWhiteSpace(options.Token) ? new TelegramBotClient(options, httpClient) : null;
     }
 
-    public async Task<TResponse> MakeRequestAsync<TResponse>(IRequest<TResponse> request,
-                                                             CancellationToken cancellationToken = new())
+
+    public async Task<TResponse> SendRequest<TResponse>(IRequest<TResponse> request,
+                                                        CancellationToken cancellationToken = new())
     {
         try
         {
-            return await _policy.Execute(async () =>
-                                {
-                                    if (_throttler != null)
-                                        return await _throttler.Throttle(async () => await _bot
-                                                                                 .MakeRequestAsync(request, cancellationToken),
-                                                                         cancellationToken);
+            if (_throttler != null)
+                return await _throttler.Throttle(async () => await _innerClient?.SendRequest(request, cancellationToken)!,
+                                                 cancellationToken);
 
-                                    return await _bot.MakeRequestAsync(request, cancellationToken);
-                                })
-                                .ConfigureAwait(false);
+            return await _innerClient?.SendRequest(request, cancellationToken)!;
         }
         catch (ApiRequestException ex)
         {
@@ -51,18 +46,33 @@ public class TelegramClientDecorator : ITelegramBotClient
         }
     }
 
-    public Task<bool> TestApiAsync(CancellationToken cancellationToken = new())
+    [Obsolete("Use SendRequest")]
+    public Task<TResponse> MakeRequest<TResponse>(IRequest<TResponse> request,
+                                                  CancellationToken cancellationToken = new())
+    {
+        return SendRequest(request, cancellationToken);
+    }
+
+    [Obsolete("Use SendRequest")]
+    public async Task<TResponse> MakeRequestAsync<TResponse>(IRequest<TResponse> request,
+                                                             CancellationToken cancellationToken = new())
+    {
+        return await SendRequest(request, cancellationToken);
+    }
+
+    public Task<bool> TestApi(CancellationToken cancellationToken = new())
     {
         throw new NotImplementedException();
     }
 
-    public async Task DownloadFileAsync(string filePath,
-                                        Stream destination,
-                                        CancellationToken cancellationToken = new())
+
+    public async Task DownloadFile(string filePath,
+                                   Stream destination,
+                                   CancellationToken cancellationToken = new())
     {
         try
         {
-            await _policy.Execute(async () => await _bot.DownloadFileAsync(filePath, destination, cancellationToken)).ConfigureAwait(false);
+            if (_innerClient != null) await _innerClient?.DownloadFile(filePath, destination, cancellationToken)!;
         }
         catch (ApiRequestException ex)
         {
@@ -72,10 +82,22 @@ public class TelegramClientDecorator : ITelegramBotClient
         }
     }
 
-    public bool LocalBotServer { get; }
-    public long? BotId { get; }
+    public Task DownloadFile(TGFile file, Stream destination, CancellationToken cancellationToken = new())
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool LocalBotServer { get; set; } = false;
+    public long BotId { get; set; } = -1;
     public TimeSpan Timeout { get; set; }
-    public IExceptionParser? ExceptionsParser { get; set; }
+    public IExceptionParser ExceptionsParser { get; set; } = new DefaultExceptionParser();
     public event AsyncEventHandler<ApiRequestEventArgs>? OnMakingApiRequest;
     public event AsyncEventHandler<ApiResponseEventArgs>? OnApiResponseReceived;
+
+
+    public void ChangeBotToken(string token)
+    {
+        _options = new TelegramBotClientOptions(token, _options.BaseUrl, _options.UseTestEnvironment);
+        _innerClient = new TelegramBotClient(_options, _httpClient);
+    }
 }

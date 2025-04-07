@@ -40,6 +40,7 @@ public class SslMailKitSender : ISender
         if (token?.IsCancellationRequested ?? false)
         {
             response.ErrorMessages.Add("Message was cancelled by cancellation token.");
+
             return response;
         }
 
@@ -48,6 +49,7 @@ public class SslMailKitSender : ISender
             if (_smtpClientOptions.CurrentValue.UsePickupDirectory)
             {
                 SaveToPickupDirectory(message, _smtpClientOptions.CurrentValue.MailPickupDirectory).Wait();
+
                 return response;
             }
 
@@ -56,22 +58,21 @@ public class SslMailKitSender : ISender
             SslCertCheckOff(client);
 
             if (_smtpClientOptions.CurrentValue.SocketOptions.HasValue)
-                client.Connect(
-                    _smtpClientOptions.CurrentValue.Server,
-                    _smtpClientOptions.CurrentValue.Port,
-                    _smtpClientOptions.CurrentValue.SocketOptions.Value,
-                    token.GetValueOrDefault());
+                client.Connect(_smtpClientOptions.CurrentValue.Server,
+                               _smtpClientOptions.CurrentValue.Port,
+                               _smtpClientOptions.CurrentValue.SocketOptions.Value,
+                               token.GetValueOrDefault());
             else
-                client.Connect(
-                    _smtpClientOptions.CurrentValue.Server,
-                    _smtpClientOptions.CurrentValue.Port,
-                    _smtpClientOptions.CurrentValue.UseSsl,
-                    token.GetValueOrDefault());
+                client.Connect(_smtpClientOptions.CurrentValue.Server,
+                               _smtpClientOptions.CurrentValue.Port,
+                               _smtpClientOptions.CurrentValue.UseSsl,
+                               token.GetValueOrDefault());
 
             // Note: only needed if the SMTP server requires authentication
             if (_smtpClientOptions.CurrentValue.RequiresAuthentication)
-                client.Authenticate(_smtpClientOptions.CurrentValue.User, _smtpClientOptions.CurrentValue.Password,
-                    token.GetValueOrDefault());
+                client.Authenticate(_smtpClientOptions.CurrentValue.User,
+                                    _smtpClientOptions.CurrentValue.Password,
+                                    token.GetValueOrDefault());
 
             client.Send(message, token.GetValueOrDefault());
             client.Disconnect(true, token.GetValueOrDefault());
@@ -98,6 +99,7 @@ public class SslMailKitSender : ISender
         if (token?.IsCancellationRequested ?? false)
         {
             response.ErrorMessages.Add("Message was cancelled by cancellation token.");
+
             return response;
         }
 
@@ -106,28 +108,28 @@ public class SslMailKitSender : ISender
             if (_smtpClientOptions.CurrentValue.UsePickupDirectory)
             {
                 await SaveToPickupDirectory(message, _smtpClientOptions.CurrentValue.MailPickupDirectory);
+
                 return response;
             }
 
             using var client = new SmtpClient();
             SslCertCheckOff(client);
             if (_smtpClientOptions.CurrentValue.SocketOptions.HasValue)
-                await client.ConnectAsync(
-                    _smtpClientOptions.CurrentValue.Server,
-                    _smtpClientOptions.CurrentValue.Port,
-                    _smtpClientOptions.CurrentValue.SocketOptions.Value,
-                    token.GetValueOrDefault());
+                await client.ConnectAsync(_smtpClientOptions.CurrentValue.Server,
+                                          _smtpClientOptions.CurrentValue.Port,
+                                          _smtpClientOptions.CurrentValue.SocketOptions.Value,
+                                          token.GetValueOrDefault());
             else
-                await client.ConnectAsync(
-                    _smtpClientOptions.CurrentValue.Server,
-                    _smtpClientOptions.CurrentValue.Port,
-                    _smtpClientOptions.CurrentValue.UseSsl,
-                    token.GetValueOrDefault());
+                await client.ConnectAsync(_smtpClientOptions.CurrentValue.Server,
+                                          _smtpClientOptions.CurrentValue.Port,
+                                          _smtpClientOptions.CurrentValue.UseSsl,
+                                          token.GetValueOrDefault());
 
             // Note: only needed if the SMTP server requires authentication
             if (_smtpClientOptions.CurrentValue.RequiresAuthentication)
                 await client.AuthenticateAsync(_smtpClientOptions.CurrentValue.User,
-                    _smtpClientOptions.CurrentValue.Password, token.GetValueOrDefault());
+                                               _smtpClientOptions.CurrentValue.Password,
+                                               token.GetValueOrDefault());
 
             await client.SendAsync(message, token.GetValueOrDefault());
             await client.DisconnectAsync(true, token.GetValueOrDefault());
@@ -143,7 +145,10 @@ public class SslMailKitSender : ISender
     private static void SslCertCheckOff(SmtpClient client)
     {
         // Temporary!
-        client.ServerCertificateValidationCallback += (sender, certificate, chain, errors) => true;
+        client.ServerCertificateValidationCallback += (sender,
+                                                       certificate,
+                                                       chain,
+                                                       errors) => true;
     }
 
     /// <summary>
@@ -156,8 +161,7 @@ public class SslMailKitSender : ISender
         // Note: this will require that you know where the specified pickup directory is.
         var path = Path.Combine(pickupDirectory, $"{Guid.NewGuid()}.eml");
 
-        if (File.Exists(path))
-            return;
+        if (File.Exists(path)) return;
 
         await using var stream = new FileStream(path, FileMode.CreateNew);
         await message.WriteToAsync(stream);
@@ -186,6 +190,7 @@ public class SslMailKitSender : ISender
         message.From.Add(new MailboxAddress(data.FromAddress.Name, data.FromAddress.EmailAddress));
 
         var builder = new BodyBuilder();
+
         if (!string.IsNullOrEmpty(data.PlaintextAlternativeBody))
         {
             builder.TextBody = data.PlaintextAlternativeBody;
@@ -221,10 +226,10 @@ public class SslMailKitSender : ISender
 
         message.Priority = data.Priority switch
         {
-            Priority.Low => MessagePriority.NonUrgent,
+            Priority.Low    => MessagePriority.NonUrgent,
             Priority.Normal => MessagePriority.Normal,
-            Priority.High => MessagePriority.Urgent,
-            _ => message.Priority
+            Priority.High   => MessagePriority.Urgent,
+            _               => message.Priority
         };
 
         return message;

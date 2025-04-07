@@ -29,8 +29,8 @@ public class SessionClient
         };
 
         var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                "/user/AddDefaultUser"),
-            request);
+                                                                     "/user/AddDefaultUser"),
+                                                         request);
 
         if (!response.IsSuccessStatusCode)
             return new Error
@@ -56,8 +56,8 @@ public class SessionClient
         };
 
         var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                "/user"),
-            request);
+                                                                     "/user"),
+                                                         request);
 
         if (!response.IsSuccessStatusCode)
             return new Error
@@ -82,8 +82,8 @@ public class SessionClient
         };
 
         var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                "/user/RegeneratePassword"),
-            request);
+                                                                     "/user/RegeneratePassword"),
+                                                         request);
 
         if (!response.IsSuccessStatusCode)
             return new Error
@@ -102,8 +102,7 @@ public class SessionClient
     public async Task<bool> HasUsersAsync()
     {
         var response = await _httpClient.GetFromJsonAsync<bool>(Url.Combine(_backSettings.CurrentValue.BackUrl,
-            "/user/HasUsers"));
-
+                                                                            "/user/HasUsers"));
 
         return response;
     }
@@ -117,18 +116,18 @@ public class SessionClient
         };
 
         var response = await _httpClient.PostAsJsonAsync(Url.Combine(_backSettings.CurrentValue.BackUrl,
-                "/auth/GetToken"),
-            request);
+                                                                     "/auth/GetToken"),
+                                                         request);
 
         var tokenResponse = await response.Content.ReadFromJsonAsync<GetTokenResponse>();
 
-        if (!tokenResponse.IsSuccess)
-            return new ValueTuple<Session, Error>(default,
-                new Error
-                {
-                    Code = 1,
-                    UserMessage = "Login error!"
-                });
+        if (tokenResponse is not {IsSuccess: true})
+            return new ValueTuple<Session, Error>(null!,
+                                                  new Error
+                                                  {
+                                                      Code = 1,
+                                                      UserMessage = "Login error!"
+                                                  });
 
         _session = new Session
         {
@@ -144,5 +143,8 @@ public class SessionClient
         });
     }
 
-    public Session GetSession() => _session;
+    public Session GetSession()
+    {
+        return _session;
+    }
 }

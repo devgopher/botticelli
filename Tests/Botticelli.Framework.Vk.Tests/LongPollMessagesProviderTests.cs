@@ -1,9 +1,8 @@
 ﻿using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Shared.Utils;
-using Microsoft.Extensions.Configuration;
-using Shared;
 using NUnit.Framework;
+using Shared;
 
 namespace Botticelli.Framework.Vk.Tests;
 
@@ -19,17 +18,17 @@ public class LongPollMessagesProviderTests
                                                      PollIntervalMs = 500,
                                                      GroupId = 221973506
                                                  }).CurrentValue,
-            new TestHttpClientFactory(),
-            LoggerMocks.CreateConsoleLogger<LongPollMessagesProvider>());
+                                                 new TestHttpClientFactory(),
+                                                 LoggerMocks.CreateConsoleLogger<LongPollMessagesProvider>());
     }
 
-    private LongPollMessagesProvider _provider;
+    private LongPollMessagesProvider? _provider;
 
     [Test]
     public async Task StartTest()
     {
         _provider.NotNull();
-        await _provider.Stop();
+        await _provider!.Stop();
         _provider.SetApiKey(EnvironmentDataProvider.GetApiKey());
 
         var task = Task.Run(() => _provider.Start(CancellationToken.None));
@@ -42,7 +41,8 @@ public class LongPollMessagesProviderTests
     [Test]
     public void StopTest()
     {
-        _ = _provider.Start(CancellationToken.None);
+        _provider.NotNull();
+        _ = _provider!.Start(CancellationToken.None);
 
         Thread.Sleep(2000);
 

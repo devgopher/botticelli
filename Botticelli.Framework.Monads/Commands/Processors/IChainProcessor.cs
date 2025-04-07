@@ -8,14 +8,12 @@ namespace Botticelli.Framework.Monads.Commands.Processors;
 /// <summary>
 ///     Chain processor
 /// </summary>
-/// <typeparam name="TCommand"></typeparam>
-/// <typeparam name="TBot"></typeparam>
+/// <typeparam name="TCommand" />
 public interface IChainProcessor<TCommand> where TCommand : IChainCommand
 {
     public IBot? Bot { get; }
 
     public void SetBot(IBot bot);
 
-    public Task<EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>>> Process(
-        EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>> stepResult, CancellationToken token = default);
+    public Task<EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>>> Process(EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>> stepResult, CancellationToken token = default);
 }

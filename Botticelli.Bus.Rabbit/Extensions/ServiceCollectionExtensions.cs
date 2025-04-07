@@ -6,6 +6,7 @@ using Botticelli.Bus.Rabbit.Settings;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.Utils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
@@ -19,19 +20,25 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <typeparam name="TBot"></typeparam>
     /// <param name="services"></param>
+    /// <param name="config"></param>
     /// <returns></returns>
     public static IServiceCollection UseRabbitBusClient<TBot>(this IServiceCollection services, IConfiguration config)
-        where TBot : IBot =>
-        services.AddSingleton<IBusClient, RabbitClient<TBot>>()
-            .AddSingleton(GetRabbitBusSettings(config))
-            .AddConnectionFactory(GetRabbitBusSettings(config));
+            where TBot : IBot
+    {
+        return services.AddSingleton<IBusClient, RabbitClient<TBot>>()
+                       .AddSingleton(GetRabbitBusSettings(config))
+                       .AddConnectionFactory(GetRabbitBusSettings(config));
+    }
 
     private static IServiceCollection AddConnectionFactory(this IServiceCollection services, RabbitBusSettings settings)
     {
+        settings.NotNull();
+        settings.Uri.NotNull();
+        
         if (!services.Any(s => s.ServiceType.IsAssignableFrom(typeof(IConnectionFactory))))
             services.AddSingleton<IConnectionFactory>(s => new ConnectionFactory
             {
-                Uri = new Uri(settings.Uri),
+                Uri = new Uri(settings.Uri!),
                 VirtualHost = settings.VHost,
                 UserName = settings.UserName,
                 Password = settings.Password
@@ -52,13 +59,17 @@ public static class ServiceCollectionExtensions
     ///     Uses a rabbit bus
     /// </summary>
     /// <typeparam name="TBot"></typeparam>
+    /// <typeparam name="THandler"></typeparam>
     /// <param name="services"></param>
+    /// <param name="config"></param>
     /// <returns></returns>
     public static IServiceCollection UseRabbitBusAgent<TBot, THandler>(this IServiceCollection services,
-        IConfiguration config)
-        where TBot : IBot
-        where THandler : IHandler<SendMessageRequest, SendMessageResponse> =>
-        services.AddHostedService<RabbitAgent<TBot, THandler>>()
-            .AddSingleton(GetRabbitBusSettings(config))
-            .AddConnectionFactory(GetRabbitBusSettings(config));
+                                                                       IConfiguration config)
+            where TBot : IBot
+            where THandler : IHandler<SendMessageRequest, SendMessageResponse>
+    {
+        return services.AddHostedService<RabbitAgent<TBot, THandler>>()
+                       .AddSingleton(GetRabbitBusSettings(config))
+                       .AddConnectionFactory(GetRabbitBusSettings(config));
+    }
 }

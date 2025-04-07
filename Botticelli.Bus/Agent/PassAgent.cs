@@ -11,7 +11,7 @@ namespace Botticelli.Bus.None.Agent;
 /// </summary>
 /// <typeparam name="THandler"></typeparam>
 public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
-    where THandler : IHandler<SendMessageRequest, SendMessageResponse>
+        where THandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
     private readonly THandler _handler;
 
@@ -20,8 +20,9 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
         _handler = handler;
     }
 
-    public async Task Subscribe(CancellationToken token)
+    public Task Subscribe(CancellationToken token)
     {
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -31,15 +32,23 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     /// <param name="token"></param>
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
-    public async Task SendResponseAsync(SendMessageResponse response,
-        CancellationToken token,
-        int timeoutMs = 10000) =>
+    public Task SendResponseAsync(SendMessageResponse response,
+                                        CancellationToken token,
+                                        int timeoutMs = 10000)
+    {
         NoneBus.SendMessageResponses.Enqueue(response);
+        return Task.CompletedTask;
+    }
 
     public Task StartAsync(CancellationToken token)
-        => Task.Run(async () => await InnerProcess(_handler, token));
+    {
+        return Task.Run(async () => await InnerProcess(_handler, token));
+    }
 
-    public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 
     private async Task InnerProcess(THandler handler, CancellationToken token)
     {

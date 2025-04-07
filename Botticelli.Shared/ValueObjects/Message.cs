@@ -19,21 +19,25 @@ public class Message
         /// <summary>
         ///     A command message
         /// </summary>
-        Command
+        Command,
+
+        /// <summary>
+        ///     A specific type with some type extensions
+        /// </summary>
+        Extended
     }
 
     public Message()
     {
+        ChatIds = [];
         Uid = Guid.NewGuid().ToString();
         CreatedAt = DateTime.Now;
         ProcessingArgs = new List<string>(1);
     }
 
-    public Message(string uid)
+    public Message(string uid) : this()
     {
         Uid = uid;
-        CreatedAt = DateTime.Now;
-        ProcessingArgs = new List<string>(1);
     }
 
     /// <summary>
@@ -104,7 +108,7 @@ public class Message
     /// <summary>
     ///     GeoLocation
     /// </summary>
-    public GeoLocation Location { get; set; }
+    public GeoLocation? Location { get; set; }
 
     /// <summary>
     ///     Callback data if exists

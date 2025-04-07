@@ -15,10 +15,10 @@ public class HangfireJobManager : IJobManager
     private readonly List<string> _jobIds = new(5);
 
     public string AddJob(IBot bot,
-        Reliability reliability,
-        Message message,
-        Scheduler.Schedule schedule,
-        Action<Message>? preprocessFunc = default)
+                         Reliability reliability,
+                         Message message,
+                         Schedule schedule,
+                         Action<Message>? preprocessFunc = null)
     {
         var jobId = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
 
@@ -32,19 +32,19 @@ public class HangfireJobManager : IJobManager
         if (!reliability.IsEnabled)
         {
             RecurringJob.AddOrUpdate(jobId,
-                () => bot.SendMessageAsync(request, CancellationToken.None),
-                schedule.Cron);
+                                     () => bot.SendMessageAsync(request, CancellationToken.None),
+                                     schedule.Cron);
             _jobIds.Add(jobId);
 
             return jobId;
         }
 
         RecurringJob.AddOrUpdate(jobId,
-            () => SendWithReliability(bot,
-                request,
-                reliability,
-                CancellationToken.None),
-            schedule.Cron);
+                                 () => SendWithReliability(bot,
+                                                           request,
+                                                           reliability,
+                                                           CancellationToken.None),
+                                 schedule.Cron);
         _jobIds.Add(jobId);
 
         return jobId;
@@ -64,8 +64,10 @@ public class HangfireJobManager : IJobManager
     }
 
     public async Task SendWithReliability(IBot bot,
-        SendMessageRequest request,
-        Reliability reliability,
-        CancellationToken token)
-        => throw new NotImplementedException();
+                                          SendMessageRequest request,
+                                          Reliability reliability,
+                                          CancellationToken token)
+    {
+        throw new NotImplementedException();
+    }
 }

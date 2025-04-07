@@ -1,5 +1,4 @@
 ﻿using System.Net.Http.Json;
-using System.Text.Json;
 using Botticelli.Audio;
 using Botticelli.Framework.Exceptions;
 using Botticelli.Framework.Vk.Messages.API.Requests;
@@ -20,8 +19,8 @@ public class VkStorageUploader
     private string _apiKey;
 
     public VkStorageUploader(IHttpClientFactory httpClientFactory,
-        IConvertor audioConvertor,
-        ILogger<MessagePublisher> logger)
+                             IConvertor audioConvertor,
+                             ILogger<MessagePublisher> logger)
     {
         _httpClientFactory = httpClientFactory;
         _audioConvertor = audioConvertor;
@@ -30,7 +29,10 @@ public class VkStorageUploader
 
     private string ApiVersion => "5.199";
 
-    public void SetApiKey(string key) => _apiKey = key;
+    public void SetApiKey(string key)
+    {
+        _apiKey = key;
+    }
 
     /// <summary>
     ///     Get an upload address for a photo
@@ -39,30 +41,31 @@ public class VkStorageUploader
     /// <param name="token"></param>
     /// <returns></returns>
     private async Task<GetUploadAddress?> GetPhotoUploadAddress(VkSendMessageRequest vkMessageRequest,
-        CancellationToken token)
+                                                                CancellationToken token)
     {
         try
         {
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Get,
-                ApiUtils.GetMethodUri("https://api.vk.com",
-                    "photos.getMessagesUploadServer",
-                    new
-                    {
-                        access_token = _apiKey,
-                        v = ApiVersion,
-                        peer_id = vkMessageRequest.PeerId
-                    }));
+                                                 ApiUtils.GetMethodUri("https://api.vk.com",
+                                                                       "photos.getMessagesUploadServer",
+                                                                       new
+                                                                       {
+                                                                           access_token = _apiKey,
+                                                                           v = ApiVersion,
+                                                                           peer_id = vkMessageRequest.PeerId
+                                                                       }));
 
             var response = await httpClient.SendAsync(request, token);
-            return await response.Content.ReadFromJsonAsync<GetUploadAddress>(cancellationToken: token);
+
+            return await response.Content.ReadFromJsonAsync<GetUploadAddress>(token);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting an upload address!");
         }
 
-        return default;
+        return null;
     }
 
 
@@ -73,35 +76,39 @@ public class VkStorageUploader
     /// <param name="token"></param>
     /// <returns></returns>
     private async Task<GetUploadAddress?> GetAudioUploadAddress(VkSendMessageRequest vkMessageRequest,
-        CancellationToken token)
-        => await GetDocsUploadAddress(vkMessageRequest, "audio_message", token);
+                                                                CancellationToken token)
+    {
+        return await GetDocsUploadAddress(vkMessageRequest, "audio_message", token);
+    }
 
-    private async Task<GetUploadAddress?> GetDocsUploadAddress(VkSendMessageRequest vkMessageRequest, string type,
-        CancellationToken token)
+    private async Task<GetUploadAddress?> GetDocsUploadAddress(VkSendMessageRequest vkMessageRequest,
+                                                               string type,
+                                                               CancellationToken token)
     {
         try
         {
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Get,
-                ApiUtils.GetMethodUri("https://api.vk.com",
-                    "docs.getMessagesUploadServer",
-                    new
-                    {
-                        access_token = _apiKey,
-                        v = ApiVersion,
-                        peer_id = vkMessageRequest.PeerId,
-                        type
-                    }));
+                                                 ApiUtils.GetMethodUri("https://api.vk.com",
+                                                                       "docs.getMessagesUploadServer",
+                                                                       new
+                                                                       {
+                                                                           access_token = _apiKey,
+                                                                           v = ApiVersion,
+                                                                           peer_id = vkMessageRequest.PeerId,
+                                                                           type
+                                                                       }));
 
             var response = await httpClient.SendAsync(request, token);
-            return await response.Content.ReadFromJsonAsync<GetUploadAddress>(cancellationToken: token);
+
+            return await response.Content.ReadFromJsonAsync<GetUploadAddress>(token);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting an upload address!");
         }
 
-        return default;
+        return null;
     }
 
     /// <summary>
@@ -112,17 +119,20 @@ public class VkStorageUploader
     /// <param name="binaryContent"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private async Task<UploadPhotoResult?> UploadPhoto(string uploadUrl, string name, byte[] binaryContent,
-        CancellationToken token)
+    private async Task<UploadPhotoResult?> UploadPhoto(string uploadUrl,
+                                                       string name,
+                                                       byte[] binaryContent,
+                                                       CancellationToken token)
     {
         using var httpClient = _httpClientFactory.CreateClient();
         using var memoryContentStream = new MemoryStream(binaryContent);
         memoryContentStream.Seek(0, SeekOrigin.Begin);
 
-        var content = new MultipartFormDataContent { { new StreamContent(memoryContentStream), "photo", name } };
+        var content = new MultipartFormDataContent {{new StreamContent(memoryContentStream), "photo", name}};
 
         var response = await httpClient.PostAsync(uploadUrl, content, token);
-        return await response.Content.ReadFromJsonAsync<UploadPhotoResult>(cancellationToken: token);
+
+        return await response.Content.ReadFromJsonAsync<UploadPhotoResult>(token);
     }
 
 
@@ -134,20 +144,28 @@ public class VkStorageUploader
     /// <param name="binaryContent"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private async Task<UploadDocResult?> UploadAudioMessage(string uploadUrl, string name, byte[] binaryContent,
-        CancellationToken token)
+    private async Task<UploadDocResult?> UploadAudioMessage(string uploadUrl,
+                                                            string name,
+                                                            byte[] binaryContent,
+                                                            CancellationToken token)
     {
         // convert to ogg in order to meet VK requirements
-        var oggContent = _audioConvertor.Convert(binaryContent, new AudioInfo
-        {
-            AudioFormat = AudioFormat.Ogg
-        });
+        var oggContent = _audioConvertor.Convert(binaryContent,
+                                                 new AudioInfo
+                                                 {
+                                                     AudioFormat = AudioFormat.Ogg
+                                                 });
 
-        return await PushDocument<UploadDocResult>(uploadUrl, name, oggContent, token);
+        return await PushDocument<UploadDocResult>(uploadUrl,
+                                                   name,
+                                                   oggContent,
+                                                   token);
     }
 
-    private async Task<TResult?> PushDocument<TResult>(string uploadUrl, string name, byte[] binContent,
-        CancellationToken token)
+    private async Task<TResult?> PushDocument<TResult>(string uploadUrl,
+                                                       string name,
+                                                       byte[] binContent,
+                                                       CancellationToken token)
     {
         using var httpClient = _httpClientFactory.CreateClient();
         var content = new MultipartFormDataContent
@@ -160,7 +178,8 @@ public class VkStorageUploader
         };
 
         var response = await httpClient.PostAsync(uploadUrl, content, token);
-        return await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: token);
+
+        return await response.Content.ReadFromJsonAsync<TResult>(token);
     }
 
     /// <summary>
@@ -171,9 +190,16 @@ public class VkStorageUploader
     /// <param name="binaryContent"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private async Task<UploadDocResult?> UploadDocMessage(string uploadUrl, string name, byte[] binaryContent,
-        CancellationToken token)
-        => await PushDocument<UploadDocResult>(uploadUrl, name, binaryContent, token);
+    private async Task<UploadDocResult?> UploadDocMessage(string uploadUrl,
+                                                          string name,
+                                                          byte[] binaryContent,
+                                                          CancellationToken token)
+    {
+        return await PushDocument<UploadDocResult>(uploadUrl,
+                                                   name,
+                                                   binaryContent,
+                                                   token);
+    }
 
     /// <summary>
     ///     Uploads a video (binaries)
@@ -183,17 +209,20 @@ public class VkStorageUploader
     /// <param name="binaryContent"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private async Task<UploadVideoResult?> UploadVideo(string uploadUrl, string name, byte[] binaryContent,
-        CancellationToken token)
+    private async Task<UploadVideoResult?> UploadVideo(string uploadUrl,
+                                                       string name,
+                                                       byte[] binaryContent,
+                                                       CancellationToken token)
     {
         using var httpClient = _httpClientFactory.CreateClient();
         using var memoryContentStream = new MemoryStream(binaryContent);
         memoryContentStream.Seek(0, SeekOrigin.Begin);
 
-        var content = new MultipartFormDataContent { { new StreamContent(memoryContentStream), "video", name } };
+        var content = new MultipartFormDataContent {{new StreamContent(memoryContentStream), "video", name}};
 
         var response = await httpClient.PostAsync(uploadUrl, content, token);
-        return await response.Content.ReadFromJsonAsync<UploadVideoResult>(cancellationToken: token);
+
+        return await response.Content.ReadFromJsonAsync<UploadVideoResult>(token);
     }
 
     /// <summary>
@@ -205,44 +234,50 @@ public class VkStorageUploader
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
-    public async Task<VkSendPhotoResponse?> SendPhotoAsync(VkSendMessageRequest vkMessageRequest, string name,
-        byte[] binaryContent, CancellationToken token)
+    public async Task<VkSendPhotoResponse?> SendPhotoAsync(VkSendMessageRequest vkMessageRequest,
+                                                           string name,
+                                                           byte[] binaryContent,
+                                                           CancellationToken token)
     {
         try
         {
             var address = await GetPhotoUploadAddress(vkMessageRequest, token);
 
-            if (address?.Response == default) throw new BotException("Sending photo error: no upload server address!");
+            if (address?.Response == null) throw new BotException("Sending photo error: no upload server address!");
 
-            var uploadedPhoto = await UploadPhoto(address.Response.UploadUrl, name, binaryContent, token);
+            var uploadedPhoto = await UploadPhoto(address.Response.UploadUrl,
+                                                  name,
+                                                  binaryContent,
+                                                  token);
 
-            if (uploadedPhoto?.Photo == default) throw new BotException("Sending photo error: no media uploaded!");
+            if (uploadedPhoto?.Photo == null) throw new BotException("Sending photo error: no media uploaded!");
 
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Post,
-                ApiUtils.GetMethodUri("https://api.vk.com",
-                    "photos.saveMessagesPhoto",
-                    new
-                    {
-                        server = uploadedPhoto.Server,
-                        hash = uploadedPhoto.Hash,
-                        access_token = _apiKey,
-                        v = ApiVersion
-                    }));
+                                                 ApiUtils.GetMethodUri("https://api.vk.com",
+                                                                       "photos.saveMessagesPhoto",
+                                                                       new
+                                                                       {
+                                                                           server = uploadedPhoto.Server,
+                                                                           hash = uploadedPhoto.Hash,
+                                                                           access_token = _apiKey,
+                                                                           v = ApiVersion
+                                                                       }));
             request.Content = ApiUtils.GetMethodMultipartFormContent(new
             {
                 photo = uploadedPhoto.Photo
             });
 
             var response = await httpClient.SendAsync(request, token);
-            return await response.Content.ReadFromJsonAsync<VkSendPhotoResponse>(cancellationToken: token);
+
+            return await response.Content.ReadFromJsonAsync<VkSendPhotoResponse>(token);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error uploading media");
         }
 
-        return default;
+        return null;
     }
 
 
@@ -255,85 +290,97 @@ public class VkStorageUploader
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
-    public async Task<VkSendAudioResponse?> SendAudioMessageAsync(VkSendMessageRequest vkMessageRequest, string name,
-        byte[] binaryContent, CancellationToken token)
+    public async Task<VkSendAudioResponse?> SendAudioMessageAsync(VkSendMessageRequest vkMessageRequest,
+                                                                  string name,
+                                                                  byte[] binaryContent,
+                                                                  CancellationToken token)
     {
         try
         {
             var address = await GetAudioUploadAddress(vkMessageRequest, token);
 
-            if (address?.Response == default) throw new BotException("Sending audio error: no upload server address!");
+            if (address?.Response == null) throw new BotException("Sending audio error: no upload server address!");
 
-            var uploadedAudio = await UploadAudioMessage(address.Response.UploadUrl, name, binaryContent, token);
+            var uploadedAudio = await UploadAudioMessage(address.Response.UploadUrl,
+                                                         name,
+                                                         binaryContent,
+                                                         token);
 
-            if (uploadedAudio?.File == default) throw new BotException("Sending audio error: no media uploaded!");
+            if (uploadedAudio?.File == null) throw new BotException("Sending audio error: no media uploaded!");
 
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Post,
-                ApiUtils.GetMethodUri("https://api.vk.com",
-                    "docs.save",
-                    new
-                    {
-                        title = "voice",
-                        tags = "string.Empty",
-                        file = uploadedAudio.File,
-                        // audio = uploadedAudio.File,
-                        access_token = _apiKey,
-                        v = ApiVersion
-                    }));
+                                                 ApiUtils.GetMethodUri("https://api.vk.com",
+                                                                       "docs.save",
+                                                                       new
+                                                                       {
+                                                                           title = "voice",
+                                                                           tags = "string.Empty",
+                                                                           file = uploadedAudio.File,
+                                                                           // audio = uploadedAudio.File,
+                                                                           access_token = _apiKey,
+                                                                           v = ApiVersion
+                                                                       }));
             request.Content = ApiUtils.GetMethodMultipartFormContent(new
             {
                 audio = uploadedAudio.File
             });
 
             var response = await httpClient.SendAsync(request, token);
-            return await response.Content.ReadFromJsonAsync<VkSendAudioResponse>(cancellationToken: token);
+
+            return await response.Content.ReadFromJsonAsync<VkSendAudioResponse>(token);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error uploading media");
         }
 
-        return default;
+        return null;
     }
 
 
-    public async Task<VkSendDocumentResponse?> SendDocsMessageAsync(VkSendMessageRequest vkMessageRequest, string name,
-        byte[] binaryContent, CancellationToken token)
+    public async Task<VkSendDocumentResponse?> SendDocsMessageAsync(VkSendMessageRequest vkMessageRequest,
+                                                                    string name,
+                                                                    byte[] binaryContent,
+                                                                    CancellationToken token)
     {
         try
         {
             var address = await GetDocsUploadAddress(vkMessageRequest, "doc", token);
 
-            if (address?.Response == default) throw new BotException("Sending doc error: no upload server address!");
+            if (address?.Response == null) throw new BotException("Sending doc error: no upload server address!");
 
-            var uploadedDoc = await UploadDocMessage(address.Response.UploadUrl, name, binaryContent, token);
+            var uploadedDoc = await UploadDocMessage(address.Response.UploadUrl,
+                                                     name,
+                                                     binaryContent,
+                                                     token);
 
-            if (uploadedDoc?.File == default) throw new BotException("Sending doc error: no file uploaded!");
+            if (uploadedDoc?.File == null) throw new BotException("Sending doc error: no file uploaded!");
 
             using var httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Post,
-                ApiUtils.GetMethodUri("https://api.vk.com",
-                    "docs.save",
-                    new
-                    {
-                        file = uploadedDoc.File,
-                        access_token = _apiKey,
-                        v = ApiVersion
-                    }));
+                                                 ApiUtils.GetMethodUri("https://api.vk.com",
+                                                                       "docs.save",
+                                                                       new
+                                                                       {
+                                                                           file = uploadedDoc.File,
+                                                                           access_token = _apiKey,
+                                                                           v = ApiVersion
+                                                                       }));
             request.Content = ApiUtils.GetMethodMultipartFormContent(new
             {
                 doc = uploadedDoc.File
             });
 
             var response = await httpClient.SendAsync(request, token);
-            return await response.Content.ReadFromJsonAsync<VkSendDocumentResponse>(cancellationToken: token);
+
+            return await response.Content.ReadFromJsonAsync<VkSendDocumentResponse>(token);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error uploading media");
         }
 
-        return default;
+        return null;
     }
 }

@@ -6,7 +6,8 @@ namespace Botticelli.Bus.None.Handler;
 
 public class DefaultPassHandler : IHandler<SendMessageRequest, SendMessageResponse>
 {
-    public async Task Handle(SendMessageRequest input, CancellationToken token)
+    public Task Handle(SendMessageRequest input, CancellationToken token)
     {
+        return Task.CompletedTask;
     }
 }

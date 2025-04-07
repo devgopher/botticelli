@@ -6,7 +6,6 @@ namespace Botticelli.Locations.Mapping;
 
 public class AddressMappingRegister : IRegister
 {
-
     public void Register(TypeAdapterConfig config)
     {
         // Put your mapping logic here

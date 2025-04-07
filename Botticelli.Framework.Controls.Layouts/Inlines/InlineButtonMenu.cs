@@ -46,7 +46,10 @@ public class InlineButtonMenu : ILayout
         }
     }
 
-    public void AddRow(Row row) => Rows?.Add(row);
+    public void AddRow(Row row)
+    {
+        Rows?.Add(row);
+    }
 
 
     public IList<Row>? Rows { get; }
@@ -62,7 +65,7 @@ public class InlineButtonMenu : ILayout
 
         var row = Rows?.Skip(Header != null ? 1 : 0).FirstOrDefault(r => r.Items.Count < _columns) ?? new Row();
         if (!Rows.Any()) Rows.Add(row);
-        
+
         row?.AddItem(new Item
         {
             Control = control,
@@ -71,5 +74,7 @@ public class InlineButtonMenu : ILayout
     }
 
     private bool CheckControlsCount()
-        => Rows?.Skip(Header != null ? 1 : 0).Select(r => r.Items?.Count ?? 0).Sum(cnt => cnt) < _rows * _columns;
+    {
+        return Rows?.Skip(Header != null ? 1 : 0).Select(r => r.Items?.Count ?? 0).Sum(cnt => cnt) < _rows * _columns;
+    }
 }

@@ -17,15 +17,18 @@ public static class ServiceCollectionExtensions
 {
     private static readonly BotSettingsBuilder<VkBotSettings> SettingsBuilder = new();
     private static readonly ServerSettingsBuilder<ServerSettings> ServerSettingsBuilder = new();
-    private static readonly AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientOptionsBuilder = new();
+
+    private static readonly AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientOptionsBuilder =
+            new();
+
     private static readonly DataAccessSettingsBuilder<DataAccessSettings> DataAccessSettingsBuilder = new();
-    
+
     public static IServiceCollection AddVkBot(this IServiceCollection services, IConfiguration configuration)
     {
         var vkBotSettings = configuration
-                                  .GetSection(VkBotSettings.Section)
-                                  .Get<VkBotSettings>() ??
-                                  throw new ConfigurationErrorsException($"Can't load configuration for {nameof(VkBotSettings)}!");
+                            .GetSection(VkBotSettings.Section)
+                            .Get<VkBotSettings>() ??
+                            throw new ConfigurationErrorsException($"Can't load configuration for {nameof(VkBotSettings)}!");
 
         var analyticsClientSettings = configuration
                                       .GetSection(AnalyticsClientSettings.Section)
@@ -44,21 +47,23 @@ public static class ServiceCollectionExtensions
         ;
 
         return services.AddVkBot(vkBotSettings,
-                                       analyticsClientSettings,
-                                       serverSettings,
-                                       dataAccessSettings);
+                                 analyticsClientSettings,
+                                 serverSettings,
+                                 dataAccessSettings);
     }
-    
+
     public static IServiceCollection AddVkBot(this IServiceCollection services,
-                                                    VkBotSettings botSettings,
-                                                    AnalyticsClientSettings analyticsClientSettings,
-                                                    ServerSettings serverSettings,
-                                                    DataAccessSettings dataAccessSettings) =>
-            services.AddVkBot(o => o.Set(botSettings),
-                                    o => o.Set(analyticsClientSettings),
-                                    o => o.Set(serverSettings),
-                                    o => o.Set(dataAccessSettings));
-    
+                                              VkBotSettings botSettings,
+                                              AnalyticsClientSettings analyticsClientSettings,
+                                              ServerSettings serverSettings,
+                                              DataAccessSettings dataAccessSettings)
+    {
+        return services.AddVkBot(o => o.Set(botSettings),
+                                 o => o.Set(analyticsClientSettings),
+                                 o => o.Set(serverSettings),
+                                 o => o.Set(dataAccessSettings));
+    }
+
     /// <summary>
     ///     Adds a Vk bot
     /// </summary>
@@ -78,22 +83,26 @@ public static class ServiceCollectionExtensions
         serverSettingsBuilderFunc(ServerSettingsBuilder);
         analyticsOptionsBuilderFunc(AnalyticsClientOptionsBuilder);
         dataAccessSettingsBuilderFunc(DataAccessSettingsBuilder);
-        
+
         var clientBuilder = LongPollMessagesProviderBuilder.Instance(SettingsBuilder);
-        
+
         var botBuilder = VkBotBuilder.Instance(services,
-                                                     ServerSettingsBuilder,
-                                                     SettingsBuilder, 
-                                                     DataAccessSettingsBuilder,
-                                                     AnalyticsClientOptionsBuilder)
-                                           .AddClient(clientBuilder);
+                                               ServerSettingsBuilder,
+                                               SettingsBuilder,
+                                               DataAccessSettingsBuilder,
+                                               AnalyticsClientOptionsBuilder)
+                                     .AddClient(clientBuilder);
         var bot = botBuilder.Build();
+
         return services.AddSingleton<IBot<VkBot>>(bot)
                        .AddSingleton<IBot>(bot);
     }
-    public static IServiceCollection AddVkLayoutsSupport(this IServiceCollection services) =>
-            services.AddScoped<ILayoutParser, JsonLayoutParser>()
-                    .AddScoped<ILayoutSupplier<VkKeyboardMarkup>, VkLayoutSupplier>()
-                    .AddScoped<ILayoutLoader<VkKeyboardMarkup>,
-                            LayoutLoader<ILayoutParser, ILayoutSupplier<VkKeyboardMarkup>, VkKeyboardMarkup>>();
+
+    public static IServiceCollection AddVkLayoutsSupport(this IServiceCollection services)
+    {
+        return services.AddSingleton<ILayoutParser, JsonLayoutParser>()
+                       .AddSingleton<ILayoutSupplier<VkKeyboardMarkup>, VkLayoutSupplier>()
+                       .AddSingleton<ILayoutLoader<VkKeyboardMarkup>,
+                               LayoutLoader<ILayoutParser, ILayoutSupplier<VkKeyboardMarkup>, VkKeyboardMarkup>>();
+    }
 }

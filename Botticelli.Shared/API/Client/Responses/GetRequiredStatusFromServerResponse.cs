@@ -5,8 +5,8 @@ namespace Botticelli.Shared.API.Client.Responses;
 
 public class GetRequiredStatusFromServerResponse : ServerBaseResponse
 {
-    public string BotId { get; set; }
+    public required string BotId { get; set; }
     public BotStatus? Status { get; set; }
 
-    public BotContext BotContext { get; set; }
+    public required BotContext BotContext { get; set; }
 }

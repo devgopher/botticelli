@@ -8,5 +8,8 @@ public class PingRequest : BaseRequest<PingRequest>
     {
     }
 
-    public static PingRequest GetInstance() => new(BotIdUtils.GenerateShortBotId());
+    public static PingRequest GetInstance()
+    {
+        return new PingRequest(BotIdUtils.GenerateShortBotId());
+    }
 }

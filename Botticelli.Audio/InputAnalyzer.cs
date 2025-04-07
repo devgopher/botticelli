@@ -31,7 +31,7 @@ public class InputAnalyzer : IAnalyzer
             "m4a" => AudioFormat.M4a,
             "aac" => AudioFormat.Aac,
             "ogg" => AudioFormat.Ogg,
-            _ => AudioFormat.Unknown
+            _     => AudioFormat.Unknown
         };
 
         return new AudioInfo
@@ -46,39 +46,45 @@ public class InputAnalyzer : IAnalyzer
     public AudioInfo Analyze(Stream input)
     {
         var fileFormat = _fileFormatInspector.DetermineFileFormat(input);
-      
+
         AudioFormat format;
         WaveStream reader;
 
         fileFormat.NotNull();
-        switch (fileFormat.Extension.ToLowerInvariant())
+
+        switch (fileFormat?.Extension.ToLowerInvariant())
         {
             case "wav":
                 format = AudioFormat.Wav;
                 reader = new WaveFileReader(input);
+
                 break;
             case "mp3":
                 format = AudioFormat.Mp3;
                 reader = new Mp3FileReader(input);
+
                 break;
             case "m4a":
             case "aac":
-                reader = default!;
+                reader = null!;
                 format = default;
+
                 break;
             case "ogg":
                 format = AudioFormat.Ogg;
                 reader = new VorbisWaveReader(input);
+
                 break;
             default:
                 format = AudioFormat.Unknown;
-                reader = default!;
+                reader = null!;
+
                 break;
         }
 
         if (format == AudioFormat.Unknown) throw new InvalidOperationException("Invalid format!");
 
-        if (reader == default) throw new InvalidOperationException("Reader is null!");
+        if (reader == null) throw new InvalidOperationException("Reader is null!");
 
         return new AudioInfo
         {

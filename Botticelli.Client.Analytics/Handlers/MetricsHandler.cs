@@ -35,11 +35,13 @@ public abstract class MetricsHandler<TMetric> : IRequestHandler<IMetricRequest>
         }
     }
 
-    protected virtual MetricObject Convert(IMetricRequest args, string botId) =>
-        new()
+    protected virtual MetricObject Convert(IMetricRequest args, string botId)
+    {
+        return new MetricObject
         {
             BotId = botId,
             Name = args.MetricName,
             Timestamp = DateTime.Now
         };
+    }
 }

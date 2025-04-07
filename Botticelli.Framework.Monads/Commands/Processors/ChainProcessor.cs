@@ -12,20 +12,23 @@ namespace Botticelli.Framework.Monads.Commands.Processors;
 /// </summary>
 /// <typeparam name="TCommand"></typeparam>
 public abstract class ChainProcessor<TCommand>(ILogger logger)
-    : IChainProcessor<TCommand>
-    where TCommand : IChainCommand
+        : IChainProcessor<TCommand>
+        where TCommand : IChainCommand
 {
     protected readonly ILogger Logger = logger;
 
     public IBot Bot { get; private set; }
 
-    public void SetBot(IBot bot) => Bot = bot;
+    public void SetBot(IBot bot)
+    {
+        Bot = bot;
+    }
 
-    public virtual async Task<EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>>> Process(
-        EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>> stepResult, CancellationToken token = default)
+    public virtual async Task<EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>>> Process(EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>> stepResult,
+                                                                                                  CancellationToken token = default)
     {
         var unit = await stepResult.BiIter(r => InnerProcessAsync(r, token),
-            l => InnerErrorProcessAsync(l, token));
+                                           l => InnerErrorProcessAsync(l, token));
 
         return stepResult;
     }
@@ -40,7 +43,13 @@ public abstract class ChainProcessor<TCommand>(ILogger logger)
         return Task.CompletedTask;
     }
 
-    protected Message? GetMessage(TCommand command) => command.Context.Get<Message>("message");
+    protected Message? GetMessage(TCommand command)
+    {
+        return command.Context.Get<Message>("message");
+    }
 
-    protected string? GetArgs(TCommand command) => command.Context.Get("args");
+    protected string GetArgs(TCommand command)
+    {
+        return command.Context.Get("args");
+    }
 }

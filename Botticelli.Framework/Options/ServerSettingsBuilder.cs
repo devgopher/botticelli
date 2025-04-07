@@ -5,8 +5,11 @@ public class ServerSettingsBuilder<T>
 {
     private T _settings = new();
 
-    public void Set(T settings) => _settings = settings;
-    
+    public void Set(T settings)
+    {
+        _settings = settings;
+    }
+
     public ServerSettingsBuilder<T> Set(Action<T> func)
     {
         func(_settings);
@@ -14,5 +17,8 @@ public class ServerSettingsBuilder<T>
         return this;
     }
 
-    public T Build() => _settings;
+    public T Build()
+    {
+        return _settings;
+    }
 }

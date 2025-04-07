@@ -1,6 +1,5 @@
 namespace Botticelli.Framework.Commands.Processors;
 
-internal interface ICommandChainFirstElementProcessor : ICommandChainProcessor
+public interface ICommandChainFirstElementProcessor : ICommandChainProcessor
 {
-    
 }

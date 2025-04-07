@@ -11,54 +11,59 @@ namespace Botticelli.Framework.Monads.Commands.Processors;
 /// <typeparam name="TCommand"></typeparam>
 /// <typeparam name="TArgs"></typeparam>
 public class TransformArgumentsProcessor<TCommand, TArgs> : ChainProcessor<TCommand>
-    where TCommand : IChainCommand
+        where TCommand : IChainCommand
 {
     /// <summary>
     ///     Func transform processor
     /// </summary>
     public TransformArgumentsProcessor(ILogger<TransformArgumentsProcessor<TCommand, TArgs>> logger)
-        : base(logger)
+            : base(logger)
     {
     }
 
     public Func<TArgs, TArgs> SuccessFunc { get; set; } = t => t;
     public Func<TArgs, TArgs> FailFunc { get; set; } = t => t;
 
-    public override Task<EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>>> Process(
-        EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>> stepResult, CancellationToken token = default)
+    public override Task<EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>>> Process(EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>> stepResult, CancellationToken token = default)
     {
         try
         {
             return Task.FromResult(stepResult.BiMapAsync(t =>
-            {
-                t.Command.Context.Set(Names.Args,
-                    SuccessFunc.Invoke(t.Command.Context.Get<TArgs>(Names.Args)!));
+                                                         {
+                                                             t.Command.Context.Set(Names.Args,
+                                                                                   SuccessFunc.Invoke(t.Command.Context.Get<TArgs>(Names.Args)!));
 
-                return Task.FromResult(t);
-            }, t =>
-            {
-                t.Command.Context.Set(Names.Args,
-                    FailFunc.Invoke(t.Command.Context.Get<TArgs>(Names.Args)!));
+                                                             return Task.FromResult(t);
+                                                         },
+                                                         t =>
+                                                         {
+                                                             t.Command.Context.Set(Names.Args,
+                                                                                   FailFunc.Invoke(t.Command.Context.Get<TArgs>(Names.Args)!));
 
-                return Task.FromResult(t);
-            }));
+                                                             return Task.FromResult(t);
+                                                         }));
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, ex.Message);
+
             return Task.FromResult(stepResult.MapLeft(t =>
             {
                 t.Command.Context.Set(Names.Args,
-                    FailFunc.Invoke(t.Command.Context.Get<TArgs>(Names.Args)!));
+                                      FailFunc.Invoke(t.Command.Context.Get<TArgs>(Names.Args)!));
 
                 return t;
             }));
         }
     }
 
-    protected override Task InnerProcessAsync(IResult<TCommand> stepResult, CancellationToken token) =>
-        Task.CompletedTask;
+    protected override Task InnerProcessAsync(IResult<TCommand> stepResult, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 
-    protected override Task InnerErrorProcessAsync(FailResult<TCommand> stepResult, CancellationToken token) =>
-        Task.CompletedTask;
+    protected override Task InnerErrorProcessAsync(FailResult<TCommand> stepResult, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 }

@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Text;
 using Botticelli.AI.AIProvider;
 using Botticelli.AI.ChatGpt.Message.ChatGpt;
@@ -18,20 +17,22 @@ namespace Botticelli.AI.ChatGpt.Provider;
 public class ChatGptProvider : ChatGptProvider<GptSettings>
 {
     public ChatGptProvider(IOptions<GptSettings> gptSettings,
-        IHttpClientFactory? factory,
-        ILogger<ChatGptProvider> logger,
-        IBusClient? bus, 
-        IValidator<AiMessage>? messageValidator) : base(gptSettings,
-        factory,
-        logger,
-        bus,
-        messageValidator)
+                           IHttpClientFactory? factory,
+                           ILogger<ChatGptProvider> logger,
+                           IBusClient? bus,
+                           IValidator<AiMessage>? messageValidator) : base(gptSettings,
+                                                                           factory,
+                                                                           logger,
+                                                                           bus,
+                                                                           messageValidator)
     {
     }
 
     public override string AiName => "chatgpt";
 
-    protected override async Task ProcessGptResponse(AiMessage message, CancellationToken token, HttpResponseMessage response)
+    protected override async Task ProcessGptResponse(AiMessage message,
+                                                     CancellationToken token,
+                                                     HttpResponseMessage response)
     {
         var text = new StringBuilder();
 
@@ -39,22 +40,21 @@ public class ChatGptProvider : ChatGptProvider<GptSettings>
         using var sr = new StreamReader(outStream);
 
         using var reader = TextReader.Synchronized(sr);
-        var partText = Settings.Value.StreamGeneration
-            ? await reader.ReadLineAsync(token)
-            : await reader.ReadToEndAsync(token);
+        var partText = Settings.Value.StreamGeneration ? await reader.ReadLineAsync(token) : await reader.ReadToEndAsync(token);
         var seqNumber = 0;
+
         while (partText != null)
         {
             try
             {
-                if (Settings.Value.StreamGeneration)
-                    partText = partText.Replace("data: ", string.Empty);
+                if (Settings.Value.StreamGeneration) partText = partText.Replace("data: ", string.Empty);
 
                 var part = JsonConvert.DeserializeObject<ChatGptOutputMessage>(partText);
 
                 text.AppendJoin(' ',
-                    part?.Choices?
-                        .Select(c => (c.Message ?? c.Delta)?.Content) ?? Array.Empty<string>());
+                                part?.Choices?
+                                        .Select(c => (c.Message ?? c.Delta)?.Content) ??
+                                Array.Empty<string>());
 
                 var responseMessage = new SendMessageResponse(message.Uid)
                 {
@@ -73,11 +73,10 @@ public class ChatGptProvider : ChatGptProvider<GptSettings>
                 };
 
                 await Bus.SendResponse(responseMessage,
-                    token);
+                                       token);
 
                 if (Settings.Value.StreamGeneration)
-                    if (part?.Choices?.Any(
-                            c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
+                    if (part?.Choices?.Any(c => c.FinishReason != null ? c.FinishReason.Contains("stop") : false) ==
                         true)
                         break;
             }
@@ -93,7 +92,9 @@ public class ChatGptProvider : ChatGptProvider<GptSettings>
         }
     }
 
-    protected override async Task<HttpResponseMessage> GetGptResponse(AiMessage message, CancellationToken token, HttpClient client)
+    protected override async Task<HttpResponseMessage> GetGptResponse(AiMessage message,
+                                                                      CancellationToken token,
+                                                                      HttpClient client)
     {
         var content = JsonContent.Create(new ChatGptInputMessage
         {
@@ -111,8 +112,9 @@ public class ChatGptProvider : ChatGptProvider<GptSettings>
         });
 
         var response = await client.PostAsync(Url.Combine($"{Settings.Value.Url}", "completions"),
-            content,
-            token);
+                                              content,
+                                              token);
+
         return response;
     }
 }

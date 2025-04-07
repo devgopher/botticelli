@@ -21,14 +21,19 @@ public class MetricsOutputController : Controller
 
     [HttpGet("[action]")]
     public async Task<GetMetricsResponse> GetMetrics([FromQuery] GetMetricsRequest request, CancellationToken token)
-        => await _service.GetMetricsAsync(request, token);
+    {
+        return await _service.GetMetricsAsync(request, token);
+    }
 
     [HttpGet("[action]")]
-    public async Task<GetMetricsIntervalsResponse> GetMetricsForInterval(
-        [FromQuery] GetMetricsForIntervalsRequest request, CancellationToken token)
-        => await _service.GetMetricsForIntervalAsync(request, token);
+    public async Task<GetMetricsIntervalsResponse> GetMetricsForInterval([FromQuery] GetMetricsForIntervalsRequest request, CancellationToken token)
+    {
+        return await _service.GetMetricsForIntervalAsync(request, token);
+    }
 
     [HttpGet("[action]")]
     public async Task<IEnumerable<string>> GetMetricNames(CancellationToken token)
-        => await _service.GetMetricNamesAsync(token);
+    {
+        return await _service.GetMetricNamesAsync(token);
+    }
 }

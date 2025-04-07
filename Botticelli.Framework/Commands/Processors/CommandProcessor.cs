@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Botticelli.Analytics.Shared.Metrics;
+﻿using Botticelli.Analytics.Shared.Metrics;
 using Botticelli.Bot.Interfaces.Processors;
 using Botticelli.Bot.Utils;
 using Botticelli.Client.Analytics;
@@ -13,19 +12,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Commands.Processors;
 
-public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
-    where TCommand : class, ICommand
+public abstract class CommandProcessor<TCommand> : ICommandProcessor
+        where TCommand : class, ICommand
 {
     private readonly string _command;
-    protected readonly ILogger Logger;
-    private readonly MetricsProcessor _metricsProcessor;
     private readonly ICommandValidator<TCommand> _commandValidator;
     private readonly IValidator<Message> _messageValidator;
+    private readonly MetricsProcessor _metricsProcessor;
+    protected readonly ILogger Logger;
     protected IBot Bot;
 
     protected CommandProcessor(ILogger logger,
                                ICommandValidator<TCommand> commandValidator,
-                               MetricsProcessor metricsProcessor, 
+                               MetricsProcessor metricsProcessor,
                                IValidator<Message> messageValidator)
     {
         Logger = logger;
@@ -35,45 +34,37 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         _command = GetOldFashionedCommandName(typeof(TCommand).Name);
     }
 
-    protected void Classify(ref Message message)
-    {
-        var body = GetBody(message);
-        
-        if (CommandUtils.SimpleCommandRegex.IsMatch(body))
-            message.Type = Message.MessageType.Command;
-        else if (CommandUtils.ArgsCommandRegex.IsMatch(body))
-            message.Type = Message.MessageType.Command;
-        else message.Type = Message.MessageType.Messaging;
-    }
-
-    private static string GetBody(Message message) =>
-            !string.IsNullOrWhiteSpace(message.CallbackData) ? message.CallbackData : !string.IsNullOrWhiteSpace(message.Body) 
-                    ? message.Body : string.Empty;
-
     public virtual async Task ProcessAsync(Message message, CancellationToken token)
     {
         try
         {
             var messageValidationResult = await _messageValidator.ValidateAsync(message, token);
+
             if (!messageValidationResult.IsValid)
             {
                 _metricsProcessor.Process(MetricNames.BotError, BotDataUtils.GetBotId());
-                Logger.LogError(
-                    $"Error in {GetType().Name} invalid input message: {messageValidationResult.Errors.Select(e => $"({e.PropertyName} : {e.ErrorCode} : {e.ErrorMessage})")}");
-                
+                Logger.LogError($"Error in {GetType().Name} invalid input message: {messageValidationResult.Errors.Select(e => $"({e.PropertyName} : {e.ErrorCode} : {e.ErrorMessage})")}");
+
                 return;
             }
-            
+
+            if (message.Poll != null)
+            {
+                await InnerProcessPoll(message, token);
+
+                return;
+            }
+
             if (message.From!.Id!.Equals(Bot.BotUserId, StringComparison.InvariantCulture)) return;
 
             Classify(ref message);
-            
+
             if (string.IsNullOrWhiteSpace(message.Body) &&
-                message.Attachments == default &&
-                message.Location == default &&
-                message.Contact == default &&
-                message.Poll == default &&
-                message.CallbackData == default)
+                message.Attachments == null &&
+                message.Location == null &&
+                message.Contact == null &&
+                message.Poll == null &&
+                message.CallbackData == null)
             {
                 Logger.LogWarning("Message {msgId} is empty! Skipping...", message.Uid);
 
@@ -88,14 +79,13 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
                 var match = CommandUtils.SimpleCommandRegex.Matches(body)
                                         .FirstOrDefault();
 
-                if (match == default) return;
+                if (match == null) return;
 
                 var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
                 if (commandName != _command) return;
 
-                await ValidateAndProcess(message,
-                    token);
+                await ValidateAndProcess(message, token);
 
                 SendMetric(MetricNames.CommandReceived);
             }
@@ -104,14 +94,13 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
                 var match = CommandUtils.ArgsCommandRegex.Matches(body)
                                         .FirstOrDefault();
 
-                if (match == default) return;
+                if (match == null) return;
 
                 var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
                 if (commandName != _command) return;
 
-                await ValidateAndProcess(message,
-                    token);
+                await ValidateAndProcess(message, token);
 
                 SendMetric(MetricNames.CommandReceived);
             }
@@ -122,32 +111,62 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
                                              token);
             }
 
-            if (message.Location != default) await InnerProcessLocation(message, token);
-            if (message.Poll != default) await InnerProcessPoll(message,  token);
-            if (message.Contact != default) await InnerProcessContact(message, token);
+            if (message.Location != null) await InnerProcessLocation(message, token);
+            if (message.Poll != null) await InnerProcessPoll(message, token);
+            if (message.Contact != null) await InnerProcessContact(message, token);
         }
         catch (Exception ex)
         {
             _metricsProcessor.Process(MetricNames.BotError, BotDataUtils.GetBotId());
             Logger.LogError(ex, $"Error in {GetType().Name}: {ex.Message}");
+
+            await InnerProcessError(message, ex, token);
         }
     }
 
 
     public virtual void SetBot(IBot bot)
-        => Bot = bot;
+    {
+        Bot = bot;
+    }
 
     public void SetServiceProvider(IServiceProvider sp)
     {
     }
 
-    private void SendMetric(string metricName) => _metricsProcessor.Process(metricName, BotDataUtils.GetBotId()!);
+    protected void Classify(ref Message message)
+    {
+        var body = GetBody(message);
 
-    private void SendMetric() => _metricsProcessor.Process(GetOldFashionedCommandName(
-        $"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId()!);
-    
+        if (CommandUtils.SimpleCommandRegex.IsMatch(body))
+            message.Type = Message.MessageType.Command;
+        else if (CommandUtils.ArgsCommandRegex.IsMatch(body))
+            message.Type = Message.MessageType.Command;
+        else
+            message.Type = Message.MessageType.Messaging;
+    }
+
+    private static string GetBody(Message message)
+    {
+        return !string.IsNullOrWhiteSpace(message.CallbackData) ? message.CallbackData
+                : !string.IsNullOrWhiteSpace(message.Body) ? message.Body
+                : string.Empty;
+    }
+
+    private void SendMetric(string metricName)
+    {
+        _metricsProcessor.Process(metricName, BotDataUtils.GetBotId()!);
+    }
+
+    private void SendMetric()
+    {
+        _metricsProcessor.Process(GetOldFashionedCommandName($"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId()!);
+    }
+
     private string GetOldFashionedCommandName(string fullCommand)
-        => fullCommand.ToLowerInvariant().Replace("command", "");
+    {
+        return fullCommand.ToLowerInvariant().Replace("command", "");
+    }
 
     private async Task ValidateAndProcess(Message message,
                                           CancellationToken token)
@@ -160,7 +179,7 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
 
             return;
         }
-        
+
         if (await _commandValidator.Validate(message))
         {
             SendMetric();
@@ -180,9 +199,25 @@ public abstract partial class CommandProcessor<TCommand> : ICommandProcessor
         }
     }
 
-    protected virtual Task InnerProcessContact(Message message, CancellationToken token) => Task.CompletedTask;
-    protected virtual Task InnerProcessPoll(Message message, CancellationToken token) => Task.CompletedTask;
-    protected virtual Task InnerProcessLocation(Message message, CancellationToken token) => Task.CompletedTask;
+    protected virtual Task InnerProcessContact(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
+
+    protected virtual Task InnerProcessPoll(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
+
+    protected virtual Task InnerProcessLocation(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
+
     protected abstract Task InnerProcess(Message message, CancellationToken token);
 
+    protected virtual Task InnerProcessError(Message message, Exception? ex, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 }

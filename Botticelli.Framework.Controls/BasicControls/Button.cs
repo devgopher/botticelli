@@ -2,10 +2,10 @@
 
 public class Button : IControl
 {
-    public string? Content { get; set; }
     public string? Image { get; set; }
+    public string? Content { get; set; }
 
-    public Dictionary<string, string?>? Params { get; set; } = new();
+    public Dictionary<string, string>? Params { get; set; } = new();
 
     public Dictionary<string, Dictionary<string, object>>? MessengerSpecificParams { get; set; } = new();
 
@@ -14,7 +14,8 @@ public class Button : IControl
         get => Params?["CallbackData"];
         set
         {
-            if (Params != null) 
+            Params ??= new Dictionary<string, string>();
+            if (value != null)
                 Params["CallbackData"] = value;
         }
     }

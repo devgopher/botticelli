@@ -1,5 +1,3 @@
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using Botticelli.Server.FrontNew;
 using Botticelli.Server.FrontNew.Clients;
 using Botticelli.Server.FrontNew.Extensions;
@@ -22,12 +20,12 @@ builder.Services.Configure<BackSettings>(builder.Configuration.GetSection(nameof
 builder.Services.AddScoped<AuthDelegatingHandler>();
 builder.Services.AddScoped<CookieStorageAccessor>();
 builder.Services.AddHttpClient<YourBots>(c =>
-    {
-        c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
-        c.DefaultRequestHeaders.Clear();
-    })
-    .AddHttpMessageHandler<AuthDelegatingHandler>()
-    .AddCertificates();
+       {
+           c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+           c.DefaultRequestHeaders.Clear();
+       })
+       .AddHttpMessageHandler<AuthDelegatingHandler>()
+       .AddCertificates();
 
 var app = builder.Build();
 await app.RunAsync();

@@ -9,10 +9,16 @@ public class MetricsPublisher
 {
     private readonly AnalyticsClientSettings _clientSettings;
 
-    public MetricsPublisher(AnalyticsClientSettings clientSettings) => _clientSettings = clientSettings;
+    public MetricsPublisher(AnalyticsClientSettings clientSettings)
+    {
+        _clientSettings = clientSettings;
+    }
 
     public async Task Publish(IMetricObject metric, CancellationToken token)
-        => await Url.Combine(_clientSettings.TargetUrl, "/metrics/receiver/ReceiveMetric")
-            .SetQueryParams(metric)
-            .SendAsync(HttpMethod.Get, cancellationToken: token); // polly!
+    {
+        await Url.Combine(_clientSettings.TargetUrl, "/metrics/receiver/ReceiveMetric")
+                 .SetQueryParams(metric)
+                 .SendAsync(HttpMethod.Get, cancellationToken: token);
+        // polly!
+    }
 }

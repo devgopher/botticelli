@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Shared.API.Client.Requests;
+﻿using Botticelli.Shared.API;
 
 public class RemoveMessageRequest : BaseRequest<RemoveMessageRequest>
 {

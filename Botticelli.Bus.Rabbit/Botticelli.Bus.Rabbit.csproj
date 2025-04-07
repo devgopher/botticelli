@@ -1,41 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <Version>0.6.0</Version>
-        <Title>Botticelli.Bus.Rabbit</Title>
-        <Authors>BotticelliBots</Authors>
-        <PackageIcon>new_logo_compact.png</PackageIcon>
-        <Description>Botticelli rabbitmq bus integration</Description>
-        <Copyright>BotticelliBots</Copyright>
-        <PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-        <PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2"/>
-        <PackageReference Include="Polly" Version="8.4.2"/>
-        <PackageReference Include="RabbitMQ.Client" Version="6.8.1"/>
-        <PackageReference Include="System.Threading.Channels" Version="8.0.0"/>
-    </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Version>0.7.0</Version>
+		<Title>Botticelli.Bus.Rabbit</Title>
+		<Authors>BotticelliBots</Authors>
+		<PackageIcon>new_logo_compact.png</PackageIcon>
+		<Description>Botticelli rabbitmq bus integration</Description>
+		<Copyright>BotticelliBots</Copyright>
+		<PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+		<PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2"/>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2"/>
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1"/>
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2"/>
+		<PackageReference Include="Polly" Version="8.5.2"/>
+		<PackageReference Include="RabbitMQ.Client" Version="6.8.1"/>
+		<PackageReference Include="System.Threading.Channels" Version="8.0.0"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj"/>
-        <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj"/>
+		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <None Include="..\new_logo_compact.png" PackagePath="">
-            <Pack>True</Pack>
-            <Link>new_logo_compact.png</Link>
-        </None>
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="..\new_logo_compact.png" PackagePath="">
+			<Pack>True</Pack>
+			<Link>new_logo_compact.png</Link>
+		</None>
+	</ItemGroup>
 
 </Project>

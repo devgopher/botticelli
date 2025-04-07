@@ -16,31 +16,26 @@ public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
     {
     }
 
-    private SendOptionsBuilder(T? innerObject) => _innerObject = innerObject;
+    private SendOptionsBuilder(T? innerObject)
+    {
+        _innerObject = innerObject;
+    }
 
     public ISendOptionsBuilder<T> Create(params object[]? args)
     {
-        if (_innerObject != default) throw new BotException($"You shouldn't use {nameof(Create)}() method twice!");
+        if (_innerObject != null) throw new BotException($"You shouldn't use {nameof(Create)}() method twice!");
 
         var constructors = typeof(T)
-            .GetConstructors()
-            .Where(c => c.IsPublic)
-            .ToArray();
+                           .GetConstructors()
+                           .Where(c => c.IsPublic)
+                           .ToArray();
 
         // no params? ok => let's seek a parameterless constructor!
-        if ((args != null && args.Length != 0) || constructors.All(c => c.GetParameters().Length != 0)) 
-            return this;
-        
+        if (args != null && args.Length != 0 || constructors.All(c => c.GetParameters().Length != 0)) return this;
+
         _innerObject = Activator.CreateInstance<T>();
 
         return this;
-
-        // // Let's see if we can process parameter set and put it to a constructor|initializer
-        // foreach (var c in constructors)
-        // {
-        //     // c.CallingConvention = 
-        // }
-
     }
 
     public ISendOptionsBuilder<T> Set(Func<T?, T>? func)
@@ -50,9 +45,18 @@ public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
         return this;
     }
 
-    public T? Build() => _innerObject;
+    public T? Build()
+    {
+        return _innerObject;
+    }
 
-    public static SendOptionsBuilder<T> CreateBuilder() => new();
+    public static SendOptionsBuilder<T> CreateBuilder()
+    {
+        return new SendOptionsBuilder<T>();
+    }
 
-    public static SendOptionsBuilder<T> CreateBuilder(T input) => new(input);
+    public static SendOptionsBuilder<T> CreateBuilder(T input)
+    {
+        return new SendOptionsBuilder<T>(input);
+    }
 }

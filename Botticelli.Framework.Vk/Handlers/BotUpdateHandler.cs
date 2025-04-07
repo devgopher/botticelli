@@ -2,6 +2,7 @@
 using Botticelli.Framework.Vk.Messages.API.Responses;
 using Botticelli.Shared.Utils;
 using Botticelli.Shared.ValueObjects;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Vk.Messages.Handlers;
@@ -9,12 +10,12 @@ namespace Botticelli.Framework.Vk.Messages.Handlers;
 public class BotUpdateHandler : IBotUpdateHandler
 {
     private readonly ILogger<BotUpdateHandler> _logger;
-    private readonly ClientProcessorFactory _processorFactory;
+    private readonly IServiceProvider _serviceProvider;
 
-    public BotUpdateHandler(ILogger<BotUpdateHandler> logger, ClientProcessorFactory processorFactory)
+    public BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
-        _processorFactory = processorFactory;
+        _serviceProvider = serviceProvider;
     }
 
     public async Task HandleUpdateAsync(List<UpdateEvent> update, CancellationToken cancellationToken)
@@ -22,18 +23,17 @@ public class BotUpdateHandler : IBotUpdateHandler
         _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
         var botMessages = update?
-            .Where(x => x.Type == "message_new")
-            .ToList();
+                          .Where(x => x.Type == "message_new")
+                          .ToList();
 
         var messagesText = botMessages?.Select(bm =>
-            new
-            {
-                eventId = bm.EventId,
-                message = bm.Object["message"]
-            }); 
-        
+                                                       new
+                                                       {
+                                                           eventId = bm.EventId,
+                                                           message = bm.Object["message"]
+                                                       });
+
         foreach (var botMessage in messagesText.EmptyIfNull())
-        {
             try
             {
                 var eventId = botMessage.eventId;
@@ -56,7 +56,7 @@ public class BotUpdateHandler : IBotUpdateHandler
                         Id = fromId
                     },
                     ForwardedFrom = null,
-                    Location = null!,
+                    Location = null!
                     // LastModifiedAt = botMessage.
                 };
 
@@ -66,7 +66,6 @@ public class BotUpdateHandler : IBotUpdateHandler
             {
                 _logger.LogError(ex, ex.Message);
             }
-        }
 
         _logger.LogDebug($"{nameof(HandleUpdateAsync)}() finished...");
     }
@@ -82,19 +81,19 @@ public class BotUpdateHandler : IBotUpdateHandler
     {
         _logger.LogDebug($"{nameof(Process)}({message.Uid}) started...");
 
-        if (token is { CanBeCanceled: true, IsCancellationRequested: true }) return Task.CompletedTask;
+        if (token is {CanBeCanceled: true, IsCancellationRequested: true}) return Task.CompletedTask;
 
-        var clientNonChainedTasks = _processorFactory
-            .GetProcessors(excludeChain: true)
-            .Select(p => p.ProcessAsync(message, token));
+        var clientNonChainedTasks = _serviceProvider.GetServices<ICommandChainProcessor>()
+                                                    .Where(p => !p.GetType().IsAssignableTo(typeof(ICommandChainProcessor)))
+                                                    .Select(p => p.ProcessAsync(message, token));
 
-        var clientChainedTasks = _processorFactory
-                                    .GetCommandChainProcessors()
-                                    .Select(p => p.ProcessAsync(message, token));
+        var clientChainedTasks = _serviceProvider.GetServices<ICommandChainFirstElementProcessor>()
+                                                 .Select(p => p.ProcessAsync(message, token));
 
         Task.WaitAll(clientNonChainedTasks.Concat(clientChainedTasks).ToArray(), token);
 
         _logger.LogDebug($"{nameof(Process)}({message.Uid}) finished...");
+
         return Task.CompletedTask;
     }
 }

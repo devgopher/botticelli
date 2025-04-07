@@ -15,7 +15,7 @@ public class Action
 
     [JsonPropertyName("hash")]
     public string Hash { get; set; }
-    
+
     [JsonPropertyName("payload")]
     public string Payload { get; set; }
 

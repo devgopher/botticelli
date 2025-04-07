@@ -6,29 +6,32 @@ namespace Botticelli.Locations.Tests;
 
 public class ForwardGeocoderMock : IForwardGeocoder
 {
-    public async Task<GeocodeResponse[]> Geocode(ForwardGeocodeRequest req) => new GeocodeResponse[] 
+    public async Task<GeocodeResponse[]> Geocode(ForwardGeocodeRequest req)
     {
-        new()
+        return new GeocodeResponse[]
         {
-            OSMID = 110,
-            Latitude = 33,
-            Longitude = 22,
-            DisplayName = "TestResult",
-            Address = new AddressResult
+            new()
             {
-                Country = "TestCountry",
-                CountryCode = "TC0202",
-                County = "TestCounty",
-                HouseNumber = "999",
-                PostCode = "10291",
-                Road = "Abbey",
-                State = "NowhereState",
-                Town = "Nowhereville",
-                Pedestrian = "Sidewalk",
-                District = "NoDistrict",
-                Name = string.Empty
-            },
-            GeoText = "Test Result"
-        }
-    };
+                OSMID = 110,
+                Latitude = 33,
+                Longitude = 22,
+                DisplayName = "TestResult",
+                Address = new AddressResult
+                {
+                    Country = "TestCountry",
+                    CountryCode = "TC0202",
+                    County = "TestCounty",
+                    HouseNumber = "999",
+                    PostCode = "10291",
+                    Road = "Abbey",
+                    State = "NowhereState",
+                    Town = "Nowhereville",
+                    Pedestrian = "Sidewalk",
+                    District = "NoDistrict",
+                    Name = string.Empty
+                },
+                GeoText = "Test Result"
+            }
+        };
+    }
 }

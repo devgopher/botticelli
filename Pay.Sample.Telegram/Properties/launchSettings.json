@@ -1,0 +1,18 @@
+﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "TelegramAiYaGptSample": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "launchUrl": "",
+      "applicationUrl": "http://localhost:5074",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SampleSettings__SecureStorageConnectionString": "Filename=database.db;Password=123;Connection=Shared",
+        "ServerSettings__ServerUri": "http://localhost:5050",
+        "AnalyticsSettings__ServerUri": "http://localhost:5251/v1/"
+      }
+    }
+  }
+}

@@ -10,26 +10,28 @@ public class TelegramTextTransformer : ITextTransformer
     /// </summary>
     /// <param name="text"></param>
     /// <returns></returns>
-    public StringBuilder Escape(StringBuilder text) =>
-            text.Replace("!", @"\!")
-                .Replace("*", @"\*")
-                .Replace("'", @"\'")
-                .Replace(".", @"\.")
-                .Replace("+", @"\+")
-                .Replace("~", @"\~")
-                .Replace("@", @"\@")
-                .Replace("_", @"\_")
-                .Replace("(", @"\(")
-                .Replace(")", @"\)")
-                .Replace("-", @"\-")
-                .Replace("`", @"\`")
-                .Replace("=", @"\=")
-                .Replace(">", @"\>")
-                .Replace("<", @"\<")
-                .Replace("{", @"\{")
-                .Replace("}", @"\}")
-                .Replace("[", @"\[")
-                .Replace("]", @"\]")
-                .Replace("|", @"\|")
-                .Replace("#", @"\#");
+    public StringBuilder Escape(StringBuilder text)
+    {
+        return text.Replace("!", @"\!")
+                   .Replace("*", @"\*")
+                   .Replace("'", @"\'")
+                   .Replace(".", @"\.")
+                   .Replace("+", @"\+")
+                   .Replace("~", @"\~")
+                   .Replace("@", @"\@")
+                   .Replace("_", @"\_")
+                   .Replace("(", @"\(")
+                   .Replace(")", @"\)")
+                   .Replace("-", @"\-")
+                   .Replace("`", @"\`")
+                   .Replace("=", @"\=")
+                   .Replace(">", @"\>")
+                   .Replace("<", @"\<")
+                   .Replace("{", @"\{")
+                   .Replace("}", @"\}")
+                   .Replace("[", @"\[")
+                   .Replace("]", @"\]")
+                   .Replace("|", @"\|")
+                   .Replace("#", @"\#");
+    }
 }

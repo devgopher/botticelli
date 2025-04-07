@@ -1,9 +1,6 @@
-using Botticelli.Bot.Data.Repositories;
 using Botticelli.Bot.Data.Settings;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Options;
-using Botticelli.Shared.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Framework.Builders;
@@ -12,24 +9,24 @@ public abstract class BotBuilder<TBot>
 {
     protected abstract void Assert();
 
-    public TBot Build()
+    public TBot? Build()
     {
         Assert();
 
         return InnerBuild();
     }
 
-    protected abstract TBot InnerBuild();
+    protected abstract TBot? InnerBuild();
 }
 
 public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
         where TBotBuilder : BotBuilder<TBot>
 {
-    protected DataAccessSettingsBuilder<DataAccessSettings> BotDataAccessSettingsBuilder;
-    protected IServiceCollection? Services;
     private readonly ServerSettings _serverSettings;
     protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientSettingsBuilder;
+    protected DataAccessSettingsBuilder<DataAccessSettings> BotDataAccessSettingsBuilder;
     protected ServerSettingsBuilder<ServerSettings> ServerSettingsBuilder;
+    protected IServiceCollection? Services;
 
     protected override void Assert()
     {
@@ -44,14 +41,14 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
 
     public abstract TBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
             where TBotSettings : BotSettings, new();
-        
+
     public TBotBuilder AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
     {
         AnalyticsClientSettingsBuilder = clientSettingsBuilder;
 
         return (this as TBotBuilder)!;
     }
-    
+
     public TBotBuilder AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
     {
         ServerSettingsBuilder = settingsBuilder;
@@ -59,7 +56,7 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
         return (this as TBotBuilder)!;
     }
 
-    public TBotBuilder AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder) 
+    public TBotBuilder AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
     {
         BotDataAccessSettingsBuilder = botDataAccessBuilder;
 

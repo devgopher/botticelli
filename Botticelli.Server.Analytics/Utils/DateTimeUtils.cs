@@ -4,8 +4,10 @@ namespace Botticelli.Server.Analytics.Utils;
 
 public static class DateTimeUtils
 {
-    public static async IAsyncEnumerable<(DateTime dt1, DateTime dt2)> GetRange(DateTime from, DateTime to,
-        TimeSpan period, [EnumeratorCancellation] CancellationToken token)
+    public static async IAsyncEnumerable<(DateTime dt1, DateTime dt2)> GetRange(DateTime from,
+                                                                                DateTime to,
+                                                                                TimeSpan period,
+                                                                                [EnumeratorCancellation] CancellationToken token)
     {
         if (to < from) throw new InvalidDataException($"{from} > {to}!");
 
@@ -14,8 +16,7 @@ public static class DateTimeUtils
 
         while (next - prev >= period)
         {
-            if (token.CanBeCanceled && token.IsCancellationRequested)
-                break;
+            if (token.CanBeCanceled && token.IsCancellationRequested) break;
 
             var pp = prev;
             var nn = next;

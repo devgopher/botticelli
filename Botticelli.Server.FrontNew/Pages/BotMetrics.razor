@@ -1,15 +1,14 @@
 ﻿@page "/bot_metrics/{botId}/{From?}/{To?}"
-@using Flurl
-@using Microsoft.Extensions.Options
-@using Botticelli.Server.FrontNew.Settings
-@using Botticelli.Server.FrontNew.Models
-@using Botticelli.Server.Data.Entities
+@using System.Globalization
+@using System.Net.Http.Headers
 @using Botticelli.Analytics.Shared.Requests
 @using Botticelli.Analytics.Shared.Responses
-@using System.Net.Http.Headers
-@using Botticelli.Server.FrontNew.Utils
-@using System.Globalization
 @using Botticelli.Server.Data.Entities.Bot
+@using Botticelli.Server.FrontNew.Models
+@using Botticelli.Server.FrontNew.Settings
+@using Botticelli.Server.FrontNew.Utils
+@using Flurl
+@using Microsoft.Extensions.Options
 @inject NavigationManager UriHelper;
 @inject IOptionsMonitor<BackSettings> BackSettings;
 @inject CookieStorageAccessor Cookies;
@@ -37,10 +36,12 @@ else
     <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" Gap="20px">
         @{
             <RadzenStack Orientation="Orientation.Horizontal">
-                <RadzenLabel Text="From:"/><RadzenDatePicker Change="async () => await GetMetrics()" @bind-Value=@_from/>
+                <RadzenLabel Text="From:"/>
+                <RadzenDatePicker Change="async () => await GetMetrics()" @bind-Value=@_from/>
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Horizontal">
-                <RadzenLabel Text="To:"/><RadzenDatePicker Change="async () => await GetMetrics()" @bind-Value=@_to/>
+                <RadzenLabel Text="To:"/>
+                <RadzenDatePicker Change="async () => await GetMetrics()" @bind-Value=@_to/>
             </RadzenStack>
             <RadzenButton Text="Apply" Click="ApplyDates"/>
 
@@ -51,11 +52,8 @@ else
                     <RadzenText TextStyle="TextStyle.Overline" Text="@metricName"/>
                     <RadzenChart>
                         <RadzenLegend Position="LegendPosition.Left"/>
-                        <RadzenColumnOptions Radius="3" Width="10.0" />
-                        <RadzenColumnSeries Data="@_metrics[metricName].Select(x => new 
-                                                  {
-                                                      DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), x.Value
-                                                  })"
+                        <RadzenColumnOptions Radius="3" Width="10.0"/>
+                        <RadzenColumnSeries Data="@_metrics[metricName].Select(x => new {DateTime = x.DateTime.ToString("dd.MM.yyyy HH:mm"), x.Value})"
                                             CategoryProperty="DateTime"
                                             Title="Count"
                                             LineType="LineType.Dashed"
@@ -91,13 +89,17 @@ else
 
     private BotInfo _bot;
 
-    protected override bool ShouldRender() => true;
+    protected override bool ShouldRender()
+    {
+        return true;
+    }
 
     protected override async Task OnInitializedAsync()
     {
         _from = From?.ToDateTime(dateFormat, CultureInfo.InvariantCulture) ?? DateTime.Now.AddDays(-14);
         _to = To?.ToDateTime(dateFormat, CultureInfo.InvariantCulture) ?? DateTime.Now;
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
+
         try
         {
             _bot = await GetBot(sessionToken);
@@ -114,12 +116,18 @@ else
         TimeSpan interval;
         var delta = _to - _from;
 
-        if (delta < TimeSpan.Zero) interval = TimeSpan.FromHours(1);
-        else if (delta <= TimeSpan.FromHours(3)) interval = TimeSpan.FromMinutes(10);
-        else if (delta <= TimeSpan.FromHours(12)) interval = TimeSpan.FromMinutes(30);
-        else if (delta <= TimeSpan.FromDays(1)) interval = TimeSpan.FromHours(1);
-        else if (delta <= TimeSpan.FromDays(7)) interval = TimeSpan.FromDays(1);
-        else interval = TimeSpan.FromDays(7);
+        if (delta < TimeSpan.Zero)
+            interval = TimeSpan.FromHours(1);
+        else if (delta <= TimeSpan.FromHours(3))
+            interval = TimeSpan.FromMinutes(10);
+        else if (delta <= TimeSpan.FromHours(12))
+            interval = TimeSpan.FromMinutes(30);
+        else if (delta <= TimeSpan.FromDays(1))
+            interval = TimeSpan.FromHours(1);
+        else if (delta <= TimeSpan.FromDays(7))
+            interval = TimeSpan.FromDays(1);
+        else
+            interval = TimeSpan.FromDays(7);
 
         var metricNames = await GetMetricNames();
 
@@ -180,4 +188,5 @@ else
     {
         UriHelper.NavigateTo($"/bot_metrics/{BotId}/{_from.ToString(dateFormat)}/{_to.ToString(dateFormat)}", true);
     }
+
 }

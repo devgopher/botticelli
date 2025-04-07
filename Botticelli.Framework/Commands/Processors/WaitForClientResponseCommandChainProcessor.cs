@@ -12,26 +12,31 @@ namespace Botticelli.Framework.Commands.Processors;
 /// </summary>
 /// <typeparam name="TInputCommand"></typeparam>
 public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> : CommandProcessor<TInputCommand>,
-    ICommandChainProcessor<TInputCommand>
-    where TInputCommand : class, ICommand
+                                                                                  ICommandChainProcessor<TInputCommand>
+        where TInputCommand : class, ICommand
 {
     protected WaitForClientResponseCommandChainProcessor(ILogger<CommandChainProcessor<TInputCommand>> logger,
-        ICommandValidator<TInputCommand> commandValidator,
-        MetricsProcessor metricsProcessor,
-        IValidator<Message> messageValidator)
-        : base(logger, commandValidator, metricsProcessor, messageValidator)
+                                                         ICommandValidator<TInputCommand> commandValidator,
+                                                         MetricsProcessor metricsProcessor,
+                                                         IValidator<Message> messageValidator)
+            : base(logger,
+                   commandValidator,
+                   metricsProcessor,
+                   messageValidator)
     {
     }
 
     private TimeSpan Timeout { get; } = TimeSpan.FromMinutes(10);
 
-    public virtual void SetBot(IBot bot) => Bot = bot;
+    public virtual void SetBot(IBot bot)
+    {
+        Bot = bot;
+    }
 
     public override async Task ProcessAsync(Message message, CancellationToken token)
     {
         // filters 'not our' chains
-        if (message.ChainId != null && !ChainIds.Contains(message.ChainId.Value))
-            return;
+        if (message.ChainId != null && !ChainIds.Contains(message.ChainId.Value)) return;
 
         message.ChainId ??= Guid.NewGuid();
         Classify(ref message);
@@ -46,15 +51,13 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
             return;
         }
 
-        if (DateTime.UtcNow - message.LastModifiedAt > Timeout)
-            return;
+        if (DateTime.UtcNow - message.LastModifiedAt > Timeout) return;
 
         var chatId = message.ChatIds.Single();
-        
+
         // checks if input state = true
-        if (!ChainStateKeeper.GetState(chatId))
-            return;
-        
+        if (!ChainStateKeeper.GetState(chatId)) return;
+
         message.ProcessingArgs ??= new List<string>();
         message.ProcessingArgs.Add(message.Body!);
 

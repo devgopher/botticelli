@@ -1,4 +1,5 @@
-﻿using System.Net.Security;
+﻿using System.Net;
+using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -10,18 +11,18 @@ namespace Botticelli.Server.Back.Extensions;
 public static class StartupExtensions
 {
     public static void ApplyMigrations<TContext>(this WebApplicationBuilder webApplicationBuilder)
-        where TContext : DbContext
+            where TContext : DbContext
     {
         using var scope = webApplicationBuilder.Services
-            .BuildServiceProvider()
-            .CreateScope();
+                                               .BuildServiceProvider()
+                                               .CreateScope();
 
         var db = scope.ServiceProvider.GetRequiredService<TContext>();
         var pendingMigrations = db.Database.GetPendingMigrations();
 
         if (pendingMigrations.Any()) db.Database.Migrate();
     }
-    
+
     public static IServiceCollection AddIdentity(this IServiceCollection services)
     {
         services.Configure<IdentityOptions>(options =>
@@ -62,22 +63,22 @@ public static class StartupExtensions
     public static IWebHostBuilder AddSsl(this IWebHostBuilder builder, IConfiguration config)
     {
         // in Linux put here: ~/.dotnet/corefx/cryptography/x509stores/
-        if (!OperatingSystem.IsWindows()) return builder;
-        
+        // if (!OperatingSystem.IsWindows()) return builder;
+
         var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
         store.Open(OpenFlags.ReadOnly);
-        int port = int.Parse(config["ServerSettings:httpsPort"]!);
+        var port = int.Parse(config["ServerSettings:httpsPort"]!);
         var thumbprint = config["ServerSettings:thumbprint"]!;
-        
+
         var certificate = store.Certificates
                                .FirstOrDefault(c => c.FriendlyName == "BotticelliBotsServerBack" && c.Thumbprint == thumbprint);
 
         if (certificate == null) throw new KeyNotFoundException("Can't find SSL certificate!");
-        
+
         return builder
                 .UseKestrel(options =>
                 {
-                    options.Listen(System.Net.IPAddress.Loopback,
+                    options.Listen(IPAddress.Loopback,
                                    port,
                                    listenOptions =>
                                    {
@@ -85,11 +86,10 @@ public static class StartupExtensions
                                        {
                                            ServerCertificate = certificate,
                                            ClientCertificateMode = ClientCertificateMode.AllowCertificate,
-                                           ClientCertificateValidation = (cert, chain, errors) =>
+                                           ClientCertificateValidation = (_, _, errors) =>
                                            {
                                                if (errors != SslPolicyErrors.None) return false;
-                                           
-                                       
+
                                                return true;
                                            }
                                        };

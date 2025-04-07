@@ -18,8 +18,11 @@ public class UserController : Controller
 {
     private readonly IMapper _mapper;
 
-    private readonly IPassword _password = new Password(true, true,
-        true, false, 12);
+    private readonly IPassword _password = new Password(true,
+                                                        true,
+                                                        true,
+                                                        false,
+                                                        12);
 
     private readonly IPasswordSender _passwordSender;
     private readonly IUserService _userService;
@@ -33,24 +36,26 @@ public class UserController : Controller
 
     [HttpGet("[action]")]
     [AllowAnonymous]
-    public async Task<ObjectResult> HasUsersAsync(CancellationToken token) => Ok(await _userService.HasUsers(token));
+    public async Task<ObjectResult> HasUsersAsync(CancellationToken token)
+    {
+        return Ok(await _userService.HasUsers(token));
+    }
 
     [HttpPost("[action]")]
     [AllowAnonymous]
     public async Task<IActionResult> AddDefaultUserAsync(DefaultUserAddRequest request, CancellationToken token)
     {
         try
-        {   
+        {
             request.NotNull();
             request.UserName.NotNull();
             request.Email.NotNull();
-            
+
             var password = _password.Next();
             var mapped = _mapper.Map<UserAddRequest>(request);
             mapped.Password = password;
 
-            if (await _userService.CheckAndAddAsync(mapped, token))
-                await _passwordSender.SendPassword(request.Email!, password, token);
+            if (await _userService.CheckAndAddAsync(mapped, token)) await _passwordSender.SendPassword(request.Email!, password, token);
         }
         catch (Exception ex)
         {
@@ -63,14 +68,14 @@ public class UserController : Controller
     [HttpPost("[action]")]
     [AllowAnonymous]
     public async Task<IActionResult> RegeneratePasswordAsync(RegeneratePasswordRequest passwordRequest,
-        CancellationToken token)
+                                                             CancellationToken token)
     {
         try
         {
             passwordRequest.NotNull();
             passwordRequest.UserName.NotNull();
             passwordRequest.Email.NotNull();
-            
+
             var mapped = _mapper.Map<UserUpdateRequest>(passwordRequest);
             mapped.Password = _password.Next();
 
@@ -114,8 +119,11 @@ public class UserController : Controller
         return await GetUserAsync(request, token);
     }
 
-    private string GetCurrentUserName() =>
-        HttpContext.User.Claims.FirstOrDefault(c => c.Type == "applicationUserName")?.Value ?? throw new NullReferenceException();
+    private string GetCurrentUserName()
+    {
+        return HttpContext.User.Claims.FirstOrDefault(c => c.Type == "applicationUserName")?.Value ??
+               throw new NullReferenceException();
+    }
 
     [HttpGet]
     public async Task<ActionResult<UserGetResponse>> GetUserAsync(UserGetRequest request, CancellationToken token)
@@ -145,6 +153,7 @@ public class UserController : Controller
         try
         {
             await _userService.UpdateAsync(request, token);
+
             return Ok();
         }
         catch (Exception ex)
@@ -159,10 +168,11 @@ public class UserController : Controller
         try
         {
             var user = GetCurrentUserName();
-            if (request.UserName == user)
-                return BadRequest("You can't delete yourself!");
+
+            if (request.UserName == user) return BadRequest("You can't delete yourself!");
 
             await _userService.DeleteAsync(request, token);
+
             return Ok();
         }
         catch (Exception ex)
@@ -182,6 +192,7 @@ public class UserController : Controller
             request.Token.NotNull();
 
             await _userService.ConfirmCodeAsync(request.Email!, request.Token!, token);
+
             return Ok();
         }
         catch (Exception ex)

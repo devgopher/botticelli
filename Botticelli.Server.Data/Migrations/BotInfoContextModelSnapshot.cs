@@ -65,6 +65,60 @@ namespace Botticelli.Server.Data.Migrations
                     b.ToTable("BotInfo");
                 });
 
+            modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.Broadcasting.Broadcast", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BotId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Received")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Sent")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Broadcasts");
+                });
+
+            modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.Broadcasting.BroadcastAttachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BroadcastId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("Content")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("Filename")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MediaType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BroadcastId");
+
+                    b.ToTable("BroadcastAttachments");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<string>", b =>
                 {
                     b.Property<string>("Id")
@@ -86,22 +140,22 @@ namespace Botticelli.Server.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "969600de-70d9-43e9-bc01-56415c57863b",
-                            ConcurrencyStamp = "10/14/2024 11:29:05",
+                            Id = "ebdb9ace-7a62-41cf-b4e3-749be50310e2",
+                            ConcurrencyStamp = "03/10/2025 19:37:25",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b57f3fda-a6d3-4f93-8faa-ce99a06a476d",
-                            ConcurrencyStamp = "10/14/2024 11:29:05",
+                            Id = "85ca9cb0-e520-461b-8b2e-98877f519efd",
+                            ConcurrencyStamp = "03/10/2025 19:37:25",
                             Name = "bot_manager",
                             NormalizedName = "BOT_MANAGER"
                         },
                         new
                         {
-                            Id = "22c98256-7794-4d42-bdc8-4725445de3c9",
-                            ConcurrencyStamp = "10/14/2024 11:29:05",
+                            Id = "2e960a01-b27e-4435-961c-231e9276a6a4",
+                            ConcurrencyStamp = "03/10/2025 19:37:25",
                             Name = "viewer",
                             NormalizedName = "VIEWER"
                         });
@@ -179,9 +233,21 @@ namespace Botticelli.Server.Data.Migrations
                         .HasForeignKey("BotInfoBotId");
                 });
 
+            modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.Broadcasting.BroadcastAttachment", b =>
+                {
+                    b.HasOne("Botticelli.Server.Data.Entities.Bot.Broadcasting.Broadcast", null)
+                        .WithMany("Attachments")
+                        .HasForeignKey("BroadcastId");
+                });
+
             modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.BotInfo", b =>
                 {
                     b.Navigation("AdditionalInfo");
+                });
+
+            modelBuilder.Entity("Botticelli.Server.Data.Entities.Bot.Broadcasting.Broadcast", b =>
+                {
+                    b.Navigation("Attachments");
                 });
 #pragma warning restore 612, 618
         }
