@@ -18,7 +18,7 @@ public class HangfireJobManager : IJobManager
                          Reliability reliability,
                          Message message,
                          Schedule schedule,
-                         Action<Message>? preprocessFunc = default)
+                         Action<Message>? preprocessFunc = null)
     {
         var jobId = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
 

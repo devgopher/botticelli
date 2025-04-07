@@ -15,7 +15,7 @@ public class PassEventClient : IEventBusClient
         _workerTask = Task.Run(Process);
     }
 
-    public event IEventBusClient.BusEventHandler OnReceived;
+    public event IEventBusClient.BusEventHandler? OnReceived;
 
     public Task Send(SendMessageRequest request, CancellationToken token)
     {

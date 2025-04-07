@@ -20,8 +20,9 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
         _handler = handler;
     }
 
-    public async Task Subscribe(CancellationToken token)
+    public Task Subscribe(CancellationToken token)
     {
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -31,11 +32,12 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
     /// <param name="token"></param>
     /// <param name="timeoutMs"></param>
     /// <returns></returns>
-    public async Task SendResponseAsync(SendMessageResponse response,
+    public Task SendResponseAsync(SendMessageResponse response,
                                         CancellationToken token,
                                         int timeoutMs = 10000)
     {
         NoneBus.SendMessageResponses.Enqueue(response);
+        return Task.CompletedTask;
     }
 
     public Task StartAsync(CancellationToken token)

@@ -42,8 +42,4 @@
 		<ProjectReference Include="..\Shared\Shared.csproj"/>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Settings\"/>
-	</ItemGroup>
-
 </Project>

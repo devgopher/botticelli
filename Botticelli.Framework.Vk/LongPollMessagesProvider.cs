@@ -123,21 +123,21 @@ public class LongPollMessagesProvider : IDisposable
                                                   var updates = JsonSerializer.Deserialize<UpdatesResponse>(updatesResponse);
 
 
-                                                  if (updates?.Updates == default)
+                                                  if (updates?.Updates == null)
                                                   {
                                                       var error = JsonSerializer.Deserialize<ErrorResponse>(updatesResponse);
 
-                                                      if (error == null) return default;
+                                                      if (error == null) return null;
 
                                                       _lastTs = error.Ts ?? _lastTs;
                                                       OnError?.Invoke(new VkErrorEventArgs(error), token);
 
-                                                      return default;
+                                                      return null;
                                                   }
 
                                                   _lastTs = int.Parse(updates?.Ts ?? "0");
 
-                                                  if (updates?.Updates != default) OnUpdates?.Invoke(new VkUpdatesEventArgs(updates), token);
+                                                  if (updates?.Updates != null) OnUpdates?.Invoke(new VkUpdatesEventArgs(updates), token);
 
                                                   return updates;
                                               }
@@ -146,7 +146,7 @@ public class LongPollMessagesProvider : IDisposable
                                                   _logger.LogError(ex, $"Long polling error: {ex.Message}");
                                               }
 
-                                              return default;
+                                              return null;
                                           });
 
             _isStarted = true;

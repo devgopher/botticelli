@@ -54,7 +54,7 @@
                 {
                     var result = await SessionClient.CreateSession(args.Username, args.Password);
 
-                    if (result.error != default && result.error.UserMessage.ToLowerInvariant() != "success")
+                    if (result.error != null && result.error.UserMessage.ToLowerInvariant() != "success")
                     {
                         await Cookies.SetValueAsync("SessionToken", string.Empty);
                         _error.UserMessage = result.error.UserMessage;

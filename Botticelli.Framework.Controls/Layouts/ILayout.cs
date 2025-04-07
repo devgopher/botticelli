@@ -2,6 +2,6 @@
 
 public interface ILayout
 {
-    public IList<Row>? Rows { get; }
+    public IList<Row> Rows { get; }
     public void AddRow(Row row);
 }

@@ -30,7 +30,7 @@ public class BasicBotAuthService : BotAuthService<BotAuthCredentials, BotUser, B
         var entity = await Users.AsNoTracking().FirstOrDefaultAsync(e => e.UserId == dto.UserId && e.IsActive);
         var adapted = entity.Adapt<BotUserInfo>();
 
-        return entity == default ?
+        return entity == null ?
                 new IdentifyResponse<BotUserInfo>(false, $"User with id: {dto.UserId} not found!", null) :
                 new IdentifyResponse<BotUserInfo>(true, string.Empty, adapted);
     }

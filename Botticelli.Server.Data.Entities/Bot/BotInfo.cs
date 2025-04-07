@@ -16,5 +16,5 @@ public class BotInfo
     public BotStatus? Status { get; set; }
     public BotType? Type { get; init; }
     public string? BotKey { get; set; }
-    public List<BotAdditionalInfo> AdditionalInfo { get; init; }
+    public List<BotAdditionalInfo>? AdditionalInfo { get; init; }
 }

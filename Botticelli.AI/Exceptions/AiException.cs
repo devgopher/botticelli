@@ -2,7 +2,7 @@
 
 public class AiException : Exception
 {
-    public AiException(string message, Exception inner = default) : base(message, inner)
+    public AiException(string message, Exception? inner = null) : base(message, inner)
     {
     }
 }

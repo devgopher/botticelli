@@ -13,7 +13,7 @@ public class Table(int cols) : ILayout
     {
         var lastRow = Rows.SkipWhile(row => row.Items.Count == cols).FirstOrDefault();
 
-        if (lastRow == default)
+        if (lastRow == null)
         {
             lastRow = new Row();
             AddRow(lastRow);

@@ -23,7 +23,7 @@ public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
 
     public ISendOptionsBuilder<T> Create(params object[]? args)
     {
-        if (_innerObject != default) throw new BotException($"You shouldn't use {nameof(Create)}() method twice!");
+        if (_innerObject != null) throw new BotException($"You shouldn't use {nameof(Create)}() method twice!");
 
         var constructors = typeof(T)
                            .GetConstructors()

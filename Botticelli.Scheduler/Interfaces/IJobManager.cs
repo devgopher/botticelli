@@ -9,7 +9,7 @@ public interface IJobManager
                   Reliability reliability,
                   Message message,
                   Schedule schedule,
-                  Action<Message>? preprocessFunc = default);
+                  Action<Message>? preprocessFunc = null);
 
     void RemoveJob(string triggerId);
     void RemoveAllJobs();

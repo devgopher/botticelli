@@ -40,13 +40,13 @@ public class BotController(
         var botInfo = await botStatusDataService.GetBotInfo(request.BotId!);
         botInfo.NotNull();
         botInfo?.BotKey?.NotNullOrEmpty();
-        botInfo?.AdditionalInfo.NotNullOrEmpty();
+        botInfo!.AdditionalInfo!.NotNullOrEmpty();
 
         var context = new BotContext
         {
             BotId = botInfo!.BotId,
             BotKey = botInfo.BotKey!,
-            Items = botInfo.AdditionalInfo.ToDictionary(k => k.ItemName, k => k.ItemValue)!
+            Items = botInfo.AdditionalInfo!.ToDictionary(k => k.ItemName, k => k.ItemValue)!
         };
 
         return new GetRequiredStatusFromServerResponse

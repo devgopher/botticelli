@@ -29,16 +29,15 @@ public class Message
 
     public Message()
     {
+        ChatIds = [];
         Uid = Guid.NewGuid().ToString();
         CreatedAt = DateTime.Now;
         ProcessingArgs = new List<string>(1);
     }
 
-    public Message(string uid)
+    public Message(string uid) : this()
     {
         Uid = uid;
-        CreatedAt = DateTime.Now;
-        ProcessingArgs = new List<string>(1);
     }
 
     /// <summary>

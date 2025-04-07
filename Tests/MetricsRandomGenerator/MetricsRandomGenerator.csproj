@@ -11,4 +11,10 @@
 		<ProjectReference Include="..\..\Botticelli.Server.Analytics\Botticelli.Server.Analytics.csproj"/>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Content Update="appsettings.Development.json">
+	    <DependentUpon>appsettings.json</DependentUpon>
+	  </Content>
+	</ItemGroup>
+
 </Project>

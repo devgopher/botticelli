@@ -85,7 +85,7 @@ public class VkBot : BaseBot<VkBot>
                 {
                     var updates = args?.Response?.Updates;
 
-                    if (updates == default || !updates.Any()) return;
+                    if (updates == null || !updates.Any()) return;
 
                     _handler.HandleUpdateAsync(updates, ct);
                 };
@@ -110,7 +110,7 @@ public class VkBot : BaseBot<VkBot>
 
     public override async Task SetBotContext(BotData.Entities.Bot.BotData? context, CancellationToken token)
     {
-        if (context == default) return;
+        if (context == null) return;
 
         var currentContext = _data.GetData();
 
@@ -141,7 +141,7 @@ public class VkBot : BaseBot<VkBot>
         _vkUploader.SetApiKey(context.BotKey);
     }
 
-    private string? CreateVkAttach(VkSendPhotoResponse fk, string type)
+    private string CreateVkAttach(VkSendPhotoResponse fk, string type)
     {
         return $"{type}" +
                $"{fk.Response?.FirstOrDefault()?.OwnerId.ToString()}" +
@@ -157,14 +157,14 @@ public class VkBot : BaseBot<VkBot>
     }
 
 
-    private string? CreateVkAttach(VkSendAudioResponse fk, string type)
+    private string CreateVkAttach(VkSendAudioResponse fk, string type)
     {
         return $"{type}" +
                $"{fk.AudioResponseData.AudioMessage.OwnerId}" +
                $"_{fk.AudioResponseData.AudioMessage.Id}";
     }
 
-    private string? CreateVkAttach(VkSendDocumentResponse fk, string type)
+    private string CreateVkAttach(VkSendDocumentResponse fk, string type)
     {
         return $"{type}" +
                $"{fk.DocumentResponseData.Document.OwnerId}" +
@@ -226,7 +226,7 @@ public class VkBot : BaseBot<VkBot>
         currentContext.NotNull();
         currentContext.BotKey.NotNull();
 
-        if (request.Message.Attachments == default)
+        if (request.Message.Attachments == null)
         {
             var vkRequest = new VkSendMessageRequest
             {
@@ -270,7 +270,7 @@ public class VkBot : BaseBot<VkBot>
                                                                                          ba.Name,
                                                                                          ba.Data,
                                                                                          token);
-                                if (sendPhotoResponse != default) vkRequest.Attachment = CreateVkAttach(sendPhotoResponse, "photo");
+                                if (sendPhotoResponse != null) vkRequest.Attachment = CreateVkAttach(sendPhotoResponse, "photo");
 
                                 break;
                             case {MediaType: MediaType.Video}:
@@ -288,7 +288,7 @@ public class VkBot : BaseBot<VkBot>
                                                                                                        ba.Name,
                                                                                                        ba.Data,
                                                                                                        token);
-                                if (sendAudioMessageResponse != default) vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, "doc");
+                                if (sendAudioMessageResponse != null) vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, "doc");
 
 
                                 break;
@@ -297,7 +297,7 @@ public class VkBot : BaseBot<VkBot>
                                                                                                     ba.Name,
                                                                                                     ba.Data,
                                                                                                     token);
-                                if (sendDocMessageResponse != default) vkRequest.Attachment = CreateVkAttach(sendDocMessageResponse, "doc");
+                                if (sendDocMessageResponse != null) vkRequest.Attachment = CreateVkAttach(sendDocMessageResponse, "doc");
 
 
                                 break;

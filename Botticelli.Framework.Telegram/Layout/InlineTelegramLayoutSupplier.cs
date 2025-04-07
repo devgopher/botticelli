@@ -8,7 +8,7 @@ public class InlineTelegramLayoutSupplier : IInlineTelegramLayoutSupplier
 {
     public InlineKeyboardMarkup GetMarkup(ILayout layout)
     {
-        if (layout == default) throw new LayoutException("Layout = null!");
+        if (layout == null) throw new LayoutException("Layout = null!");
 
         var elems = new List<List<InlineKeyboardButton>>(6);
 

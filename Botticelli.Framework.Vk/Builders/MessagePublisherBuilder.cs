@@ -37,7 +37,7 @@ public class MessagePublisherBuilder
         return this;
     }
 
-    public MessagePublisher? Build()
+    public MessagePublisher Build()
     {
         return new MessagePublisher(_httpClientFactory, _logger);
     }

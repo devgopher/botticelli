@@ -48,7 +48,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 return;
             }
 
-            if (message.Poll != default)
+            if (message.Poll != null)
             {
                 await InnerProcessPoll(message, token);
 
@@ -60,11 +60,11 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             Classify(ref message);
 
             if (string.IsNullOrWhiteSpace(message.Body) &&
-                message.Attachments == default &&
-                message.Location == default &&
-                message.Contact == default &&
-                message.Poll == default &&
-                message.CallbackData == default)
+                message.Attachments == null &&
+                message.Location == null &&
+                message.Contact == null &&
+                message.Poll == null &&
+                message.CallbackData == null)
             {
                 Logger.LogWarning("Message {msgId} is empty! Skipping...", message.Uid);
 
@@ -79,7 +79,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 var match = CommandUtils.SimpleCommandRegex.Matches(body)
                                         .FirstOrDefault();
 
-                if (match == default) return;
+                if (match == null) return;
 
                 var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
@@ -94,7 +94,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 var match = CommandUtils.ArgsCommandRegex.Matches(body)
                                         .FirstOrDefault();
 
-                if (match == default) return;
+                if (match == null) return;
 
                 var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
@@ -111,9 +111,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                                              token);
             }
 
-            if (message.Location != default) await InnerProcessLocation(message, token);
-            if (message.Poll != default) await InnerProcessPoll(message, token);
-            if (message.Contact != default) await InnerProcessContact(message, token);
+            if (message.Location != null) await InnerProcessLocation(message, token);
+            if (message.Poll != null) await InnerProcessPoll(message, token);
+            if (message.Contact != null) await InnerProcessContact(message, token);
         }
         catch (Exception ex)
         {

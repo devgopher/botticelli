@@ -29,7 +29,7 @@ public class BotManagementService : IBotManagementService
     /// <param name="botType"></param>
     /// <param name="additionalParams"></param>
     /// <returns></returns>
-    public async Task<bool> RegisterBot(string botId,
+    public Task<bool> RegisterBot(string botId,
                                         string? botKey,
                                         string botName,
                                         BotType botType,
@@ -39,7 +39,7 @@ public class BotManagementService : IBotManagementService
         {
             _logger.LogInformation($"{nameof(RegisterBot)}({botId}, {botKey}, {botName}, {botType}) started...");
 
-            if (GetBotInfo(botId) == default)
+            if (GetBotInfo(botId) == null)
                 AddNewBotInfo(botId,
                               BotStatus.Unknown,
                               botType,
@@ -47,7 +47,7 @@ public class BotManagementService : IBotManagementService
 
             _logger.LogInformation($"{nameof(RegisterBot)} successful");
 
-            return true;
+            return Task.FromResult(true);
         }
         catch (Exception ex)
         {
@@ -56,7 +56,7 @@ public class BotManagementService : IBotManagementService
 
         _logger.LogInformation($"{nameof(RegisterBot)} failed");
 
-        return false;
+        return Task.FromResult(false);
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ public class BotManagementService : IBotManagementService
 
         var botInfo = GetBotInfo(botId);
 
-        if (botInfo != default)
+        if (botInfo != null)
         {
             botInfo.Status = status;
             _context.BotInfos.Update(botInfo);
@@ -95,7 +95,7 @@ public class BotManagementService : IBotManagementService
 
             var keepAlive = DateTime.UtcNow;
 
-            if (botInfo != default)
+            if (botInfo != null)
             {
                 botInfo.LastKeepAlive = keepAlive;
                 _context.BotInfos.Update(botInfo);
@@ -122,7 +122,7 @@ public class BotManagementService : IBotManagementService
 
         var bot = _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
 
-        if (bot != default)
+        if (bot != null)
         {
             _context.BotInfos.Remove(bot);
             await _context.SaveChangesAsync();
@@ -140,7 +140,7 @@ public class BotManagementService : IBotManagementService
     public async Task<bool> UpdateBot(string botId,
                                       string botKey,
                                       string botName,
-                                      Dictionary<string, string> additionalParams = null)
+                                      Dictionary<string, string>? additionalParams = null)
     {
         try
         {
@@ -151,7 +151,7 @@ public class BotManagementService : IBotManagementService
 
             var botInfo = GetBotInfo(botId);
 
-            if (botInfo == default)
+            if (botInfo == null)
             {
                 _logger.LogInformation($"{nameof(UpdateBot)}() : bot with id '{botId}' wasn't found!");
 
@@ -186,9 +186,9 @@ public class BotManagementService : IBotManagementService
     /// </summary>
     /// <param name="botId"></param>
     /// <returns></returns>
-    public async Task<BotStatus?> GetRequiredBotStatus(string botId)
+    private Task<BotStatus?> GetRequiredBotStatus(string botId)
     {
-        return _context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown;
+        return Task.FromResult<BotStatus?>(_context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown);
     }
 
     /// <summary>

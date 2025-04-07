@@ -47,7 +47,7 @@ public class TelegramClientDecoratorBuilder
 
         if (_telegramClient != null) return _telegramClient;
 
-        if (_httpClient == default)
+        if (_httpClient == null)
         {
             var factory = _services.BuildServiceProvider().GetRequiredService<IHttpClientFactory>();
 

@@ -11,12 +11,12 @@ check_and_setup https_port "(example:8080)"
 
 export ASPNETCORE_ENVIRONMENT=Release   
 export ASPNETCORE_URLS="https://0.0.0.0:$https_port;http://0.0.0.0:$http_port"
-export SecureStorageConnectionString="User ID=postgres;Password=12345678;Host=127.0.0.1;Port=5432;Database=botticelli_analytics;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
+export SecureStorageConnectionString="User ID=postgres;Password=<secret>;Host=127.0.0.1;Port=5432;Database=botticelli_analytics;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
 
 rm -rf botticelli/
 git clone https://github.com/devgopher/botticelli.git
 pushd botticelli/
-git checkout release/0.5
+git checkout release/0.7
 git pull
 
 pushd Botticelli.Server.Analytics

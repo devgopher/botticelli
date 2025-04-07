@@ -53,7 +53,7 @@ public class ChainBuilder<TCommand>(IServiceCollection services)
         var sp = services.BuildServiceProvider();
         _bot ??= sp.GetServices<IBot>().FirstOrDefault();
 
-        if (_bot == default) throw new NullReferenceException($"Bot should be set up: call {nameof(SetBot)} to set a bot instance!");
+        if (_bot == null) throw new NullReferenceException($"Bot should be set up: call {nameof(SetBot)} to set a bot instance!");
 
         foreach (var processor in _chain) processor.SetBot(_bot);
 
