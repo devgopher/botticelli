@@ -327,8 +327,8 @@ public class VkBot : BaseBot<VkBot>
         throw new NotImplementedException();
     }
 
-    public override event MsgSentEventHandler MessageSent;
-    public override event MsgReceivedEventHandler MessageReceived;
-    public override event MsgRemovedEventHandler MessageRemoved;
+    public virtual event MsgSentEventHandler MessageSent;
+    public virtual event MsgReceivedEventHandler MessageReceived;
+    public virtual event MsgRemovedEventHandler MessageRemoved;
     public virtual event MessengerSpecificEventHandler MessengerSpecificEvent;
 }
