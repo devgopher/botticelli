@@ -573,14 +573,11 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             await StartBot(token);
         }
-        else if (currentContext != null)
+        else if (currentContext != null && Client.BotId == 0)
         {
-            if (Client.BotId == 0)
-            {
-                await StopBot(token);
-                RecreateClient(context.BotKey!);
-                await StartBot(token);
-            }
+            await StopBot(token);
+            RecreateClient(context.BotKey!);
+            await StartBot(token);
         }
     }
 }

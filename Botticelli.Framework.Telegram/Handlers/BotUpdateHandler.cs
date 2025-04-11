@@ -12,12 +12,10 @@ using User = Botticelli.Shared.ValueObjects.User;
 
 namespace Botticelli.Framework.Telegram.Handlers;
 
-public class BotUpdateHandler : IBotUpdateHandler
+public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHandler
 {
     private readonly MemoryCacheEntryOptions _entryOptions
-            = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(24));
-
-    private readonly ILogger<BotUpdateHandler> _logger;
+        = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(24));
 
     private readonly MemoryCache _memoryCache = new(new MemoryCacheOptions
     {
@@ -26,14 +24,9 @@ public class BotUpdateHandler : IBotUpdateHandler
 
     private readonly List<IBotUpdateSubHandler> _subHandlers = [];
 
-    public BotUpdateHandler(ILogger<BotUpdateHandler> logger)
-    {
-        _logger = logger;
-    }
-
     public async Task HandleUpdateAsync(ITelegramBotClient botClient,
-                                        Update update,
-                                        CancellationToken cancellationToken)
+        Update update,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -42,7 +35,7 @@ public class BotUpdateHandler : IBotUpdateHandler
 
             _memoryCache.Set(update.Id, update, _entryOptions);
 
-            _logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
+            logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
             var botMessage = update.Message;
 
@@ -56,7 +49,7 @@ public class BotUpdateHandler : IBotUpdateHandler
 
                     if (botMessage == null)
                     {
-                        _logger.LogError($"{nameof(HandleUpdateAsync)}() {nameof(botMessage)} is null!");
+                        logger.LogError($"{nameof(HandleUpdateAsync)}() {nameof(botMessage)} is null!");
 
                         return;
                     }
@@ -97,7 +90,8 @@ public class BotUpdateHandler : IBotUpdateHandler
                             IsAnonymous = update.Poll.IsAnonymous,
                             Question = update.Poll.Question,
                             Type = update.Poll.Type.ToLower() == "regular" ? Poll.PollType.Regular : Poll.PollType.Quiz,
-                            Variants = update.Poll.Options.Select(o => new ValueTuple<string, int>(o.Text, o.VoterCount)),
+                            Variants = update.Poll.Options.Select(
+                                o => new ValueTuple<string, int>(o.Text, o.VoterCount)),
                             CorrectAnswerId = update.Poll.CorrectOptionId
                         }
                     };
@@ -107,7 +101,7 @@ public class BotUpdateHandler : IBotUpdateHandler
                 botticelliMessage = new Message(botMessage.MessageId.ToString())
                 {
                     ChatIdInnerIdLinks = new Dictionary<string, List<string>>
-                            {{botMessage.Chat.Id.ToString(), [botMessage.MessageId.ToString()]}},
+                        { { botMessage.Chat.Id.ToString(), [botMessage.MessageId.ToString()] } },
                     ChatIds = [botMessage.Chat.Id.ToString()],
                     Subject = string.Empty,
                     Body = botMessage.Text ?? string.Empty,
@@ -132,13 +126,13 @@ public class BotUpdateHandler : IBotUpdateHandler
                         IsBot = botMessage.ForwardFrom?.IsBot,
                         NickName = botMessage.ForwardFrom?.Username
                     },
-                    Location = botMessage.Location != null ?
-                            new GeoLocation
-                            {
-                                Latitude = (decimal) botMessage.Location.Latitude,
-                                Longitude = (decimal) botMessage.Location.Longitude
-                            } :
-                            null
+                    Location = botMessage.Location != null
+                        ? new GeoLocation
+                        {
+                            Latitude = (decimal)botMessage.Location.Latitude,
+                            Longitude = (decimal)botMessage.Location.Longitude
+                        }
+                        : null
                 };
             }
 
@@ -149,26 +143,26 @@ public class BotUpdateHandler : IBotUpdateHandler
                 await Process(botticelliMessage, cancellationToken);
 
                 MessageReceived?.Invoke(this,
-                                        new MessageReceivedBotEventArgs
-                                        {
-                                            Message = botticelliMessage
-                                        });
+                    new MessageReceivedBotEventArgs
+                    {
+                        Message = botticelliMessage
+                    });
             }
 
-            _logger.LogDebug($"{nameof(HandleUpdateAsync)}() finished...");
+            logger.LogDebug($"{nameof(HandleUpdateAsync)}() finished...");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"{nameof(HandleUpdateAsync)}() error");
+            logger.LogError(ex, $"{nameof(HandleUpdateAsync)}() error");
         }
     }
 
     public Task HandleErrorAsync(ITelegramBotClient botClient,
-                                 Exception exception,
-                                 HandleErrorSource source,
-                                 CancellationToken cancellationToken)
+        Exception exception,
+        HandleErrorSource source,
+        CancellationToken cancellationToken)
     {
-        _logger.LogError($"{nameof(HandleErrorAsync)}() error: {exception.Message}", exception);
+        logger.LogError($"{nameof(HandleErrorAsync)}() error: {exception.Message}", exception);
 
         return Task.CompletedTask;
     }
@@ -187,22 +181,22 @@ public class BotUpdateHandler : IBotUpdateHandler
     /// <param name="token"></param>
     protected async Task Process(Message request, CancellationToken token)
     {
-        _logger.LogDebug($"{nameof(Process)}({request.Uid}) started...");
+        logger.LogDebug($"{nameof(Process)}({request.Uid}) started...");
 
-        if (token is {CanBeCanceled: true, IsCancellationRequested: true}) return;
+        if (token is { CanBeCanceled: true, IsCancellationRequested: true }) return;
 
         var processorFactory = ProcessorFactoryBuilder.Build();
 
         var clientNonChainedTasks = processorFactory.GetProcessors()
-                                                    .Select(p => p.ProcessAsync(request, token));
+            .Select(p => p.ProcessAsync(request, token));
 
         var clientChainedTasks = processorFactory.GetCommandChainProcessors()
-                                                 .Select(p => p.ProcessAsync(request, token));
+            .Select(p => p.ProcessAsync(request, token));
 
         var clientTasks = clientNonChainedTasks.Concat(clientChainedTasks).ToArray();
 
         await Parallel.ForEachAsync(clientTasks, token, async (t, ct) => await t.WaitAsync(ct));
 
-        _logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
+        logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
     }
 }

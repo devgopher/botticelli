@@ -88,7 +88,7 @@ public class BotStatusService(
 
         if (task.Exception != null)
         {
-            Logger.LogError($"GetRequiredStatus task error: {task.Exception?.Message}");
+            Logger.LogError("GetRequiredStatus task error: {Message}", task.Exception?.Message);
             Bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
 
             return task;
