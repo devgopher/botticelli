@@ -42,11 +42,10 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
     private readonly MetricsProcessor _metrics;
     protected readonly ILogger Logger;
 
-    protected BaseBot(ILogger logger, MetricsProcessor metrics, string botUserId)
+    protected BaseBot(ILogger logger, MetricsProcessor metrics)
     {
         Logger = logger;
         _metrics = metrics;
-        BotUserId = botUserId;
     }
 
     public virtual async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
@@ -134,7 +133,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
     }
 
     public abstract BotType Type { get; }
-    public string BotUserId { get; set; }
+    public string? BotUserId { get; set; }
 
     protected abstract Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token);
 

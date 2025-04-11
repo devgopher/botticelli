@@ -2,5 +2,5 @@
 
 public static class BotStatusKeeper
 {
-    public static bool IsStarted = false;
+    public static bool IsStarted { get; set; }
 }

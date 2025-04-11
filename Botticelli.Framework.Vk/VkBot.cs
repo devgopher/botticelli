@@ -29,12 +29,12 @@ public class VkBot : BaseBot<VkBot>
     private bool _eventsAttached;
 
     public VkBot(LongPollMessagesProvider messagesProvider,
-                 MessagePublisher? messagePublisher,
-                 VkStorageUploader? vkUploader,
-                 IBotDataAccess data,
-                 IBotUpdateHandler handler,
-                 MetricsProcessor metrics,
-                 ILogger<VkBot> logger) : base(logger, metrics)
+        MessagePublisher? messagePublisher,
+        VkStorageUploader? vkUploader,
+        IBotDataAccess data,
+        IBotUpdateHandler handler,
+        MetricsProcessor metrics,
+        ILogger<VkBot> logger) : base(logger, metrics)
     {
         _messagesProvider = messagesProvider;
         _messagePublisher = messagePublisher;
@@ -141,48 +141,40 @@ public class VkBot : BaseBot<VkBot>
         _vkUploader.SetApiKey(context.BotKey);
     }
 
-    private string CreateVkAttach(VkSendPhotoResponse fk, string type)
-    {
-        return $"{type}" +
-               $"{fk.Response?.FirstOrDefault()?.OwnerId.ToString()}" +
-               $"_{fk.Response?.FirstOrDefault()?.Id.ToString()}";
-    }
+    private string CreateVkAttach(VkSendPhotoResponse fk, string type) =>
+        $"{type}" +
+        $"{fk.Response?.FirstOrDefault()?.OwnerId.ToString()}" +
+        $"_{fk.Response?.FirstOrDefault()?.Id.ToString()}";
 
 
-    private string CreateVkAttach(VkSendVideoResponse fk, string type)
-    {
-        return $"{type}" +
-               $"{fk.Response?.OwnerId.ToString()}" +
-               $"_{fk.Response?.VideoId.ToString()}";
-    }
+    private string CreateVkAttach(VkSendVideoResponse fk, string type) =>
+        $"{type}" +
+        $"{fk.Response?.OwnerId.ToString()}" +
+        $"_{fk.Response?.VideoId.ToString()}";
 
 
-    private string CreateVkAttach(VkSendAudioResponse fk, string type)
-    {
-        return $"{type}" +
-               $"{fk.AudioResponseData.AudioMessage.OwnerId}" +
-               $"_{fk.AudioResponseData.AudioMessage.Id}";
-    }
+    private string CreateVkAttach(VkSendAudioResponse fk, string type) =>
+        $"{type}" +
+        $"{fk.AudioResponseData.AudioMessage.OwnerId}" +
+        $"_{fk.AudioResponseData.AudioMessage.Id}";
 
-    private string CreateVkAttach(VkSendDocumentResponse fk, string type)
-    {
-        return $"{type}" +
-               $"{fk.DocumentResponseData.Document.OwnerId}" +
-               $"_{fk.DocumentResponseData.Document.Id}";
-    }
+    private string CreateVkAttach(VkSendDocumentResponse fk, string type) =>
+        $"{type}" +
+        $"{fk.DocumentResponseData.Document.OwnerId}" +
+        $"_{fk.DocumentResponseData.Document.Id}";
 
 
     protected override async Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
-                                                                                           ISendOptionsBuilder<TSendOptions>? optionsBuilder,
-                                                                                           bool isUpdate,
-                                                                                           CancellationToken token)
+        ISendOptionsBuilder<TSendOptions>? optionsBuilder,
+        bool isUpdate,
+        CancellationToken token)
     {
         foreach (var peerId in request.Message.ChatIds)
             try
             {
                 var requests = await CreateRequestsWithAttachments(request,
-                                                                   peerId,
-                                                                   token);
+                    peerId,
+                    token);
 
                 foreach (var vkRequest in requests) await _messagePublisher.SendAsync(vkRequest, token);
             }
@@ -192,32 +184,21 @@ public class VkBot : BaseBot<VkBot>
             }
 
         MessageSent.Invoke(this,
-                           new MessageSentBotEventArgs
-                           {
-                               Message = request.Message
-                           });
+            new MessageSentBotEventArgs
+            {
+                Message = request.Message
+            });
 
         return new SendMessageResponse(request.Uid, string.Empty);
     }
 
     protected override Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
-                                                                           CancellationToken token)
-    {
+        CancellationToken token) =>
         throw new NotImplementedException();
-    }
-
-    protected override async Task AdditionalProcessing<TSendOptions>(SendMessageRequest request,
-                                                                     ISendOptionsBuilder<TSendOptions>? optionsBuilder,
-                                                                     bool isUpdate,
-                                                                     string chatId,
-                                                                     CancellationToken token)
-    {
-        Logger.LogError($"{nameof(AdditionalProcessing)} not implemented!");
-    }
 
     private async Task<IEnumerable<VkSendMessageRequest>> CreateRequestsWithAttachments(SendMessageRequest request,
-                                                                                        string peerId,
-                                                                                        CancellationToken token)
+        string peerId,
+        CancellationToken token)
     {
         var currentContext = _data.GetData();
         var result = new List<VkSendMessageRequest>(100);
@@ -264,16 +245,17 @@ public class VkBot : BaseBot<VkBot>
                     {
                         switch (ba)
                         {
-                            case {MediaType: MediaType.Image}:
-                            case {MediaType: MediaType.Sticker}:
+                            case { MediaType: MediaType.Image }:
+                            case { MediaType: MediaType.Sticker }:
                                 var sendPhotoResponse = await _vkUploader.SendPhotoAsync(vkRequest,
-                                                                                         ba.Name,
-                                                                                         ba.Data,
-                                                                                         token);
-                                if (sendPhotoResponse != null) vkRequest.Attachment = CreateVkAttach(sendPhotoResponse, "photo");
+                                    ba.Name,
+                                    ba.Data,
+                                    token);
+                                if (sendPhotoResponse != null)
+                                    vkRequest.Attachment = CreateVkAttach(sendPhotoResponse, "photo");
 
                                 break;
-                            case {MediaType: MediaType.Video}:
+                            case { MediaType: MediaType.Video }:
                                 //var sendVideoResponse = await _vkUploader.SendVideoAsync(vkRequest,
                                 //                                                         ba.Name,
                                 //                                                         ba.Data,
@@ -282,22 +264,24 @@ public class VkBot : BaseBot<VkBot>
                                 //if (sendVideoResponse != default) vkRequest.Attachment = CreateVkAttach(sendVideoResponse, currentContext, "video");
 
                                 break;
-                            case {MediaType: MediaType.Voice}:
-                            case {MediaType: MediaType.Audio}:
+                            case { MediaType: MediaType.Voice }:
+                            case { MediaType: MediaType.Audio }:
                                 var sendAudioMessageResponse = await _vkUploader.SendAudioMessageAsync(vkRequest,
-                                                                                                       ba.Name,
-                                                                                                       ba.Data,
-                                                                                                       token);
-                                if (sendAudioMessageResponse != null) vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, "doc");
+                                    ba.Name,
+                                    ba.Data,
+                                    token);
+                                if (sendAudioMessageResponse != null)
+                                    vkRequest.Attachment = CreateVkAttach(sendAudioMessageResponse, "doc");
 
 
                                 break;
-                            case {MediaType: MediaType.Document}:
+                            case { MediaType: MediaType.Document }:
                                 var sendDocMessageResponse = await _vkUploader.SendDocsMessageAsync(vkRequest,
-                                                                                                    ba.Name,
-                                                                                                    ba.Data,
-                                                                                                    token);
-                                if (sendDocMessageResponse != null) vkRequest.Attachment = CreateVkAttach(sendDocMessageResponse, "doc");
+                                    ba.Name,
+                                    ba.Data,
+                                    token);
+                                if (sendDocMessageResponse != null)
+                                    vkRequest.Attachment = CreateVkAttach(sendDocMessageResponse, "doc");
 
 
                                 break;
@@ -322,10 +306,8 @@ public class VkBot : BaseBot<VkBot>
     }
 
     public override Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request,
-                                                                   CancellationToken token)
-    {
+        CancellationToken token) =>
         throw new NotImplementedException();
-    }
 
     public virtual event MsgSentEventHandler MessageSent;
     public virtual event MsgReceivedEventHandler MessageReceived;
