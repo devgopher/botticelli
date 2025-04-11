@@ -50,9 +50,9 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     public override BotType Type => BotType.Telegram;
-    public override event MsgSentEventHandler? MessageSent;
-    public override event MsgReceivedEventHandler? MessageReceived;
-    public override event MsgRemovedEventHandler? MessageRemoved;
+    public virtual event MsgSentEventHandler? MessageSent;
+    public virtual event MsgReceivedEventHandler? MessageReceived;
+    public virtual event MsgRemovedEventHandler? MessageRemoved;
 
     /// <summary>
     ///     Deletes a message
