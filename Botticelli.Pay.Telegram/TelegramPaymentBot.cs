@@ -35,12 +35,6 @@ public class TelegramPaymentBot : TelegramBot
                                                                      string chatId,
                                                                      CancellationToken token)
     {
-        await base.AdditionalProcessing(request,
-                                        optionsBuilder,
-                                        isUpdate,
-                                        chatId,
-                                        token);
-
         var invoice = (request.Message as PayInvoiceMessage)?.Invoice;
 
         if (invoice is not null)

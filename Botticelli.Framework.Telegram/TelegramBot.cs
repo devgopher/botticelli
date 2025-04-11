@@ -34,13 +34,14 @@ public class TelegramBot : BaseBot<TelegramBot>
     private readonly ITextTransformer _textTransformer;
     protected readonly ITelegramBotClient Client;
 
-    protected TelegramBot(ITelegramBotClient client,
-        IBotUpdateHandler handler,
-        ILogger<TelegramBot> logger,
-        MetricsProcessor metrics,
-        ITextTransformer textTransformer,
-        IBotDataAccess data) : base(logger, metrics)
+    public TelegramBot(ITelegramBotClient client,
+                       IBotUpdateHandler handler,
+                       ILogger<TelegramBot> logger,
+                       MetricsProcessor metrics,
+                       ITextTransformer textTransformer,
+                       IBotDataAccess data) : base(logger, metrics)
     {
+        BotStatusKeeper.IsStarted = false;
         Client = client;
         _handler = handler;
         _textTransformer = textTransformer;
@@ -61,7 +62,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
     protected override async Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
-        CancellationToken token)
+                                                                                 CancellationToken token)
     {
         request.NotNull();
         request.Uid.NotNull();
@@ -83,10 +84,9 @@ public class TelegramBot : BaseBot<TelegramBot>
         {
             if (string.IsNullOrWhiteSpace(request.Uid)) throw new BotException("request/message is null!");
 
-            if (request.ChatId != null)
-                await Client.DeleteMessage(request.ChatId,
-                    int.Parse(request.Uid),
-                    token);
+            await Client.DeleteMessage(request.ChatId,
+                                       int.Parse(request.Uid),
+                                       token);
             response.MessageRemovedStatus = MessageRemovedStatus.Ok;
         }
         catch
@@ -106,6 +106,15 @@ public class TelegramBot : BaseBot<TelegramBot>
         return response;
     }
 
+    protected virtual Task AdditionalProcessing<TSendOptions>(SendMessageRequest request,
+                                                               ISendOptionsBuilder<TSendOptions>? optionsBuilder,
+                                                               bool isUpdate,
+                                                               string chatId,
+                                                               CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
+
     /// <summary>
     ///     Sends a message as a telegram bot
     /// </summary>
@@ -117,9 +126,9 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <exception cref="BotException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     protected override async Task<SendMessageResponse> InnerSendMessageAsync<TSendOptions>(SendMessageRequest request,
-        ISendOptionsBuilder<TSendOptions>? optionsBuilder,
-        bool isUpdate,
-        CancellationToken token)
+                                                                                           ISendOptionsBuilder<TSendOptions>? optionsBuilder,
+                                                                                           bool isUpdate,
+                                                                                           CancellationToken token)
     {
         request.NotNull();
         request.Message.NotNull();
@@ -156,13 +165,12 @@ public class TelegramBot : BaseBot<TelegramBot>
             var retText = _textTransformer.Escape(text).ToString();
             List<(string chatId, string innerId)> pairs = [];
 
-            foreach (var link in request.Message.ChatIdInnerIdLinks)
-                pairs.AddRange(link.Value.Select(innerId => (link.Key, innerId)));
+            foreach (var link in request.Message.ChatIdInnerIdLinks) pairs.AddRange(link.Value.Select(innerId => (link.Key, innerId)));
 
             var chatIdOnly = request.Message.ChatIds.Where(c => !request.Message.ChatIdInnerIdLinks.ContainsKey(c));
             pairs.AddRange(chatIdOnly.Select(c => (c, string.Empty)));
 
-            Logger.LogInformation("Pairs count: {Count}", pairs.Count);
+            Logger.LogInformation($"Pairs count: {pairs.Count}");
 
             for (var i = 0; i < pairs.Count; i++)
             {
@@ -170,33 +178,39 @@ public class TelegramBot : BaseBot<TelegramBot>
                 Message? message = null;
 
                 await ProcessText<TSendOptions>(request,
-                    isUpdate,
-                    token,
-                    retText,
-                    replyMarkup,
-                    link);
+                                                isUpdate,
+                                                token,
+                                                retText,
+                                                replyMarkup,
+                                                link);
 
                 if (request.Message.Poll != null)
                     message = await ProcessPoll<TSendOptions>(request,
-                        token,
-                        link,
-                        replyMarkup,
-                        response);
+                                                              token,
+                                                              link,
+                                                              replyMarkup,
+                                                              response);
 
                 if (request.Message.Contact != null)
                     await ProcessContact(request,
-                        response,
-                        token,
-                        replyMarkup);
+                                         response,
+                                         token,
+                                         replyMarkup);
+
+                await AdditionalProcessing(request,
+                                           optionsBuilder,
+                                           isUpdate,
+                                           link.chatId,
+                                           token);
 
                 if (request.Message.Attachments == null) continue;
 
                 message = await ProcessAttachments(request,
-                    token,
-                    link,
-                    replyMarkup,
-                    response,
-                    message);
+                                                   token,
+                                                   link,
+                                                   replyMarkup,
+                                                   response,
+                                                   message);
                 message.NotNull();
 
                 AddChatIdInnerIdLink(response, link.chatId, message);
@@ -222,11 +236,11 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     protected virtual async Task ProcessText<TSendOptions>(SendMessageRequest request,
-        bool isUpdate,
-        CancellationToken token,
-        string retText,
-        ReplyMarkup? replyMarkup,
-        (string chatId, string innerId) link)
+                                                           bool isUpdate,
+                                                           CancellationToken token,
+                                                           string retText,
+                                                           ReplyMarkup? replyMarkup,
+                                                           (string chatId, string innerId) link)
     {
         if (!string.IsNullOrWhiteSpace(retText))
         {
@@ -246,35 +260,38 @@ public class TelegramBot : BaseBot<TelegramBot>
                 if (!isUpdate)
                 {
                     var sentMessage = await Client.SendMessage(link.chatId,
-                        sendText,
-                        ParseMode.MarkdownV2,
-                        GetReplyParameters(request, link.chatId),
-                        replyMarkup,
-                        cancellationToken: token);
+                                                               sendText,
+                                                               ParseMode.MarkdownV2,
+                                                               GetReplyParameters(request, link.chatId),
+                                                               replyMarkup,
+                                                               cancellationToken: token);
 
                     link.innerId = sentMessage.MessageId.ToString();
                 }
                 else
                 {
                     await Client.EditMessageText(link.chatId,
-                        int.Parse(link.innerId),
-                        sendText,
-                        ParseMode.MarkdownV2,
-                        replyMarkup: replyMarkup as InlineKeyboardMarkup,
-                        cancellationToken: token);
+                                                 int.Parse(link.innerId),
+                                                 sendText,
+                                                 ParseMode.MarkdownV2,
+                                                 replyMarkup: replyMarkup as InlineKeyboardMarkup,
+                                                 cancellationToken: token);
                 }
             }
         }
     }
 
     protected virtual async Task<Message> ProcessAttachments(SendMessageRequest request,
-        CancellationToken token,
-        (string chatId, string innerId) link,
-        ReplyMarkup? replyMarkup,
-        SendMessageResponse response,
-        Message? message)
+                                                             CancellationToken token,
+                                                             (string chatId, string innerId) link,
+                                                             ReplyMarkup? replyMarkup,
+                                                             SendMessageResponse response,
+                                                             Message? message)
     {
         request.Message.NotNull();
+        if (request.Message.Attachments == null) 
+            return message;
+        
         request.Message.Attachments.NotNullOrEmpty();
 
         foreach (var attachment in request.Message
@@ -369,10 +386,10 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     protected virtual async Task<Message?> ProcessPoll<TSendOptions>(SendMessageRequest request,
-        CancellationToken token,
-        (string chatId, string innerId) link,
-        ReplyMarkup? replyMarkup,
-        SendMessageResponse response)
+                                                                     CancellationToken token,
+                                                                     (string chatId, string innerId) link,
+                                                                     ReplyMarkup? replyMarkup,
+                                                                     SendMessageResponse response)
     {
         Message? message;
 
@@ -382,20 +399,20 @@ public class TelegramBot : BaseBot<TelegramBot>
 
         var type = request.Message.Poll?.Type switch
         {
-            Poll.PollType.Quiz => PollType.Quiz,
+            Poll.PollType.Quiz    => PollType.Quiz,
             Poll.PollType.Regular => PollType.Regular,
-            _ => throw new ArgumentOutOfRangeException()
+            _                     => throw new ArgumentOutOfRangeException()
         };
 
         message = await Client.SendPoll(link.chatId,
-            request.Message.Poll?.Question ?? "No question",
-            GetPollOptions(request),
-            request.Message.Poll?.IsAnonymous ?? false,
-            type,
-            correctOptionId: request.Message.Poll?.CorrectAnswerId,
-            replyParameters: GetReplyParameters(request, link.chatId),
-            replyMarkup: replyMarkup,
-            cancellationToken: token);
+                                        request.Message.Poll?.Question ?? "No question",
+                                        GetPollOptions(request),
+                                        request.Message.Poll?.IsAnonymous ?? false,
+                                        type,
+                                        correctOptionId: request.Message.Poll?.CorrectAnswerId,
+                                        replyParameters: GetReplyParameters(request, link.chatId),
+                                        replyMarkup: replyMarkup,
+                                        cancellationToken: token);
 
         AddChatIdInnerIdLink(response, link.chatId, message);
 
@@ -417,12 +434,12 @@ public class TelegramBot : BaseBot<TelegramBot>
     private static InputPollOption[] GetPollOptions(SendMessageRequest request)
     {
         return request.Message.Poll?.Variants?.Select(po =>
-                       new InputPollOption
-                       {
-                           Text = po.option,
-                           TextParseMode = ParseMode.MarkdownV2
-                       })
-                   .ToArray() ??
+                                                              new InputPollOption
+                                                              {
+                                                                  Text = po.option,
+                                                                  TextParseMode = ParseMode.MarkdownV2
+                                                              })
+                      .ToArray() ??
                [];
     }
 
@@ -435,9 +452,9 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     protected virtual async Task ProcessContact(SendMessageRequest request,
-        SendMessageResponse response,
-        CancellationToken token,
-        ReplyMarkup? replyMarkup)
+                                                SendMessageResponse response,
+                                                CancellationToken token,
+                                                ReplyMarkup? replyMarkup)
     {
         request.Message.NotNull();
         request.Message.Contact.NotNull();
@@ -448,12 +465,12 @@ public class TelegramBot : BaseBot<TelegramBot>
             try
             {
                 var message = await Client.SendContact(chatId,
-                    request.Message?.Contact?.Phone!,
-                    request.Message?.Contact?.Name!,
-                    request.Message?.Contact?.Surname,
-                    replyParameters: GetReplyParameters(request, chatId),
-                    replyMarkup: replyMarkup,
-                    cancellationToken: token);
+                                                       request.Message?.Contact?.Phone!,
+                                                       request.Message?.Contact?.Name!,
+                                                       request.Message?.Contact?.Surname,
+                                                       replyParameters: GetReplyParameters(request, chatId),
+                                                       replyMarkup: replyMarkup,
+                                                       cancellationToken: token);
 
                 AddChatIdInnerIdLink(response, chatId, message);
             }
@@ -463,12 +480,14 @@ public class TelegramBot : BaseBot<TelegramBot>
             }
     }
 
-    private static ReplyParameters GetReplyParameters(SendMessageRequest request, string chatId) =>
-        new()
+    private static ReplyParameters GetReplyParameters(SendMessageRequest request, string chatId)
+    {
+        return new ReplyParameters
         {
             ChatId = chatId,
             MessageId = request.Message.ReplyToMessageUid != null ? int.Parse(request.Message.ReplyToMessageUid) : 0
         };
+    }
 
     /// <summary>
     ///     Starts a bot
@@ -494,7 +513,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             // Rethrowing an event from BotUpdateHandler
             _handler.MessageReceived += (sender, e)
-                => MessageReceived?.Invoke(sender, e);
+                    => MessageReceived?.Invoke(sender, e);
 
             Client.StartReceiving(_handler, cancellationToken: token);
 
@@ -543,7 +562,7 @@ public class TelegramBot : BaseBot<TelegramBot>
 
     private void RecreateClient(string token)
     {
-        ((TelegramClientDecorator)Client).ChangeBotToken(token);
+        ((TelegramClientDecorator) Client).ChangeBotToken(token);
     }
 
     private async Task StartBot(CancellationToken token)
@@ -573,11 +592,14 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             await StartBot(token);
         }
-        else if (currentContext != null && Client.BotId == 0)
+        else if (currentContext != null)
         {
-            await StopBot(token);
-            RecreateClient(context.BotKey!);
-            await StartBot(token);
+            if (Client.BotId == default)
+            {
+                await StopBot(token);
+                RecreateClient(context.BotKey!);
+                await StartBot(token);
+            }
         }
     }
 }
