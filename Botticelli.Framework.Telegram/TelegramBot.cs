@@ -170,14 +170,14 @@ public class TelegramBot : BaseBot<TelegramBot>
             var chatIdOnly = request.Message.ChatIds.Where(c => !request.Message.ChatIdInnerIdLinks.ContainsKey(c));
             pairs.AddRange(chatIdOnly.Select(c => (c, string.Empty)));
 
-            Logger.LogInformation($"Pairs count: {pairs.Count}");
+            Logger.LogInformation("Pairs count: {Count}", pairs.Count);
 
             for (var i = 0; i < pairs.Count; i++)
             {
                 var link = pairs[i];
                 Message? message = null;
 
-                await ProcessText<TSendOptions>(request,
+                await ProcessText(request,
                                                 isUpdate,
                                                 token,
                                                 retText,
@@ -235,12 +235,12 @@ public class TelegramBot : BaseBot<TelegramBot>
         return response;
     }
 
-    protected virtual async Task ProcessText<TSendOptions>(SendMessageRequest request,
-                                                           bool isUpdate,
-                                                           CancellationToken token,
-                                                           string retText,
-                                                           ReplyMarkup? replyMarkup,
-                                                           (string chatId, string innerId) link)
+    private async Task ProcessText(SendMessageRequest request,
+        bool isUpdate,
+        CancellationToken token,
+        string retText,
+        ReplyMarkup? replyMarkup,
+        (string chatId, string innerId) link)
     {
         if (!string.IsNullOrWhiteSpace(retText))
         {
@@ -281,7 +281,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         }
     }
 
-    protected virtual async Task<Message> ProcessAttachments(SendMessageRequest request,
+    private async Task<Message> ProcessAttachments(SendMessageRequest request,
                                                              CancellationToken token,
                                                              (string chatId, string innerId) link,
                                                              ReplyMarkup? replyMarkup,
@@ -385,7 +385,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         return message;
     }
 
-    protected virtual async Task<Message?> ProcessPoll<TSendOptions>(SendMessageRequest request,
+    protected async Task<Message?> ProcessPoll<TSendOptions>(SendMessageRequest request,
                                                                      CancellationToken token,
                                                                      (string chatId, string innerId) link,
                                                                      ReplyMarkup? replyMarkup,
@@ -451,7 +451,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         response.Message.ChatIdInnerIdLinks[chatId].Add(message!.MessageId.ToString());
     }
 
-    protected virtual async Task ProcessContact(SendMessageRequest request,
+    protected async Task ProcessContact(SendMessageRequest request,
                                                 SendMessageResponse response,
                                                 CancellationToken token,
                                                 ReplyMarkup? replyMarkup)
