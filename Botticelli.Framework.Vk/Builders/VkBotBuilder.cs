@@ -90,7 +90,8 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
                          sp.GetRequiredService<ILogger<VkBot>>());
     }
 
-    public virtual VkBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
+    protected virtual VkBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder) 
+        where TBotSettings : BotSettings, new()
     {
         BotSettings = settingsBuilder.Build() as VkBotSettings ?? throw new InvalidOperationException();
 

@@ -142,8 +142,9 @@ public class TelegramBotBuilder<TBot> : BotBuilder<TelegramBotBuilder<TBot>, TBo
             sp.GetRequiredService<IBotDataAccess>()) as TBot;
     }
 
-    public virtual TelegramBotBuilder<TBot> AddBotSettings<TBotSettings>(
+    protected virtual TelegramBotBuilder<TBot> AddBotSettings<TBotSettings>(
         BotSettingsBuilder<TBotSettings> settingsBuilder)
+        where TBotSettings : BotSettings, new()
     {
         BotSettings = settingsBuilder.Build() as TelegramBotSettings ?? throw new InvalidOperationException();
 
