@@ -41,7 +41,7 @@ public class TelegramClientDecoratorBuilder
         return this;
     }
 
-    public TelegramClientDecorator Build()
+    public TelegramClientDecorator? Build()
     {
         _token ??= "11111111:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 

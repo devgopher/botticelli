@@ -20,12 +20,11 @@ public abstract class BotBuilder<TBot>
 }
 
 public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
-        where TBotBuilder : BotBuilder<TBot>
+    where TBotBuilder : BotBuilder<TBot>
 {
-    private readonly ServerSettings _serverSettings;
-    protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientSettingsBuilder;
-    protected DataAccessSettingsBuilder<DataAccessSettings> BotDataAccessSettingsBuilder;
-    protected ServerSettingsBuilder<ServerSettings> ServerSettingsBuilder;
+    protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings>? AnalyticsClientSettingsBuilder;
+    protected DataAccessSettingsBuilder<DataAccessSettings>? BotDataAccessSettingsBuilder;
+    protected ServerSettingsBuilder<ServerSettings>? ServerSettingsBuilder;
     protected IServiceCollection? Services;
 
     protected override void Assert()
@@ -39,24 +38,22 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
         return (this as TBotBuilder)!;
     }
 
-    public abstract TBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
-            where TBotSettings : BotSettings, new();
-
-    public TBotBuilder AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
+    protected TBotBuilder AddAnalyticsSettings(
+        AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
     {
         AnalyticsClientSettingsBuilder = clientSettingsBuilder;
 
         return (this as TBotBuilder)!;
     }
 
-    public TBotBuilder AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
+    protected TBotBuilder AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
     {
         ServerSettingsBuilder = settingsBuilder;
 
         return (this as TBotBuilder)!;
     }
 
-    public TBotBuilder AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
+    protected TBotBuilder AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
     {
         BotDataAccessSettingsBuilder = botDataAccessBuilder;
 

@@ -34,7 +34,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     private readonly ITextTransformer _textTransformer;
     protected readonly ITelegramBotClient Client;
 
-    public TelegramBot(ITelegramBotClient client,
+    protected TelegramBot(ITelegramBotClient client,
                        IBotUpdateHandler handler,
                        ILogger<TelegramBot> logger,
                        MetricsProcessor metrics,
