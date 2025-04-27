@@ -23,9 +23,9 @@ public class TelegramBotSettings : BotSettings
     public bool? UseThrottling { get; set; } = true;
 
     /// <summary>
-    ///     Is this bor autonomous?
+    ///     Is this bot standalone?
     /// </summary>
-    public bool? IsAutonomous { get; set; } = false;
+    public bool? IsStandalone { get; set; } = false;
     
     /// <summary>
     ///     Should we use test environment

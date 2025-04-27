@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Services;
 
-public class BotAutonomousService(
+public class BotStandaloneService(
     IHttpClientFactory httpClientFactory,
     ServerSettings serverSettings,
     BotData.Entities.Bot.BotData botData,

@@ -25,7 +25,7 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
     protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings>? AnalyticsClientSettingsBuilder;
     protected DataAccessSettingsBuilder<DataAccessSettings>? BotDataAccessSettingsBuilder;
     protected ServerSettingsBuilder<ServerSettings>? ServerSettingsBuilder;
-    protected IServiceCollection? Services;
+    protected IServiceCollection Services = null!;
 
     protected override void Assert()
     {

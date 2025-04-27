@@ -1,7 +1,7 @@
 namespace Botticelli.Framework.Options;
 
 public class BotDataSettingsBuilder<T>
-    where T : BotDataSettings
+    where T : BotDataSettings, new()
 {
     private T _settings = new();
 
