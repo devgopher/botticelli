@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Version>0.8.0</Version>
+        <Company>Botticelli</Company>
+        <Copyright>Igor Evdokimov</Copyright>
+        <PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
+        <PackageIcon>logo.jpg</PackageIcon>
+        <RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
+        <RootNamespace>TelegramMessagingSample.Standalone</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="NLog.Extensions.Logging" Version="5.4.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Properties\launchSettings.json">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
+      <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
+      <ProjectReference Include="..\Botticelli.Scheduler.Quartz\Botticelli.Scheduler.Quartz.csproj" />
+      <ProjectReference Include="..\Samples\Messaging.Sample.Common\Messaging.Sample.Common.csproj" />
+    </ItemGroup>
+
+</Project>

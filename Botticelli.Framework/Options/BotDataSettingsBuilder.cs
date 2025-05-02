@@ -1,11 +1,16 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Botticelli.Framework.Options;
 
 public class BotDataSettingsBuilder<T>
     where T : BotDataSettings, new()
 {
-    private T _settings = new();
+    private T? _settings;
 
-    public void Set(T settings)
+    public static BotDataSettingsBuilder<T> Instance() => new();
+
+
+    public void Set(T? settings)
     {
         _settings = settings;
     }
@@ -17,7 +22,7 @@ public class BotDataSettingsBuilder<T>
         return this;
     }
 
-    public T Build()
+    public T? Build()
     {
         return _settings;
     }

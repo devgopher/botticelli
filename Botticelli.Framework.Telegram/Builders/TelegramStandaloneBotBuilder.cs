@@ -26,7 +26,7 @@ public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, Teleg
             .AddBotDataAccessSettings(dataAccessSettingsBuilder);
 
     public TelegramStandaloneBotBuilder<TBot> AddBotData(
-        BotDataSettingsBuilder<BotDataSettings> dataBuilder)
+        BotDataSettingsBuilder<BotDataSettings?> dataBuilder)
     {
         var settings = dataBuilder.Build();
 

@@ -251,6 +251,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.Sample.Telegram", "Sam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Auth.Data.Sqlite", "Botticelli.Auth.Data.Sqlite\Botticelli.Auth.Data.Sqlite.csproj", "{D27A078E-1409-4B0B-AD7E-DD4528206049}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Sample.Telegram.Standalone", "Messaging.Sample.Telegram.Standalone\Messaging.Sample.Telegram.Standalone.csproj", "{E9B52BA7-B0B3-4823-9BB3-8B4AA40CB2C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -525,6 +527,10 @@ Global
 		{D27A078E-1409-4B0B-AD7E-DD4528206049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D27A078E-1409-4B0B-AD7E-DD4528206049}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D27A078E-1409-4B0B-AD7E-DD4528206049}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9B52BA7-B0B3-4823-9BB3-8B4AA40CB2C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9B52BA7-B0B3-4823-9BB3-8B4AA40CB2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9B52BA7-B0B3-4823-9BB3-8B4AA40CB2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9B52BA7-B0B3-4823-9BB3-8B4AA40CB2C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -628,6 +634,7 @@ Global
 		{49938A37-DA38-47A0-ADF7-DF2221F7F4A7} = {2AD59714-541D-4794-9216-6EAB25F271DA}
 		{9D1C8062-6388-4713-A81D-8B2F2C2D336D} = {49938A37-DA38-47A0-ADF7-DF2221F7F4A7}
 		{D27A078E-1409-4B0B-AD7E-DD4528206049} = {08C7BAAF-80FD-4AAE-8400-2A2D12D6CF06}
+		{E9B52BA7-B0B3-4823-9BB3-8B4AA40CB2C8} = {DEC72475-9783-4BD9-B31E-F77758269476}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}

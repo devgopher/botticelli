@@ -5,6 +5,8 @@ namespace Botticelli.Framework.Options;
 /// </summary>
 public class BotDataSettings
 {
+    public const string Section = "BotData";
+    
     public string? BotId { get; set; }
     public string? BotKey { get; set; }
 }
