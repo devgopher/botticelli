@@ -21,7 +21,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Framework.Vk.Messages.Builders;
 
-public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
+public class VkBotBuilder : BotBuilder<VkBot, VkBotBuilder>
 {
     private LongPollMessagesProvider? _longPollMessagesProvider;
     private LongPollMessagesProviderBuilder? _longPollMessagesProviderBuilder;
@@ -111,11 +111,11 @@ public class VkBotBuilder : BotBuilder<VkBotBuilder, VkBot>
                                         DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder,
                                         AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder)
     {
-        return new VkBotBuilder()
-               .AddServices(services)
-               .AddServerSettings(serverSettingsBuilder)
-               .AddAnalyticsSettings(analyticsClientSettingsBuilder)
-               .AddBotDataAccessSettings(dataAccessSettingsBuilder)
-               .AddBotSettings(settingsBuilder);
+        return (VkBotBuilder)new VkBotBuilder()
+            .AddBotSettings(settingsBuilder)
+            .AddServerSettings(serverSettingsBuilder)
+            .AddServices(services)
+            .AddAnalyticsSettings(analyticsClientSettingsBuilder)
+            .AddBotDataAccessSettings(dataAccessSettingsBuilder);
     }
 }

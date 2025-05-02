@@ -119,6 +119,34 @@ public static class ServiceCollectionExtensions
             .AddTelegramLayoutsSupport();
     }
 
+    public static IServiceCollection AddStandaloneTelegramBot(this IServiceCollection services,
+        IConfiguration configuration,
+        Action<TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>>? telegramBotBuilderFunc = null) =>
+        AddStandaloneTelegramBot<TelegramBot>(services, configuration, telegramBotBuilderFunc);
+
+    public static IServiceCollection AddStandaloneTelegramBot<TBot>(this IServiceCollection services,
+        IConfiguration configuration,
+        Action<TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>>? telegramBotBuilderFunc = null)
+        where TBot : TelegramBot
+    {
+        var telegramBotSettings = configuration
+                                      .GetSection(TelegramBotSettings.Section)
+                                      .Get<TelegramBotSettings>() ??
+                                  throw new ConfigurationErrorsException(
+                                      $"Can't load configuration for {nameof(TelegramBotSettings)}!");
+
+        var dataAccessSettings = configuration
+                                     .GetSection(DataAccessSettings.Section)
+                                     .Get<DataAccessSettings>() ??
+                                 throw new ConfigurationErrorsException(
+                                     $"Can't load configuration for {nameof(DataAccessSettings)}!");
+
+        return services.AddStandaloneTelegramBot<TBot>(
+            botSettings => botSettings.Set(telegramBotSettings),
+            dataSettings => dataSettings.Set(dataAccessSettings)
+        );
+    }
+
     public static IServiceCollection AddStandaloneTelegramBot<TBot>(this IServiceCollection services,
         Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
         Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc,
