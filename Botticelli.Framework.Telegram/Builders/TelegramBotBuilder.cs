@@ -38,9 +38,9 @@ public abstract class TelegramBotBuilder<TBot> : TelegramBotBuilder<TBot, Telegr
 /// </summary>
 /// <typeparam name="TBot"></typeparam>
 /// <typeparam name="TBotBuilder"></typeparam>
-public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBotBuilder, TBot>
+public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilder>
     where TBot : TelegramBot
-    where TBotBuilder : TelegramBotBuilder<TBot, TBotBuilder>
+    where TBotBuilder : BotBuilder<TBot, TBotBuilder>
 {
     private readonly List<Action<IServiceProvider>> _subHandlers = [];
     private TelegramClientDecoratorBuilder _builder = null!;
@@ -48,19 +48,19 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBotBuilder, TBo
     protected TelegramBotSettings? BotSettings { get; set; }
     protected BotData.Entities.Bot.BotData? BotData { get; set; }
 
-    public static TBotBuilder Instance(IServiceCollection services,
+    public static TelegramBotBuilder<TBot, TBotBuilder> Instance(IServiceCollection services,
         ServerSettingsBuilder<ServerSettings> serverSettingsBuilder,
         BotSettingsBuilder<TelegramBotSettings> settingsBuilder,
         DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder,
         AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder) =>
-        new TelegramBotBuilder<TBot, TBotBuilder>()
-            .AddServices(services)
+        (TelegramBotBuilder<TBot, TBotBuilder>)new TelegramBotBuilder<TBot, TBotBuilder>()
+            .AddBotSettings(settingsBuilder)
             .AddServerSettings(serverSettingsBuilder)
             .AddAnalyticsSettings(analyticsClientSettingsBuilder)
             .AddBotDataAccessSettings(dataAccessSettingsBuilder)
-            .AddBotSettings(settingsBuilder);
+            .AddServices(services);
 
-    public TBotBuilder AddSubHandler<T>()
+    public TelegramBotBuilder<TBot, TBotBuilder> AddSubHandler<T>()
         where T : class, IBotUpdateSubHandler
     {
         Services.NotNull();
@@ -74,14 +74,14 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBotBuilder, TBo
             botHandler.AddSubHandler(subHandler);
         });
 
-        return (TBotBuilder)this;
+        return this;
     }
 
-    public TBotBuilder AddClient(TelegramClientDecoratorBuilder builder)
+    public TelegramBotBuilder<TBot, TBotBuilder> AddClient(TelegramClientDecoratorBuilder builder)
     {
         _builder = builder;
 
-        return (TBotBuilder)this;
+        return this;
     }
 
     protected override TBot? InnerBuild()
@@ -156,13 +156,13 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBotBuilder, TBo
             sp.GetRequiredService<IBotDataAccess>()) as TBot;
     }
     
-    protected TBotBuilder AddBotSettings<TBotSettings>(
+    protected TelegramBotBuilder<TBot, TBotBuilder> AddBotSettings<TBotSettings>(
         BotSettingsBuilder<TBotSettings> settingsBuilder)
         where TBotSettings : BotSettings, new()
     {
         BotSettings = settingsBuilder.Build() as TelegramBotSettings ?? throw new InvalidOperationException();
 
-        return (TBotBuilder)this;
+        return this;
     }
     
     private static void ApplyMigrations(IServiceProvider sp) =>

@@ -8,6 +8,7 @@ using Botticelli.Pay.Handlers;
 using Botticelli.Pay.Models;
 using Botticelli.Pay.Processors;
 using Botticelli.Pay.Telegram.Handlers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Botticelli.Pay.Telegram.Extensions;
@@ -42,6 +43,22 @@ public static class ServiceCollectionExtensions
                 .AddSubHandler<BotSuccessfulPaymentSubHandler>());
     }
 
+    /// <summary>
+    ///     Adds a Telegram bot with a payment function
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddTelegramPayBot<THandler, TProcessor>(this IServiceCollection services, IConfiguration configuration)
+        where THandler : IPreCheckoutHandler, new()
+        where TProcessor : IPayProcessor<THandler, PreCheckoutQuery>
+    {
+        services.AddPayments<THandler, TProcessor, PreCheckoutQuery>();
+
+        return services.AddTelegramBot<TelegramPaymentBot>(configuration, o => o.AddSubHandler<BotPreCheckoutSubHandler>()
+            .AddSubHandler<BotSuccessfulPaymentSubHandler>());
+    }
+    
     /// <summary>
     ///     Adds a standalone Telegram bot with a payment function
     /// </summary>

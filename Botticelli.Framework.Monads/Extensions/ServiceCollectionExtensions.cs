@@ -20,7 +20,7 @@ public static class ServiceCollectionExtensions
 
         var runner = chainBuilder.Build();
 
-        services.AddScoped(_ => runner);
+        services.AddSingleton(_ => runner);
 
         return commandAddServices.AddProcessor<ChainRunProcessor<TCommand>>()
                                  .AddValidator<TValidator>();
@@ -38,8 +38,8 @@ public static class ServiceCollectionExtensions
 
         var runner = chainBuilder.Build();
 
-        services.AddScoped(_ => runner)
-                .AddScoped<ILayoutSupplier<TReplyMarkup>, TLayoutSupplier>();
+        services.AddSingleton(_ => runner)
+                .AddSingleton<ILayoutSupplier<TReplyMarkup>, TLayoutSupplier>();
 
         return commandAddServices.AddProcessor<ChainRunProcessor<TCommand>>()
                                  .AddValidator<TValidator>();

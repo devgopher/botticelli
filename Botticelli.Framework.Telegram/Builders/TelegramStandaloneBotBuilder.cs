@@ -20,10 +20,10 @@ public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, Teleg
     public static TelegramStandaloneBotBuilder<TBot> Instance(IServiceCollection services,
         BotSettingsBuilder<TelegramBotSettings> settingsBuilder,
         DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder) =>
-        new TelegramStandaloneBotBuilder<TBot>()
+        (TelegramStandaloneBotBuilder<TBot>)new TelegramStandaloneBotBuilder<TBot>()
+            .AddBotSettings(settingsBuilder)
             .AddServices(services)
-            .AddBotDataAccessSettings(dataAccessSettingsBuilder)
-            .AddBotSettings(settingsBuilder);
+            .AddBotDataAccessSettings(dataAccessSettingsBuilder);
 
     public TelegramStandaloneBotBuilder<TBot> AddBotData(
         BotDataSettingsBuilder<BotDataSettings> dataBuilder)

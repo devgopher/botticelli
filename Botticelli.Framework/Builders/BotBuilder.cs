@@ -19,8 +19,8 @@ public abstract class BotBuilder<TBot>
     protected abstract TBot? InnerBuild();
 }
 
-public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
-    where TBotBuilder : BotBuilder<TBot>
+public abstract class BotBuilder<TBot,TBotBuilder> : BotBuilder<TBot>
+    where TBotBuilder : BotBuilder<TBot, TBotBuilder>
 {
     protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings>? AnalyticsClientSettingsBuilder;
     protected DataAccessSettingsBuilder<DataAccessSettings>? BotDataAccessSettingsBuilder;
@@ -31,32 +31,33 @@ public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
     {
     }
 
-    protected TBotBuilder AddServices(IServiceCollection services)
+    public BotBuilder<TBot, TBotBuilder> AddServices(IServiceCollection services)
     {
         Services = services;
 
-        return (this as TBotBuilder)!;
+        return this;
     }
 
-    protected TBotBuilder AddAnalyticsSettings(
+    public BotBuilder<TBot, TBotBuilder> AddAnalyticsSettings(
         AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
     {
         AnalyticsClientSettingsBuilder = clientSettingsBuilder;
 
-        return (this as TBotBuilder)!;
+        return this;
     }
 
-    protected TBotBuilder AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
+    protected BotBuilder<TBot, TBotBuilder> AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
     {
         ServerSettingsBuilder = settingsBuilder;
 
-        return (this as TBotBuilder)!;
+        return this;
     }
 
-    protected TBotBuilder AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
+    public BotBuilder<TBot, TBotBuilder> AddBotDataAccessSettings(
+        DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
     {
         BotDataAccessSettingsBuilder = botDataAccessBuilder;
 
-        return (this as TBotBuilder)!;
+        return this;
     }
 }

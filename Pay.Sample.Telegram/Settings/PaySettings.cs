@@ -5,5 +5,5 @@ namespace TelegramPayBot.Settings;
 public class PaySettings
 {
     [JsonPropertyName("ProviderToken")]
-    public string? ProviderToken { get; set; }
+    public string? ProviderToken { get; init; }
 }

@@ -7,33 +7,22 @@ using FluentValidation;
 
 namespace TelegramPayBot.Commands.Processors;
 
-public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> where TReplyMarkup : class
+public class InfoCommandProcessor<TReplyMarkup>(
+    ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
+    ICommandValidator<InfoCommand> commandValidator,
+    MetricsProcessor metricsProcessor,
+    IValidator<Message> messageValidator)
+    : CommandProcessor<InfoCommand>(logger,
+        commandValidator,
+        metricsProcessor,
+        messageValidator)
+    where TReplyMarkup : class
 {
-    public InfoCommandProcessor(ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
-                                ICommandValidator<InfoCommand> commandValidator,
-                                MetricsProcessor metricsProcessor,
-                                IValidator<Message> messageValidator)
-            : base(logger,
-                   commandValidator,
-                   metricsProcessor,
-                   messageValidator)
-    {
-    }
+    protected override Task InnerProcessContact(Message message, CancellationToken token) => Task.CompletedTask;
 
-    protected override Task InnerProcessContact(Message message, CancellationToken token)
-    {
-        return Task.CompletedTask;
-    }
+    protected override Task InnerProcessPoll(Message message, CancellationToken token) => Task.CompletedTask;
 
-    protected override Task InnerProcessPoll(Message message, CancellationToken token)
-    {
-        return Task.CompletedTask;
-    }
-
-    protected override Task InnerProcessLocation(Message message, CancellationToken token)
-    {
-        return Task.CompletedTask;
-    }
+    protected override Task InnerProcessLocation(Message message, CancellationToken token) => Task.CompletedTask;
 
     protected override async Task InnerProcess(Message message, CancellationToken token)
     {

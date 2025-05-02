@@ -34,7 +34,8 @@ public class TelegramBot : BaseBot<TelegramBot>
     private readonly ITextTransformer _textTransformer;
     protected readonly ITelegramBotClient Client;
 
-    protected TelegramBot(ITelegramBotClient client,
+    // ReSharper disable once MemberCanBeProtected.Global
+    public TelegramBot(ITelegramBotClient client,
                        IBotUpdateHandler handler,
                        ILogger<TelegramBot> logger,
                        MetricsProcessor metrics,
