@@ -45,6 +45,8 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
     private readonly List<Action<IServiceProvider>> _subHandlers = [];
     private TelegramClientDecoratorBuilder _builder = null!;
 
+    public string? _botToken = null;
+    
     protected TelegramBotSettings? BotSettings { get; set; }
     protected BotData.Entities.Bot.BotData? BotData { get; set; }
 
@@ -77,6 +79,13 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
         return this;
     }
 
+    public TelegramBotBuilder<TBot, TBotBuilder> AddToken(string botToken)
+    {
+        _botToken = botToken;
+
+        return this;
+    }
+    
     public TelegramBotBuilder<TBot, TBotBuilder> AddClient(TelegramClientDecoratorBuilder builder)
     {
         _builder = builder;
@@ -86,7 +95,7 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
 
     protected override TBot? InnerBuild()
     {
-        if (BotSettings?.IsStandalone is true)
+        if (BotSettings?.IsStandalone is false)
         {
             Services.AddSingleton(ServerSettingsBuilder!.Build());
 
@@ -110,7 +119,7 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
 
         #region Metrics
 
-        if (BotSettings?.IsStandalone is true)
+        if (BotSettings?.IsStandalone is false)
         {
             var metricsPublisher = new MetricsPublisher(AnalyticsClientSettingsBuilder!.Build());
             var metricsProcessor = new MetricsProcessor(metricsPublisher);
@@ -134,8 +143,11 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
 
         #endregion
 
-        if (BotSettings?.UseThrottling is true) _builder.AddThrottler(new Throttler());
+        if (BotSettings?.UseThrottling is false) _builder.AddThrottler(new Throttler());
 
+        if (!string.IsNullOrWhiteSpace(_botToken))
+            _builder.AddToken(_botToken);
+        
         var client = _builder.Build();
 
         client.NotNull();

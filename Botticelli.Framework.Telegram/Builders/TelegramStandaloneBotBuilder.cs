@@ -26,18 +26,20 @@ public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, Teleg
             .AddBotDataAccessSettings(dataAccessSettingsBuilder);
 
     public TelegramStandaloneBotBuilder<TBot> AddBotData(
-        BotDataSettingsBuilder<BotDataSettings?> dataBuilder)
+        BotDataSettingsBuilder<BotDataSettings> dataBuilder)
     {
         var settings = dataBuilder.Build();
 
         BotData = new BotData.Entities.Bot.BotData
         {
-            BotId = settings.BotId ?? throw new ConfigurationErrorsException("No BotId in bot settings!"),
+            BotId = settings?.BotId ?? throw new ConfigurationErrorsException("No BotId in bot settings!"),
             Status = BotStatus.Unlocked,
             Type = BotType.Telegram,
             BotKey = settings.BotKey ?? throw new ConfigurationErrorsException("No BotKey in bot settings!")
         };
 
+        AddToken(BotData.BotKey);
+        
         return this;
     }
 
