@@ -124,7 +124,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
             token);
     }
 
-    public virtual async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request,
+    public virtual async Task<RemoveMessageResponse> DeleteMessageAsync(DeleteMessageRequest request,
         CancellationToken token)
     {
         _metrics?.Process(MetricNames.MessageRemoved, BotDataUtils.GetBotId());
@@ -145,7 +145,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
         CancellationToken token)
         where TSendOptions : class;
 
-    protected abstract Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
+    protected abstract Task<RemoveMessageResponse> InnerDeleteMessageAsync(DeleteMessageRequest request,
         CancellationToken token);
 
     public event StartedEventHandler? Started;

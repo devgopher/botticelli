@@ -71,6 +71,6 @@ public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand
             }
         };
 
-        await Bot.SendMessageAsync(greetingMessageRequest, _options, token);
+        await SendMessage(greetingMessageRequest, _options, token);
     }
 }

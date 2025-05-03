@@ -87,6 +87,6 @@ public class StopCommandProcessor<TReplyMarkup> : CommandProcessor<StopCommand>
             }
         };
 
-        await Bot.SendMessageAsync(farewellMessageRequest, _options, token);
+        await SendMessage(farewellMessageRequest, _options, token);
     }
 }

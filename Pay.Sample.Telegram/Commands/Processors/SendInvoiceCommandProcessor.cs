@@ -76,6 +76,6 @@ public class SendInvoiceCommandProcessor<TReplyMarkup> : CommandProcessor<SendIn
             }
         };
 
-        await Bot?.SendMessageAsync(sendInvoiceMessageRequest, token)!; // TODO: think about Bot mocks
+        await SendMessage(sendInvoiceMessageRequest, token);
     }
 }

@@ -1,6 +1,5 @@
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -12,25 +11,20 @@ namespace Botticelli.Framework.Commands.Processors;
 /// </summary>
 /// <typeparam name="TInputCommand"></typeparam>
 public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> : CommandProcessor<TInputCommand>,
-                                                                                  ICommandChainProcessor<TInputCommand>
-        where TInputCommand : class, ICommand
+    ICommandChainProcessor<TInputCommand>
+    where TInputCommand : class, ICommand
 {
     protected WaitForClientResponseCommandChainProcessor(ILogger<CommandChainProcessor<TInputCommand>> logger,
-                                                         ICommandValidator<TInputCommand> commandValidator,
-                                                         MetricsProcessor metricsProcessor,
-                                                         IValidator<Message> messageValidator)
-            : base(logger,
-                   commandValidator,
-                   messageValidator, metricsProcessor)
+        ICommandValidator<TInputCommand> commandValidator,
+        MetricsProcessor metricsProcessor,
+        IValidator<Message> messageValidator)
+        : base(logger,
+            commandValidator,
+            messageValidator, metricsProcessor)
     {
     }
 
     private TimeSpan Timeout { get; } = TimeSpan.FromMinutes(10);
-
-    public virtual void SetBot(IBot bot)
-    {
-        Bot = bot;
-    }
 
     public override async Task ProcessAsync(Message message, CancellationToken token)
     {

@@ -22,11 +22,7 @@ public class SayHelloFinalCommandProcessor : CommandChainProcessor<GetNameComman
     public override async Task ProcessAsync(Message message, CancellationToken token)
     {
         message.Body = $"Have a nice day, dear {string.Join(' ', message.ProcessingArgs ?? new List<string>())}!";
-        await Bot.SendMessageAsync(new SendMessageRequest
-                                   {
-                                       Message = message
-                                   },
-                                   token);
+        await SendMessage(message, token);
     }
 
     protected override Task InnerProcess(Message message, CancellationToken token)

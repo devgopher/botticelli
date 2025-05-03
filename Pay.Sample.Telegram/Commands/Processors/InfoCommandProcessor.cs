@@ -35,6 +35,6 @@ public class InfoCommandProcessor<TReplyMarkup>(
             }
         };
 
-        await Bot.SendMessageAsync(greetingMessageRequest, token);
+        await SendMessage(greetingMessageRequest, token);
     }
 }

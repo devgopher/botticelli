@@ -192,7 +192,7 @@ public class VkBot : BaseBot<VkBot>
         return new SendMessageResponse(request.Uid, string.Empty);
     }
 
-    protected override Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
+    protected override Task<RemoveMessageResponse> InnerDeleteMessageAsync(DeleteMessageRequest request,
         CancellationToken token) =>
         throw new NotImplementedException();
 
@@ -305,7 +305,7 @@ public class VkBot : BaseBot<VkBot>
         return result;
     }
 
-    public override Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request,
+    public override Task<RemoveMessageResponse> DeleteMessageAsync(DeleteMessageRequest request,
         CancellationToken token) =>
         throw new NotImplementedException();
 

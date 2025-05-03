@@ -62,7 +62,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="BotException"></exception>
-    protected override async Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
+    protected override async Task<RemoveMessageResponse> InnerDeleteMessageAsync(DeleteMessageRequest request,
                                                                                  CancellationToken token)
     {
         request.NotNull();

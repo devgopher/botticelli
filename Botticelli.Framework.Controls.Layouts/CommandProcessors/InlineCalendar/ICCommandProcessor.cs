@@ -56,18 +56,6 @@ public class ICCommandProcessor<TCommand, TReplyMarkup> : CommandProcessor<TComm
         var responseMarkup = _layoutSupplier.GetMarkup(calendar);
         var options = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
 
-        await Bot.UpdateMessageAsync(new SendMessageRequest
-                                     {
-                                         ExpectPartialResponse = false,
-                                         Message = new Message
-                                         {
-                                             Body = message.CallbackData,
-                                             Uid = message.Uid,
-                                             ChatIds = message.ChatIds,
-                                             ChatIdInnerIdLinks = message.ChatIdInnerIdLinks
-                                         }
-                                     },
-                                     options,
-                                     token);
+        await UpdateMessage(message, options, token);
     }
 }
