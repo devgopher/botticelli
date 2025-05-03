@@ -68,7 +68,7 @@ public class RegisterCommandProcessor<TReplyMarkup>(
                     }
                 };
 
-                await Bot.SendMessageAsync(alreadyRegisteredRequest, token);
+                await SendMessage(alreadyRegisteredRequest, token);
 
                 return;
             }
@@ -102,7 +102,7 @@ public class RegisterCommandProcessor<TReplyMarkup>(
             }
         };
 
-        await Bot.SendMessageAsync(registeredRequest, token)!;
+        await SendMessage(registeredRequest, token);
     }
 
     private async Task<BotUserRoleInfo?> GetUserRole()

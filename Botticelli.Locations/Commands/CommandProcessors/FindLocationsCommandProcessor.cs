@@ -62,6 +62,6 @@ public class FindLocationsCommandProcessor<TReplyMarkup>(
             }
         };
 
-        await Bot.SendMessageAsync(request, replyOptions, token);
+        await SendMessage(request, replyOptions, token);
     }
 }

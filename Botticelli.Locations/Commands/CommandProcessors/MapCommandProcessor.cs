@@ -34,6 +34,6 @@ public class MapCommandProcessor<TReplyMarkup> : CommandProcessor<MapCommand>
             }
         };
 
-        await Bot.SendMessageAsync(request, token);
+        await SendMessage(request, token);
     }
 }

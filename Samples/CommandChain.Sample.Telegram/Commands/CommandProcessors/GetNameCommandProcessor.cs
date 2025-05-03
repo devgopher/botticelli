@@ -29,10 +29,6 @@ public class GetNameCommandProcessor : WaitForClientResponseCommandChainProcesso
             Body = "Hello! What's your name?"
         };
 
-        await Bot.SendMessageAsync(new SendMessageRequest
-                                   {
-                                       Message = responseMessage
-                                   },
-                                   token);
+        await SendMessage(responseMessage, token);
     }
 }
