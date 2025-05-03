@@ -31,8 +31,7 @@ public class ICCommandProcessor<TCommand, TReplyMarkup> : CommandProcessor<TComm
                               IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator, metricsProcessor)
     {
         _layoutSupplier = layoutSupplier;
     }

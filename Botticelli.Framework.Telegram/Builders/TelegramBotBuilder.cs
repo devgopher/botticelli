@@ -86,31 +86,37 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
 
     protected override TBot? InnerBuild()
     {
-        Services.AddSingleton(ServerSettingsBuilder!.Build());
+        if (BotSettings?.IsStandalone is true)
+        {
+            Services.AddSingleton(ServerSettingsBuilder!.Build());
 
-        Services.AddHttpClient<BotStatusService>()
-            .AddServerCertificates(BotSettings);
-        Services.AddHostedService<BotStatusService>();
+            Services.AddHttpClient<BotStatusService>()
+                .AddServerCertificates(BotSettings);
+            Services.AddHostedService<BotStatusService>();
 
-        Services.AddHttpClient<BotKeepAliveService>()
-            .AddServerCertificates(BotSettings);
-        Services.AddHostedService<BotKeepAliveService>();
+            Services.AddHttpClient<BotKeepAliveService>()
+                .AddServerCertificates(BotSettings);
+            Services.AddHostedService<BotKeepAliveService>();
 
-        Services.AddHttpClient<GetBroadCastMessagesService<TelegramBot>>()
-            .AddServerCertificates(BotSettings);
-        Services.AddHostedService<GetBroadCastMessagesService<IBot<TelegramBot>>>()
-            .AddHostedService<TelegramBotHostedService>();
-        
+            Services.AddHttpClient<GetBroadCastMessagesService<TelegramBot>>()
+                .AddServerCertificates(BotSettings);
+            Services.AddHostedService<GetBroadCastMessagesService<IBot<TelegramBot>>>()
+                .AddHostedService<TelegramBotHostedService>();
+        }
+
         var botId = BotDataUtils.GetBotId();
 
         if (botId == null) throw new InvalidDataException($"{nameof(botId)} shouldn't be null!");
 
         #region Metrics
 
-        var metricsPublisher = new MetricsPublisher(AnalyticsClientSettingsBuilder!.Build());
-        var metricsProcessor = new MetricsProcessor(metricsPublisher);
-        Services.AddSingleton(metricsPublisher);
-        Services.AddSingleton(metricsProcessor);
+        if (BotSettings?.IsStandalone is true)
+        {
+            var metricsPublisher = new MetricsPublisher(AnalyticsClientSettingsBuilder!.Build());
+            var metricsProcessor = new MetricsProcessor(metricsPublisher);
+            Services.AddSingleton(metricsPublisher);
+            Services.AddSingleton(metricsProcessor);
+        }
 
         #endregion
 
@@ -140,8 +146,6 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
             .AddBotticelliFramework()
             .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
 
-        Services.AddSingleton(ServerSettingsBuilder.Build());
-
         var sp = Services.BuildServiceProvider();
         ApplyMigrations(sp);
 
@@ -151,9 +155,9 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
             client,
             sp.GetRequiredService<IBotUpdateHandler>(),
             sp.GetRequiredService<ILogger<TBot>>(),
-            sp.GetRequiredService<MetricsProcessor>(),
             sp.GetRequiredService<ITextTransformer>(),
-            sp.GetRequiredService<IBotDataAccess>()) as TBot;
+            sp.GetRequiredService<IBotDataAccess>(),
+            sp.GetService<MetricsProcessor>()) as TBot;
     }
     
     protected TelegramBotBuilder<TBot, TBotBuilder> AddBotSettings<TBotSettings>(

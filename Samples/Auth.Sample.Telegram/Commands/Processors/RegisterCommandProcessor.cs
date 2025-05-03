@@ -29,8 +29,7 @@ public class RegisterCommandProcessor<TReplyMarkup>(
         IValidator<Message> messageValidator)
         : CommandProcessor<RegisterCommand>(logger,
                                             commandValidator,
-                                            metricsProcessor,
-                                            messageValidator)
+                                            messageValidator, metricsProcessor)
         where TReplyMarkup : class
 {
     protected override Task InnerProcessContact(Message message, CancellationToken token)

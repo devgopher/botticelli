@@ -14,8 +14,7 @@ public class InfoCommandProcessor<TReplyMarkup>(
     IValidator<Message> messageValidator)
     : CommandProcessor<InfoCommand>(logger,
         commandValidator,
-        metricsProcessor,
-        messageValidator)
+        messageValidator, metricsProcessor)
     where TReplyMarkup : class
 {
     protected override Task InnerProcessContact(Message message, CancellationToken token) => Task.CompletedTask;

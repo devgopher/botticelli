@@ -16,21 +16,40 @@ public class StopCommandProcessor<TReplyMarkup> : CommandProcessor<StopCommand>
         where TReplyMarkup : class
 {
     private readonly IJobManager _jobManager;
-    private readonly SendOptionsBuilder<TReplyMarkup>? _options;
+    private SendOptionsBuilder<TReplyMarkup>? _options;
 
     public StopCommandProcessor(ILogger<StopCommandProcessor<TReplyMarkup>> logger,
-                                ICommandValidator<StopCommand> commandValidator,
-                                MetricsProcessor metricsProcessor,
-                                IJobManager jobManager,
-                                ILayoutSupplier<TReplyMarkup> layoutSupplier,
-                                ILayoutParser layoutParser,
-                                IValidator<Message> messageValidator)
-            : base(logger,
-                   commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+        ICommandValidator<StopCommand> commandValidator,
+        IJobManager jobManager,
+        ILayoutSupplier<TReplyMarkup> layoutSupplier,
+        ILayoutParser layoutParser,
+        IValidator<Message> messageValidator)
+        : base(logger,
+            commandValidator,
+            messageValidator)
     {
         _jobManager = jobManager;
+        Init(layoutSupplier, layoutParser);
+    }
+    
+    public StopCommandProcessor(ILogger<StopCommandProcessor<TReplyMarkup>> logger,
+        ICommandValidator<StopCommand> commandValidator,
+        IJobManager jobManager,
+        ILayoutSupplier<TReplyMarkup> layoutSupplier,
+        ILayoutParser layoutParser,
+        IValidator<Message> messageValidator,
+        MetricsProcessor? metricsProcessor)
+            : base(logger,
+                   commandValidator,
+                   messageValidator, 
+                   metricsProcessor)
+    {
+        _jobManager = jobManager;
+        Init(layoutSupplier, layoutParser);
+    }
+
+    private void Init(ILayoutSupplier<TReplyMarkup> layoutSupplier, ILayoutParser layoutParser)
+    {
         var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
         var responseLayout = layoutParser.ParseFromFile(Path.Combine(location, "start_layout.json"));
         var responseMarkup = layoutSupplier.GetMarkup(responseLayout);

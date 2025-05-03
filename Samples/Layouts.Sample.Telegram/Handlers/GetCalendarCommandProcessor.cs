@@ -27,8 +27,7 @@ public class GetCalendarCommandProcessor : CommandProcessor<GetCalendarCommand>
                                        IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator, metricsProcessor)
     {
         _bot = bot;
 

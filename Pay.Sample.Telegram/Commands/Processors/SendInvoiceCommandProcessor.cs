@@ -23,8 +23,7 @@ public class SendInvoiceCommandProcessor<TReplyMarkup> : CommandProcessor<SendIn
                                        IOptionsMonitor<PaySettings> paySettingsAccessor)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator, metricsProcessor)
     {
         _paySettingsAccessor = paySettingsAccessor;
     }

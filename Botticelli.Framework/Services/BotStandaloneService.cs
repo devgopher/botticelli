@@ -7,12 +7,10 @@ namespace Botticelli.Framework.Services;
 
 public class BotStandaloneService(
     IHttpClientFactory httpClientFactory,
-    ServerSettings serverSettings,
     BotData.Entities.Bot.BotData botData,
     IBot bot,
     ILogger<BotStatusService> logger)
     : BotActualizationService(httpClientFactory,
-        serverSettings,
         bot,
         logger)
 {

@@ -18,8 +18,7 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
                                 IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator, metricsProcessor)
     {
     }
 

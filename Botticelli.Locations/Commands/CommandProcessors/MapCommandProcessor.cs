@@ -18,8 +18,7 @@ public class MapCommandProcessor<TReplyMarkup> : CommandProcessor<MapCommand>
                                IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator, metricsProcessor)
     {
     }
 

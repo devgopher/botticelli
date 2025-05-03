@@ -16,15 +16,31 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
     private readonly SendOptionsBuilder<TReplyMarkup>? _options;
 
     public InfoCommandProcessor(ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
-                                ICommandValidator<InfoCommand> commandValidator,
-                                MetricsProcessor metricsProcessor,
-                                ILayoutSupplier<TReplyMarkup> layoutSupplier,
-                                ILayoutParser layoutParser,
-                                IValidator<Message> messageValidator)
+        ICommandValidator<InfoCommand> commandValidator,
+        ILayoutSupplier<TReplyMarkup> layoutSupplier,
+        ILayoutParser layoutParser,
+        IValidator<Message> messageValidator)
+        : base(logger,
+            commandValidator,
+            messageValidator)
+    {
+        var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+        var responseLayout = layoutParser.ParseFromFile(Path.Combine(location, "main_layout.json"));
+        var responseMarkup = layoutSupplier.GetMarkup(responseLayout);
+
+        _options = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
+    }
+    
+    public InfoCommandProcessor(ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
+        ICommandValidator<InfoCommand> commandValidator,
+        ILayoutSupplier<TReplyMarkup> layoutSupplier,
+        ILayoutParser layoutParser,
+        IValidator<Message> messageValidator,
+        MetricsProcessor? metricsProcessor)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator,
+                   metricsProcessor)
     {
         var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
         var responseLayout = layoutParser.ParseFromFile(Path.Combine(location, "main_layout.json"));
@@ -60,6 +76,6 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
             }
         };
 
-        await Bot?.SendMessageAsync(greetingMessageRequest, _options, token)!; // TODO: think about Bot mocks
+        await Bot.SendMessageAsync(greetingMessageRequest, _options, token)!; // TODO: think about Bot mocks
     }
 }

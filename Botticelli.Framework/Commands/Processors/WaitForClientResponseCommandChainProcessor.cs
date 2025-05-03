@@ -21,8 +21,7 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
                                                          IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator, metricsProcessor)
     {
     }
 

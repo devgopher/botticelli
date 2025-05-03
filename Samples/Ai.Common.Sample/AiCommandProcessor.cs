@@ -27,8 +27,7 @@ public class AiCommandProcessor<TReplyMarkup> : CommandProcessor<AiCommand> wher
                               IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator, metricsProcessor)
     {
         _bus = bus;
         var responseLayout = new AiLayout();

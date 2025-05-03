@@ -18,14 +18,24 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     private readonly string _command;
     private readonly ICommandValidator<TCommand> _commandValidator;
     private readonly IValidator<Message> _messageValidator;
-    private readonly MetricsProcessor _metricsProcessor;
+    private readonly MetricsProcessor? _metricsProcessor;
     protected readonly ILogger Logger;
     protected IBot Bot;
 
     protected CommandProcessor(ILogger logger,
-                               ICommandValidator<TCommand> commandValidator,
-                               MetricsProcessor metricsProcessor,
-                               IValidator<Message> messageValidator)
+        ICommandValidator<TCommand> commandValidator,
+        IValidator<Message> messageValidator)
+    {
+        Logger = logger;
+        _commandValidator = commandValidator;
+        _messageValidator = messageValidator;
+        _command = GetOldFashionedCommandName(typeof(TCommand).Name);
+    }
+    
+    protected CommandProcessor(ILogger logger,
+        ICommandValidator<TCommand> commandValidator,
+        IValidator<Message> messageValidator,
+        MetricsProcessor? metricsProcessor)
     {
         Logger = logger;
         _commandValidator = commandValidator;
@@ -42,8 +52,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
             if (!messageValidationResult.IsValid)
             {
-                _metricsProcessor.Process(MetricNames.BotError, BotDataUtils.GetBotId());
-                Logger.LogError($"Error in {GetType().Name} invalid input message: {messageValidationResult.Errors.Select(e => $"({e.PropertyName} : {e.ErrorCode} : {e.ErrorMessage})")}");
+                _metricsProcessor?.Process(MetricNames.BotError, BotDataUtils.GetBotId());
+                Logger.LogError($"Error in {GetType().Name} invalid input message:" +
+                                $" {messageValidationResult.Errors.Select(e => $"({e.PropertyName} : {e.ErrorCode} : {e.ErrorMessage})")}");
 
                 return;
             }
@@ -66,7 +77,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 message.Poll == null &&
                 message.CallbackData == null)
             {
-                Logger.LogWarning("Message {msgId} is empty! Skipping...", message.Uid);
+                Logger.LogWarning("Message {MsgId} is empty! Skipping...", message.Uid);
 
                 return;
             }
@@ -117,7 +128,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         }
         catch (Exception ex)
         {
-            _metricsProcessor.Process(MetricNames.BotError, BotDataUtils.GetBotId());
+            _metricsProcessor?.Process(MetricNames.BotError, BotDataUtils.GetBotId());
             Logger.LogError(ex, $"Error in {GetType().Name}: {ex.Message}");
 
             await InnerProcessError(message, ex, token);
@@ -134,7 +145,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     {
     }
 
-    protected void Classify(ref Message message)
+    protected static void Classify(ref Message message)
     {
         var body = GetBody(message);
 
@@ -155,12 +166,12 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
     private void SendMetric(string metricName)
     {
-        _metricsProcessor.Process(metricName, BotDataUtils.GetBotId()!);
+        _metricsProcessor?.Process(metricName, BotDataUtils.GetBotId()!);
     }
 
     private void SendMetric()
     {
-        _metricsProcessor.Process(GetOldFashionedCommandName($"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId()!);
+        _metricsProcessor?.Process(GetOldFashionedCommandName($"{GetType().Name.Replace("Processor", string.Empty)}Command"), BotDataUtils.GetBotId()!);
     }
 
     private string GetOldFashionedCommandName(string fullCommand)

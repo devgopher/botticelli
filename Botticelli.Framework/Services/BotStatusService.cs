@@ -18,9 +18,8 @@ public class BotStatusService(
         IBot bot,
         ILogger<BotStatusService> logger)
         : BotActualizationService(httpClientFactory,
-                                  serverSettings,
                                   bot,
-                                  logger)
+                                  logger, serverSettings)
 {
     private const short GetStatusPeriod = 5000;
     private Task? _getRequiredStatusEventTask;
