@@ -36,11 +36,11 @@ public class TelegramBot : BaseBot<TelegramBot>
 
     // ReSharper disable once MemberCanBeProtected.Global
     public TelegramBot(ITelegramBotClient client,
-                       IBotUpdateHandler handler,
-                       ILogger<TelegramBot> logger,
-                       MetricsProcessor metrics,
-                       ITextTransformer textTransformer,
-                       IBotDataAccess data) : base(logger, metrics)
+        IBotUpdateHandler handler,
+        ILogger<TelegramBot> logger,
+        ITextTransformer textTransformer,
+        IBotDataAccess data,
+        MetricsProcessor? metrics) : base(logger, metrics)
     {
         BotStatusKeeper.IsStarted = false;
         Client = client;
@@ -186,7 +186,7 @@ public class TelegramBot : BaseBot<TelegramBot>
                                                 link);
 
                 if (request.Message.Poll != null)
-                    message = await ProcessPoll<TSendOptions>(request,
+                    message = await ProcessPoll(request,
                                                               token,
                                                               link,
                                                               replyMarkup,
@@ -386,11 +386,11 @@ public class TelegramBot : BaseBot<TelegramBot>
         return message;
     }
 
-    protected async Task<Message?> ProcessPoll<TSendOptions>(SendMessageRequest request,
-                                                                     CancellationToken token,
-                                                                     (string chatId, string innerId) link,
-                                                                     ReplyMarkup? replyMarkup,
-                                                                     SendMessageResponse response)
+    protected async Task<Message?> ProcessPoll(SendMessageRequest request,
+        CancellationToken token,
+        (string chatId, string innerId) link,
+        ReplyMarkup? replyMarkup,
+        SendMessageResponse response)
     {
         Message? message;
 
@@ -402,7 +402,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         {
             Poll.PollType.Quiz    => PollType.Quiz,
             Poll.PollType.Regular => PollType.Regular,
-            _                     => throw new ArgumentOutOfRangeException()
+            _                     => throw new ArgumentOutOfRangeException(paramName: nameof(Type))
         };
 
         message = await Client.SendPoll(link.chatId,
@@ -593,14 +593,11 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             await StartBot(token);
         }
-        else if (currentContext != null)
+        else if (currentContext != null && Client.BotId == 0)
         {
-            if (Client.BotId == default)
-            {
-                await StopBot(token);
-                RecreateClient(context.BotKey!);
-                await StartBot(token);
-            }
+            await StopBot(token);
+            RecreateClient(context.BotKey!);
+            await StartBot(token);
         }
     }
 }
