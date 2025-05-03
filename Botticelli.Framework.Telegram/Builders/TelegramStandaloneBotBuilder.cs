@@ -51,6 +51,8 @@ public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, Teleg
         if (BotData == null)
             throw new ConfigurationErrorsException("BotData is null!");
 
+        BotSettings!.IsStandalone = true;
+        
         Services.AddHostedService<BotStandaloneService>()
             .AddSingleton(BotData);
 
