@@ -17,6 +17,10 @@ namespace Botticelli.Framework.Telegram.Builders;
 public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, TelegramStandaloneBotBuilder<TBot>>
     where TBot : TelegramBot
 {
+    private TelegramStandaloneBotBuilder() : base(true)
+    {
+    }
+
     public static TelegramStandaloneBotBuilder<TBot> Instance(IServiceCollection services,
         BotSettingsBuilder<TelegramBotSettings> settingsBuilder,
         DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder) =>
@@ -50,8 +54,6 @@ public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, Teleg
 
         if (BotData == null)
             throw new ConfigurationErrorsException("BotData is null!");
-
-        BotSettings!.IsStandalone = true;
         
         Services.AddHostedService<BotStandaloneService>()
             .AddSingleton(BotData);

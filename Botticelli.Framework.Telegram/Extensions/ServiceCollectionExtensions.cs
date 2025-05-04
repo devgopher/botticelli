@@ -110,7 +110,8 @@ public static class ServiceCollectionExtensions
                 ServerSettingsBuilder,
                 SettingsBuilder,
                 DataAccessSettingsBuilder,
-                AnalyticsClientOptionsBuilder)
+                AnalyticsClientOptionsBuilder,
+                isStandalone: false)
             .AddClient(clientBuilder);
 
         telegramBotBuilderFunc?.Invoke(botBuilder);

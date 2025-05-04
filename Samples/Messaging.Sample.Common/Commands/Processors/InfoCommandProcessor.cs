@@ -76,6 +76,6 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
             }
         };
 
-        await SendMessage(greetingMessageRequest, _options, token)!; // TODO: think about Bot mocks
+        await SendMessage(greetingMessageRequest, _options, token);
     }
 }

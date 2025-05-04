@@ -30,7 +30,8 @@ namespace Botticelli.Framework.Telegram.Builders;
 /// <inheritdoc/>
 /// </summary>
 /// <typeparam name="TBot"></typeparam>
-public abstract class TelegramBotBuilder<TBot> : TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>
+public abstract class TelegramBotBuilder<TBot>(bool isStandalone)
+    : TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>(isStandalone)
     where TBot : TelegramBot;
 
 /// <summary>
@@ -44,9 +45,11 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
 {
     private readonly List<Action<IServiceProvider>> _subHandlers = [];
     private TelegramClientDecoratorBuilder _builder = null!;
+    private readonly bool _isStandalone;
+    private string? _botToken;
 
-    public string? _botToken = null;
-    
+    private protected TelegramBotBuilder(bool isStandalone) => _isStandalone = isStandalone;
+
     protected TelegramBotSettings? BotSettings { get; set; }
     protected BotData.Entities.Bot.BotData? BotData { get; set; }
 
@@ -54,8 +57,9 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
         ServerSettingsBuilder<ServerSettings> serverSettingsBuilder,
         BotSettingsBuilder<TelegramBotSettings> settingsBuilder,
         DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder,
-        AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder) =>
-        (TelegramBotBuilder<TBot, TBotBuilder>)new TelegramBotBuilder<TBot, TBotBuilder>()
+        AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder,
+        bool isStandalone) =>
+        (TelegramBotBuilder<TBot, TBotBuilder>)new TelegramBotBuilder<TBot, TBotBuilder>(isStandalone)
             .AddBotSettings(settingsBuilder)
             .AddServerSettings(serverSettingsBuilder)
             .AddAnalyticsSettings(analyticsClientSettingsBuilder)
@@ -95,7 +99,7 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
 
     protected override TBot? InnerBuild()
     {
-        if (BotSettings?.IsStandalone is false)
+        if (!_isStandalone)
         {
             Services.AddSingleton(ServerSettingsBuilder!.Build());
 
@@ -119,7 +123,7 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
 
         #region Metrics
 
-        if (BotSettings?.IsStandalone is false)
+        if (!_isStandalone)
         {
             var metricsPublisher = new MetricsPublisher(AnalyticsClientSettingsBuilder!.Build());
             var metricsProcessor = new MetricsProcessor(metricsPublisher);
