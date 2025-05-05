@@ -14,10 +14,6 @@ using NLog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var settings = builder.Configuration
-                      .GetSection(nameof(SampleSettings))
-                      .Get<SampleSettings>();
-
 builder.Services.AddVkBot(builder.Configuration)
        .AddLogging(cfg => cfg.AddNLog())
        .AddChatGptProvider(builder.Configuration)
@@ -29,4 +25,4 @@ builder.Services.AddVkBot(builder.Configuration)
 
 var app = builder.Build();
 
-app.Run();
+await app.RunAsync();

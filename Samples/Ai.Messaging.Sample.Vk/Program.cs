@@ -23,4 +23,4 @@ builder.Services
 
 var app = builder.Build();
 
-app.Run();
+await app.RunAsync();

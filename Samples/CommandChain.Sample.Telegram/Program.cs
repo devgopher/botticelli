@@ -33,4 +33,4 @@ var app = builder.Build();
 
 app.Services.RegisterBotChainedCommand<GetNameCommand, TelegramBot>();
 
-app.Run();
+await app.RunAsync();
