@@ -36,11 +36,11 @@ public class TelegramBot : BaseBot<TelegramBot>
 
     // ReSharper disable once MemberCanBeProtected.Global
     public TelegramBot(ITelegramBotClient client,
-        IBotUpdateHandler handler,
-        ILogger<TelegramBot> logger,
-        ITextTransformer textTransformer,
-        IBotDataAccess data,
-        MetricsProcessor? metrics) : base(logger, metrics)
+                       IBotUpdateHandler handler,
+                       ILogger<TelegramBot> logger,
+                       ITextTransformer textTransformer,
+                       IBotDataAccess data,
+                       MetricsProcessor? metrics) : base(logger, metrics)
     {
         BotStatusKeeper.IsStarted = false;
         Client = client;
@@ -108,10 +108,10 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     protected virtual Task AdditionalProcessing<TSendOptions>(SendMessageRequest request,
-                                                               ISendOptionsBuilder<TSendOptions>? optionsBuilder,
-                                                               bool isUpdate,
-                                                               string chatId,
-                                                               CancellationToken token)
+                                                              ISendOptionsBuilder<TSendOptions>? optionsBuilder,
+                                                              bool isUpdate,
+                                                              string chatId,
+                                                              CancellationToken token)
     {
         return Task.CompletedTask;
     }
@@ -149,7 +149,9 @@ public class TelegramBot : BaseBot<TelegramBot>
         ReplyMarkup? replyMarkup;
 
         if (optionsBuilder == null)
+        {
             replyMarkup = null;
+        }
         else
         {
             if (optionsBuilder.Build() is ReplyMarkup markup)
@@ -179,18 +181,18 @@ public class TelegramBot : BaseBot<TelegramBot>
                 Message? message = null;
 
                 await ProcessText(request,
-                                                isUpdate,
-                                                token,
-                                                retText,
-                                                replyMarkup,
-                                                link);
+                                  isUpdate,
+                                  token,
+                                  retText,
+                                  replyMarkup,
+                                  link);
 
                 if (request.Message.Poll != null)
                     message = await ProcessPoll(request,
-                                                              token,
-                                                              link,
-                                                              replyMarkup,
-                                                              response);
+                                                token,
+                                                link,
+                                                replyMarkup,
+                                                response);
 
                 if (request.Message.Contact != null)
                     await ProcessContact(request,
@@ -237,11 +239,11 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     private async Task ProcessText(SendMessageRequest request,
-        bool isUpdate,
-        CancellationToken token,
-        string retText,
-        ReplyMarkup? replyMarkup,
-        (string chatId, string innerId) link)
+                                   bool isUpdate,
+                                   CancellationToken token,
+                                   string retText,
+                                   ReplyMarkup? replyMarkup,
+                                   (string chatId, string innerId) link)
     {
         if (!string.IsNullOrWhiteSpace(retText))
         {
@@ -283,95 +285,93 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     private async Task<Message> ProcessAttachments(SendMessageRequest request,
-                                                             CancellationToken token,
-                                                             (string chatId, string innerId) link,
-                                                             ReplyMarkup? replyMarkup,
-                                                             SendMessageResponse response,
-                                                             Message? message)
+                                                   CancellationToken token,
+                                                   (string chatId, string innerId) link,
+                                                   ReplyMarkup? replyMarkup,
+                                                   SendMessageResponse response,
+                                                   Message? message)
     {
         request.Message.NotNull();
-        if (request.Message.Attachments == null) 
-            return message;
-        
+
+        if (request.Message.Attachments == null) return message;
+
         request.Message.Attachments.NotNullOrEmpty();
 
         foreach (var attachment in request.Message
-                     .Attachments
-                     .Where(a => a is BinaryBaseAttachment)
-                     .Cast<BinaryBaseAttachment>())
+                                          .Attachments
+                                          .Where(a => a is BinaryBaseAttachment)
+                                          .Cast<BinaryBaseAttachment>())
             switch (attachment.MediaType)
             {
                 case MediaType.Audio:
                     var audio = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                     message = await Client.SendAudio(link.chatId,
-                        audio,
-                        request.Message.Subject,
-                        ParseMode.MarkdownV2,
-                        GetReplyParameters(request, link.chatId),
-                        replyMarkup,
-                        cancellationToken: token);
+                                                     audio,
+                                                     request.Message.Subject,
+                                                     ParseMode.MarkdownV2,
+                                                     GetReplyParameters(request, link.chatId),
+                                                     replyMarkup,
+                                                     cancellationToken: token);
                     AddChatIdInnerIdLink(response, link.chatId, message);
 
                     break;
                 case MediaType.Video:
                     var video = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                     message = await Client.SendVideo(link.chatId,
-                        video,
-                        replyParameters: GetReplyParameters(request, link.chatId),
-                        replyMarkup: replyMarkup,
-                        cancellationToken: token);
+                                                     video,
+                                                     replyParameters: GetReplyParameters(request, link.chatId),
+                                                     replyMarkup: replyMarkup,
+                                                     cancellationToken: token);
                     AddChatIdInnerIdLink(response, link.chatId, message);
 
                     break;
                 case MediaType.Image:
                     var image = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                     message = await Client.SendPhoto(link.chatId,
-                        image,
-                        replyParameters: GetReplyParameters(request, link.chatId),
-                        replyMarkup: replyMarkup,
-                        cancellationToken: token);
+                                                     image,
+                                                     replyParameters: GetReplyParameters(request, link.chatId),
+                                                     replyMarkup: replyMarkup,
+                                                     cancellationToken: token);
                     AddChatIdInnerIdLink(response, link.chatId, message);
 
                     break;
                 case MediaType.Voice:
                     var voice = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                     message = await Client.SendVoice(link.chatId,
-                        voice,
-                        request.Message.Subject,
-                        ParseMode.MarkdownV2,
-                        GetReplyParameters(request, link.chatId),
-                        replyMarkup,
-                        cancellationToken: token);
+                                                     voice,
+                                                     request.Message.Subject,
+                                                     ParseMode.MarkdownV2,
+                                                     GetReplyParameters(request, link.chatId),
+                                                     replyMarkup,
+                                                     cancellationToken: token);
                     AddChatIdInnerIdLink(response, link.chatId, message);
 
                     break;
                 case MediaType.Sticker:
-                    InputFile sticker = string.IsNullOrWhiteSpace(attachment.Url)
-                        ? new InputFileStream(attachment.Data.ToStream(), attachment.Name)
-                        : new InputFileUrl(attachment.Url);
+                    InputFile sticker = string.IsNullOrWhiteSpace(attachment.Url) ? new InputFileStream(attachment.Data.ToStream(), attachment.Name) : new InputFileUrl(attachment.Url);
 
                     message = await Client.SendSticker(link.chatId,
-                        sticker,
-                        GetReplyParameters(request, link.chatId),
-                        replyMarkup,
-                        cancellationToken: token);
+                                                       sticker,
+                                                       GetReplyParameters(request, link.chatId),
+                                                       replyMarkup,
+                                                       cancellationToken: token);
                     AddChatIdInnerIdLink(response, link.chatId, message);
 
                     break;
                 case MediaType.Contact:
                     await ProcessContact(request,
-                        response,
-                        token,
-                        replyMarkup);
+                                         response,
+                                         token,
+                                         replyMarkup);
 
                     break;
                 case MediaType.Document:
                     var doc = new InputFileStream(attachment.Data.ToStream(), attachment.Name);
                     message = await Client.SendDocument(link.chatId,
-                        doc,
-                        replyParameters: GetReplyParameters(request, link.chatId),
-                        replyMarkup: replyMarkup,
-                        cancellationToken: token);
+                                                        doc,
+                                                        replyParameters: GetReplyParameters(request, link.chatId),
+                                                        replyMarkup: replyMarkup,
+                                                        cancellationToken: token);
                     AddChatIdInnerIdLink(response, link.chatId, message);
 
                     break;
@@ -387,10 +387,10 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     protected async Task<Message?> ProcessPoll(SendMessageRequest request,
-        CancellationToken token,
-        (string chatId, string innerId) link,
-        ReplyMarkup? replyMarkup,
-        SendMessageResponse response)
+                                               CancellationToken token,
+                                               (string chatId, string innerId) link,
+                                               ReplyMarkup? replyMarkup,
+                                               SendMessageResponse response)
     {
         Message? message;
 
@@ -402,7 +402,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         {
             Poll.PollType.Quiz    => PollType.Quiz,
             Poll.PollType.Regular => PollType.Regular,
-            _                     => throw new ArgumentOutOfRangeException(paramName: nameof(Type))
+            _                     => throw new ArgumentOutOfRangeException(nameof(Type))
         };
 
         message = await Client.SendPoll(link.chatId,
@@ -453,9 +453,9 @@ public class TelegramBot : BaseBot<TelegramBot>
     }
 
     protected async Task ProcessContact(SendMessageRequest request,
-                                                SendMessageResponse response,
-                                                CancellationToken token,
-                                                ReplyMarkup? replyMarkup)
+                                        SendMessageResponse response,
+                                        CancellationToken token,
+                                        ReplyMarkup? replyMarkup)
     {
         request.Message.NotNull();
         request.Message.Contact.NotNull();

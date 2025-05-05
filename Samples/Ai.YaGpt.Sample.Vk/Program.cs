@@ -1,7 +1,6 @@
 using AiSample.Common;
 using AiSample.Common.Commands;
 using AiSample.Common.Handlers;
-using AiSample.Common.Settings;
 using Botticelli.AI.YaGpt.Extensions;
 using Botticelli.Bus.None.Extensions;
 using Botticelli.Framework.Commands.Validators;

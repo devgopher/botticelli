@@ -12,7 +12,7 @@ public class PassClient : IBusClient
     private static TimeSpan Timeout => TimeSpan.FromMinutes(5);
 
     public Task<SendMessageResponse> SendAndGetResponse(SendMessageRequest request,
-                                                              CancellationToken token)
+                                                        CancellationToken token)
     {
         NoneBus.SendMessageRequests.Enqueue(request);
 
@@ -24,7 +24,8 @@ public class PassClient : IBusClient
                                     while (period < Timeout.TotalMilliseconds)
                                     {
                                         if (NoneBus.SendMessageResponses.TryDequeue(out var response))
-                                            if (response.Uid == request.Uid) return response;
+                                            if (response.Uid == request.Uid)
+                                                return response;
 
                                         Task.Delay(pause, token).Wait(token);
                                         period += pause;
@@ -71,6 +72,7 @@ public class PassClient : IBusClient
     public Task SendResponse(SendMessageResponse response, CancellationToken tokens)
     {
         NoneBus.SendMessageResponses.Enqueue(response);
+
         return Task.CompletedTask;
     }
 }

@@ -20,7 +20,7 @@ public class RabbitEventBusClient<TBot> : BasicFunctions<TBot>, IEventBusClient
 
     public RabbitEventBusClient(IConnectionFactory rabbitConnectionFactory,
                                 RabbitBusSettings settings,
-                                ILogger<RabbitEventBusClient<TBot>> logger, 
+                                ILogger<RabbitEventBusClient<TBot>> logger,
                                 EventingBasicConsumer consumer)
     {
         _rabbitConnectionFactory = rabbitConnectionFactory;
@@ -66,7 +66,7 @@ public class RabbitEventBusClient<TBot> : BasicFunctions<TBot>, IEventBusClient
         var exchange = _settings.Exchange;
 
 
-        if (_settings.QueueSettings is { TryCreate: true })
+        if (_settings.QueueSettings is {TryCreate: true})
         {
             channel.ExchangeDeclare(exchange, _settings.ExchangeType);
             channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false);

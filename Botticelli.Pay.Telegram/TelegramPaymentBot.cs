@@ -24,7 +24,8 @@ public class TelegramPaymentBot : TelegramBot
                                                           handler,
                                                           logger,
                                                           textTransformer,
-                                                          data, metrics)
+                                                          data,
+                                                          metrics)
     {
     }
 
@@ -49,5 +50,8 @@ public class TelegramPaymentBot : TelegramBot
                                      cancellationToken: token);
     }
 
-    private static int ConvertPrice(decimal price, Currency currency) => Convert.ToInt32(price * (decimal) Math.Pow(10, currency.Decimals ?? 2));
+    private static int ConvertPrice(decimal price, Currency currency)
+    {
+        return Convert.ToInt32(price * (decimal) Math.Pow(10, currency.Decimals ?? 2));
+    }
 }

@@ -17,7 +17,8 @@ public class PollActualizationService<TRequest, TResponse>(
         ILogger logger)
         : BotActualizationService(httpClientFactory,
                                   bot,
-                                  logger, serverSettings)
+                                  logger,
+                                  serverSettings)
         where TRequest : IBotRequest, new()
 {
     private const short ActionPeriod = 5000;

@@ -45,13 +45,11 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
 
         Send(request, channel, GetRequestQueueName());
 
-        if (request.Message.Uid == null)
-            yield break;
-        
-        if (!_responses.TryGetValue(request.Message.Uid, out var prevValue)) 
-            yield break;
+        if (request.Message.Uid == null) yield break;
 
-        while (prevValue is { IsPartial: true, IsFinal: true })
+        if (!_responses.TryGetValue(request.Message.Uid, out var prevValue)) yield break;
+
+        while (prevValue is {IsPartial: true, IsFinal: true})
             if (_responses.TryGetValue(request.Message.Uid, out var value))
             {
                 if (value.IsFinal) yield return value;
@@ -65,7 +63,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
     }
 
     public async Task<SendMessageResponse?> SendAndGetResponse(SendMessageRequest request,
-                                                              CancellationToken token)
+                                                               CancellationToken token)
     {
         try
         {
@@ -138,8 +136,8 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
         _ = _settings
             .QueueSettings
             .TryCreate ?
-            channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
-            channel.QueueDeclarePassive(queue);
+                channel.QueueDeclare(queue, _settings.QueueSettings.Durable, false) :
+                channel.QueueDeclarePassive(queue);
 
 
         channel.BasicConsume(queue, true, _consumer);
@@ -157,8 +155,7 @@ public class RabbitClient<TBot> : BasicFunctions<TBot>, IBusClient
                 response.Message.NotNull();
                 response.Message.Uid.NotNull();
 
-                if (response.Message.Uid != null) 
-                    _responses.Add(response.Message.Uid, response);
+                if (response.Message.Uid != null) _responses.Add(response.Message.Uid, response);
             }
             catch (Exception ex)
             {
