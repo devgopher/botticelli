@@ -15,22 +15,23 @@ namespace Botticelli.Framework.Telegram.Builders;
 /// </summary>
 /// <typeparam name="TBot"></typeparam>
 public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, TelegramStandaloneBotBuilder<TBot>>
-    where TBot : TelegramBot
+        where TBot : TelegramBot
 {
     private TelegramStandaloneBotBuilder() : base(true)
     {
     }
 
     public static TelegramStandaloneBotBuilder<TBot> Instance(IServiceCollection services,
-        BotSettingsBuilder<TelegramBotSettings> settingsBuilder,
-        DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder) =>
-        (TelegramStandaloneBotBuilder<TBot>)new TelegramStandaloneBotBuilder<TBot>()
-            .AddBotSettings(settingsBuilder)
-            .AddServices(services)
-            .AddBotDataAccessSettings(dataAccessSettingsBuilder);
+                                                              BotSettingsBuilder<TelegramBotSettings> settingsBuilder,
+                                                              DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder)
+    {
+        return (TelegramStandaloneBotBuilder<TBot>) new TelegramStandaloneBotBuilder<TBot>()
+                                                    .AddBotSettings(settingsBuilder)
+                                                    .AddServices(services)
+                                                    .AddBotDataAccessSettings(dataAccessSettingsBuilder);
+    }
 
-    public TelegramStandaloneBotBuilder<TBot> AddBotData(
-        BotDataSettingsBuilder<BotDataSettings> dataBuilder)
+    public TelegramStandaloneBotBuilder<TBot> AddBotData(BotDataSettingsBuilder<BotDataSettings> dataBuilder)
     {
         var settings = dataBuilder.Build();
 
@@ -43,20 +44,19 @@ public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, Teleg
         };
 
         AddToken(BotData.BotKey);
-        
+
         return this;
     }
 
     protected override TBot? InnerBuild()
     {
         Services.AddHttpClient<BotStandaloneService>()
-            .AddServerCertificates(BotSettings);
+                .AddServerCertificates(BotSettings);
 
-        if (BotData == null)
-            throw new ConfigurationErrorsException("BotData is null!");
-        
+        if (BotData == null) throw new ConfigurationErrorsException("BotData is null!");
+
         Services.AddHostedService<BotStandaloneService>()
-            .AddSingleton(BotData);
+                .AddSingleton(BotData);
 
         return base.InnerBuild();
     }

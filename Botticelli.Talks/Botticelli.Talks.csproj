@@ -32,9 +32,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="..\new_logo_compact.png">
-	    <Link>new_logo_compact.png</Link>
-	  </Content>
+		<Content Include="..\new_logo_compact.png">
+			<Link>new_logo_compact.png</Link>
+		</Content>
 	</ItemGroup>
 
 </Project>

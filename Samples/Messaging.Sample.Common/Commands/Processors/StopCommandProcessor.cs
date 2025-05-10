@@ -19,29 +19,29 @@ public class StopCommandProcessor<TReplyMarkup> : CommandProcessor<StopCommand>
     private SendOptionsBuilder<TReplyMarkup>? _options;
 
     public StopCommandProcessor(ILogger<StopCommandProcessor<TReplyMarkup>> logger,
-        ICommandValidator<StopCommand> commandValidator,
-        IJobManager jobManager,
-        ILayoutSupplier<TReplyMarkup> layoutSupplier,
-        ILayoutParser layoutParser,
-        IValidator<Message> messageValidator)
-        : base(logger,
-            commandValidator,
-            messageValidator)
+                                ICommandValidator<StopCommand> commandValidator,
+                                IJobManager jobManager,
+                                ILayoutSupplier<TReplyMarkup> layoutSupplier,
+                                ILayoutParser layoutParser,
+                                IValidator<Message> messageValidator)
+            : base(logger,
+                   commandValidator,
+                   messageValidator)
     {
         _jobManager = jobManager;
         Init(layoutSupplier, layoutParser);
     }
-    
+
     public StopCommandProcessor(ILogger<StopCommandProcessor<TReplyMarkup>> logger,
-        ICommandValidator<StopCommand> commandValidator,
-        IJobManager jobManager,
-        ILayoutSupplier<TReplyMarkup> layoutSupplier,
-        ILayoutParser layoutParser,
-        IValidator<Message> messageValidator,
-        MetricsProcessor? metricsProcessor)
+                                ICommandValidator<StopCommand> commandValidator,
+                                IJobManager jobManager,
+                                ILayoutSupplier<TReplyMarkup> layoutSupplier,
+                                ILayoutParser layoutParser,
+                                IValidator<Message> messageValidator,
+                                MetricsProcessor? metricsProcessor)
             : base(logger,
                    commandValidator,
-                   messageValidator, 
+                   messageValidator,
                    metricsProcessor)
     {
         _jobManager = jobManager;

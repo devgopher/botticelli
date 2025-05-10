@@ -23,7 +23,8 @@ public class FindLocationsCommandProcessor<TReplyMarkup>(
         IValidator<Message> messageValidator)
         : CommandProcessor<FindLocationsCommand>(logger,
                                                  commandValidator,
-                                                 messageValidator, metricsProcessor)
+                                                 messageValidator,
+                                                 metricsProcessor)
         where TReplyMarkup : class
 {
     protected override async Task InnerProcess(Message message, CancellationToken token)

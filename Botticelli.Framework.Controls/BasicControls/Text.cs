@@ -10,9 +10,8 @@ public class Text : IControl
         set
         {
             Params ??= new Dictionary<string, string>();
-            
-            if (value != null)
-                Params["CallbackData"] = value;
+
+            if (value != null) Params["CallbackData"] = value;
         }
     }
 

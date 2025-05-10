@@ -27,7 +27,8 @@ public class AiCommandProcessor<TReplyMarkup> : CommandProcessor<AiCommand> wher
                               IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   messageValidator, metricsProcessor)
+                   messageValidator,
+                   metricsProcessor)
     {
         _bus = bus;
         var responseLayout = new AiLayout();
@@ -38,14 +39,14 @@ public class AiCommandProcessor<TReplyMarkup> : CommandProcessor<AiCommand> wher
         _bus.OnReceived += async (sender, response) =>
         {
             await SendMessage(new SendMessageRequest(response.Uid)
-                {
-                    Message = response.Message,
-                    ExpectPartialResponse = response.IsPartial,
-                    SequenceNumber = response.SequenceNumber,
-                    IsFinal = response.IsFinal
-                },
-                options,
-                CancellationToken.None);
+                              {
+                                  Message = response.Message,
+                                  ExpectPartialResponse = response.IsPartial,
+                                  SequenceNumber = response.SequenceNumber,
+                                  IsFinal = response.IsFinal
+                              },
+                              options,
+                              CancellationToken.None);
         };
     }
 

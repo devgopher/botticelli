@@ -16,13 +16,13 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
     private readonly SendOptionsBuilder<TReplyMarkup>? _options;
 
     public InfoCommandProcessor(ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
-        ICommandValidator<InfoCommand> commandValidator,
-        ILayoutSupplier<TReplyMarkup> layoutSupplier,
-        ILayoutParser layoutParser,
-        IValidator<Message> messageValidator)
-        : base(logger,
-            commandValidator,
-            messageValidator)
+                                ICommandValidator<InfoCommand> commandValidator,
+                                ILayoutSupplier<TReplyMarkup> layoutSupplier,
+                                ILayoutParser layoutParser,
+                                IValidator<Message> messageValidator)
+            : base(logger,
+                   commandValidator,
+                   messageValidator)
     {
         var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
         var responseLayout = layoutParser.ParseFromFile(Path.Combine(location, "main_layout.json"));
@@ -30,13 +30,13 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
 
         _options = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
     }
-    
+
     public InfoCommandProcessor(ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
-        ICommandValidator<InfoCommand> commandValidator,
-        ILayoutSupplier<TReplyMarkup> layoutSupplier,
-        ILayoutParser layoutParser,
-        IValidator<Message> messageValidator,
-        MetricsProcessor? metricsProcessor)
+                                ICommandValidator<InfoCommand> commandValidator,
+                                ILayoutSupplier<TReplyMarkup> layoutSupplier,
+                                ILayoutParser layoutParser,
+                                IValidator<Message> messageValidator,
+                                MetricsProcessor? metricsProcessor)
             : base(logger,
                    commandValidator,
                    messageValidator,

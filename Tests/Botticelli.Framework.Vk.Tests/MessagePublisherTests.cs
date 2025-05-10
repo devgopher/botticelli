@@ -15,7 +15,7 @@ public class MessagePublisherTests(MessagePublisher publisher)
         _publisher = new MessagePublisher(new TestHttpClientFactory(),
                                           LoggerMocks.CreateConsoleLogger<MessagePublisher>());
     }
-    
+
     private MessagePublisher _publisher = publisher;
 
     [Test]

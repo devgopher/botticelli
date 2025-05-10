@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Nominatim.API.Interfaces;
 using Nominatim.API.Models;
@@ -8,8 +9,8 @@ public class ReverseGeocoderMock : IReverseGeocoder
 {
     public Task<GeocodeResponse> ReverseGeocode(ReverseGeocodeRequest req)
     {
-        if (req is { Latitude: not null, Longitude: not null })
-            return Task.FromResult<GeocodeResponse>(new()
+        if (req is {Latitude: not null, Longitude: not null})
+            return Task.FromResult<GeocodeResponse>(new GeocodeResponse
             {
                 Latitude = req.Latitude.Value,
                 Longitude = req.Longitude.Value,
@@ -29,7 +30,7 @@ public class ReverseGeocoderMock : IReverseGeocoder
                     Name = string.Empty
                 }
             });
-        
-        throw new System.InvalidOperationException();
+
+        throw new InvalidOperationException();
     }
 }

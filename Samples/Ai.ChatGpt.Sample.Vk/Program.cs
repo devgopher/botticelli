@@ -1,7 +1,6 @@
 ﻿using AiSample.Common;
 using AiSample.Common.Commands;
 using AiSample.Common.Handlers;
-using AiSample.Common.Settings;
 using Botticelli.AI.ChatGpt.Extensions;
 using Botticelli.Bus.None.Extensions;
 using Botticelli.Framework.Commands.Validators;
@@ -14,10 +13,6 @@ using NLog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var settings = builder.Configuration
-                      .GetSection(nameof(SampleSettings))
-                      .Get<SampleSettings>();
-
 builder.Services.AddVkBot(builder.Configuration)
        .AddLogging(cfg => cfg.AddNLog())
        .AddChatGptProvider(builder.Configuration)
@@ -29,4 +24,4 @@ builder.Services.AddVkBot(builder.Configuration)
 
 var app = builder.Build();
 
-app.Run();
+await app.RunAsync();

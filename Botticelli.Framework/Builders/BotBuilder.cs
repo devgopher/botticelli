@@ -19,8 +19,8 @@ public abstract class BotBuilder<TBot>
     protected abstract TBot? InnerBuild();
 }
 
-public abstract class BotBuilder<TBot,TBotBuilder> : BotBuilder<TBot>
-    where TBotBuilder : BotBuilder<TBot, TBotBuilder>
+public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>
+        where TBotBuilder : BotBuilder<TBot, TBotBuilder>
 {
     protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings>? AnalyticsClientSettingsBuilder;
     protected DataAccessSettingsBuilder<DataAccessSettings>? BotDataAccessSettingsBuilder;
@@ -38,8 +38,7 @@ public abstract class BotBuilder<TBot,TBotBuilder> : BotBuilder<TBot>
         return this;
     }
 
-    public BotBuilder<TBot, TBotBuilder> AddAnalyticsSettings(
-        AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
+    public BotBuilder<TBot, TBotBuilder> AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
     {
         AnalyticsClientSettingsBuilder = clientSettingsBuilder;
 
@@ -53,8 +52,7 @@ public abstract class BotBuilder<TBot,TBotBuilder> : BotBuilder<TBot>
         return this;
     }
 
-    public BotBuilder<TBot, TBotBuilder> AddBotDataAccessSettings(
-        DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
+    public BotBuilder<TBot, TBotBuilder> AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
     {
         BotDataAccessSettingsBuilder = botDataAccessBuilder;
 

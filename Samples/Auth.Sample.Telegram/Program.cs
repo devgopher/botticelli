@@ -27,4 +27,4 @@ builder.Services.AddBotCommand<InfoCommand>()
        .AddProcessor<InfoCommandProcessor<ReplyKeyboardMarkup>>()
        .AddValidator<PassValidator<InfoCommand>>();
 
-builder.Build().Run();
+await builder.Build().RunAsync();

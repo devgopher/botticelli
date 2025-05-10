@@ -27,4 +27,4 @@ builder.Services.AddBotCommand<StopCommand>()
        .AddProcessor<StopCommandProcessor<ReplyKeyboardMarkup>>()
        .AddValidator<PassValidator<StopCommand>>();
 
-builder.Build().Run();
+await builder.Build().RunAsync();

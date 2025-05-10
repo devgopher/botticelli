@@ -17,7 +17,8 @@ public class ChainRunProcessor<TCommand>(
         IValidator<Message> messageValidator)
         : CommandProcessor<TCommand>(logger,
                                      validator,
-                                     messageValidator, metricsProcessor)
+                                     messageValidator,
+                                     metricsProcessor)
         where TCommand : class, IChainCommand, new()
 {
     protected override async Task InnerProcess(Message message, CancellationToken token)

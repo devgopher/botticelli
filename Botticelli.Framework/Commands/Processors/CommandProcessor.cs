@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Framework.Commands.Processors;
 
 public abstract class CommandProcessor<TCommand> : ICommandProcessor
-    where TCommand : class, ICommand
+        where TCommand : class, ICommand
 {
     private readonly string _command;
     private readonly ICommandValidator<TCommand> _commandValidator;
@@ -24,8 +24,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     private IBot? _bot;
 
     protected CommandProcessor(ILogger logger,
-        ICommandValidator<TCommand> commandValidator,
-        IValidator<Message> messageValidator)
+                               ICommandValidator<TCommand> commandValidator,
+                               IValidator<Message> messageValidator)
     {
         Logger = logger;
         _commandValidator = commandValidator;
@@ -34,9 +34,9 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     }
 
     protected CommandProcessor(ILogger logger,
-        ICommandValidator<TCommand> commandValidator,
-        IValidator<Message> messageValidator,
-        MetricsProcessor? metricsProcessor)
+                               ICommandValidator<TCommand> commandValidator,
+                               IValidator<Message> messageValidator,
+                               MetricsProcessor? metricsProcessor)
     {
         Logger = logger;
         _commandValidator = commandValidator;
@@ -89,7 +89,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             if (CommandUtils.SimpleCommandRegex.IsMatch(body))
             {
                 var match = CommandUtils.SimpleCommandRegex.Matches(body)
-                    .FirstOrDefault();
+                                        .FirstOrDefault();
 
                 if (match == null) return;
 
@@ -104,7 +104,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             else if (CommandUtils.ArgsCommandRegex.IsMatch(body))
             {
                 var match = CommandUtils.ArgsCommandRegex.Matches(body)
-                    .FirstOrDefault();
+                                        .FirstOrDefault();
 
                 if (match == null) return;
 
@@ -120,7 +120,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             {
                 if (GetType().IsAssignableTo(typeof(CommandChainProcessor<TCommand>)))
                     await ValidateAndProcess(message,
-                        token);
+                                             token);
             }
 
             if (message.Location != null) await InnerProcessLocation(message, token);
@@ -156,10 +156,12 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             message.Type = Message.MessageType.Messaging;
     }
 
-    private static string GetBody(Message message) =>
-        !string.IsNullOrWhiteSpace(message.CallbackData) ? message.CallbackData
-        : !string.IsNullOrWhiteSpace(message.Body) ? message.Body
-        : string.Empty;
+    private static string GetBody(Message message)
+    {
+        return !string.IsNullOrWhiteSpace(message.CallbackData) ? message.CallbackData
+                : !string.IsNullOrWhiteSpace(message.Body) ? message.Body
+                : string.Empty;
+    }
 
     private void SendMetric(string metricName)
     {
@@ -168,20 +170,20 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
     private void SendMetric()
     {
-        _metricsProcessor?.Process(
-            GetOldFashionedCommandName($"{GetType().Name.Replace("Processor", string.Empty)}Command"),
-            BotDataUtils.GetBotId()!);
+        _metricsProcessor?.Process(GetOldFashionedCommandName($"{GetType().Name.Replace("Processor", string.Empty)}Command"),
+                                   BotDataUtils.GetBotId()!);
     }
 
-    private string GetOldFashionedCommandName(string fullCommand) =>
-        fullCommand.ToLowerInvariant().Replace("command", "");
+    private string GetOldFashionedCommandName(string fullCommand)
+    {
+        return fullCommand.ToLowerInvariant().Replace("command", "");
+    }
 
     private async Task ValidateAndProcess(Message message,
-        CancellationToken token)
+                                          CancellationToken token)
     {
-        if (_bot == null)
-            return;
-        
+        if (_bot == null) return;
+
         if (message.Type == Message.MessageType.Messaging)
         {
             SendMetric();
@@ -212,83 +214,89 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
     protected async Task DeleteMessage(DeleteMessageRequest request, CancellationToken token)
     {
-        if (_bot == null)
-            return;
-        
+        if (_bot == null) return;
+
         await _bot.DeleteMessageAsync(request, token);
     }
-    
+
     protected async Task DeleteMessage(Message message, CancellationToken token)
     {
-        if (_bot == null)
-            return;
+        if (_bot == null) return;
 
-        foreach (var request in message.ChatIds.Select(chatId => new DeleteMessageRequest(message.Uid, chatId))) 
-            await _bot.DeleteMessageAsync(request, token);
+        foreach (var request in message.ChatIds.Select(chatId => new DeleteMessageRequest(message.Uid, chatId))) await _bot.DeleteMessageAsync(request, token);
     }
-    
+
     protected async Task SendMessage(Message message, CancellationToken token)
     {
-        if (_bot == null)
-            return;
+        if (_bot == null) return;
 
         var request = new SendMessageRequest
         {
             Message = message
         };
-        
+
         await SendMessage(request, token);
     }
-    
+
     protected async Task SendMessage(SendMessageRequest request, CancellationToken token)
     {
-        if (_bot == null)
-            return;
-        
+        if (_bot == null) return;
+
         await _bot.SendMessageAsync(request, token);
     }
 
     protected async Task SendMessage<TReplyMarkup>(SendMessageRequest request,
-        SendOptionsBuilder<TReplyMarkup>? options, CancellationToken token)
-        where TReplyMarkup : class
+                                                   SendOptionsBuilder<TReplyMarkup>? options,
+                                                   CancellationToken token)
+            where TReplyMarkup : class
     {
-        if (_bot == null)
-            return;
+        if (_bot == null) return;
 
         await _bot.SendMessageAsync(request, options, token);
     }
-    
-    protected async Task UpdateMessage<TSendOptions>(Message message, ISendOptionsBuilder<TSendOptions>? options,
-        CancellationToken token)
-        where TSendOptions : class
+
+    protected async Task UpdateMessage<TSendOptions>(Message message,
+                                                     ISendOptionsBuilder<TSendOptions>? options,
+                                                     CancellationToken token)
+            where TSendOptions : class
     {
-        if (_bot == null)
-            return;
-        
+        if (_bot == null) return;
+
         await _bot.UpdateMessageAsync(new SendMessageRequest
-            {
-                ExpectPartialResponse = false,
-                Message = new Message
-                {
-                    Body = message.CallbackData,
-                    Uid = message.Uid,
-                    ChatIds = message.ChatIds,
-                    ChatIdInnerIdLinks = message.ChatIdInnerIdLinks
-                }
-            },
-            options,
-            token);
+                                      {
+                                          ExpectPartialResponse = false,
+                                          Message = new Message
+                                          {
+                                              Body = message.CallbackData,
+                                              Uid = message.Uid,
+                                              ChatIds = message.ChatIds,
+                                              ChatIdInnerIdLinks = message.ChatIdInnerIdLinks
+                                          }
+                                      },
+                                      options,
+                                      token);
     }
 
 
-    protected virtual Task InnerProcessContact(Message message, CancellationToken token) => Task.CompletedTask;
+    protected virtual Task InnerProcessContact(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 
-    protected virtual Task InnerProcessPoll(Message message, CancellationToken token) => Task.CompletedTask;
+    protected virtual Task InnerProcessPoll(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 
-    protected virtual Task InnerProcessLocation(Message message, CancellationToken token) => Task.CompletedTask;
+    protected virtual Task InnerProcessLocation(Message message, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 
     protected abstract Task InnerProcess(Message message, CancellationToken token);
 
-    protected virtual Task InnerProcessError(Message message, Exception? ex, CancellationToken token) =>
-        Task.CompletedTask;
+    protected virtual Task InnerProcessError(Message message, Exception? ex, CancellationToken token)
+    {
+        return Task.CompletedTask;
+    }
 }

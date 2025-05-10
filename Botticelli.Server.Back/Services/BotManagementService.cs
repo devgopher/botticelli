@@ -30,10 +30,10 @@ public class BotManagementService : IBotManagementService
     /// <param name="additionalParams"></param>
     /// <returns></returns>
     public Task<bool> RegisterBot(string botId,
-                                        string? botKey,
-                                        string botName,
-                                        BotType botType,
-                                        Dictionary<string, string>? additionalParams = null)
+                                  string? botKey,
+                                  string botName,
+                                  BotType botType,
+                                  Dictionary<string, string>? additionalParams = null)
     {
         try
         {

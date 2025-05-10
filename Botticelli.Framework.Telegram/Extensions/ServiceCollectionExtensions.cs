@@ -19,66 +19,64 @@ public static class ServiceCollectionExtensions
     private static readonly BotSettingsBuilder<TelegramBotSettings> SettingsBuilder = new();
     private static readonly ServerSettingsBuilder<ServerSettings> ServerSettingsBuilder = new();
     private static readonly BotDataSettingsBuilder<BotDataSettings> BotDataSettingsBuilder = new();
-   
+
     private static readonly AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientOptionsBuilder =
-        new();
+            new();
 
     private static readonly DataAccessSettingsBuilder<DataAccessSettings> DataAccessSettingsBuilder = new();
 
     public static IServiceCollection AddTelegramBot(this IServiceCollection services,
-        IConfiguration configuration,
-        Action<TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>>? telegramBotBuilderFunc = null) =>
-        AddTelegramBot<TelegramBot>(services, configuration, telegramBotBuilderFunc);
-
-    public static IServiceCollection AddTelegramBot<TBot>(this IServiceCollection services,
-        IConfiguration configuration,
-        Action<TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>>? telegramBotBuilderFunc = null)
-        where TBot : TelegramBot
+                                                    IConfiguration configuration,
+                                                    Action<TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>>? telegramBotBuilderFunc = null)
     {
-        var telegramBotSettings = configuration
-                                      .GetSection(TelegramBotSettings.Section)
-                                      .Get<TelegramBotSettings>() ??
-                                  throw new ConfigurationErrorsException(
-                                      $"Can't load configuration for {nameof(TelegramBotSettings)}!");
-
-        var analyticsClientSettings = configuration
-                                          .GetSection(AnalyticsClientSettings.Section)
-                                          .Get<AnalyticsClientSettings>() ??
-                                      throw new ConfigurationErrorsException(
-                                          $"Can't load configuration for {nameof(AnalyticsClientSettings)}!");
-
-        var serverSettings = configuration
-                                 .GetSection(ServerSettings.Section)
-                                 .Get<ServerSettings>() ??
-                             throw new ConfigurationErrorsException(
-                                 $"Can't load configuration for {nameof(ServerSettings)}!");
-
-        var dataAccessSettings = configuration
-                                     .GetSection(DataAccessSettings.Section)
-                                     .Get<DataAccessSettings>() ??
-                                 throw new ConfigurationErrorsException(
-                                     $"Can't load configuration for {nameof(DataAccessSettings)}!");
-
-        return services.AddTelegramBot(telegramBotSettings,
-            analyticsClientSettings,
-            serverSettings,
-            dataAccessSettings,
-            telegramBotBuilderFunc);
+        return AddTelegramBot<TelegramBot>(services, configuration, telegramBotBuilderFunc);
     }
 
     public static IServiceCollection AddTelegramBot<TBot>(this IServiceCollection services,
-        TelegramBotSettings botSettings,
-        AnalyticsClientSettings analyticsClientSettings,
-        ServerSettings serverSettings,
-        DataAccessSettings dataAccessSettings,
-        Action<TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>>? telegramBotBuilderFunc = null)
-        where TBot : TelegramBot
+                                                          IConfiguration configuration,
+                                                          Action<TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>>? telegramBotBuilderFunc = null)
+            where TBot : TelegramBot
+    {
+        var telegramBotSettings = configuration
+                                  .GetSection(TelegramBotSettings.Section)
+                                  .Get<TelegramBotSettings>() ??
+                                  throw new ConfigurationErrorsException($"Can't load configuration for {nameof(TelegramBotSettings)}!");
+
+        var analyticsClientSettings = configuration
+                                      .GetSection(AnalyticsClientSettings.Section)
+                                      .Get<AnalyticsClientSettings>() ??
+                                      throw new ConfigurationErrorsException($"Can't load configuration for {nameof(AnalyticsClientSettings)}!");
+
+        var serverSettings = configuration
+                             .GetSection(ServerSettings.Section)
+                             .Get<ServerSettings>() ??
+                             throw new ConfigurationErrorsException($"Can't load configuration for {nameof(ServerSettings)}!");
+
+        var dataAccessSettings = configuration
+                                 .GetSection(DataAccessSettings.Section)
+                                 .Get<DataAccessSettings>() ??
+                                 throw new ConfigurationErrorsException($"Can't load configuration for {nameof(DataAccessSettings)}!");
+
+        return services.AddTelegramBot(telegramBotSettings,
+                                       analyticsClientSettings,
+                                       serverSettings,
+                                       dataAccessSettings,
+                                       telegramBotBuilderFunc);
+    }
+
+    public static IServiceCollection AddTelegramBot<TBot>(this IServiceCollection services,
+                                                          TelegramBotSettings botSettings,
+                                                          AnalyticsClientSettings analyticsClientSettings,
+                                                          ServerSettings serverSettings,
+                                                          DataAccessSettings dataAccessSettings,
+                                                          Action<TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>>? telegramBotBuilderFunc = null)
+            where TBot : TelegramBot
     {
         return services.AddTelegramBot(o => o.Set(botSettings),
-            o => o.Set(analyticsClientSettings),
-            o => o.Set(serverSettings),
-            o => o.Set(dataAccessSettings),
-            telegramBotBuilderFunc);
+                                       o => o.Set(analyticsClientSettings),
+                                       o => o.Set(serverSettings),
+                                       o => o.Set(dataAccessSettings),
+                                       telegramBotBuilderFunc);
     }
 
     /// <summary>
@@ -92,12 +90,12 @@ public static class ServiceCollectionExtensions
     /// <param name="telegramBotBuilderFunc"></param>
     /// <returns></returns>
     public static IServiceCollection AddTelegramBot<TBot>(this IServiceCollection services,
-        Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
-        Action<AnalyticsClientSettingsBuilder<AnalyticsClientSettings>> analyticsOptionsBuilderFunc,
-        Action<ServerSettingsBuilder<ServerSettings>> serverSettingsBuilderFunc,
-        Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc,
-        Action<TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>>? telegramBotBuilderFunc = null)
-        where TBot : TelegramBot
+                                                          Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
+                                                          Action<AnalyticsClientSettingsBuilder<AnalyticsClientSettings>> analyticsOptionsBuilderFunc,
+                                                          Action<ServerSettingsBuilder<ServerSettings>> serverSettingsBuilderFunc,
+                                                          Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc,
+                                                          Action<TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>>? telegramBotBuilderFunc = null)
+            where TBot : TelegramBot
     {
         optionsBuilderFunc(SettingsBuilder);
         serverSettingsBuilderFunc(ServerSettingsBuilder);
@@ -107,61 +105,58 @@ public static class ServiceCollectionExtensions
         var clientBuilder = TelegramClientDecoratorBuilder.Instance(services, SettingsBuilder);
 
         var botBuilder = TelegramBotBuilder<TBot>.Instance(services,
-                ServerSettingsBuilder,
-                SettingsBuilder,
-                DataAccessSettingsBuilder,
-                AnalyticsClientOptionsBuilder,
-                isStandalone: false)
-            .AddClient(clientBuilder);
+                                                           ServerSettingsBuilder,
+                                                           SettingsBuilder,
+                                                           DataAccessSettingsBuilder,
+                                                           AnalyticsClientOptionsBuilder,
+                                                           false)
+                                                 .AddClient(clientBuilder);
 
         telegramBotBuilderFunc?.Invoke(botBuilder);
         TelegramBot? bot = botBuilder.Build();
 
         return services.AddSingleton<IBot>(bot!)
-            .AddTelegramLayoutsSupport();
+                       .AddTelegramLayoutsSupport();
     }
 
     public static IServiceCollection AddStandaloneTelegramBot(this IServiceCollection services,
-        IConfiguration configuration,
-        Action<TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>>? telegramBotBuilderFunc = null) =>
-        AddStandaloneTelegramBot<TelegramBot>(services, configuration, telegramBotBuilderFunc);
-
-    public static IServiceCollection AddStandaloneTelegramBot<TBot>(this IServiceCollection services,
-        IConfiguration configuration,
-        Action<TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>>? telegramBotBuilderFunc = null)
-        where TBot : TelegramBot
+                                                              IConfiguration configuration,
+                                                              Action<TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>>? telegramBotBuilderFunc = null)
     {
-        var telegramBotSettings = configuration
-                                      .GetSection(TelegramBotSettings.Section)
-                                      .Get<TelegramBotSettings>() ??
-                                  throw new ConfigurationErrorsException(
-                                      $"Can't load configuration for {nameof(TelegramBotSettings)}!");
-
-        var dataAccessSettings = configuration
-                                     .GetSection(DataAccessSettings.Section)
-                                     .Get<DataAccessSettings>() ??
-                                 throw new ConfigurationErrorsException(
-                                     $"Can't load configuration for {nameof(DataAccessSettings)}!");
-
-        var botDataSettings = configuration
-                                     .GetSection(BotDataSettings.Section)
-                                     .Get<BotDataSettings>() ??
-                                 throw new ConfigurationErrorsException(
-                                     $"Can't load configuration for {nameof(BotDataSettings)}!");
-        
-        return services.AddStandaloneTelegramBot<TBot>(
-            botSettingsBuilder => botSettingsBuilder.Set(telegramBotSettings),
-            dataAccessSettingsBuilder => dataAccessSettingsBuilder.Set(dataAccessSettings),
-            botDataSettingsBuilder => botDataSettingsBuilder.Set(botDataSettings)
-        );
+        return AddStandaloneTelegramBot<TelegramBot>(services, configuration, telegramBotBuilderFunc);
     }
 
     public static IServiceCollection AddStandaloneTelegramBot<TBot>(this IServiceCollection services,
-        Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
-        Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc,
-        Action<BotDataSettingsBuilder<BotDataSettings>> botDataSettingsBuilderFunc,
-        Action<TelegramStandaloneBotBuilder<TBot>>? telegramBotBuilderFunc = null)
-        where TBot : TelegramBot
+                                                                    IConfiguration configuration,
+                                                                    Action<TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>>? telegramBotBuilderFunc = null)
+            where TBot : TelegramBot
+    {
+        var telegramBotSettings = configuration
+                                  .GetSection(TelegramBotSettings.Section)
+                                  .Get<TelegramBotSettings>() ??
+                                  throw new ConfigurationErrorsException($"Can't load configuration for {nameof(TelegramBotSettings)}!");
+
+        var dataAccessSettings = configuration
+                                 .GetSection(DataAccessSettings.Section)
+                                 .Get<DataAccessSettings>() ??
+                                 throw new ConfigurationErrorsException($"Can't load configuration for {nameof(DataAccessSettings)}!");
+
+        var botDataSettings = configuration
+                              .GetSection(BotDataSettings.Section)
+                              .Get<BotDataSettings>() ??
+                              throw new ConfigurationErrorsException($"Can't load configuration for {nameof(BotDataSettings)}!");
+
+        return services.AddStandaloneTelegramBot<TBot>(botSettingsBuilder => botSettingsBuilder.Set(telegramBotSettings),
+                                                       dataAccessSettingsBuilder => dataAccessSettingsBuilder.Set(dataAccessSettings),
+                                                       botDataSettingsBuilder => botDataSettingsBuilder.Set(botDataSettings));
+    }
+
+    public static IServiceCollection AddStandaloneTelegramBot<TBot>(this IServiceCollection services,
+                                                                    Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
+                                                                    Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc,
+                                                                    Action<BotDataSettingsBuilder<BotDataSettings>> botDataSettingsBuilderFunc,
+                                                                    Action<TelegramStandaloneBotBuilder<TBot>>? telegramBotBuilderFunc = null)
+            where TBot : TelegramBot
     {
         optionsBuilderFunc(SettingsBuilder);
         dataAccessSettingsBuilderFunc(DataAccessSettingsBuilder);
@@ -170,24 +165,26 @@ public static class ServiceCollectionExtensions
         var clientBuilder = TelegramClientDecoratorBuilder.Instance(services, SettingsBuilder);
 
         var botBuilder = TelegramStandaloneBotBuilder<TBot>.Instance(services,
-                SettingsBuilder,
-                DataAccessSettingsBuilder)
-            .AddBotData(BotDataSettingsBuilder)
-            .AddClient(clientBuilder);
+                                                                     SettingsBuilder,
+                                                                     DataAccessSettingsBuilder)
+                                                           .AddBotData(BotDataSettingsBuilder)
+                                                           .AddClient(clientBuilder);
 
-        telegramBotBuilderFunc?.Invoke((TelegramStandaloneBotBuilder<TBot>)botBuilder);
+        telegramBotBuilderFunc?.Invoke((TelegramStandaloneBotBuilder<TBot>) botBuilder);
         TelegramBot? bot = botBuilder.Build();
 
         return services.AddSingleton<IBot>(bot!)
-            .AddTelegramLayoutsSupport();
+                       .AddTelegramLayoutsSupport();
     }
 
-    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services) =>
-        services.AddSingleton<ILayoutParser, JsonLayoutParser>()
-            .AddSingleton<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
-            .AddSingleton<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
-            .AddSingleton<ILayoutLoader<ReplyKeyboardMarkup>, LayoutLoader<ILayoutParser,
-                ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>()
-            .AddSingleton<ILayoutLoader<InlineKeyboardMarkup>, LayoutLoader<ILayoutParser,
-                ILayoutSupplier<InlineKeyboardMarkup>, InlineKeyboardMarkup>>();
+    public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services)
+    {
+        return services.AddSingleton<ILayoutParser, JsonLayoutParser>()
+                       .AddSingleton<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
+                       .AddSingleton<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
+                       .AddSingleton<ILayoutLoader<ReplyKeyboardMarkup>, LayoutLoader<ILayoutParser,
+                               ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>()
+                       .AddSingleton<ILayoutLoader<InlineKeyboardMarkup>, LayoutLoader<ILayoutParser,
+                               ILayoutSupplier<InlineKeyboardMarkup>, InlineKeyboardMarkup>>();
+    }
 }

@@ -29,4 +29,4 @@ builder.Services.AddBotCommand<SendInvoiceCommand>()
 
 var app = builder.Build();
 
-app.Run();
+await app.RunAsync();

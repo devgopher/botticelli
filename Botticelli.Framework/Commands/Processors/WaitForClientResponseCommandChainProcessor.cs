@@ -11,16 +11,17 @@ namespace Botticelli.Framework.Commands.Processors;
 /// </summary>
 /// <typeparam name="TInputCommand"></typeparam>
 public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> : CommandProcessor<TInputCommand>,
-    ICommandChainProcessor<TInputCommand>
-    where TInputCommand : class, ICommand
+                                                                                  ICommandChainProcessor<TInputCommand>
+        where TInputCommand : class, ICommand
 {
     protected WaitForClientResponseCommandChainProcessor(ILogger<CommandChainProcessor<TInputCommand>> logger,
-        ICommandValidator<TInputCommand> commandValidator,
-        MetricsProcessor metricsProcessor,
-        IValidator<Message> messageValidator)
-        : base(logger,
-            commandValidator,
-            messageValidator, metricsProcessor)
+                                                         ICommandValidator<TInputCommand> commandValidator,
+                                                         MetricsProcessor metricsProcessor,
+                                                         IValidator<Message> messageValidator)
+            : base(logger,
+                   commandValidator,
+                   messageValidator,
+                   metricsProcessor)
     {
     }
 

@@ -6,7 +6,6 @@ using Botticelli.Shared.API.Admin.Requests;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
-using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Polly;
 
@@ -19,7 +18,8 @@ public class BotStatusService(
         ILogger<BotStatusService> logger)
         : BotActualizationService(httpClientFactory,
                                   bot,
-                                  logger, serverSettings)
+                                  logger,
+                                  serverSettings)
 {
     private const short GetStatusPeriod = 5000;
     private Task? _getRequiredStatusEventTask;

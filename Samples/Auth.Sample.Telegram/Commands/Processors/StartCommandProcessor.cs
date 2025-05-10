@@ -30,7 +30,8 @@ public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand
                                  IManager<BotUserRoleInfo> roleManager)
             : base(logger,
                    commandValidator,
-                   messageValidator, metricsProcessor)
+                   messageValidator,
+                   metricsProcessor)
     {
         _userInfo = userInfo;
         _roleManager = roleManager;

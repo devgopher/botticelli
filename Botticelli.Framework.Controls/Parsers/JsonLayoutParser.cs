@@ -48,7 +48,7 @@ public class JsonLayoutParser : ILayoutParser
                 if (itemElement.TryGetProperty("Specials", out var messengerSpecific))
                     if (item.Control != null)
                         item.Control.MessengerSpecificParams =
-                            messengerSpecific.Deserialize<Dictionary<string, Dictionary<string, object>>>();
+                                messengerSpecific.Deserialize<Dictionary<string, Dictionary<string, object>>>();
 
                 row.AddItem(item);
             }

@@ -7,7 +7,6 @@ using Botticelli.Framework.Controls.Layouts.Commands.InlineCalendar;
 using Botticelli.Framework.Controls.Layouts.Inlines;
 using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.SendOptions;
-using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -31,7 +30,8 @@ public class ICCommandProcessor<TCommand, TReplyMarkup> : CommandProcessor<TComm
                               IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   messageValidator, metricsProcessor)
+                   messageValidator,
+                   metricsProcessor)
     {
         _layoutSupplier = layoutSupplier;
     }

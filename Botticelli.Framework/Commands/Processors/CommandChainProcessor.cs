@@ -21,7 +21,8 @@ public abstract class CommandChainProcessor<TInputCommand> : CommandProcessor<TI
                                  IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   messageValidator, metricsProcessor)
+                   messageValidator,
+                   metricsProcessor)
     {
     }
 

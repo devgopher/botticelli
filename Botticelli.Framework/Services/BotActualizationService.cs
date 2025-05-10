@@ -26,8 +26,8 @@ public abstract class BotActualizationService : IHostedService
     ///     to Botticelli Admin server and receiving status messages from it
     /// </summary>
     protected BotActualizationService(IHttpClientFactory httpClientFactory,
-        IBot bot,
-        ILogger logger)
+                                      IBot bot,
+                                      ILogger logger)
     {
         HttpClientFactory = httpClientFactory;
         Bot = bot;
@@ -36,15 +36,15 @@ public abstract class BotActualizationService : IHostedService
         ActualizationEvent.Reset();
     }
 
-    
+
     /// <summary>
     ///     This service is intended for sending keepalive/hello messages
     ///     to Botticelli Admin server and receiving status messages from it
     /// </summary>
     protected BotActualizationService(IHttpClientFactory httpClientFactory,
-        IBot bot,
-        ILogger logger,
-        ServerSettings? serverSettings)
+                                      IBot bot,
+                                      ILogger logger,
+                                      ServerSettings? serverSettings)
     {
         ServerSettings = serverSettings;
         HttpClientFactory = httpClientFactory;

@@ -90,8 +90,8 @@ public class VkBotBuilder : BotBuilder<VkBot, VkBotBuilder>
                          sp.GetRequiredService<ILogger<VkBot>>());
     }
 
-    protected virtual VkBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder) 
-        where TBotSettings : BotSettings, new()
+    protected virtual VkBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
+            where TBotSettings : BotSettings, new()
     {
         BotSettings = settingsBuilder.Build() as VkBotSettings ?? throw new InvalidOperationException();
 
@@ -111,11 +111,11 @@ public class VkBotBuilder : BotBuilder<VkBot, VkBotBuilder>
                                         DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder,
                                         AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder)
     {
-        return (VkBotBuilder)new VkBotBuilder()
-            .AddBotSettings(settingsBuilder)
-            .AddServerSettings(serverSettingsBuilder)
-            .AddServices(services)
-            .AddAnalyticsSettings(analyticsClientSettingsBuilder)
-            .AddBotDataAccessSettings(dataAccessSettingsBuilder);
+        return (VkBotBuilder) new VkBotBuilder()
+                              .AddBotSettings(settingsBuilder)
+                              .AddServerSettings(serverSettingsBuilder)
+                              .AddServices(services)
+                              .AddAnalyticsSettings(analyticsClientSettingsBuilder)
+                              .AddBotDataAccessSettings(dataAccessSettingsBuilder);
     }
 }

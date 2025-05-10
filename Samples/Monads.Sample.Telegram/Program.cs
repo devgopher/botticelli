@@ -32,4 +32,4 @@ builder.Services.AddBotCommand<MathCommand>()
 
 var app = builder.Build();
 
-app.Run();
+await app.RunAsync();
