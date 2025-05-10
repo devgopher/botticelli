@@ -24,10 +24,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Data\"/>
-	</ItemGroup>
-
-	<ItemGroup>
 		<Content Update="appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
