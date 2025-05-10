@@ -45,6 +45,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj"/>
+		<ProjectReference Include="..\Botticelli.Framework.Chained.Context\Botticelli.Framework.Chained.Context.csproj" />
 		<ProjectReference Include="..\Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj"/>
 		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
 	</ItemGroup>

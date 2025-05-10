@@ -1,4 +1,4 @@
-namespace Botticelli.Framework.Chained.Monads.Commands;
+namespace Botticelli.Framework.Chained.Context;
 
 public static class Names
 {

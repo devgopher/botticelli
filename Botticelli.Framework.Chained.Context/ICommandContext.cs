@@ -1,4 +1,4 @@
-namespace Botticelli.Framework.Chained.Monads.Commands.Context;
+namespace Botticelli.Framework.Chained.Context;
 
 /// <summary>
 ///     A context for monad-based commands
