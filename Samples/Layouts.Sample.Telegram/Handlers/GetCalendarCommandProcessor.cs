@@ -2,8 +2,8 @@
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.Layouts.Inlines;
-using Botticelli.Framework.Controls.Parsers;
+using Botticelli.Controls.Layouts.Inlines;
+using Botticelli.Controls.Parsers;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;

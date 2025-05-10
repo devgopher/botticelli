@@ -1,5 +1,5 @@
-using Botticelli.Framework.Chained.Context;
-using Botticelli.Framework.Chained.Monads.Commands;
+using Botticelli.Chained.Context;
+using Botticelli.Chained.Monads.Commands;
 
 namespace TelegramMonadsBasedBot.Commands;
 

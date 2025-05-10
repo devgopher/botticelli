@@ -1,5 +1,5 @@
-using Botticelli.Framework.Chained.Monads.Commands.Processors;
-using Botticelli.Framework.Chained.Monads.Extensions;
+using Botticelli.Chained.Monads.Commands.Processors;
+using Botticelli.Chained.Monads.Extensions;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Telegram.Extensions;

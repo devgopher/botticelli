@@ -1,5 +1,5 @@
-﻿using Botticelli.Framework.Controls.Exceptions;
-using Botticelli.Framework.Controls.Layouts;
+﻿using Botticelli.Controls.Exceptions;
+using Botticelli.Controls.Layouts;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Botticelli.Framework.Telegram.Layout;

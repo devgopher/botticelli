@@ -181,11 +181,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Scheduler.Hangfi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Scheduler.Quartz", "Botticelli.Scheduler.Quartz\Botticelli.Scheduler.Quartz.csproj", "{F958B922-0418-4AB8-B5C6-86510DB52F38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Controls", "Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj", "{C556B6EE-DCE7-4ED2-85E1-5D5212E0C184}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Controls", "Botticelli.Controls\Botticelli.Controls.csproj", "{C556B6EE-DCE7-4ED2-85E1-5D5212E0C184}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Controls.Tests", "Tests\Botticelli.Framework.Controls.Tests\Botticelli.Framework.Controls.Tests.csproj", "{70EB3FE2-9EB5-4B62-9405-71D1A332B0FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Controls.Layouts", "Botticelli.Framework.Controls.Layouts\Botticelli.Framework.Controls.Layouts.csproj", "{C693D17D-DEB1-43E9-9EE4-031D14696065}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Controls.Layouts", "Botticelli.Controls.Layouts\Botticelli.Controls.Layouts.csproj", "{C693D17D-DEB1-43E9-9EE4-031D14696065}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Layouts.Sample.Telegram", "Samples\Layouts.Sample.Telegram\Layouts.Sample.Telegram.csproj", "{2DF28873-A172-42EB-8FBD-324DF8AD9323}"
 EndProject
@@ -213,7 +213,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bot.Data.Entitie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monads.Sample.Telegram", "Samples\Monads.Sample.Telegram\Monads.Sample.Telegram.csproj", "{CBD02578-B208-4888-AB18-D9969A4082ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Chained.Monads", "Botticelli.Framework.Chained.Monads\Botticelli.Framework.Chained.Monads.csproj", "{D159BBC6-8D73-44AB-A17B-B14AB7D56A0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Chained.Monads", "Botticelli.Chained.Monads\Botticelli.Chained.Monads.csproj", "{D159BBC6-8D73-44AB-A17B-B14AB7D56A0D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AI", "AI", "{8300ACD9-51DA-4B69-B7DF-FB2E5CC63F73}"
 EndProject
@@ -251,13 +251,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Bus", "Botticell
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Pay", "Botticelli.Pay", "{34F34B4D-5BA2-45EC-8BC0-2507AF50A9A5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Schedule", "Botticelli.Schedule", "{2CC72293-C3FB-4A01-922A-E8C7CCD689A0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Botticelli.Scheduler", "Botticelli.Scheduler", "{2CC72293-C3FB-4A01-922A-E8C7CCD689A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Chained.Context", "Botticelli.Framework.Chained.Context\Botticelli.Framework.Chained.Context.csproj", "{3A9F8D81-DB62-43D3-841C-9F37D8238E36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Chained.Context", "Botticelli.Chained.Context\Botticelli.Chained.Context.csproj", "{3A9F8D81-DB62-43D3-841C-9F37D8238E36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Chained.Context.InMemory", "Botticelli.Framework.Chained.Context.InMemory\Botticelli.Framework.Chained.Context.InMemory.csproj", "{1A8FB2E2-4272-402F-9301-9C75FEA2E9C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Chained.Context.InMemory", "Botticelli.Chained.Context.InMemory\Botticelli.Chained.Context.InMemory.csproj", "{1A8FB2E2-4272-402F-9301-9C75FEA2E9C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Chained.Context.Redis", "Botticelli.Framework.Chained.Context.Redis\Botticelli.Framework.Chained.Context.Redis.csproj", "{4E5352E6-9F06-4A92-A6D9-E82DBA516E72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Chained.Context.Redis", "Botticelli.Chained.Context.Redis\Botticelli.Chained.Context.Redis.csproj", "{4E5352E6-9F06-4A92-A6D9-E82DBA516E72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

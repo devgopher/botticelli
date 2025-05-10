@@ -1,0 +1,18 @@
+using Botticelli.Chained.Monads.Commands.Result;
+using Botticelli.Interfaces;
+using LanguageExt;
+
+namespace Botticelli.Chained.Monads.Commands.Processors;
+
+/// <summary>
+///     Chain processor
+/// </summary>
+/// <typeparam name="TCommand" />
+public interface IChainProcessor<TCommand> where TCommand : IChainCommand
+{
+    public IBot? Bot { get; }
+
+    public void SetBot(IBot bot);
+
+    public Task<EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>>> Process(EitherAsync<FailResult<TCommand>, SuccessResult<TCommand>> stepResult, CancellationToken token = default);
+}

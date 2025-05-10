@@ -1,7 +1,7 @@
-﻿using Botticelli.Framework.Controls.BasicControls;
-using Botticelli.Framework.Controls.Exceptions;
-using Botticelli.Framework.Controls.Extensions;
-using Botticelli.Framework.Controls.Layouts;
+﻿using Botticelli.Controls.BasicControls;
+using Botticelli.Controls.Exceptions;
+using Botticelli.Controls.Extensions;
+using Botticelli.Controls.Layouts;
 using Botticelli.Framework.Vk.Messages.API.Markups;
 using Botticelli.Shared.Utils;
 using Action = Botticelli.Framework.Vk.Messages.API.Markups.Action;

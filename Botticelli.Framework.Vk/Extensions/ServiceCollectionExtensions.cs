@@ -1,7 +1,7 @@
 ﻿using System.Configuration;
 using Botticelli.Bot.Data.Settings;
 using Botticelli.Client.Analytics.Settings;
-using Botticelli.Framework.Controls.Parsers;
+using Botticelli.Controls.Parsers;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Vk.Messages.API.Markups;
 using Botticelli.Framework.Vk.Messages.Builders;

@@ -1,5 +1,5 @@
-﻿using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.Parsers;
+﻿using Botticelli.Controls.Parsers;
+using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;

@@ -6,7 +6,7 @@ using Botticelli.Bot.Utils.TextUtils;
 using Botticelli.Client.Analytics;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Builders;
-using Botticelli.Framework.Controls.Parsers;
+using Botticelli.Controls.Parsers;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Security;

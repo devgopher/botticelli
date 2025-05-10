@@ -37,7 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj"/>
+		<ProjectReference Include="..\..\Botticelli.Controls\Botticelli.Controls.csproj" />
 		<ProjectReference Include="..\..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj"/>
 	</ItemGroup>
 

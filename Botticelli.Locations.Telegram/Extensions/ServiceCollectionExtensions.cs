@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using Botticelli.Controls.Parsers;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Locations.Commands;
 using Botticelli.Locations.Commands.CommandProcessors;
@@ -41,11 +41,9 @@ public static class ServiceCollectionExtensions
                        .AddScoped<IAddressSearcher, AddressSearcher>()
                        .AddScoped<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
                        .AddScoped<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
-                       .AddScoped<IForwardGeocoder, ForwardGeocoder>(sp =>
-                                                                             new ForwardGeocoder(sp.GetRequiredService<INominatimWebInterface>(),
-                                                                                                 Url.Combine(url, "search")))
-                       .AddScoped<IReverseGeocoder, ReverseGeocoder>(sp =>
-                                                                             new ReverseGeocoder(sp.GetRequiredService<INominatimWebInterface>(),
-                                                                                                 Url.Combine(url, "reverse")));
+                       .AddScoped<IForwardGeocoder, ForwardGeocoder>(sp => new ForwardGeocoder(sp.GetRequiredService<INominatimWebInterface>(),
+                                                                                               Url.Combine(url, "search")))
+                       .AddScoped<IReverseGeocoder, ReverseGeocoder>(sp => new ReverseGeocoder(sp.GetRequiredService<INominatimWebInterface>(),
+                                                                                               Url.Combine(url, "reverse")));
     }
 }

@@ -1,10 +1,10 @@
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.BasicControls;
-using Botticelli.Framework.Controls.Layouts;
-using Botticelli.Framework.Controls.Layouts.Inlines;
-using Botticelli.Framework.Controls.Parsers;
+using Botticelli.Controls.BasicControls;
+using Botticelli.Controls.Layouts;
+using Botticelli.Controls.Layouts.Inlines;
+using Botticelli.Controls.Parsers;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Locations.Integration;
 using Botticelli.Shared.API.Client.Requests;

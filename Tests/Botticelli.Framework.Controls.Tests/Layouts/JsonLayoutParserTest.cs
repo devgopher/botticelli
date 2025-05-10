@@ -1,5 +1,5 @@
-﻿using Botticelli.Framework.Controls.Exceptions;
-using Botticelli.Framework.Controls.Parsers;
+﻿using Botticelli.Controls.Exceptions;
+using Botticelli.Controls.Parsers;
 
 namespace Botticelli.Framework.Controls.Tests.Layouts;
 
