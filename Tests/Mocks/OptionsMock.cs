@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 
-namespace Shared;
+namespace Mocks;
 
 public class OptionsMock<T> : IOptions<T> where T : class
 {

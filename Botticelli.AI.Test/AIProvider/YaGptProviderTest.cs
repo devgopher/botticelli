@@ -4,7 +4,7 @@ using Botticelli.AI.YaGpt.Message.YaGpt;
 using Botticelli.AI.YaGpt.Provider;
 using Botticelli.AI.YaGpt.Settings;
 using NUnit.Framework;
-using Shared;
+using Mocks;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 

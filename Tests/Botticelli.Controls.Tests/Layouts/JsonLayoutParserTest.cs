@@ -1,7 +1,7 @@
 ﻿using Botticelli.Controls.Exceptions;
 using Botticelli.Controls.Parsers;
 
-namespace Botticelli.Framework.Controls.Tests.Layouts;
+namespace Botticelli.Controls.Tests.Layouts;
 
 [TestFixture]
 [TestOf(typeof(JsonLayoutParser))]

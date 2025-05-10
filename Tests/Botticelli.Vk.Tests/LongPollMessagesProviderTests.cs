@@ -2,9 +2,9 @@
 using Botticelli.Framework.Vk.Messages.Options;
 using Botticelli.Shared.Utils;
 using NUnit.Framework;
-using Shared;
+using Mocks;
 
-namespace Botticelli.Framework.Vk.Tests;
+namespace Botticelli.Vk.Tests;
 
 [TestFixture]
 public class LongPollMessagesProviderTests

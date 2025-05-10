@@ -1,4 +1,4 @@
-namespace Shared;
+namespace Mocks;
 
 public class HttpClientFactoryMock : IHttpClientFactory
 {

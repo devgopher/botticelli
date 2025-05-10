@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Shared;
+namespace Mocks;
 
 public static class LoggerMocks
 {

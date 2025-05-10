@@ -1,7 +1,7 @@
 ﻿using Botticelli.Controls.Parsers;
 using Botticelli.Framework.Telegram.Layout;
 
-namespace Botticelli.Framework.Controls.Tests.Layouts;
+namespace Botticelli.Controls.Tests.Layouts;
 
 [TestFixture]
 [TestOf(typeof(ReplyTelegramLayoutSupplier))]

@@ -1,4 +1,4 @@
-﻿namespace Botticelli.Framework.Vk.Tests;
+﻿namespace Botticelli.Vk.Tests;
 
 internal static class EnvironmentDataProvider
 {

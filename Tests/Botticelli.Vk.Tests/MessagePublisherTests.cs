@@ -2,9 +2,9 @@
 using Botticelli.Framework.Vk.Messages;
 using Botticelli.Framework.Vk.Messages.API.Requests;
 using NUnit.Framework;
-using Shared;
+using Mocks;
 
-namespace Botticelli.Framework.Vk.Tests;
+namespace Botticelli.Vk.Tests;
 
 [TestFixture]
 public class MessagePublisherTests(MessagePublisher publisher)

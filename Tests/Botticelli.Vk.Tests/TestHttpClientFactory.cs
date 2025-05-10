@@ -3,7 +3,7 @@ using Botticelli.Framework.Vk.Messages.API.Responses;
 using Botticelli.Framework.Vk.Messages.API.Utils;
 using RichardSzalay.MockHttp;
 
-namespace Botticelli.Framework.Vk.Tests;
+namespace Botticelli.Vk.Tests;
 
 internal class TestHttpClientFactory : IHttpClientFactory
 {
