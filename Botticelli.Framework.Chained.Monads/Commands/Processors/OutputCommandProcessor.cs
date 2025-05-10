@@ -1,12 +1,12 @@
+using Botticelli.Framework.Chained.Monads.Commands.Context;
+using Botticelli.Framework.Chained.Monads.Commands.Result;
 using Botticelli.Framework.Controls.Parsers;
-using Botticelli.Framework.Monads.Commands.Context;
-using Botticelli.Framework.Monads.Commands.Result;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.Extensions.Logging;
 
-namespace Botticelli.Framework.Monads.Commands.Processors;
+namespace Botticelli.Framework.Chained.Monads.Commands.Processors;
 
 public class OutputCommandProcessor<TReplyMarkup, TCommand> : ChainProcessor<TCommand>
         where TReplyMarkup : class

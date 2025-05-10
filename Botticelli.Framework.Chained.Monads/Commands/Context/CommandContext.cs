@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace Botticelli.Framework.Monads.Commands.Context;
+namespace Botticelli.Framework.Chained.Monads.Commands.Context;
 
 /// <summary>
 ///     Command context for transmitting data over command context chain

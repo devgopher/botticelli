@@ -1,7 +1,7 @@
 using Botticelli.Framework.Commands;
 using Botticelli.Shared.ValueObjects;
 
-namespace Botticelli.Framework.Monads.Commands.Result;
+namespace Botticelli.Framework.Chained.Monads.Commands.Result;
 
 /// <summary>
 ///     Fail result

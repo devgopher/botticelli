@@ -1,6 +1,6 @@
 using Botticelli.Framework.Commands;
 
-namespace Botticelli.Framework.Monads.Commands.Context;
+namespace Botticelli.Framework.Chained.Monads.Commands.Context;
 
 public interface IChainCommand : ICommand
 {

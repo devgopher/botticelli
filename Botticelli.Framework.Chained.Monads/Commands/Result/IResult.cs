@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Botticelli.Framework.Commands;
 
-namespace Botticelli.Framework.Monads.Commands.Result;
+namespace Botticelli.Framework.Chained.Monads.Commands.Result;
 
 public interface IResult<out TCommand>
         where TCommand : ICommand

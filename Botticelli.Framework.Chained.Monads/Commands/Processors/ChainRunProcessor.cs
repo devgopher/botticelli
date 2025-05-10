@@ -1,13 +1,13 @@
 using Botticelli.Client.Analytics;
+using Botticelli.Framework.Chained.Monads.Commands.Context;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Utils;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Monads.Commands.Context;
 using Botticelli.Shared.ValueObjects;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
-namespace Botticelli.Framework.Monads.Commands.Processors;
+namespace Botticelli.Framework.Chained.Monads.Commands.Processors;
 
 public class ChainRunProcessor<TCommand>(
         ILogger<ChainRunProcessor<TCommand>> logger,

@@ -1,9 +1,9 @@
-using Botticelli.Framework.Monads.Commands.Context;
+using Botticelli.Framework.Chained.Monads.Commands.Context;
 using Botticelli.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Botticelli.Framework.Monads.Commands.Processors;
+namespace Botticelli.Framework.Chained.Monads.Commands.Processors;
 
 public class ChainBuilder<TCommand>(IServiceCollection services)
         where TCommand : IChainCommand

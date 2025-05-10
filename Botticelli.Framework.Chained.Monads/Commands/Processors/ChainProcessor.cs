@@ -1,11 +1,11 @@
-using Botticelli.Framework.Monads.Commands.Context;
-using Botticelli.Framework.Monads.Commands.Result;
+using Botticelli.Framework.Chained.Monads.Commands.Context;
+using Botticelli.Framework.Chained.Monads.Commands.Result;
 using Botticelli.Interfaces;
 using Botticelli.Shared.ValueObjects;
 using LanguageExt;
 using Microsoft.Extensions.Logging;
 
-namespace Botticelli.Framework.Monads.Commands.Processors;
+namespace Botticelli.Framework.Chained.Monads.Commands.Processors;
 
 /// <summary>
 ///     Chain processor
