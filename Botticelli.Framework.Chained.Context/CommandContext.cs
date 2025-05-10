@@ -8,11 +8,16 @@ namespace Botticelli.Framework.Chained.Context;
 /// </summary>
 public class CommandContext : ICommandContext
 {
-    private readonly Dictionary<string, string> _parameters = new();
+    private readonly IStorage<string, string> _storage;
+
+    public CommandContext(IStorage<string, string> storage)
+    {
+        _storage = storage;
+    }
 
     public T? Get<T>(string name)
     {
-        if (!_parameters.TryGetValue(name, out var parameter)) return default;
+        if (!_storage.TryGetValue(name, out var parameter)) return default;
 
         var type = typeof(T);
 
@@ -34,7 +39,7 @@ public class CommandContext : ICommandContext
 
     public string Get(string name)
     {
-        return _parameters[name];
+        return _storage[name];
     }
 
     public T Set<T>(string name, T value)
@@ -42,16 +47,16 @@ public class CommandContext : ICommandContext
         if (value is null) throw new ArgumentNullException(nameof(value));
 
         if (name == Names.Args) // args are always string
-            _parameters[name] = Stringify(value);
+            _storage[name] = Stringify(value);
         else
-            _parameters[name] = JsonSerializer.Serialize(value);
+            _storage[name] = JsonSerializer.Serialize(value);
 
         return value;
     }
 
     public string Set(string name, string value)
     {
-        _parameters[name] = Stringify(value);
+        _storage[name] = Stringify(value);
 
         return value;
     }
@@ -59,11 +64,11 @@ public class CommandContext : ICommandContext
 
     public T Transform<T>(string name, Func<T, T> func)
     {
-        if (!_parameters.TryGetValue(name, out var parameter)) throw new KeyNotFoundException(name);
+        if (!_storage.TryGetValue(name, out var parameter)) throw new KeyNotFoundException(name);
 
         var deserialized = JsonSerializer.Deserialize<T>(parameter);
 
-        _parameters[name] = JsonSerializer.Serialize(func(deserialized));
+        _storage[name] = JsonSerializer.Serialize(func(deserialized));
 
         return deserialized;
     }
