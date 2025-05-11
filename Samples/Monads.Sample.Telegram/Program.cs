@@ -1,3 +1,4 @@
+using Botticelli.Chained.Context.Redis.Extensions;
 using Botticelli.Chained.Monads.Commands.Processors;
 using Botticelli.Chained.Monads.Extensions;
 using Botticelli.Framework.Commands.Validators;
@@ -15,8 +16,10 @@ builder.Services
        .AddLogging(cfg => cfg.AddNLog())
        .AddTelegramLayoutsSupport();
 
-builder.Services.AddBotCommand<MathCommand>()
-       .AddMonadsChain<MathCommand, PassValidator<MathCommand>, ReplyKeyboardMarkup, ReplyTelegramLayoutSupplier>(builder.Services,
+builder.Services
+    .AddChainedRedisStorage<string, string>(builder.Configuration)
+    .AddBotCommand<MathCommand>()
+    .AddMonadsChain<MathCommand, PassValidator<MathCommand>, ReplyKeyboardMarkup, ReplyTelegramLayoutSupplier>(builder.Services,
                                                                                                                   cb => cb.Next<InputCommandProcessor<MathCommand>>()
                                                                                                                           .Next<TransformArgumentsProcessor<MathCommand, double>>(tp => tp.SuccessFunc =
                                                                                                                                                                                           Math.Sqrt)
