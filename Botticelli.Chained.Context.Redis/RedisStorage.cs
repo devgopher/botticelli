@@ -20,6 +20,11 @@ public class RedisStorage<TKey, TValue> : IStorage<TKey, TValue>
         var redis = ConnectionMultiplexer.Connect(connectionString);
         _database = redis.GetDatabase();
     }
+    
+    public RedisStorage(IDatabase database)
+    {
+        _database = database;
+    }
 
     public bool ContainsKey(TKey key) => _database.KeyExists(key.ToString());
 
