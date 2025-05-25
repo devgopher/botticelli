@@ -31,7 +31,6 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Botticelli.Bus\Botticelli.Bus.None.csproj"/>
 		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
 		<ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj"/>
 	</ItemGroup>

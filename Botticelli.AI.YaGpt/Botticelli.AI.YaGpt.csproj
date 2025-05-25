@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Botticelli.AI\Botticelli.AI.csproj"/>
+		<ProjectReference Include="..\Botticelli.Bot.Interfaces\Botticelli.Bot.Interfaces.csproj" />
 	</ItemGroup>
 
 </Project>
