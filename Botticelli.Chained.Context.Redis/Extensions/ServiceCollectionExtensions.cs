@@ -7,7 +7,8 @@ namespace Botticelli.Chained.Context.Redis.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddChainedRedisStorage<TKey, TValue>(this IServiceCollection services, Action<RedisContextStorageBuilder<TKey, TValue>> builderFunc)
+    public static IServiceCollection AddChainedRedisStorage<TKey, TValue>(this IServiceCollection services,
+        Action<RedisContextStorageBuilder<TKey, TValue>> builderFunc)
         where TKey : notnull 
         where TValue : class
     {
