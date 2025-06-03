@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Botticelli.Broadcasting.Dal\Botticelli.Broadcasting.Dal.csproj" />
+      <ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj" />
       <ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj" />
     </ItemGroup>
 

@@ -2,10 +2,12 @@ using System.Net;
 using System.Net.Http.Json;
 using Botticelli.Broadcasting.Dal;
 using Botticelli.Broadcasting.Settings;
+using Botticelli.Framework;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Flurl.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -14,11 +16,13 @@ using Polly;
 namespace Botticelli.Broadcasting;
 
 /// <summary>
-///     Long poll for broadcast messages
+/// Broadcaster is a service that polls an admin API for new messages
+/// to send to various chat clients. It implements IHostedService to manage
+/// the lifecycle of the service within a hosted environment.
 /// </summary>
-/// <typeparam name="TBot"></typeparam>
-public class BroadcastReceiver<TBot> : IHostedService
-    where TBot : class, IBot<TBot>
+/// <typeparam name="TBot">The type of bot that implements IBot interface.</typeparam>
+public class Broadcaster<TBot> : IHostedService
+    where TBot : BaseBot, IBot<TBot>
 {
     private readonly TBot _bot;
     private readonly BroadcastingContext _context;
@@ -27,8 +31,7 @@ public class BroadcastReceiver<TBot> : IHostedService
     private readonly IServiceScope _scope;
     private readonly IOptionsSnapshot<BroadcastingSettings> _settings;
 
-
-    public BroadcastReceiver(IServiceProvider serviceProvider, IOptionsSnapshot<BroadcastingSettings> settings)
+    public Broadcaster(IServiceProvider serviceProvider, IOptionsSnapshot<BroadcastingSettings> settings)
     {
         _settings = settings;
         _scope = serviceProvider.CreateScope();

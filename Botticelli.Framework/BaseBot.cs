@@ -28,6 +28,10 @@ public abstract class BaseBot
     public delegate void StartedEventHandler(object sender, StartedBotEventArgs e);
 
     public delegate void StoppedEventHandler(object sender, StoppedBotEventArgs e);
+    
+    public virtual event MsgSentEventHandler? MessageSent;
+    public virtual event MsgReceivedEventHandler? MessageReceived;
+    public virtual event MsgRemovedEventHandler? MessageRemoved;
 }
 
 /// <summary>

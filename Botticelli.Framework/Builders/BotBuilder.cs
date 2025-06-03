@@ -25,7 +25,11 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>
     protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings>? AnalyticsClientSettingsBuilder;
     protected DataAccessSettingsBuilder<DataAccessSettings>? BotDataAccessSettingsBuilder;
     protected ServerSettingsBuilder<ServerSettings>? ServerSettingsBuilder;
-    protected IServiceCollection Services = null!;
+    public IServiceCollection Services = null!;
+
+    protected BaseBot.MsgSentEventHandler? MessageSent;
+    protected BaseBot.MsgReceivedEventHandler? MessageReceived;
+    protected BaseBot.MsgRemovedEventHandler? MessageRemoved;
 
     protected override void Assert()
     {
@@ -55,6 +59,27 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>
     public BotBuilder<TBot, TBotBuilder> AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
     {
         BotDataAccessSettingsBuilder = botDataAccessBuilder;
+
+        return this;
+    }
+    
+    public BotBuilder<TBot, TBotBuilder> AddOnMessageSent(BaseBot.MsgSentEventHandler handler)
+    {
+        MessageSent += handler;
+
+        return this;
+    }
+ 
+    public BotBuilder<TBot, TBotBuilder> AddOnMessageReceived(BaseBot.MsgReceivedEventHandler handler)
+    {
+        MessageReceived += handler;
+
+        return this;
+    }
+    
+    public BotBuilder<TBot, TBotBuilder> AddOnMessageRemoved(BaseBot.MsgRemovedEventHandler handler)
+    {
+        MessageRemoved += handler;
 
         return this;
     }
