@@ -44,103 +44,19 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
 
             if (botMessage == null)
             {
-                if (update.CallbackQuery != null)
-                {
-                    botMessage = update.CallbackQuery?.Message;
-
-                    if (botMessage == null)
-                    {
-                        logger.LogError($"{nameof(HandleUpdateAsync)}() {nameof(botMessage)} is null!");
-
-                        return;
-                    }
-
-                    botticelliMessage = new Message
-                    {
-                        ChatIdInnerIdLinks = new Dictionary<string, List<string>>
-                        {
-                            {
-                                update.CallbackQuery?.Message.Chat?.Id.ToString(),
-                                [update.CallbackQuery.Message?.MessageId.ToString()]
-                            }
-                        },
-                        ChatIds = [update.CallbackQuery?.Message.Chat.Id.ToString()],
-                        CallbackData = update.CallbackQuery?.Data ?? string.Empty,
-                        CreatedAt = update.Message?.Date ?? DateTime.Now,
-                        LastModifiedAt = update.Message?.Date ?? DateTime.Now,
-                        From = new User
-                        {
-                            Id = update.CallbackQuery?.From.Id.ToString(),
-                            Name = update.CallbackQuery?.From.FirstName,
-                            Surname = update.CallbackQuery?.From.LastName,
-                            Info = string.Empty,
-                            IsBot = update.CallbackQuery?.From.IsBot,
-                            NickName = update.CallbackQuery?.From.Username
-                        }
-                    };
-                }
-
-                if (update.Poll != null)
-                    botticelliMessage = new Message
-                    {
-                        Subject = string.Empty,
-                        Body = string.Empty,
-                        Poll = new Poll
-                        {
-                            Id = update.Poll.Id,
-                            IsAnonymous = update.Poll.IsAnonymous,
-                            Question = update.Poll.Question,
-                            Type = update.Poll.Type == PollType.Regular ? Poll.PollType.Regular : Poll.PollType.Quiz,
-                            Variants = update.Poll.Options.Select(o => new ValueTuple<string, int>(o.Text, o.VoterCount)),
-                            CorrectAnswerId = update.Poll.CorrectOptionId
-                        }
-                    };
+                if (ProcessCallback(update, ref botticelliMessage)) 
+                    return;
+                
+                botticelliMessage = ProcessPoll(update, botticelliMessage);
             }
             else
-            {
-                botticelliMessage = new Message(botMessage.MessageId.ToString())
-                {
-                    ChatIdInnerIdLinks = new Dictionary<string, List<string>>
-                            {{botMessage.Chat.Id.ToString(), [botMessage.MessageId.ToString()]}},
-                    ChatIds = [botMessage.Chat.Id.ToString()],
-                    Subject = string.Empty,
-                    Body = botMessage.Text ?? string.Empty,
-                    LastModifiedAt = botMessage.Date,
-                    Attachments = new List<BaseAttachment>(5),
-                    CreatedAt = botMessage.Date,
-                    From = new User
-                    {
-                        Id = botMessage.From?.Id.ToString(),
-                        Name = botMessage.From?.FirstName,
-                        Surname = botMessage.From?.LastName,
-                        Info = string.Empty,
-                        IsBot = botMessage.From?.IsBot,
-                        NickName = botMessage.From?.Username
-                    },
-                    ForwardedFrom = new User
-                    {
-                        Id = botMessage.ForwardFrom?.Id.ToString(),
-                        Name = botMessage.ForwardFrom?.FirstName,
-                        Surname = botMessage.ForwardFrom?.LastName,
-                        Info = string.Empty,
-                        IsBot = botMessage.ForwardFrom?.IsBot,
-                        NickName = botMessage.ForwardFrom?.Username
-                    },
-                    Location = botMessage.Location != null ?
-                            new GeoLocation
-                            {
-                                Latitude = (decimal) botMessage.Location.Latitude,
-                                Longitude = (decimal) botMessage.Location.Longitude
-                            } :
-                            null
-                };
-            }
+                botticelliMessage = ProcessOrdinaryMessage(botMessage);
 
             foreach (var subHandler in _subHandlers) await subHandler.Process(botClient, update, cancellationToken);
 
             if (botticelliMessage != null)
             {
-                await Process(botticelliMessage, cancellationToken);
+                await ProcessInProcessors(botticelliMessage, cancellationToken);
 
                 MessageReceived?.Invoke(this,
                                         new MessageReceivedBotEventArgs
@@ -155,6 +71,106 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
         {
             logger.LogError(ex, $"{nameof(HandleUpdateAsync)}() error");
         }
+    }
+
+    private static Message ProcessOrdinaryMessage(global::Telegram.Bot.Types.Message botMessage)
+    {
+        var botticelliMessage = new Message(botMessage.MessageId.ToString())
+        {
+            ChatIdInnerIdLinks = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>
+                    {{botMessage.Chat.Id.ToString(), [botMessage.MessageId.ToString()]}},
+            ChatIds = [botMessage.Chat.Id.ToString()],
+            Subject = string.Empty,
+            Body = botMessage.Text ?? string.Empty,
+            LastModifiedAt = botMessage.Date,
+            Attachments = new System.Collections.Generic.List<BaseAttachment>(5),
+            CreatedAt = botMessage.Date,
+            From = new User
+            {
+                Id = botMessage.From?.Id.ToString(),
+                Name = botMessage.From?.FirstName,
+                Surname = botMessage.From?.LastName,
+                Info = string.Empty,
+                IsBot = botMessage.From?.IsBot,
+                NickName = botMessage.From?.Username
+            },
+            ForwardedFrom = new User
+            {
+                Id = botMessage.ForwardFrom?.Id.ToString(),
+                Name = botMessage.ForwardFrom?.FirstName,
+                Surname = botMessage.ForwardFrom?.LastName,
+                Info = string.Empty,
+                IsBot = botMessage.ForwardFrom?.IsBot,
+                NickName = botMessage.ForwardFrom?.Username
+            },
+            Location = botMessage.Location != null ?
+                    new GeoLocation
+                    {
+                        Latitude = (decimal) botMessage.Location.Latitude,
+                        Longitude = (decimal) botMessage.Location.Longitude
+                    } :
+                    null
+        };
+        return botticelliMessage;
+    }
+
+    private static Message? ProcessPoll(Update update, Message? botticelliMessage)
+    {
+        if (update.Poll != null)
+            botticelliMessage = new Message
+            {
+                Subject = string.Empty,
+                Body = string.Empty,
+                Poll = new Poll
+                {
+                    Id = update.Poll.Id,
+                    IsAnonymous = update.Poll.IsAnonymous,
+                    Question = update.Poll.Question,
+                    Type = update.Poll.Type == PollType.Regular ? Poll.PollType.Regular : Poll.PollType.Quiz,
+                    Variants = update.Poll.Options.Select(o => new ValueTuple<string, int>(o.Text, o.VoterCount)),
+                    CorrectAnswerId = update.Poll.CorrectOptionId
+                }
+            };
+        return botticelliMessage;
+    }
+
+    private bool ProcessCallback(Update update, ref Message? botticelliMessage)
+    {
+        if (update.CallbackQuery == null) 
+            return false;
+
+        if (update.CallbackQuery?.Message == null)
+        {
+            logger.LogError($"{nameof(HandleUpdateAsync)}() callback message is null!");
+
+            return true;
+        }
+
+        botticelliMessage = new Message
+        {
+            ChatIdInnerIdLinks = new Dictionary<string, List<string>>
+            {
+                {
+                    update.CallbackQuery?.Message.Chat.Id.ToString(),
+                    [update.CallbackQuery.Message?.MessageId.ToString()]
+                }
+            },
+            ChatIds = [update.CallbackQuery?.Message.Chat.Id.ToString()],
+            CallbackData = update.CallbackQuery?.Data ?? string.Empty,
+            CreatedAt = update.Message?.Date ?? DateTime.Now,
+            LastModifiedAt = update.Message?.Date ?? DateTime.Now,
+            From = new User
+            {
+                Id = update.CallbackQuery?.From.Id.ToString(),
+                Name = update.CallbackQuery?.From.FirstName,
+                Surname = update.CallbackQuery?.From.LastName,
+                Info = string.Empty,
+                IsBot = update.CallbackQuery?.From.IsBot,
+                NickName = update.CallbackQuery?.From.Username
+            }
+        };
+
+        return false;
     }
 
     public Task HandleErrorAsync(ITelegramBotClient botClient,
@@ -179,9 +195,9 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
     /// </summary>
     /// <param name="request"></param>
     /// <param name="token"></param>
-    protected async Task Process(Message request, CancellationToken token)
+    protected async Task ProcessInProcessors(Message request, CancellationToken token)
     {
-        logger.LogDebug($"{nameof(Process)}({request.Uid}) started...");
+        logger.LogDebug($"{nameof(ProcessInProcessors)}({request.Uid}) started...");
 
         if (token is {CanBeCanceled: true, IsCancellationRequested: true}) return;
 
@@ -197,6 +213,6 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
 
         await Parallel.ForEachAsync(clientTasks, token, async (t, ct) => await t.WaitAsync(ct));
 
-        logger.LogDebug($"{nameof(Process)}({request.Uid}) finished...");
+        logger.LogDebug($"{nameof(ProcessInProcessors)}({request.Uid}) finished...");
     }
 }
