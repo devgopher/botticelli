@@ -5,15 +5,15 @@ namespace Botticelli.Broadcasting.Dal;
 
 public class BroadcastingContext : DbContext
 {
+    public DbSet<Chat> Chats { get; set; }
+    public DbSet<MessageCache> MessageCaches { get; set; }
+    public DbSet<MessageStatus> MessageStatuses { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<MessageStatus>()
-                    .HasKey(k => new {k.ChatId, k.MessageId});
+            .HasKey(k => new { k.ChatId, k.MessageId });
     }
-    
-    public DbSet<Chat> Chats { get; set; }
-    public DbSet<MessageCache> MessageCaches { get; set; }
-    public DbSet<MessageStatus> MessageStatuses { get; set; }
 }

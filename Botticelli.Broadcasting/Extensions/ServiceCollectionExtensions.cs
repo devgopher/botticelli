@@ -17,9 +17,13 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <typeparam name="TBot"></typeparam>
     /// <typeparam name="TBotBuilder"></typeparam>
+    /// <param name="botBuilder"></param>
     /// <param name="config"></param>
+    /// <param name="dbOptionsBuilder"></param>
     /// <returns></returns>
-    public static BotBuilder<TBot, TBotBuilder> AddBroadcasting<TBot, TBotBuilder>(this BotBuilder<TBot, TBotBuilder> botBuilder, IConfiguration config)
+    public static BotBuilder<TBot, TBotBuilder> AddBroadcasting<TBot, TBotBuilder>(this BotBuilder<TBot, TBotBuilder> botBuilder, 
+        IConfiguration config,
+        Action<DbContextOptionsBuilder>? dbOptionsBuilder = null)
             where TBot : BaseBot, IBot<TBot> 
             where TBotBuilder : BotBuilder<TBot, TBotBuilder>
     {
@@ -27,23 +31,27 @@ public static class ServiceCollectionExtensions
 
         if (settings == null) throw new ConfigurationErrorsException("Broadcasting settings are missing!");
 
-        // TODO: add broadcasting service (IHostedService which uses injected IServiceProvider and creates a new IBot??)
-        botBuilder.Services.AddHostedService<Broadcaster<TBot>>();
+        botBuilder.Services
+            .AddHostedService<Broadcaster<TBot>>()
+            .AddDbContext<BroadcastingContext>(dbOptionsBuilder);
+     
+        ApplyMigrations(botBuilder.Services);
         
-        botBuilder.AddOnMessageReceived(async (sender, args) =>
+        return botBuilder.AddOnMessageReceived((_, args) =>
         {
             var context = botBuilder.Services.BuildServiceProvider().GetRequiredService<BroadcastingContext>();
             
             var disabledChats = context.Chats.Where(c => !c.IsActive && args.Message.ChatIds.Contains(c.ChatId)).AsQueryable();
             var nonExistingChats = context.Chats.Where(c => !args.Message.ChatIds.Contains(c.ChatId)).ToArray();
 
-            await context.Chats.AddRangeAsync(nonExistingChats);
-            await context.SaveChangesAsync();
+            context.Chats.AddRange(nonExistingChats);
+            disabledChats.ExecuteUpdate(c => c.SetProperty(chat => chat.IsActive, true));
             
-            await disabledChats.ExecuteUpdateAsync(c => c.SetProperty(chat => chat.IsActive, true));
-            await context.SaveChangesAsync();
+            context.SaveChanges();
         });
-        
-        return botBuilder;
     }
+    
+    private static void ApplyMigrations(IServiceCollection services) =>
+        services.BuildServiceProvider()
+            .GetRequiredService<BroadcastingContext>().Database.Migrate();
 }
