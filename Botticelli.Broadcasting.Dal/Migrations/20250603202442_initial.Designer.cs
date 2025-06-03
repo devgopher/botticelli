@@ -18,7 +18,7 @@ namespace Botticelli.Broadcasting.Dal.Migrations
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.13");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.16");
 
             modelBuilder.Entity("Botticelli.Broadcasting.Dal.Models.Chat", b =>
                 {
