@@ -271,6 +271,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Broadcasting", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Broadcasting.Dal", "Botticelli.Broadcasting.Dal\Botticelli.Broadcasting.Dal.csproj", "{9F898466-739B-4DE0-BFD7-6B5203957236}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Broadcasting.Shared", "Botticelli.Broadcasting.Shared\Botticelli.Broadcasting.Shared.csproj", "{0F1EE8FF-4CE4-49D5-BF49-3837EB3BD637}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -577,6 +579,10 @@ Global
 		{9F898466-739B-4DE0-BFD7-6B5203957236}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F898466-739B-4DE0-BFD7-6B5203957236}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F898466-739B-4DE0-BFD7-6B5203957236}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F1EE8FF-4CE4-49D5-BF49-3837EB3BD637}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F1EE8FF-4CE4-49D5-BF49-3837EB3BD637}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F1EE8FF-4CE4-49D5-BF49-3837EB3BD637}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F1EE8FF-4CE4-49D5-BF49-3837EB3BD637}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -692,6 +698,7 @@ Global
 		{39412AE4-B325-4827-B24E-C15415DCA7E9} = {8DA4E10C-3EF4-42CD-BB51-A6562A7A0633}
 		{88039BCA-7501-48C8-9F94-9F8C2C0A19A5} = {39412AE4-B325-4827-B24E-C15415DCA7E9}
 		{9F898466-739B-4DE0-BFD7-6B5203957236} = {39412AE4-B325-4827-B24E-C15415DCA7E9}
+		{0F1EE8FF-4CE4-49D5-BF49-3837EB3BD637} = {39412AE4-B325-4827-B24E-C15415DCA7E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
