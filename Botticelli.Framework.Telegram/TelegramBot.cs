@@ -424,7 +424,7 @@ public class TelegramBot : BaseBot<TelegramBot>
             Id = message.Poll.Id,
             IsAnonymous = message.Poll.IsAnonymous,
             Question = message.Poll.Question,
-            Type = message.Poll.Type.ToLower() == "regular" ? Poll.PollType.Regular : Poll.PollType.Quiz,
+            Type = message.Poll.Type == PollType.Regular ? Poll.PollType.Regular : Poll.PollType.Quiz,
             Variants = message.Poll.Options.Select(o => new ValueTuple<string, int>(o.Text, o.VoterCount)),
             CorrectAnswerId = message.Poll.CorrectOptionId
         };

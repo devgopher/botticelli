@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Message = Botticelli.Shared.ValueObjects.Message;
 using Poll = Botticelli.Shared.ValueObjects.Poll;
 using User = Botticelli.Shared.ValueObjects.User;
@@ -89,7 +90,7 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
                             Id = update.Poll.Id,
                             IsAnonymous = update.Poll.IsAnonymous,
                             Question = update.Poll.Question,
-                            Type = update.Poll.Type.ToLower() == "regular" ? Poll.PollType.Regular : Poll.PollType.Quiz,
+                            Type = update.Poll.Type == PollType.Regular ? Poll.PollType.Regular : Poll.PollType.Quiz,
                             Variants = update.Poll.Options.Select(o => new ValueTuple<string, int>(o.Text, o.VoterCount)),
                             CorrectAnswerId = update.Poll.CorrectOptionId
                         }
