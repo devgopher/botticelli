@@ -30,7 +30,9 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>
     protected BaseBot.MsgSentEventHandler? MessageSent;
     protected BaseBot.MsgReceivedEventHandler? MessageReceived;
     protected BaseBot.MsgRemovedEventHandler? MessageRemoved;
-
+    protected BaseBot.ContactSharedEventHandler? SharedContact;
+    protected BaseBot.NewChatMembersEventHandler? NewChatMembers;
+    
     protected override void Assert()
     {
     }
@@ -80,6 +82,20 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>
     public BotBuilder<TBot, TBotBuilder> AddOnMessageRemoved(BaseBot.MsgRemovedEventHandler handler)
     {
         MessageRemoved += handler;
+
+        return this;
+    }
+    
+    public BotBuilder<TBot, TBotBuilder> AddNewChatMembers(BaseBot.NewChatMembersEventHandler handler)
+    {
+        NewChatMembers += handler;
+
+        return this;
+    }
+    
+    public BotBuilder<TBot, TBotBuilder> AddSharedContact(BaseBot.ContactSharedEventHandler handler)
+    {
+        SharedContact += handler;
 
         return this;
     }

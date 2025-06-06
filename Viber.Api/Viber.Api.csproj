@@ -10,12 +10,6 @@
 		<PackageIcon>logo.jpg</PackageIcon>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<Folder Include="Callbacks\"/>
-		<Folder Include="WebHooks\"/>
-		<Folder Include="Utils\"/>
-	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\logo.jpg">
 			<Pack>True</Pack>

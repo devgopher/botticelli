@@ -188,6 +188,8 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
         bot.MessageSent += MessageSent;
         bot.MessageReceived += MessageReceived;
         bot.MessageRemoved += MessageRemoved;
+        bot.ContactShared += SharedContact;
+        bot.NewChatMembers += NewChatMembers;
     }
 
     protected TelegramBotBuilder<TBot, TBotBuilder> AddBotSettings<TBotSettings>(

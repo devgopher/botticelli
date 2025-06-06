@@ -54,6 +54,8 @@ public class TelegramBot : BaseBot<TelegramBot>
     public override event MsgSentEventHandler? MessageSent;
     public override event MsgReceivedEventHandler? MessageReceived;
     public override event MsgRemovedEventHandler? MessageRemoved;
+    public override event ContactSharedEventHandler? ContactShared;
+    public override event NewChatMembersEventHandler? NewChatMembers;
     
     /// <summary>
     ///     Deletes a message
@@ -512,9 +514,13 @@ public class TelegramBot : BaseBot<TelegramBot>
 
             BotStatusKeeper.IsStarted = true;
 
-            // Rethrowing an event from BotUpdateHandler
+            // Rethrowing events from BotUpdateHandler
             _handler.MessageReceived += (sender, e)
                     => MessageReceived?.Invoke(sender, e);
+            _handler.ContactShared += (sender, e)
+                => ContactShared?.Invoke(sender, e);
+            _handler.NewChatMembers += (sender, e)
+                => NewChatMembers?.Invoke(sender, e);
 
             Client.StartReceiving(_handler, cancellationToken: token);
 
