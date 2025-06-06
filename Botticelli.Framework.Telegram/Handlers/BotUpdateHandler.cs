@@ -16,7 +16,7 @@ namespace Botticelli.Framework.Telegram.Handlers;
 public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHandler
 {
     private readonly MemoryCacheEntryOptions _entryOptions
-            = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(24));
+        = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(24));
 
     private readonly MemoryCache _memoryCache = new(new MemoryCacheOptions
     {
@@ -26,8 +26,8 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
     private readonly List<IBotUpdateSubHandler> _subHandlers = [];
 
     public async Task HandleUpdateAsync(ITelegramBotClient botClient,
-                                        Update update,
-                                        CancellationToken cancellationToken)
+        Update update,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -44,13 +44,15 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
 
             if (botMessage == null)
             {
-                if (ProcessCallback(update, ref botticelliMessage)) 
+                if (ProcessCallback(update, ref botticelliMessage))
                     return;
-                
+
                 botticelliMessage = ProcessPoll(update, botticelliMessage);
             }
             else
+            {
                 botticelliMessage = ProcessOrdinaryMessage(botMessage);
+            }
 
             foreach (var subHandler in _subHandlers) await subHandler.Process(botClient, update, cancellationToken);
 
@@ -59,10 +61,10 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
                 await ProcessInProcessors(botticelliMessage, cancellationToken);
 
                 MessageReceived?.Invoke(this,
-                                        new MessageReceivedBotEventArgs
-                                        {
-                                            Message = botticelliMessage
-                                        });
+                    new MessageReceivedBotEventArgs
+                    {
+                        Message = botticelliMessage
+                    });
             }
 
             logger.LogDebug($"{nameof(HandleUpdateAsync)}() finished...");
@@ -73,17 +75,34 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
         }
     }
 
+    public Task HandleErrorAsync(ITelegramBotClient botClient,
+        Exception exception,
+        HandleErrorSource source,
+        CancellationToken cancellationToken)
+    {
+        logger.LogError($"{nameof(HandleErrorAsync)}() error: {exception.Message}", exception);
+
+        return Task.CompletedTask;
+    }
+
+    public void AddSubHandler<T>(T subHandler) where T : IBotUpdateSubHandler
+    {
+        _subHandlers.Add(subHandler);
+    }
+
+    public event IBotUpdateHandler.MsgReceivedEventHandler? MessageReceived;
+
     private static Message ProcessOrdinaryMessage(global::Telegram.Bot.Types.Message botMessage)
     {
         var botticelliMessage = new Message(botMessage.MessageId.ToString())
         {
-            ChatIdInnerIdLinks = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>
-                    {{botMessage.Chat.Id.ToString(), [botMessage.MessageId.ToString()]}},
+            ChatIdInnerIdLinks = new Dictionary<string, List<string>>
+                { { botMessage.Chat.Id.ToString(), [botMessage.MessageId.ToString()] } },
             ChatIds = [botMessage.Chat.Id.ToString()],
             Subject = string.Empty,
             Body = botMessage.Text ?? string.Empty,
             LastModifiedAt = botMessage.Date,
-            Attachments = new System.Collections.Generic.List<BaseAttachment>(5),
+            Attachments = new List<BaseAttachment>(5),
             CreatedAt = botMessage.Date,
             From = new User
             {
@@ -103,13 +122,13 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
                 IsBot = botMessage.ForwardFrom?.IsBot,
                 NickName = botMessage.ForwardFrom?.Username
             },
-            Location = botMessage.Location != null ?
-                    new GeoLocation
-                    {
-                        Latitude = (decimal) botMessage.Location.Latitude,
-                        Longitude = (decimal) botMessage.Location.Longitude
-                    } :
-                    null
+            Location = botMessage.Location != null
+                ? new GeoLocation
+                {
+                    Latitude = (decimal)botMessage.Location.Latitude,
+                    Longitude = (decimal)botMessage.Location.Longitude
+                }
+                : null
         };
         return botticelliMessage;
     }
@@ -136,7 +155,7 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
 
     private bool ProcessCallback(Update update, ref Message? botticelliMessage)
     {
-        if (update.CallbackQuery == null) 
+        if (update.CallbackQuery == null)
             return false;
 
         if (update.CallbackQuery?.Message == null)
@@ -173,23 +192,6 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
         return false;
     }
 
-    public Task HandleErrorAsync(ITelegramBotClient botClient,
-                                 Exception exception,
-                                 HandleErrorSource source,
-                                 CancellationToken cancellationToken)
-    {
-        logger.LogError($"{nameof(HandleErrorAsync)}() error: {exception.Message}", exception);
-
-        return Task.CompletedTask;
-    }
-
-    public void AddSubHandler<T>(T subHandler) where T : IBotUpdateSubHandler
-    {
-        _subHandlers.Add(subHandler);
-    }
-
-    public event IBotUpdateHandler.MsgReceivedEventHandler? MessageReceived;
-
     /// <summary>
     ///     Processes requests
     /// </summary>
@@ -199,15 +201,15 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
     {
         logger.LogDebug($"{nameof(ProcessInProcessors)}({request.Uid}) started...");
 
-        if (token is {CanBeCanceled: true, IsCancellationRequested: true}) return;
+        if (token is { CanBeCanceled: true, IsCancellationRequested: true }) return;
 
         var processorFactory = ProcessorFactoryBuilder.Build();
 
         var clientNonChainedTasks = processorFactory.GetProcessors()
-                                                    .Select(p => p.ProcessAsync(request, token));
+            .Select(p => p.ProcessAsync(request, token));
 
         var clientChainedTasks = processorFactory.GetCommandChainProcessors()
-                                                 .Select(p => p.ProcessAsync(request, token));
+            .Select(p => p.ProcessAsync(request, token));
 
         var clientTasks = clientNonChainedTasks.Concat(clientChainedTasks).ToArray();
 
