@@ -7,6 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Contact = Botticelli.Shared.ValueObjects.Contact;
 using Message = Botticelli.Shared.ValueObjects.Message;
 using Poll = Botticelli.Shared.ValueObjects.Poll;
 using User = Botticelli.Shared.ValueObjects.User;
@@ -52,6 +53,8 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
             else
             {
                 botticelliMessage = ProcessOrdinaryMessage(botMessage);
+                ProcessNewChatMembers(botClient, botMessage);
+                ProcessContact(botMessage);
             }
 
             foreach (var subHandler in _subHandlers) await subHandler.Process(botClient, update, cancellationToken);
@@ -75,6 +78,41 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
         }
     }
 
+    private void ProcessContact(global::Telegram.Bot.Types.Message? botMessage)
+    {
+        if (botMessage?.Contact != null)
+            ContactShared?.Invoke(this, new SharedContactBotEventArgs
+            {
+                Contact = new Contact
+                {
+                    Phone = botMessage.Contact.PhoneNumber,
+                    Name = botMessage.Contact.FirstName,
+                    Surname = botMessage.Contact.LastName
+                }
+            });
+    }
+
+    private void ProcessNewChatMembers(ITelegramBotClient botClient, global::Telegram.Bot.Types.Message botMessage)
+    {
+        foreach (var newChatMember in botMessage.NewChatMembers ?? [])
+        {
+            var @event = new NewChatMembersBotEventArgs
+            {
+                User = new User
+                {
+                    Id = newChatMember.Id.ToString(),
+                    Name = newChatMember.FirstName,
+                    Surname = newChatMember.LastName,
+                    Info = string.Empty,
+                    NickName = newChatMember.Username,
+                    IsBot = newChatMember.IsBot
+                }
+            };
+                    
+            NewChatMembers?.Invoke(botClient, @event);
+        }
+    }
+
     public Task HandleErrorAsync(ITelegramBotClient botClient,
         Exception exception,
         HandleErrorSource source,
@@ -91,6 +129,8 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
     }
 
     public event IBotUpdateHandler.MsgReceivedEventHandler? MessageReceived;
+    public event IBotUpdateHandler.NewChatMembersHandler? NewChatMembers;
+    public event IBotUpdateHandler.ContactSharedHandler? ContactShared;
 
     private static Message ProcessOrdinaryMessage(global::Telegram.Bot.Types.Message botMessage)
     {
