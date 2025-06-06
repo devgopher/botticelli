@@ -94,7 +94,6 @@ public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand
         {
             Message = new Message
             {
-                Uid = Guid.NewGuid().ToString(),
                 ChatIds = message.ChatIds,
                 Body = "Bot started..."
             }

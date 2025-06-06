@@ -4,7 +4,7 @@
 ///     Received/sent message
 /// </summary>
 [Serializable]
-public class Message
+public class Message()
 {
     /// <summary>
     ///     Type of message
@@ -27,14 +27,6 @@ public class Message
         Extended
     }
 
-    public Message()
-    {
-        ChatIds = [];
-        Uid = Guid.NewGuid().ToString();
-        CreatedAt = DateTime.Now;
-        ProcessingArgs = new List<string>(1);
-    }
-
     public Message(string uid) : this()
     {
         Uid = uid;
@@ -48,7 +40,7 @@ public class Message
     /// <summary>
     ///     Message uid
     /// </summary>
-    public string? Uid { get; set; }
+    public string? Uid { get; set; } = Guid.NewGuid().ToString();
 
     /// <summary>
     ///     Chat Id <=> Inner message id links
@@ -58,7 +50,7 @@ public class Message
     /// <summary>
     ///     Chat ids
     /// </summary>
-    public List<string> ChatIds { get; set; }
+    public List<string> ChatIds { get; set; } = [];
 
     /// <summary>
     ///     Message subj
@@ -73,7 +65,7 @@ public class Message
     /// <summary>
     ///     Message arguments for processing
     /// </summary>
-    public IList<string>? ProcessingArgs { get; set; }
+    public IList<string>? ProcessingArgs { get; set; } = new List<string>(1);
 
     /// <summary>
     ///     Message attachments
@@ -118,7 +110,7 @@ public class Message
     /// <summary>
     ///     Message creation date
     /// </summary>
-    public DateTime CreatedAt { get; init; }
+    public DateTime CreatedAt { get; init; } = DateTime.Now;
 
     /// <summary>
     ///     Message modification date
