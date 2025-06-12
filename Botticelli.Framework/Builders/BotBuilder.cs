@@ -9,7 +9,7 @@ public abstract class BotBuilder<TBot>
 {
     protected abstract void Assert();
 
-    public TBot? Build()
+    public virtual TBot? Build()
     {
         Assert();
 
