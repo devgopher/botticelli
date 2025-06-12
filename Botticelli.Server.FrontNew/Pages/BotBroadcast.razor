@@ -1,4 +1,4 @@
-@page "/BotBroadcast"
+@page "/broadcast/send/{botId}"
 @using System.Net.Http.Headers
 @using Botticelli.Server.Data.Entities.Bot.Broadcasting
 @using Botticelli.Server.FrontNew.Models
@@ -55,6 +55,24 @@
 @code {
     readonly BotBroadcastModel _model = new();
 
+    [Parameter]
+    public string? BotId { get; set; }
+
+    protected override bool ShouldRender()
+    {
+        return true;
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        if (BotId == null)
+            UriHelper.NavigateTo("/your_bots", true);
+        else
+            _model.BotId = BotId;
+        
+        return Task.CompletedTask;
+    }
+    
     private async Task OnSubmit(BotBroadcastModel model)
     {
         var request = new Broadcast
@@ -69,7 +87,7 @@
         if (string.IsNullOrWhiteSpace(sessionToken)) return;
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
-        var response = await Http.GetFromJsonAsync<GetBroadCastMessagesResponse>(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/SendBroadcast"));
+        await Http.GetFromJsonAsync<GetBroadCastMessagesResponse>(Url.Combine(BackSettings.CurrentValue.BackUrl, "/admin/SendBroadcast"));
      
         UriHelper.NavigateTo("/your_bots", true);
     }

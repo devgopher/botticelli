@@ -44,6 +44,10 @@ else
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsAlive(bot.LastKeepAlive)"/>
                             <RadzenText TextStyle="TextStyle.Body2" Text="@GetIsActive(bot.Status)"/>
                             <RadzenButton Click="@(e => SendStartStop(bot.BotId, bot.Status))" Text="Lock/Unlock"/>
+                            <RadzenButton Click="@(e => UriHelper.NavigateTo($"/broadcast/send/{bot.BotId}", true))"
+                                          ButtonStyle="ButtonStyle.Primary"
+                                          Style="width: 100%"
+                                          Text="Send broadcast message"/>
                             <RadzenButton Click="@(e => UriHelper.NavigateTo($"/update_bot/{bot.BotId}", true))"
                                           ButtonStyle="ButtonStyle.Primary"
                                           Style="width: 100%"

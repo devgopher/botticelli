@@ -60,7 +60,7 @@ builder.Services.AddEndpointsApiExplorer()
                            Id = "Bearer"
                        }
                    },
-                   Array.Empty<string>()
+                   []
                }
            });
        });
@@ -107,7 +107,6 @@ builder.Services.AddIdentity();
 #endif
 
 builder.Services.AddControllers();
-
 
 builder.ApplyMigrations<ServerDataContext>();
 
