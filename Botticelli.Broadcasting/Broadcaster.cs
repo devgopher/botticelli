@@ -7,7 +7,6 @@ using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Flurl.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -41,7 +40,7 @@ public class Broadcaster<TBot> : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        // TODO : polls admin API for new messages to send to our chats and adds them to a MessageCache/MessageStatus
+        // Polls admin API for new messages to send to our chats and adds them to a MessageCache/MessageStatus
         var updatePolicy = Policy.Handle<FlurlHttpException>(ex =>
                 ex.Call.Response.ResponseMessage.StatusCode == HttpStatusCode.RequestTimeout)
             .WaitAndRetryForeverAsync((_, _) => _retryPause);
@@ -78,7 +77,7 @@ public class Broadcaster<TBot> : IHostedService
 
     private async Task<GetBroadCastMessagesResponse?> GetUpdates(CancellationToken cancellationToken)
     {
-        var updatesResponse = await $"{_settings.Value.ServerUri}"
+        var updatesResponse = await $"{_settings.Value.ServerUri}/client/broadcast"
             .WithTimeout(_longPollTimeout)
             .PostJsonAsync(new GetBroadCastMessagesRequest
             {
