@@ -37,63 +37,63 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>
     {
     }
 
-    public BotBuilder<TBot, TBotBuilder> AddServices(IServiceCollection services)
+    public virtual BotBuilder<TBot, TBotBuilder> AddServices(IServiceCollection services)
     {
         Services = services;
 
         return this;
     }
 
-    public BotBuilder<TBot, TBotBuilder> AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
+    public virtual  BotBuilder<TBot, TBotBuilder> AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
     {
         AnalyticsClientSettingsBuilder = clientSettingsBuilder;
 
         return this;
     }
 
-    protected BotBuilder<TBot, TBotBuilder> AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
+    protected  virtual BotBuilder<TBot, TBotBuilder> AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
     {
         ServerSettingsBuilder = settingsBuilder;
 
         return this;
     }
 
-    public BotBuilder<TBot, TBotBuilder> AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
+    public virtual  BotBuilder<TBot, TBotBuilder> AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
     {
         BotDataAccessSettingsBuilder = botDataAccessBuilder;
 
         return this;
     }
     
-    public BotBuilder<TBot, TBotBuilder> AddOnMessageSent(BaseBot.MsgSentEventHandler handler)
+    public virtual  BotBuilder<TBot, TBotBuilder> AddOnMessageSent(BaseBot.MsgSentEventHandler handler)
     {
         MessageSent += handler;
 
         return this;
     }
  
-    public BotBuilder<TBot, TBotBuilder> AddOnMessageReceived(BaseBot.MsgReceivedEventHandler handler)
+    public  virtual BotBuilder<TBot, TBotBuilder> AddOnMessageReceived(BaseBot.MsgReceivedEventHandler handler)
     {
         MessageReceived += handler;
 
         return this;
     }
     
-    public BotBuilder<TBot, TBotBuilder> AddOnMessageRemoved(BaseBot.MsgRemovedEventHandler handler)
+    public virtual  BotBuilder<TBot, TBotBuilder> AddOnMessageRemoved(BaseBot.MsgRemovedEventHandler handler)
     {
         MessageRemoved += handler;
 
         return this;
     }
     
-    public BotBuilder<TBot, TBotBuilder> AddNewChatMembers(BaseBot.NewChatMembersEventHandler handler)
+    public virtual  BotBuilder<TBot, TBotBuilder> AddNewChatMembers(BaseBot.NewChatMembersEventHandler handler)
     {
         NewChatMembers += handler;
 
         return this;
     }
     
-    public BotBuilder<TBot, TBotBuilder> AddSharedContact(BaseBot.ContactSharedEventHandler handler)
+    public  virtual BotBuilder<TBot, TBotBuilder> AddSharedContact(BaseBot.ContactSharedEventHandler handler)
     {
         SharedContact += handler;
 
