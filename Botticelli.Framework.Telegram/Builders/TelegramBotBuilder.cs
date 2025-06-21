@@ -48,7 +48,7 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
     private string? _botToken;
     private TelegramClientDecoratorBuilder _builder = null!;
 
-    private protected TelegramBotBuilder(bool isStandalone)
+    protected TelegramBotBuilder(bool isStandalone)
     {
         _isStandalone = isStandalone;
     }
