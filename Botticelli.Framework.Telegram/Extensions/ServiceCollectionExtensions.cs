@@ -26,13 +26,10 @@ public static class ServiceCollectionExtensions
     private static readonly DataAccessSettingsBuilder<DataAccessSettings> DataAccessSettingsBuilder = new();
 
 
-    public static IServiceCollection AddTelegramBot<TBotBuilder>(this IServiceCollection services)
-        where TBotBuilder : TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>> =>
-        services.AddTelegramBot<TBotBuilder>();
-
-    public static IServiceCollection AddTelegramBot(this IServiceCollection services,
+    public static IServiceCollection AddTelegramBot<TBotBuilder>(this IServiceCollection services,
         IConfiguration configuration,
-        Action<TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>>? telegramBotBuilderFunc = null)
+        Action<TBotBuilder>? telegramBotBuilderFunc = null)
+    where TBotBuilder : TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>
     {
         var telegramBotSettings = configuration
                                       .GetSection(TelegramBotSettings.Section)
