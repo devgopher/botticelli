@@ -19,17 +19,17 @@ namespace Botticelli.Framework;
 /// </summary>
 public abstract class BaseBot
 {
-    public delegate void MsgReceivedEventHandler(object sender, MessageReceivedBotEventArgs e);
+    public delegate Task MsgReceivedEventHandler(object sender, MessageReceivedBotEventArgs e);
 
-    public delegate void MsgRemovedEventHandler(object sender, MessageRemovedBotEventArgs e);
+    public delegate Task MsgRemovedEventHandler(object sender, MessageRemovedBotEventArgs e);
 
-    public delegate void MsgSentEventHandler(object sender, MessageSentBotEventArgs e);
+    public delegate Task MsgSentEventHandler(object sender, MessageSentBotEventArgs e);
 
-    public delegate void StartedEventHandler(object sender, StartedBotEventArgs e);
+    public delegate Task StartedEventHandler(object sender, StartedBotEventArgs e);
 
-    public delegate void StoppedEventHandler(object sender, StoppedBotEventArgs e);
-    public delegate void ContactSharedEventHandler(object sender, SharedContactBotEventArgs e);
-    public delegate void NewChatMembersEventHandler(object sender, NewChatMembersBotEventArgs e);
+    public delegate Task StoppedEventHandler(object sender, StoppedBotEventArgs e);
+    public delegate Task ContactSharedEventHandler(object sender, SharedContactBotEventArgs e);
+    public delegate Task NewChatMembersEventHandler(object sender, NewChatMembersBotEventArgs e);
     
     public virtual event MsgSentEventHandler? MessageSent;
     public virtual event MsgReceivedEventHandler? MessageReceived;
@@ -42,25 +42,18 @@ public abstract class BaseBot
 ///     A base class for bot
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public abstract class BaseBot<T> : BaseBot, IBot<T>
-        where T : BaseBot<T>, IBot
+public abstract class BaseBot<T>(ILogger logger, MetricsProcessor? metrics) : BaseBot, IBot<T>
+    where T : BaseBot<T>, IBot
 {
     public delegate void MessengerSpecificEventHandler(object sender, MessengerSpecificBotEventArgs<T> e);
 
-    private readonly MetricsProcessor? _metrics;
-    protected readonly ILogger Logger;
-
-    protected BaseBot(ILogger logger, MetricsProcessor? metrics)
-    {
-        Logger = logger;
-        _metrics = metrics;
-    }
+    protected readonly ILogger Logger = logger;
 
     public virtual async Task<StartBotResponse> StartBotAsync(StartBotRequest request, CancellationToken token)
     {
         if (BotStatusKeeper.IsStarted) return StartBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
 
-        _metrics?.Process(MetricNames.BotStarted, BotDataUtils.GetBotId());
+        metrics?.Process(MetricNames.BotStarted, BotDataUtils.GetBotId());
 
         var result = await InnerStartBotAsync(request, token);
 
@@ -71,7 +64,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
 
     public virtual async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
     {
-        _metrics?.Process(MetricNames.BotStopped, BotDataUtils.GetBotId());
+        metrics?.Process(MetricNames.BotStopped, BotDataUtils.GetBotId());
 
         if (!BotStatusKeeper.IsStarted) return StopBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
 
@@ -108,7 +101,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
                                                                                   CancellationToken token)
             where TSendOptions : class
     {
-        _metrics?.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
+        metrics?.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
 
         return await InnerSendMessageAsync(request,
                                            optionsBuilder,
@@ -126,7 +119,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
                                                                             CancellationToken token)
             where TSendOptions : class
     {
-        _metrics?.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
+        metrics?.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
 
         return await InnerSendMessageAsync(request,
                                            optionsBuilder,
@@ -137,7 +130,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
     public virtual async Task<RemoveMessageResponse> DeleteMessageAsync(DeleteMessageRequest request,
                                                                         CancellationToken token)
     {
-        _metrics?.Process(MetricNames.MessageRemoved, BotDataUtils.GetBotId());
+        metrics?.Process(MetricNames.MessageRemoved, BotDataUtils.GetBotId());
 
         return await InnerDeleteMessageAsync(request, token);
     }

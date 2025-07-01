@@ -25,7 +25,6 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>
     protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings>? AnalyticsClientSettingsBuilder;
     protected DataAccessSettingsBuilder<DataAccessSettings>? BotDataAccessSettingsBuilder;
     protected ServerSettingsBuilder<ServerSettings>? ServerSettingsBuilder;
-    public IServiceCollection Services = null!;
 
     protected BaseBot.MsgSentEventHandler? MessageSent;
     protected BaseBot.MsgReceivedEventHandler? MessageReceived;
@@ -39,8 +38,6 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>
 
     public virtual BotBuilder<TBot, TBotBuilder> AddServices(IServiceCollection services)
     {
-        Services = services;
-
         return this;
     }
 
