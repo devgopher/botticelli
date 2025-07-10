@@ -69,7 +69,7 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
         bool isStandalone)
     where TBotBuilderNew : BotBuilder<TBot, TBotBuilder>
     {
-        var botBuilder = Activator.CreateInstance(typeof(TBotBuilderNew)) as TBotBuilderNew;
+        var botBuilder = Activator.CreateInstance(typeof(TBotBuilderNew), [isStandalone]) as TBotBuilderNew;
 
         (botBuilder as TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>)
             .AddBotSettings(settingsBuilder)
