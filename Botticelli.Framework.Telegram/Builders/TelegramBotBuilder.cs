@@ -1,3 +1,4 @@
+using System.Reflection;
 using Botticelli.Bot.Data;
 using Botticelli.Bot.Data.Repositories;
 using Botticelli.Bot.Data.Settings;
@@ -32,7 +33,9 @@ namespace Botticelli.Framework.Telegram.Builders;
 /// <typeparam name="TBot"></typeparam>
 public abstract class TelegramBotBuilder<TBot>(bool isStandalone)
     : TelegramBotBuilder<TBot, TelegramBotBuilder<TBot>>(isStandalone)
-    where TBot : TelegramBot;
+    where TBot : TelegramBot
+{
+}
 
 /// <summary>
 ///     Builder for a non-standalone Telegram bot
@@ -48,6 +51,8 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
     private string? _botToken;
     private TelegramClientDecoratorBuilder _builder = null!;
 
+
+    
     protected TelegramBotBuilder(bool isStandalone)
     {
         _isStandalone = isStandalone;
@@ -56,18 +61,25 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
     protected TelegramBotSettings? BotSettings { get; set; }
     protected BotData.Entities.Bot.BotData? BotData { get; set; }
 
-    public static TelegramBotBuilder<TBot, TBotBuilder> Instance(IServiceCollection services,
+    public static TBotBuilderNew? Instance<TBotBuilderNew>(IServiceCollection services,
         ServerSettingsBuilder<ServerSettings> serverSettingsBuilder,
         BotSettingsBuilder<TelegramBotSettings> settingsBuilder,
         DataAccessSettingsBuilder<DataAccessSettings> dataAccessSettingsBuilder,
         AnalyticsClientSettingsBuilder<AnalyticsClientSettings> analyticsClientSettingsBuilder,
-        bool isStandalone) =>
-        (TelegramBotBuilder<TBot, TBotBuilder>)new TelegramBotBuilder<TBot, TBotBuilder>(isStandalone)
+        bool isStandalone)
+    where TBotBuilderNew : BotBuilder<TBot, TBotBuilder>
+    {
+        var botBuilder = Activator.CreateInstance(typeof(TBotBuilderNew)) as TBotBuilderNew;
+
+        (botBuilder as TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>)
             .AddBotSettings(settingsBuilder)
             .AddServerSettings(serverSettingsBuilder)
             .AddAnalyticsSettings(analyticsClientSettingsBuilder)
             .AddBotDataAccessSettings(dataAccessSettingsBuilder)
             .AddServices(services);
+        
+        return botBuilder;
+    }
 
     public TelegramBotBuilder<TBot, TBotBuilder> AddSubHandler<T>()
         where T : class, IBotUpdateSubHandler

@@ -2,14 +2,17 @@
 using Botticelli.Bot.Data.Settings;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Controls.Parsers;
+using Botticelli.Framework.Builders;
 using Botticelli.Framework.Options;
 using Botticelli.Framework.Telegram.Builders;
 using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Interfaces;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Botticelli.Framework.Telegram.Extensions;
@@ -24,7 +27,6 @@ public static class ServiceCollectionExtensions
         new();
 
     private static readonly DataAccessSettingsBuilder<DataAccessSettings> DataAccessSettingsBuilder = new();
-
 
     public static IServiceCollection AddTelegramBot<TBotBuilder>(this IServiceCollection services,
         IConfiguration configuration,
@@ -55,6 +57,8 @@ public static class ServiceCollectionExtensions
                                  throw new ConfigurationErrorsException(
                                      $"Can't load configuration for {nameof(DataAccessSettings)}!");
 
+        services.AddSingleton<BotBuilder<TelegramBot>, TBotBuilder>();
+        
         return services.AddTelegramBot(o =>
                 o.Set(telegramBotSettings),
             o => o.Set(analyticsClientSettings),
@@ -95,6 +99,20 @@ public static class ServiceCollectionExtensions
         Action<TBotBuilder>? telegramBotBuilderFunc = null)
         where TBotBuilder : TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>
     {
+        var botBuilder = InnerBuild(services, optionsBuilderFunc, analyticsOptionsBuilderFunc, serverSettingsBuilderFunc, dataAccessSettingsBuilderFunc, telegramBotBuilderFunc);
+
+        services.AddSingleton<BotBuilder<TelegramBot>>(botBuilder);
+        
+        return services.AddTelegramLayoutsSupport();
+    }
+
+    static TBotBuilder InnerBuild<TBotBuilder>(IServiceCollection services, Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
+        Action<AnalyticsClientSettingsBuilder<AnalyticsClientSettings>> analyticsOptionsBuilderFunc,
+        Action<ServerSettingsBuilder<ServerSettings>> serverSettingsBuilderFunc, 
+        Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc,
+        Action<TBotBuilder>? telegramBotBuilderFunc)
+        where TBotBuilder : TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>
+    {
         optionsBuilderFunc(SettingsBuilder);
         serverSettingsBuilderFunc(ServerSettingsBuilder);
         analyticsOptionsBuilderFunc(AnalyticsClientOptionsBuilder);
@@ -102,19 +120,21 @@ public static class ServiceCollectionExtensions
 
         var clientBuilder = TelegramClientDecoratorBuilder.Instance(services, SettingsBuilder);
 
-        var botBuilder = TelegramBotBuilder<TelegramBot>.Instance(services,
-                ServerSettingsBuilder,
-                SettingsBuilder,
-                DataAccessSettingsBuilder,
-                AnalyticsClientOptionsBuilder,
-                false)
-            .AddClient(clientBuilder);
+        TBotBuilder botBuilder = TelegramBotBuilder<TelegramBot>.Instance<TBotBuilder>(services,
+            ServerSettingsBuilder,
+            SettingsBuilder,
+            DataAccessSettingsBuilder,
+            AnalyticsClientOptionsBuilder,
+            false);
 
-        telegramBotBuilderFunc?.Invoke(botBuilder as TBotBuilder);
-        var bot = botBuilder.Build();
+        botBuilder.AddClient(clientBuilder)
+                  .AddServices(services);
+        
+        telegramBotBuilderFunc?.Invoke(botBuilder);
 
-        return services.AddSingleton<IBot>(bot!)
-            .AddTelegramLayoutsSupport();
+        services.AddSingleton<BotBuilder<TelegramBot>>(botBuilder);
+        
+        return botBuilder;
     }
 
     public static IServiceCollection AddStandaloneTelegramBot(this IServiceCollection services,
@@ -171,10 +191,10 @@ public static class ServiceCollectionExtensions
             .AddClient(clientBuilder);
 
         telegramBotBuilderFunc?.Invoke((TelegramStandaloneBotBuilder<TBot>)botBuilder);
-        TelegramBot? bot = botBuilder.Build();
 
-        return services.AddSingleton<IBot>(bot!)
-            .AddTelegramLayoutsSupport();
+        services.AddSingleton<BotBuilder<TBot>>(botBuilder);
+
+        return services.AddTelegramLayoutsSupport();
     }
 
     public static IServiceCollection AddTelegramLayoutsSupport(this IServiceCollection services) =>
