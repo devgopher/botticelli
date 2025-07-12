@@ -52,8 +52,12 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
     private TelegramClientDecoratorBuilder _builder = null!;
 
 
+    public TelegramBotBuilder() : this(false)
+    {
+        
+    } 
     
-    protected TelegramBotBuilder(bool isStandalone)
+    public TelegramBotBuilder(bool isStandalone)
     {
         _isStandalone = isStandalone;
     }

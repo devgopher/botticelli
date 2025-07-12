@@ -5,16 +5,21 @@ using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Layout;
+using Botticelli.Interfaces;
 using NLog.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramMonadsBasedBot.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-       .AddTelegramBot(builder.Configuration)
+var bot = builder.Services
+                 .AddTelegramBot(builder.Configuration)
+                 .Build();
+
+builder.Services       
        .AddLogging(cfg => cfg.AddNLog())
-       .AddTelegramLayoutsSupport();
+       .AddTelegramLayoutsSupport()
+       .AddSingleton<IBot>(bot);
 
 builder.Services
     .AddChainedRedisStorage<string, string>(builder.Configuration)

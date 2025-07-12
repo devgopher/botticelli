@@ -33,7 +33,8 @@ public static class ServiceCollectionExtensions
             s.Instruction = deepSeekGptSettings.Instruction;
         });
 
-        services.AddSingleton<IAiProvider, DeepSeekGptProvider>();
+        services.AddSingleton<IAiProvider, DeepSeekGptProvider>()
+                .AddHttpClient();
 
         return services;
     }

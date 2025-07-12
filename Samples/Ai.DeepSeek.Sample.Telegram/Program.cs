@@ -14,8 +14,11 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var bot = builder.Services
+                 .AddTelegramBot(builder.Configuration)
+                 .Build();
+
 builder.Services
-       .AddTelegramBot(builder.Configuration)
        .AddLogging(cfg => cfg.AddNLog())
        .AddDeepSeekProvider(builder.Configuration)
        .AddAiValidation()
@@ -25,7 +28,8 @@ builder.Services
        .UsePassBusClient<IBot<TelegramBot>>()
        .UsePassEventBusClient<IBot<TelegramBot>>()
        .AddBotCommand<AiCommand, AiCommandProcessor<ReplyKeyboardMarkup>, PassValidator<AiCommand>>()
-       .AddTelegramLayoutsSupport();
+       .AddTelegramLayoutsSupport()
+       .AddSingleton<IBot>(bot);
 
 var app = builder.Build();
 

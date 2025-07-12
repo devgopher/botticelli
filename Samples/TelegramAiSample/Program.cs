@@ -14,17 +14,20 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
+var bot = builder.Services
        .AddTelegramBot(builder.Configuration)
-       .AddLogging(cfg => cfg.AddNLog())
-       .AddChatGptProvider(builder.Configuration)
-       .AddAiValidation()
-       .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
-       .AddSingleton<AiHandler>()
-       .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
-       .UsePassBusClient<IBot<TelegramBot>>()
-       .UsePassEventBusClient<IBot<TelegramBot>>()
-       .AddBotCommand<AiCommand, AiCommandProcessor<ReplyKeyboardMarkup>, PassValidator<AiCommand>>();
+       .Build();
+
+builder.Services.AddLogging(cfg => cfg.AddNLog())
+        .AddChatGptProvider(builder.Configuration)
+        .AddAiValidation()
+        .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
+        .AddSingleton<AiHandler>()
+        .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
+        .UsePassBusClient<IBot<TelegramBot>>()
+        .UsePassEventBusClient<IBot<TelegramBot>>()
+        .AddBotCommand<AiCommand, AiCommandProcessor<ReplyKeyboardMarkup>, PassValidator<AiCommand>>()
+        .AddSingleton<IBot>(bot);
 
 var app = builder.Build();
 

@@ -2,6 +2,7 @@ using Botticelli.Broadcasting.Extensions;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Telegram.Extensions;
+using Botticelli.Interfaces;
 using Botticelli.Schedule.Quartz.Extensions;
 using MessagingSample.Common.Commands;
 using MessagingSample.Common.Commands.Processors;
@@ -11,12 +12,16 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
+var bot = builder.Services
        .AddTelegramBot(builder.Configuration, botBuilder => botBuilder.AddBroadcasting(builder.Configuration,
               optionsBuilder => optionsBuilder.UseSqlite()))
+       .Build();
+        
+builder.Services
        .AddTelegramLayoutsSupport()
        .AddLogging(cfg => cfg.AddNLog())
-       .AddQuartzScheduler(builder.Configuration);
+       .AddQuartzScheduler(builder.Configuration)
+       .AddSingleton<IBot>(bot);
 
 builder.Services.AddBotCommand<InfoCommand>()
        .AddProcessor<InfoCommandProcessor<ReplyKeyboardMarkup>>()
