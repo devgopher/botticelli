@@ -18,7 +18,8 @@ public static class ProcessorFactoryBuilder
 
     public static ProcessorFactory Build()
     {
-        if (_serviceCollection == null) throw new NullReferenceException("Service collection is null! PLease, call AddProcessor() first!");
+        if (_serviceCollection == null) 
+            return new ProcessorFactory([]);
 
         var sp = _serviceCollection.BuildServiceProvider();
 
