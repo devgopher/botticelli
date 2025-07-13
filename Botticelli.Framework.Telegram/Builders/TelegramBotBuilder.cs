@@ -166,7 +166,7 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
 
         #endregion
 
-        if (BotSettings?.UseThrottling is false) _builder.AddThrottler(new Throttler());
+        if (BotSettings?.UseThrottling is true) _builder.AddThrottler(new Throttler());
 
         if (!string.IsNullOrWhiteSpace(_botToken)) _builder.AddToken(_botToken);
 
