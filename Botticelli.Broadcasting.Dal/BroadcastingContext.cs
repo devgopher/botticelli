@@ -9,6 +9,16 @@ public class BroadcastingContext : DbContext
     public DbSet<MessageCache> MessageCaches { get; set; }
     public DbSet<MessageStatus> MessageStatuses { get; set; }
 
+    public BroadcastingContext()
+    {
+        
+    }
+
+    public BroadcastingContext(DbContextOptions<BroadcastingContext> options) : base(options)
+    {
+        
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

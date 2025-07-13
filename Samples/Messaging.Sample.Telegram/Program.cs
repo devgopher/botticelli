@@ -13,8 +13,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 var builder = WebApplication.CreateBuilder(args);
 
 var bot = builder.Services
-       .AddTelegramBot(builder.Configuration, botBuilder => botBuilder.AddBroadcasting(builder.Configuration,
-              optionsBuilder => optionsBuilder.UseSqlite()))
+       .AddTelegramBot(builder.Configuration)
        .Build();
         
 builder.Services

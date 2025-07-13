@@ -110,8 +110,6 @@ public static class ServiceCollectionExtensions
                                                        dataAccessSettingsBuilderFunc,
                                                        telegramBotBuilderFunc);
 
-        services.AddSingleton(botBuilder);
-
         services.AddTelegramLayoutsSupport();
 
         return botBuilder;
@@ -143,8 +141,6 @@ public static class ServiceCollectionExtensions
                   .AddServices(services);
         
         telegramBotBuilderFunc?.Invoke(botBuilder);
-
-        services.AddSingleton<BotBuilder<TBot>>(botBuilder);
         
         return botBuilder;
     }
@@ -203,8 +199,6 @@ public static class ServiceCollectionExtensions
             .AddClient(clientBuilder);
 
         telegramBotBuilderFunc?.Invoke((TelegramStandaloneBotBuilder<TBot>)botBuilder);
-
-        services.AddSingleton<BotBuilder<TBot>>(botBuilder);
         
         services.AddTelegramLayoutsSupport();
 
