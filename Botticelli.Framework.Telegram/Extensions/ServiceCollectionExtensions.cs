@@ -59,9 +59,7 @@ public static class ServiceCollectionExtensions
                                  .GetSection(DataAccessSettings.Section)
                                  .Get<DataAccessSettings>() ??
                                  throw new ConfigurationErrorsException($"Can't load configuration for {nameof(DataAccessSettings)}!");
-
-        services.AddSingleton<BotBuilder<TBot>, TBotBuilder>();
-
+        
         return services.AddTelegramBot<TBot, TBotBuilder>(o =>
                                                                          o.Set(telegramBotSettings),
                                                                  o => o.Set(analyticsClientSettings),
