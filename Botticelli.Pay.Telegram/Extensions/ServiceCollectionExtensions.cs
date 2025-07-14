@@ -1,7 +1,6 @@
 ﻿using Botticelli.Bot.Data.Settings;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Options;
-using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Builders;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
