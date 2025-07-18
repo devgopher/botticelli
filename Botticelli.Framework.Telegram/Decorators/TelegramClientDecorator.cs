@@ -12,15 +12,12 @@ namespace Botticelli.Framework.Telegram.Decorators;
 public class TelegramClientDecorator : ITelegramBotClient
 {
     private readonly HttpClient? _httpClient;
-    private readonly IThrottler? _throttler;
     private TelegramBotClient? _innerClient;
     private TelegramBotClientOptions _options;
 
     internal TelegramClientDecorator(TelegramBotClientOptions options,
-                                     IThrottler? throttler,
                                      HttpClient? httpClient = null)
     {
-        _throttler = throttler;
         _options = options;
         _httpClient = httpClient;
         _innerClient = !string.IsNullOrWhiteSpace(options.Token) ? new TelegramBotClient(options, httpClient) : null;
@@ -32,10 +29,6 @@ public class TelegramClientDecorator : ITelegramBotClient
     {
         try
         {
-            if (_throttler != null)
-                return await _throttler.Throttle(async () => await _innerClient?.SendRequest(request, cancellationToken)!,
-                                                 cancellationToken);
-
             return await _innerClient?.SendRequest(request, cancellationToken)!;
         }
         catch (ApiRequestException ex)
