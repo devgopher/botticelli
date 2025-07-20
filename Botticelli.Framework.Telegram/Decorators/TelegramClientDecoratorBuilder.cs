@@ -1,4 +1,5 @@
 using Botticelli.Framework.Options;
+using Botticelli.Framework.Telegram.Http;
 using Botticelli.Framework.Telegram.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
@@ -11,7 +12,7 @@ public class TelegramClientDecoratorBuilder
     private readonly BotSettingsBuilder<TelegramBotSettings> _settingsBuilder;
     private HttpClient? _httpClient;
     private TelegramClientDecorator? _telegramClient;
-    private IThrottler? _throttler;
+    private OutcomeThrottlingDelegatingHandler? _throttler;
     private string? _token;
 
     private TelegramClientDecoratorBuilder(IServiceCollection services,
@@ -27,7 +28,7 @@ public class TelegramClientDecoratorBuilder
         return new TelegramClientDecoratorBuilder(services, settingsBuilder);
     }
 
-    public TelegramClientDecoratorBuilder AddThrottler(IThrottler throttler)
+    public TelegramClientDecoratorBuilder AddThrottler(OutcomeThrottlingDelegatingHandler throttler)
     {
         _throttler = throttler;
 
@@ -49,9 +50,14 @@ public class TelegramClientDecoratorBuilder
 
         if (_httpClient == null)
         {
-            var factory = _services.BuildServiceProvider().GetRequiredService<IHttpClientFactory>();
+            if (_throttler == null)
+            {
+                var factory = _services.BuildServiceProvider().GetRequiredService<IHttpClientFactory>();
 
-            _httpClient = factory.CreateClient(nameof(TelegramClientDecorator));
+                _httpClient = factory.CreateClient(nameof(TelegramClientDecorator));
+            }
+            else
+                _httpClient = new HttpClient(_throttler);
         }
 
         var botOptions = _settingsBuilder.Build();
@@ -61,7 +67,7 @@ public class TelegramClientDecoratorBuilder
                     RetryThreshold = 60,
                     RetryCount = botOptions.RetryOnFailure
                 };
-        _telegramClient = new TelegramClientDecorator(clientOptions, _throttler, _httpClient);
+        _telegramClient = new TelegramClientDecorator(clientOptions, _httpClient);
 
         return _telegramClient;
     }

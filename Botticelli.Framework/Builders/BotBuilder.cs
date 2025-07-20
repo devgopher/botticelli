@@ -19,8 +19,21 @@ public abstract class BotBuilder<TBot>
     protected abstract TBot? InnerBuild();
 }
 
-public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>
-        where TBotBuilder : BotBuilder<TBot, TBotBuilder>
+public interface IBotBuilder<TBot, TBotBuilder> where TBotBuilder : BotBuilder<TBot, TBotBuilder>
+{
+    BotBuilder<TBot, TBotBuilder> AddServices(IServiceCollection services);
+    BotBuilder<TBot, TBotBuilder> AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder);
+    BotBuilder<TBot, TBotBuilder> AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder);
+    BotBuilder<TBot, TBotBuilder> AddOnMessageSent(BaseBot.MsgSentEventHandler handler);
+    BotBuilder<TBot, TBotBuilder> AddOnMessageReceived(BaseBot.MsgReceivedEventHandler handler);
+    BotBuilder<TBot, TBotBuilder> AddOnMessageRemoved(BaseBot.MsgRemovedEventHandler handler);
+    BotBuilder<TBot, TBotBuilder> AddNewChatMembers(BaseBot.NewChatMembersEventHandler handler);
+    BotBuilder<TBot, TBotBuilder> AddSharedContact(BaseBot.ContactSharedEventHandler handler);
+    TBot? Build();
+}
+
+public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>, IBotBuilder<TBot, TBotBuilder> 
+    where TBotBuilder : BotBuilder<TBot, TBotBuilder>
 {
     protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings>? AnalyticsClientSettingsBuilder;
     protected DataAccessSettingsBuilder<DataAccessSettings>? BotDataAccessSettingsBuilder;
@@ -44,14 +57,14 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>
         return this;
     }
 
-    public virtual  BotBuilder<TBot, TBotBuilder> AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
+    public virtual BotBuilder<TBot, TBotBuilder> AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
     {
         AnalyticsClientSettingsBuilder = clientSettingsBuilder;
 
         return this;
     }
 
-    protected  virtual BotBuilder<TBot, TBotBuilder> AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
+    protected virtual BotBuilder<TBot, TBotBuilder> AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
     {
         ServerSettingsBuilder = settingsBuilder;
 

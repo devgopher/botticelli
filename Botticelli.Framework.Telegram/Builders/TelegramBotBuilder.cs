@@ -15,6 +15,7 @@ using Botticelli.Framework.Services;
 using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Handlers;
 using Botticelli.Framework.Telegram.HostedService;
+using Botticelli.Framework.Telegram.Http;
 using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Framework.Telegram.Utils;
@@ -166,7 +167,8 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
 
         #endregion
 
-        if (BotSettings?.UseThrottling is true) _builder.AddThrottler(new Throttler());
+        if (BotSettings?.UseThrottling is true) 
+            _builder.AddThrottler(new OutcomeThrottlingDelegatingHandler());
 
         if (!string.IsNullOrWhiteSpace(_botToken)) _builder.AddToken(_botToken);
 
