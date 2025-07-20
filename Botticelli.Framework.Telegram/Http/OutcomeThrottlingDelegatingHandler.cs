@@ -2,10 +2,10 @@
 
 public class OutcomeThrottlingDelegatingHandler() : DelegatingHandler(new HttpClientHandler())
 {
-    private static readonly TimeSpan Delay = TimeSpan.FromSeconds(3);
-    private static readonly TimeSpan MaxDeviation = TimeSpan.FromSeconds(1);
+    private static readonly TimeSpan Delay = TimeSpan.FromMilliseconds(500);
+    private static readonly TimeSpan MaxDeviation = TimeSpan.FromMilliseconds(100);
     private readonly Random _random = Random.Shared;
-    private readonly SemaphoreSlim _throttler = new(1, 1);
+    private readonly SemaphoreSlim _throttler = new(3, 3);
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
