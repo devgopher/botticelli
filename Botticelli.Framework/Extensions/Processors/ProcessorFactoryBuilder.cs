@@ -16,12 +16,10 @@ public static class ProcessorFactoryBuilder
         ProcessorTypes.Add(typeof(TProcessor));
     }
 
-    public static ProcessorFactory Build()
+    public static ProcessorFactory Build(IServiceProvider sp)
     {
         if (_serviceCollection == null) 
             return new ProcessorFactory([]);
-
-        var sp = _serviceCollection.BuildServiceProvider();
 
         var processors = ProcessorTypes
                          .Select(pt =>

@@ -24,6 +24,7 @@ using Botticelli.Shared.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Botticelli.Framework.Telegram.Builders;
@@ -117,7 +118,27 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
         return this;
     }
 
-    protected override TBot? InnerBuild()
+    protected override TBot? InnerBuild(IServiceProvider serviceProvider)
+    {
+        ApplyMigrations(serviceProvider);
+
+        foreach (var sh in _subHandlers) sh.Invoke(serviceProvider);
+
+        if (Activator.CreateInstance(typeof(TBot),
+                _builder.Build(),
+                serviceProvider.GetRequiredService<IBotUpdateHandler>(),
+                serviceProvider.GetRequiredService<ILogger<TBot>>(),
+                serviceProvider.GetRequiredService<ITextTransformer>(),
+                serviceProvider.GetRequiredService<IBotDataAccess>(),
+                serviceProvider.GetService<MetricsProcessor>()) is not TBot bot)
+            throw new InvalidDataException($"{nameof(bot)} shouldn't be null!");
+
+        AddEvents(bot);
+
+        return bot;
+    }
+
+    public TelegramBotBuilder<TBot, TBotBuilder> Prepare()
     {
         if (!_isStandalone)
         {
@@ -180,25 +201,10 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
 
         Services.AddSingleton<ILayoutSupplier<ReplyMarkup>, ReplyTelegramLayoutSupplier>()
             .AddBotticelliFramework()
-            .AddSingleton<IBotUpdateHandler, BotUpdateHandler>();
-
-        var sp = Services.BuildServiceProvider();
-        ApplyMigrations(sp);
-
-        foreach (var sh in _subHandlers) sh.Invoke(sp);
-
-        if (Activator.CreateInstance(typeof(TBot),
-                client,
-                sp.GetRequiredService<IBotUpdateHandler>(),
-                sp.GetRequiredService<ILogger<TBot>>(),
-                sp.GetRequiredService<ITextTransformer>(),
-                sp.GetRequiredService<IBotDataAccess>(),
-                sp.GetService<MetricsProcessor>()) is not TBot bot)
-            throw new InvalidDataException($"{nameof(bot)} shouldn't be null!");
-
-        AddEvents(bot);
-
-        return bot;
+            .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
+            .AddSingleton(client);
+        
+        return this;
     }
 
     private void AddEvents(TBot bot)

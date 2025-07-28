@@ -14,7 +14,7 @@ using User = Botticelli.Shared.ValueObjects.User;
 
 namespace Botticelli.Framework.Telegram.Handlers;
 
-public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHandler
+public class BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider serviceProvider) : IBotUpdateHandler
 {
     private readonly MemoryCacheEntryOptions _entryOptions
         = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(24));
@@ -243,7 +243,7 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger) : IBotUpdateHand
 
         if (token is { CanBeCanceled: true, IsCancellationRequested: true }) return;
 
-        var processorFactory = ProcessorFactoryBuilder.Build();
+        var processorFactory = ProcessorFactoryBuilder.Build(serviceProvider);
 
         var clientNonChainedTasks = processorFactory.GetProcessors()
             .Select(p => p.ProcessAsync(request, token));

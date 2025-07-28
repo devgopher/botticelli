@@ -7,6 +7,7 @@ using Botticelli.Framework.Telegram.Builders;
 using Botticelli.Framework.Telegram.Decorators;
 using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
+using Botticelli.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -105,7 +106,8 @@ public static class ServiceCollectionExtensions
                                                        dataAccessSettingsBuilderFunc,
                                                        telegramBotBuilderFunc);
 
-        services.AddTelegramLayoutsSupport();
+        services.AddTelegramLayoutsSupport()
+            .AddSingleton(botBuilder);
 
         return botBuilder;
     }
@@ -136,6 +138,8 @@ public static class ServiceCollectionExtensions
                   .AddServices(services);
         
         telegramBotBuilderFunc?.Invoke(botBuilder);
+        
+        services.AddSingleton<IBot>(sp => sp.GetRequiredService<TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>>().Build(sp)!);
         
         return botBuilder;
     }
