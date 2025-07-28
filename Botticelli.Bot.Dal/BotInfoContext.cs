@@ -11,7 +11,7 @@ public class BotInfoContext : DbContext
     //
     // }
 
-    public BotInfoContext(DbContextOptions options) : base(options)
+    public BotInfoContext(DbContextOptions<BotInfoContext> options) : base(options)
     {
     }
 
