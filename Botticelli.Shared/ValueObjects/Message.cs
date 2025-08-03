@@ -70,7 +70,7 @@ public class Message()
     /// <summary>
     ///     Message attachments
     /// </summary>
-    public List<BaseAttachment>? Attachments { get; set; }
+    public List<BaseAttachment> Attachments { get; set; } = new();
 
     /// <summary>
     ///     From user
