@@ -2,7 +2,7 @@
 **Botticelli** framework: a chat bot development platform for .NET 
 
 [![License](https://img.shields.io/badge/GPL-license-orange)](https://github.com/devgopher/botticelli?tab=GPL-3.0-1-ov-file)
-[![Release](https://img.shields.io/badge/Release-0.6-orange)](https://github.com/devgopher/botticelli/releases/tag/0.6)
+[![Release](https://img.shields.io/badge/Release-0.7-orange)](https://github.com/devgopher/botticelli/releases/tag/0.7)
 [![Documentations](https://img.shields.io/badge/Documentation-docs-orange.svg?style=flat-square)](http://botticellibots.com/documentation/)
 [![Youtrack Dashboard](https://img.shields.io/badge/Youtrack-dashboard-orange.svg?style=flat-square)](https://botticelli.youtrack.cloud/dashboard)
 
@@ -39,5 +39,7 @@ On a bot side we can implement any business logic we want.
 
 ## Application examples
 [Air quality info bot](https://t.me/air_quality_info_bot) - this Telegram bot gets an air quality for your location
-
 [Air quality info bot sources](https://github.com/devgopher/air_quality_bot) - Air quality bot sources
+
+[Recipes finder bot](https://t.me/cooking_recipes903_bot) - Recipes finder Telegram bot
+[Recipes finder bot sources](https://github.com/devgopher/cookbook_bot) - Recipes finder bot sources
