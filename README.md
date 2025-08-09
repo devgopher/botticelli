@@ -52,3 +52,11 @@ On a bot side we can implement any business logic we want.
 [Recipes finder bot](https://t.me/cooking_recipes903_bot) - Recipes finder Telegram bot
 
 [Recipes finder bot sources](https://github.com/devgopher/cookbook_bot) - Recipes finder bot sources
+
+
+### WikiBooks finder bot
+<img src="https://github.com/devgopher/wikibooks_bot/blob/main/WikiBooksBot/WikiBooksBot/logo.png" alt="Alt Text" width="512" height="auto">
+
+[WikiBooks finder bot](https://t.me/wikibooks_search_bot) - WikiBooks finder Telegram bot
+
+[WikiBooks finder bot sources](https://github.com/devgopher/wikibooks_bot) - WikiBooks finder bot sources
