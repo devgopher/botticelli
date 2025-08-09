@@ -38,12 +38,16 @@ On a bot side we can implement any business logic we want.
 
 
 ## Application examples
+### Air quality bot
+![Air Quality Bot](https://github.com/devgopher/air_quality_bot/blob/master/WeatherQuality/logo.jpg)
+
 [Air quality info bot](https://t.me/air_quality_info_bot) - this Telegram bot gets an air quality for your location
 
 [Air quality info bot sources](https://github.com/devgopher/air_quality_bot) - Air quality bot sources
 
 
-![Air Quality Bot](https://github.com/devgopher/cookbook_bot/blob/main/logo.png)
+### Recipes finder bot
+![Recipes Finder Bot](https://github.com/devgopher/cookbook_bot/blob/main/logo.png)
 
 [Recipes finder bot](https://t.me/cooking_recipes903_bot) - Recipes finder Telegram bot
 
