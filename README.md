@@ -39,7 +39,7 @@ On a bot side we can implement any business logic we want.
 
 ## Application examples
 ### Air quality bot
-![Air Quality Bot](https://github.com/devgopher/air_quality_bot/blob/master/WeatherQuality/air_new_logo.jpg)
+<img src="https://github.com/devgopher/air_quality_bot/blob/master/WeatherQuality/air_new_logo.jpg" alt="Alt Text" width="512" height="auto">
 
 [Air quality info bot](https://t.me/air_quality_info_bot) - this Telegram bot gets an air quality for your location
 
@@ -47,7 +47,7 @@ On a bot side we can implement any business logic we want.
 
 
 ### Recipes finder bot
-![Recipes Finder Bot](https://github.com/devgopher/cookbook_bot/blob/main/logo.png)
+<img src="https://github.com/devgopher/cookbook_bot/blob/main/logo.png" alt="Alt Text" width="512" height="auto">
 
 [Recipes finder bot](https://t.me/cooking_recipes903_bot) - Recipes finder Telegram bot
 
