@@ -55,7 +55,7 @@ public class SendOptionsBuilder<T> : ISendOptionsBuilder<T> where T : class
         return new SendOptionsBuilder<T>();
     }
 
-    public static SendOptionsBuilder<T> CreateBuilder(T input)
+    public static SendOptionsBuilder<T>? CreateBuilder(T input)
     {
         return new SendOptionsBuilder<T>(input);
     }
