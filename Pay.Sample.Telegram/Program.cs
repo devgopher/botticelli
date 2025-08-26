@@ -14,14 +14,14 @@ using TelegramPayBot.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var bot = builder.Services
+builder.Services
        .Configure<PaySettings>(builder.Configuration.GetSection("PaySettings"))
        .AddTelegramPayBot<PayPreCheckoutHandler, DummyPayProcessor<PayPreCheckoutHandler, PreCheckoutQuery>>(builder.Configuration)
-       .Build();
+       .Prepare();
+
 
 builder.Services.AddLogging(cfg => cfg.AddNLog())
-       .AddSingleton<ILayoutParser, JsonLayoutParser>()
-       .AddSingleton<IBot>(bot);
+       .AddSingleton<ILayoutParser, JsonLayoutParser>();
 
 builder.Services.AddBotCommand<InfoCommand>()
        .AddProcessor<InfoCommandProcessor<ReplyKeyboardMarkup>>()

@@ -3,7 +3,6 @@ using Botticelli.Controls.Layouts.Extensions;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Layout;
-using Botticelli.Interfaces;
 using Botticelli.Locations.Telegram.Extensions;
 using NLog.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -12,17 +11,18 @@ using TelegramInlineLayoutsSample.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var bot = builder.Services
+builder.Services
        .AddTelegramBot(builder.Configuration)
-       .Build();
+       .Prepare();
 
 builder.Services
        .AddLogging(cfg => cfg.AddNLog())
        .AddBotCommand<GetCalendarCommand, GetCalendarCommandProcessor, PassValidator<GetCalendarCommand>>()
        .AddInlineCalendar<InlineKeyboardMarkup, InlineTelegramLayoutSupplier, DateChosenCommandProcessor>()
-       .AddOsmLocations(builder.Configuration)
-       .AddSingleton<IBot>(bot);
+       .AddOsmLocations(builder.Configuration);
 
 var app = builder.Build();
+
+app.Services.UseTelegramBot();
 
 await app.RunAsync();
