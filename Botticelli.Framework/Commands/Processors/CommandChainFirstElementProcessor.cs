@@ -21,8 +21,6 @@ public class CommandChainFirstElementProcessor<TInputCommand> : CommandChainProc
     {
     }
 
-    public ICommandChainProcessor Next { get; set; }
-
     public override async Task ProcessAsync(Message message, CancellationToken token)
     {
         Logger.LogDebug(Next == null ?

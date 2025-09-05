@@ -14,12 +14,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 var bot = builder.Services
                  .AddTelegramBot(builder.Configuration)
-                 .Build();
+                 .Prepare();
 
-builder.Services       
-       .AddLogging(cfg => cfg.AddNLog())
-       .AddTelegramLayoutsSupport()
-       .AddSingleton<IBot>(bot);
+builder.Services
+    .AddLogging(cfg => cfg.AddNLog())
+    .AddTelegramLayoutsSupport();
 
 builder.Services
     .AddChainedRedisStorage<string, string>(builder.Configuration)

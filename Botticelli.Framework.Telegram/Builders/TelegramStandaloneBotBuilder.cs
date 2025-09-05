@@ -48,7 +48,7 @@ public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, Teleg
         return this;
     }
 
-    protected override TBot? InnerBuild()
+    protected override TBot? InnerBuild(IServiceProvider serviceProvider)
     {
         Services.AddHttpClient<BotStandaloneService>()
                 .AddServerCertificates(BotSettings);
@@ -58,6 +58,6 @@ public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, Teleg
         Services.AddHostedService<BotStandaloneService>()
                 .AddSingleton(BotData);
 
-        return base.InnerBuild();
+        return base.InnerBuild(serviceProvider);
     }
 }

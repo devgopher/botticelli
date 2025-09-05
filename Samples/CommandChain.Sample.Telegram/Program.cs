@@ -3,7 +3,6 @@ using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
-using Botticelli.Interfaces;
 using MessagingSample.Common.Commands;
 using MessagingSample.Common.Commands.Processors;
 using NLog.Extensions.Logging;
@@ -13,12 +12,11 @@ using TelegramCommandChainSample.Commands.CommandProcessors;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var bot = builder.Services
-                 .AddTelegramBot(builder.Configuration)
-                 .Build();
+builder.Services
+    .AddTelegramBot(builder.Configuration)
+    .Prepare();
         
 builder.Services.AddLogging(cfg => cfg.AddNLog())
-       .AddSingleton<IBot>(bot)
        .AddSingleton<StartCommandProcessor<ReplyKeyboardMarkup>>()
        .AddSingleton<StopCommandProcessor<ReplyKeyboardMarkup>>()
        .AddSingleton<InfoCommandProcessor<ReplyKeyboardMarkup>>()

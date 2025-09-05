@@ -42,10 +42,11 @@ public static class StartupExtensions
     public static CommandAddServices<TCommand> AddBotCommand<TCommand>(this IServiceCollection services)
             where TCommand : class, ICommand
     {
+        var cmd = new CommandAddServices<TCommand>(services);
         services.AddScoped<TCommand>()
-                .AddSingleton<CommandAddServices<TCommand>>(_ => new CommandAddServices<TCommand>(services));
+                .AddSingleton<CommandAddServices<TCommand>>(_ => cmd);
 
-        return services.BuildServiceProvider().GetRequiredService<CommandAddServices<TCommand>>();
+        return cmd;
     }
 
     public static IServiceCollection AddBotCommand<TCommand,
@@ -78,7 +79,7 @@ public static class StartupExtensions
             where TBot : IBot<TBot>
     {
         var commandChainProcessorBuilder = sp.GetRequiredService<CommandChainProcessorBuilder<TCommand>>();
-        commandChainProcessorBuilder.Build();
+        commandChainProcessorBuilder.Build(sp);
 
         return sp;
     }

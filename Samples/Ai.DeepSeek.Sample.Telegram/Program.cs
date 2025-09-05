@@ -14,22 +14,21 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var bot = builder.Services
-                 .AddTelegramBot(builder.Configuration)
-                 .Build();
+builder.Services
+    .AddTelegramBot(builder.Configuration)
+    .Prepare();
 
 builder.Services
-       .AddLogging(cfg => cfg.AddNLog())
-       .AddDeepSeekProvider(builder.Configuration)
-       .AddAiValidation()
-       .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
-       .AddSingleton<AiHandler>()
-       .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
-       .UsePassBusClient<IBot<TelegramBot>>()
-       .UsePassEventBusClient<IBot<TelegramBot>>()
-       .AddBotCommand<AiCommand, AiCommandProcessor<ReplyKeyboardMarkup>, PassValidator<AiCommand>>()
-       .AddTelegramLayoutsSupport()
-       .AddSingleton<IBot>(bot);
+    .AddLogging(cfg => cfg.AddNLog())
+    .AddDeepSeekProvider(builder.Configuration)
+    .AddAiValidation()
+    .AddScoped<ICommandValidator<AiCommand>, PassValidator<AiCommand>>()
+    .AddSingleton<AiHandler>()
+    .UsePassBusAgent<IBot<TelegramBot>, AiHandler>()
+    .UsePassBusClient<IBot<TelegramBot>>()
+    .UsePassEventBusClient<IBot<TelegramBot>>()
+    .AddBotCommand<AiCommand, AiCommandProcessor<ReplyKeyboardMarkup>, PassValidator<AiCommand>>()
+    .AddTelegramLayoutsSupport();
 
 var app = builder.Build();
 

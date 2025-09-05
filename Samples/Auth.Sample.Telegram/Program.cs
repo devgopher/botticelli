@@ -4,21 +4,19 @@ using Botticelli.Auth.Data.Sqlite;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Telegram.Extensions;
-using Botticelli.Interfaces;
 using NLog.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var bot = builder.Services
-                 .AddTelegramBot(builder.Configuration)
-                 .Build();
+builder.Services
+       .AddTelegramBot(builder.Configuration)
+       .Prepare();
 
 builder.Services
        .AddTelegramLayoutsSupport()
        .AddLogging(cfg => cfg.AddNLog())
-       .AddSqliteBasicBotUserAuth(builder.Configuration)
-       .AddSingleton<IBot>(bot);
+       .AddSqliteBasicBotUserAuth(builder.Configuration);
 
 builder.Services.AddBotCommand<StartCommand>()
        .AddProcessor<StartCommandProcessor<ReplyKeyboardMarkup>>()
