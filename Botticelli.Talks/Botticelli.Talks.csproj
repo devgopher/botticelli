@@ -32,9 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="..\new_logo_compact.png">
-			<Link>new_logo_compact.png</Link>
-		</Content>
+		<None Include="..\new_logo_compact.png" Pack="true" PackagePath=""/>
 	</ItemGroup>
 
 </Project>
