@@ -24,7 +24,7 @@ namespace Botticelli.Broadcasting;
 public class BroadcastReceiver<TBot> : IHostedService
     where TBot : BaseBot, IBot<TBot>
 {
-    private readonly TBot _bot;
+    private TBot? _bot;
     private readonly BroadcastingContext _context;
     private readonly TimeSpan _longPollTimeout = TimeSpan.FromSeconds(30);
     private readonly TimeSpan _retryPause = TimeSpan.FromMilliseconds(150);
@@ -35,7 +35,6 @@ public class BroadcastReceiver<TBot> : IHostedService
     {
         _settings = settings;
         _scope = serviceProvider.CreateScope();
-        _bot = _scope.ServiceProvider.GetRequiredService<TBot>();
         _context = _scope.ServiceProvider.GetRequiredService<BroadcastingContext>();
     }
 
@@ -48,6 +47,7 @@ public class BroadcastReceiver<TBot> : IHostedService
 
         await updatePolicy.ExecuteAsync(async () =>
         {
+            _bot ??= _scope.ServiceProvider.GetRequiredService<TBot>();;
             var updates = await GetUpdates(cancellationToken);
 
             if (updates?.Messages == null) return updates;

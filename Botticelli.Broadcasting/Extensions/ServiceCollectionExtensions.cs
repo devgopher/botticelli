@@ -19,22 +19,20 @@ public static class ServiceCollectionExtensions
     /// <typeparam name="TBotBuilder"></typeparam>
     /// <param name="botBuilder"></param>
     /// <param name="config"></param>
-    /// <param name="dbOptionsBuilder"></param>
     /// <returns></returns>
     public static BotBuilder<TBot, TBotBuilder> AddBroadcasting<TBot, TBotBuilder>(this BotBuilder<TBot, TBotBuilder> botBuilder, 
-        IConfiguration config,
-        Action<DbContextOptionsBuilder>? dbOptionsBuilder = null)
+                                                                                   IConfiguration config)
             where TBot : BaseBot, IBot<TBot> 
             where TBotBuilder : BotBuilder<TBot, TBotBuilder>
     {
-        var settings = config.Get<BroadcastingSettings>();
+        var settings = config.GetSection(BroadcastingSettings.Section).Get<BroadcastingSettings>();
 
         if (settings == null) throw new ConfigurationErrorsException("Broadcasting settings are missing!");
 
         botBuilder.Services
             .AddHostedService<BroadcastReceiver<TBot>>()
-            .AddDbContext<BroadcastingContext>(dbOptionsBuilder);
-     
+            .AddDbContext<BroadcastingContext>(opt => opt.UseSqlite($"Data source={settings.ConnectionString}"));
+        
         ApplyMigrations(botBuilder.Services);
         
         return botBuilder.AddOnMessageReceived((_, args) =>
@@ -50,8 +48,13 @@ public static class ServiceCollectionExtensions
             context.SaveChanges();
         });
     }
-    
-    private static void ApplyMigrations(IServiceCollection services) =>
-        services.BuildServiceProvider()
-            .GetRequiredService<BroadcastingContext>().Database.Migrate();
+
+    private static void ApplyMigrations(IServiceCollection services)
+    {
+        var sp = services.BuildServiceProvider();
+        var context = sp.GetRequiredService<BroadcastingContext>();
+
+        if (context.Database.EnsureCreated())
+            context.Database.Migrate();
+    }
 }
