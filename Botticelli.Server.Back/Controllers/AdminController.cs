@@ -5,6 +5,7 @@ using Botticelli.Server.Data.Entities.Bot.Broadcasting;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -75,14 +76,15 @@ public class AdminController
     /// <param name="botId"></param>
     /// <param name="message"></param>
     /// <returns></returns>
-    [HttpGet("[action]")]
-    public async Task SendBroadcast([FromQuery] string botId, [FromQuery] string message)
+    [HttpPost("[action]")]
+    public async Task SendBroadcast([FromQuery] string botId, [FromBody] Message message)
     {
         await _broadcastService.BroadcastMessage(new Broadcast
         {
-            Id = Guid.NewGuid().ToString(),
-            BotId = botId,
-            Body = message
+            Id = message.Uid  ?? throw new NullReferenceException("Id cannot be null!"),
+            BotId = botId ?? throw new NullReferenceException("BotId cannot be null!"),
+            Body = message.Body ?? throw new NullReferenceException("Body cannot be null!"),
+            Sent = true
         });
     }
 

@@ -4,6 +4,7 @@ using Botticelli.Broadcasting.Dal;
 using Botticelli.Broadcasting.Settings;
 using Botticelli.Framework;
 using Botticelli.Interfaces;
+using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
 using Flurl.Http;
@@ -20,7 +21,7 @@ namespace Botticelli.Broadcasting;
 /// the lifecycle of the service within a hosted environment.
 /// </summary>
 /// <typeparam name="TBot">The type of bot that implements IBot interface.</typeparam>
-public class Broadcaster<TBot> : IHostedService
+public class BroadcastReceiver<TBot> : IHostedService
     where TBot : BaseBot, IBot<TBot>
 {
     private readonly TBot _bot;
@@ -30,7 +31,7 @@ public class Broadcaster<TBot> : IHostedService
     private readonly IServiceScope _scope;
     private readonly IOptionsSnapshot<BroadcastingSettings> _settings;
 
-    public Broadcaster(IServiceProvider serviceProvider, IOptionsSnapshot<BroadcastingSettings> settings)
+    public BroadcastReceiver(IServiceProvider serviceProvider, IOptionsSnapshot<BroadcastingSettings> settings)
     {
         _settings = settings;
         _scope = serviceProvider.CreateScope();
@@ -51,6 +52,8 @@ public class Broadcaster<TBot> : IHostedService
 
             if (updates?.Messages == null) return updates;
 
+            var messageIds = new List<string>();
+            
             foreach (var update in updates.Messages)
             {
                 // if no chat were specified - broadcast on all chats, we've
@@ -61,7 +64,10 @@ public class Broadcaster<TBot> : IHostedService
                     Message = update
                 };
 
-                await _bot.SendMessageAsync(request, cancellationToken);
+                var response = await _bot.SendMessageAsync(request, cancellationToken);
+
+                if (response.MessageSentStatus == MessageSentStatus.Ok) 
+                    await SendBroadcastReceived(messageIds, cancellationToken);
             }
 
             return updates;
@@ -77,7 +83,7 @@ public class Broadcaster<TBot> : IHostedService
 
     private async Task<GetBroadCastMessagesResponse?> GetUpdates(CancellationToken cancellationToken)
     {
-        var updatesResponse = await $"{_settings.Value.ServerUri}/client/broadcast"
+        var updatesResponse = await $"{_settings.Value.ServerUri}/client/GetBroadcast"
             .WithTimeout(_longPollTimeout)
             .PostJsonAsync(new GetBroadCastMessagesRequest
             {
@@ -90,5 +96,22 @@ public class Broadcaster<TBot> : IHostedService
         return await updatesResponse.ResponseMessage.Content
             .ReadFromJsonAsync<GetBroadCastMessagesResponse>(
                 cancellationToken);
+    }
+
+    private async Task<GetBroadCastMessagesResponse?> SendBroadcastReceived(List<string> chatIds, CancellationToken cancellationToken)
+    {
+        var updatesResponse = await $"{_settings.Value.ServerUri}/client/BroadcastReceived"
+                                    .WithTimeout(_longPollTimeout)
+                                    .PostJsonAsync(new BroadCastMessagesReceivedRequest
+                                                   {
+                                                       BotId = _settings.Value.BotId,
+                                                       MessageIds = chatIds.ToArray()
+                                                   },
+                                                   cancellationToken: cancellationToken);
+
+        if (!updatesResponse.ResponseMessage.IsSuccessStatusCode) return null;
+
+        return await updatesResponse.ResponseMessage.Content
+                                    .ReadFromJsonAsync<GetBroadCastMessagesResponse>(cancellationToken);
     }
 }

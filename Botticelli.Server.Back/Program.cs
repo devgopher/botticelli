@@ -93,6 +93,7 @@ builder.Services
        .AddScoped<IPasswordSender, PasswordSender>()
        .AddSingleton<IMapper, Mapper>()
        .AddScoped<ISender, SslMailKitSender>()
+       .AddBroadcasting()
        .AddDbContext<ServerDataContext>(options =>
                                                 options.UseSqlite($"Data source={serverSettings.SecureStorageConnection}"))
        .AddDefaultIdentity<IdentityUser<string>>(options => options

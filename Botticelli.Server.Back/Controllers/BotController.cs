@@ -98,11 +98,11 @@ public class BotController(
     /// <returns></returns>
     [AllowAnonymous]
     [HttpPost("client/[action]")]
-    public async Task<GetBroadCastMessagesResponse> Broadcast([FromBody] GetBroadCastMessagesRequest request)
+    public async Task<GetBroadCastMessagesResponse> GetBroadcast([FromBody] GetBroadCastMessagesRequest request)
     {
         try
         {
-            logger.LogTrace($"{nameof(Broadcast)}({request.BotId})...");
+            logger.LogTrace($"{nameof(GetBroadcast)}({request.BotId})...");
             request.BotId?.NotNullOrEmpty();
 
             var broadcastMessages = await broadcastService.GetMessages(request.BotId!);
@@ -122,7 +122,7 @@ public class BotController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, $"{nameof(Broadcast)}({request.BotId}) error: {ex.Message}");
+            logger.LogError(ex, $"{nameof(GetBroadcast)}({request.BotId}) error: {ex.Message}");
 
             return new GetBroadCastMessagesResponse
             {
@@ -144,7 +144,7 @@ public class BotController(
     {
         try
         {
-            logger.LogTrace($"{nameof(Broadcast)}({request.BotId})...");
+            logger.LogTrace($"{nameof(GetBroadcast)}({request.BotId})...");
             request.BotId?.NotNullOrEmpty();
 
             foreach (var messageId in request.MessageIds) await broadcastService.MarkReceived(request.BotId!, messageId);

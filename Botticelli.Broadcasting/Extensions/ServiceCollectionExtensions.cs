@@ -32,7 +32,7 @@ public static class ServiceCollectionExtensions
         if (settings == null) throw new ConfigurationErrorsException("Broadcasting settings are missing!");
 
         botBuilder.Services
-            .AddHostedService<Broadcaster<TBot>>()
+            .AddHostedService<BroadcastReceiver<TBot>>()
             .AddDbContext<BroadcastingContext>(dbOptionsBuilder);
      
         ApplyMigrations(botBuilder.Services);
