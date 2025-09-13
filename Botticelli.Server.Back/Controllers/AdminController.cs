@@ -17,34 +17,22 @@ namespace Botticelli.Server.Back.Controllers;
 [ApiController]
 [Authorize(AuthenticationSchemes = "Bearer")]
 [Route("/v1/admin")]
-public class AdminController
+public class AdminController(
+    IBotManagementService botManagementService,
+    IBotStatusDataService botStatusDataService,
+    ILogger<AdminController> logger,
+    IBroadcastService broadcastService)
 {
-    private readonly IBotManagementService _botManagementService;
-    private readonly IBotStatusDataService _botStatusDataService;
-    private readonly IBroadcastService _broadcastService;
-    private readonly ILogger<AdminController> _logger;
-
-    public AdminController(IBotManagementService botManagementService,
-                           IBotStatusDataService botStatusDataService,
-                           ILogger<AdminController> logger,
-                           IBroadcastService broadcastService)
-    {
-        _botManagementService = botManagementService;
-        _botStatusDataService = botStatusDataService;
-        _logger = logger;
-        _broadcastService = broadcastService;
-    }
-
     [HttpPost("[action]")]
     public async Task<RegisterBotResponse> AddNewBot([FromBody] RegisterBotRequest request)
     {
-        _logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) started...");
-        var success = await _botManagementService.RegisterBot(request.BotId,
+        logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) started...");
+        var success = await botManagementService.RegisterBot(request.BotId,
                                                               request.BotKey,
                                                               request.BotName,
                                                               request.Type);
 
-        _logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) success: {success}...");
+        logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) success: {success}...");
 
         return new RegisterBotResponse
         {
@@ -56,12 +44,12 @@ public class AdminController
     [HttpPut("[action]")]
     public async Task<UpdateBotResponse> UpdateBot([FromBody] UpdateBotRequest request)
     {
-        _logger.LogInformation($"{nameof(UpdateBot)}({request.BotId}) started...");
-        var success = await _botManagementService.UpdateBot(request.BotId,
+        logger.LogInformation($"{nameof(UpdateBot)}({request.BotId}) started...");
+        var success = await botManagementService.UpdateBot(request.BotId,
                                                             request.BotKey,
                                                             request.BotName);
 
-        _logger.LogInformation($"{nameof(UpdateBot)}({request.BotId}) success: {success}...");
+        logger.LogInformation($"{nameof(UpdateBot)}({request.BotId}) success: {success}...");
 
         return new UpdateBotResponse
         {
@@ -79,7 +67,7 @@ public class AdminController
     [HttpPost("[action]")]
     public async Task SendBroadcast([FromQuery] string botId, [FromBody] Message message)
     {
-        await _broadcastService.BroadcastMessage(new Broadcast
+        await broadcastService.BroadcastMessage(new Broadcast
         {
             Id = message.Uid  ?? throw new NullReferenceException("Id cannot be null!"),
             BotId = botId ?? throw new NullReferenceException("BotId cannot be null!"),
@@ -91,24 +79,24 @@ public class AdminController
     [HttpGet("[action]")]
     public Task<ICollection<BotInfo>> GetBots()
     {
-        return Task.FromResult(_botStatusDataService.GetBots());
+        return Task.FromResult(botStatusDataService.GetBots());
     }
 
     [HttpGet("[action]")]
     public async Task ActivateBot([FromQuery] string botId)
     {
-        await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Unlocked);
+        await botManagementService.SetRequiredBotStatus(botId, BotStatus.Unlocked);
     }
 
     [HttpGet("[action]")]
     public async Task DeactivateBot([FromQuery] string botId)
     {
-        await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Locked);
+        await botManagementService.SetRequiredBotStatus(botId, BotStatus.Locked);
     }
 
     [HttpGet("[action]")]
     public async Task RemoveBot([FromQuery] string botId)
     {
-        await _botManagementService.RemoveBot(botId);
+        await botManagementService.RemoveBot(botId);
     }
 }

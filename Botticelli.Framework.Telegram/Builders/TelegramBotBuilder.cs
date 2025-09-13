@@ -1,4 +1,3 @@
-using System.Reflection;
 using Botticelli.Bot.Data;
 using Botticelli.Bot.Data.Repositories;
 using Botticelli.Bot.Data.Settings;
@@ -19,12 +18,10 @@ using Botticelli.Framework.Telegram.Http;
 using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Framework.Telegram.Utils;
-using Botticelli.Interfaces;
 using Botticelli.Shared.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Botticelli.Framework.Telegram.Builders;
@@ -134,7 +131,7 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
             throw new InvalidDataException($"{nameof(bot)} shouldn't be null!");
 
         AddEvents(bot);
-
+        
         return bot;
     }
 

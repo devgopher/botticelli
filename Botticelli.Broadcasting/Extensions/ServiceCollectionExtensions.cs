@@ -7,6 +7,7 @@ using Botticelli.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Botticelli.Broadcasting.Extensions;
 
@@ -28,11 +29,15 @@ public static class ServiceCollectionExtensions
         var settings = config.GetSection(BroadcastingSettings.Section).Get<BroadcastingSettings>();
 
         if (settings == null) throw new ConfigurationErrorsException("Broadcasting settings are missing!");
-
+        
         botBuilder.Services
             .AddDbContext<BroadcastingContext>(opt => opt.UseSqlite($"Data source={settings.ConnectionString}"));
 
-        botBuilder.AddBuildAction(() => botBuilder.Services.AddHostedService<BroadcastReceiver<TBot>>());
+        botBuilder.Services.AddHostedService<BroadcastReceiver<TBot>>(s =>
+            new BroadcastReceiver<TBot>(s.GetRequiredService<IBot<TBot>>(),
+                s.GetRequiredService<BroadcastingContext>(),
+                settings,
+                s.GetRequiredService<ILogger<BroadcastReceiver<TBot>>>()));
         
         ApplyMigrations(botBuilder.Services);
         

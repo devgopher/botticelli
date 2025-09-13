@@ -130,7 +130,7 @@ public static class ServiceCollectionExtensions
 
         var clientBuilder = TelegramClientDecoratorBuilder.Instance(services, SettingsBuilder);
 
-        TBotBuilder botBuilder = TelegramBotBuilder<TBot>.Instance<TBotBuilder>(services,
+        TBotBuilder? botBuilder = TelegramBotBuilder<TBot>.Instance<TBotBuilder>(services,
             ServerSettingsBuilder,
             SettingsBuilder,
             DataAccessSettingsBuilder,
