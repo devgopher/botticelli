@@ -7,9 +7,11 @@ using Botticelli.Interfaces;
 using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.ValueObjects;
 using Flurl.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 
@@ -30,10 +32,14 @@ public class BroadcastReceiver<TBot> : IHostedService
     private readonly TimeSpan _retryPause = TimeSpan.FromMilliseconds(150);
     private readonly IServiceScope _scope;
     private readonly IOptionsSnapshot<BroadcastingSettings> _settings;
-
-    public BroadcastReceiver(IServiceProvider serviceProvider, IOptionsSnapshot<BroadcastingSettings> settings)
+    private readonly ILogger<BroadcastReceiver<TBot>> _logger;
+    
+    public BroadcastReceiver(IServiceProvider serviceProvider,
+                             IOptionsSnapshot<BroadcastingSettings> settings, 
+                             ILogger<BroadcastReceiver<TBot>> logger)
     {
         _settings = settings;
+        _logger = logger;
         _scope = serviceProvider.CreateScope();
         _context = _scope.ServiceProvider.GetRequiredService<BroadcastingContext>();
     }
@@ -41,37 +47,51 @@ public class BroadcastReceiver<TBot> : IHostedService
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         // Polls admin API for new messages to send to our chats and adds them to a MessageCache/MessageStatus
-        var updatePolicy = Policy.Handle<FlurlHttpException>(ex =>
-                ex.Call.Response.ResponseMessage.StatusCode == HttpStatusCode.RequestTimeout)
-            .WaitAndRetryForeverAsync((_, _) => _retryPause);
+        await Task.Run(async () =>
+                       {
+                           while (!cancellationToken.IsCancellationRequested)
+                           {
+                               try
+                               {
+                                   _bot ??= _scope.ServiceProvider.GetService<TBot>();
 
-        await updatePolicy.ExecuteAsync(async () =>
-        {
-            _bot ??= _scope.ServiceProvider.GetRequiredService<TBot>();;
-            var updates = await GetUpdates(cancellationToken);
+                                   if (_bot == null)
+                                   {
+                                       _logger.LogError("Bot isn't initialized yet!");
 
-            if (updates?.Messages == null) return updates;
+                                       continue;
+                                   }
 
-            var messageIds = new List<string>();
-            
-            foreach (var update in updates.Messages)
-            {
-                // if no chat were specified - broadcast on all chats, we've
-                if (update.ChatIds.Count == 0) update.ChatIds = _context.Chats.Select(x => x.ChatId).ToList();
+                                   var updates = await GetUpdates(cancellationToken);
 
-                var request = new SendMessageRequest
-                {
-                    Message = update
-                };
+                                   if (updates?.Messages == null) continue;
 
-                var response = await _bot.SendMessageAsync(request, cancellationToken);
+                                   var messageIds = new List<string>();
 
-                if (response.MessageSentStatus == MessageSentStatus.Ok) 
-                    await SendBroadcastReceived(messageIds, cancellationToken);
-            }
+                                   foreach (var update in updates.Messages)
+                                   {
+                                       // if no chat were specified - broadcast on all chats, we've
+                                       if (update.ChatIds.Count == 0) update.ChatIds = _context.Chats.Select(x => x.ChatId).ToList();
 
-            return updates;
-        });
+                                       var request = new SendMessageRequest
+                                       {
+                                           Message = update
+                                       };
+
+                                       var response = await _bot.SendMessageAsync(request, cancellationToken);
+
+                                       if (response.MessageSentStatus == MessageSentStatus.Ok) await SendBroadcastReceived(messageIds, cancellationToken);
+                                   }
+                               }
+                               catch (Exception ex)
+                               {
+                                   _logger.LogError(ex, ex.Message);
+                               }
+
+                               await Task.Delay(_retryPause, cancellationToken);
+                           }
+                       },
+                       cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

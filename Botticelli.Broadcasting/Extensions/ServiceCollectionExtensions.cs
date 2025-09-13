@@ -30,8 +30,9 @@ public static class ServiceCollectionExtensions
         if (settings == null) throw new ConfigurationErrorsException("Broadcasting settings are missing!");
 
         botBuilder.Services
-            .AddHostedService<BroadcastReceiver<TBot>>()
             .AddDbContext<BroadcastingContext>(opt => opt.UseSqlite($"Data source={settings.ConnectionString}"));
+
+        botBuilder.AddBuildAction(() => botBuilder.Services.AddHostedService<BroadcastReceiver<TBot>>());
         
         ApplyMigrations(botBuilder.Services);
         

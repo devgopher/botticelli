@@ -113,7 +113,8 @@ public static class ServiceCollectionExtensions
         return botBuilder;
     }
 
-    static TBotBuilder InnerBuild<TBot, TBotBuilder>(IServiceCollection services, Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
+    static TBotBuilder InnerBuild<TBot, TBotBuilder>(IServiceCollection services,
+                                                     Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
         Action<AnalyticsClientSettingsBuilder<AnalyticsClientSettings>> analyticsOptionsBuilderFunc,
         Action<ServerSettingsBuilder<ServerSettings>> serverSettingsBuilderFunc, 
         Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc,
@@ -141,7 +142,8 @@ public static class ServiceCollectionExtensions
         
         telegramBotBuilderFunc?.Invoke(botBuilder);
         
-        services.AddSingleton<IBot>(sp => sp.GetRequiredService<TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>>().Build(sp)!);
+        services.AddSingleton<IBot>(sp => sp.GetRequiredService<TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>>>()
+                                            .Build(sp)!);
         
         return botBuilder;
     }

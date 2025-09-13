@@ -45,6 +45,8 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>, IBotBuil
     protected BaseBot.MsgRemovedEventHandler? MessageRemoved;
     protected BaseBot.ContactSharedEventHandler? SharedContact;
     protected BaseBot.NewChatMembersEventHandler? NewChatMembers;
+
+    protected List<Action> BuildActions = new();
     
     protected override void Assert()
     {
@@ -110,6 +112,13 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>, IBotBuil
     {
         SharedContact += handler;
 
+        return this;
+    }
+    
+    public  virtual BotBuilder<TBot, TBotBuilder> AddBuildAction(Action buildAction)
+    {
+        BuildActions.Add(buildAction);
+        
         return this;
     }
 }
