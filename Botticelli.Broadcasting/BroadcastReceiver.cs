@@ -104,7 +104,7 @@ public class BroadcastReceiver<TBot> : IHostedService
                 cancellationToken);
     }
 
-    private async Task<GetBroadCastMessagesResponse?> SendBroadcastReceived(List<string> chatIds, CancellationToken cancellationToken)
+    private async Task<BroadCastMessagesReceivedResponse?> SendBroadcastReceived(List<string> chatIds, CancellationToken cancellationToken)
     {
         var updatesResponse = await $"{_settings.ServerUri}/bot/client/BroadcastReceived"
                                     .WithTimeout(_longPollTimeout)
@@ -118,6 +118,6 @@ public class BroadcastReceiver<TBot> : IHostedService
         if (!updatesResponse.ResponseMessage.IsSuccessStatusCode) return null;
 
         return await updatesResponse.ResponseMessage.Content
-                                    .ReadFromJsonAsync<GetBroadCastMessagesResponse>(cancellationToken);
+                                    .ReadFromJsonAsync<BroadCastMessagesReceivedResponse>(cancellationToken);
     }
 }

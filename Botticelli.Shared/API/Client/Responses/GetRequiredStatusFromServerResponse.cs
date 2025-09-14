@@ -8,5 +8,5 @@ public class GetRequiredStatusFromServerResponse : ServerBaseResponse
     public required string BotId { get; set; }
     public BotStatus? Status { get; set; }
 
-    public required BotContext BotContext { get; set; }
+    public required BotContext? BotContext { get; set; }
 }

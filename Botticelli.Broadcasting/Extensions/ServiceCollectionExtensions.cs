@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using Botticelli.Broadcasting.Dal;
+using Botticelli.Broadcasting.Dal.Models;
 using Botticelli.Broadcasting.Settings;
 using Botticelli.Framework;
 using Botticelli.Framework.Builders;
@@ -33,20 +34,27 @@ public static class ServiceCollectionExtensions
         botBuilder.Services
             .AddDbContext<BroadcastingContext>(opt => opt.UseSqlite($"Data source={settings.ConnectionString}"));
 
-        botBuilder.Services.AddHostedService<BroadcastReceiver<TBot>>(s =>
-            new BroadcastReceiver<TBot>(s.GetRequiredService<IBot<TBot>>(),
-                s.GetRequiredService<BroadcastingContext>(),
+        botBuilder.Services.AddHostedService<BroadcastReceiver<TBot>>(sp =>
+            new BroadcastReceiver<TBot>(sp.GetRequiredService<IBot>(),
+                sp.GetRequiredService<BroadcastingContext>(),
                 settings,
-                s.GetRequiredService<ILogger<BroadcastReceiver<TBot>>>()));
+                sp.GetRequiredService<ILogger<BroadcastReceiver<TBot>>>()));
         
         ApplyMigrations(botBuilder.Services);
         
         return botBuilder.AddOnMessageReceived((_, args) =>
         {
             var context = botBuilder.Services.BuildServiceProvider().GetRequiredService<BroadcastingContext>();
-            
-            var disabledChats = context.Chats.Where(c => !c.IsActive && args.Message.ChatIds.Contains(c.ChatId)).AsQueryable();
-            var nonExistingChats = context.Chats.Where(c => !args.Message.ChatIds.Contains(c.ChatId)).ToArray();
+
+            var disabledChats = context.Chats.Where(c => !c.IsActive && args.Message.ChatIds.Contains(c.ChatId))
+                .AsQueryable();
+            var nonExistingChats = args.Message.ChatIds.Where(c => context.Chats.All(cc => cc.ChatId != c))
+                .Select(c  => new Chat
+                {
+                    ChatId = c,
+                    IsActive = true
+                })
+                .ToList();
 
             context.Chats.AddRange(nonExistingChats);
             disabledChats.ExecuteUpdate(c => c.SetProperty(chat => chat.IsActive, true));

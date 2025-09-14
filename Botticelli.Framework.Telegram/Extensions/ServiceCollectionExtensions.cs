@@ -130,13 +130,16 @@ public static class ServiceCollectionExtensions
 
         var clientBuilder = TelegramClientDecoratorBuilder.Instance(services, SettingsBuilder);
 
-        TBotBuilder? botBuilder = TelegramBotBuilder<TBot>.Instance<TBotBuilder>(services,
+        var botBuilder = TelegramBotBuilder<TBot>.Instance<TBotBuilder>(services,
             ServerSettingsBuilder,
             SettingsBuilder,
             DataAccessSettingsBuilder,
             AnalyticsClientOptionsBuilder,
             false);
 
+        if (botBuilder == null)
+            throw new ApplicationException("bot builder is null!");
+        
         botBuilder.AddClient(clientBuilder)
                   .AddServices(services);
         
