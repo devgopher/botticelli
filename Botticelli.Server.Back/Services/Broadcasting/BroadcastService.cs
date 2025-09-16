@@ -17,7 +17,7 @@ public class BroadcastService(ServerDataContext context) : IBroadcastService
 
     public async Task<IEnumerable<Broadcast>> GetMessages(string botId)
     {
-        return await context.BroadcastMessages.Where(m => m.BotId.Equals(botId)).ToArrayAsync();
+        return await context.BroadcastMessages.Where(m => m.BotId.Equals(botId) && !m.Received).ToArrayAsync();
     }
 
     public async Task MarkReceived(string botId, string messageId)

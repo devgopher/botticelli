@@ -19,19 +19,6 @@ public abstract class BotBuilder<TBot>
     protected abstract TBot? InnerBuild(IServiceProvider serviceProvider);
 }
 
-public interface IBotBuilder<TBot, TBotBuilder> where TBotBuilder : BotBuilder<TBot, TBotBuilder>
-{
-    BotBuilder<TBot, TBotBuilder> AddServices(IServiceCollection services);
-    BotBuilder<TBot, TBotBuilder> AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder);
-    BotBuilder<TBot, TBotBuilder> AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder);
-    BotBuilder<TBot, TBotBuilder> AddOnMessageSent(BaseBot.MsgSentEventHandler handler);
-    BotBuilder<TBot, TBotBuilder> AddOnMessageReceived(BaseBot.MsgReceivedEventHandler handler);
-    BotBuilder<TBot, TBotBuilder> AddOnMessageRemoved(BaseBot.MsgRemovedEventHandler handler);
-    BotBuilder<TBot, TBotBuilder> AddNewChatMembers(BaseBot.NewChatMembersEventHandler handler);
-    BotBuilder<TBot, TBotBuilder> AddSharedContact(BaseBot.ContactSharedEventHandler handler);
-    TBot? Build(IServiceProvider serviceProvider);
-}
-
 public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>, IBotBuilder<TBot, TBotBuilder> 
     where TBotBuilder : BotBuilder<TBot, TBotBuilder>
 {
@@ -46,8 +33,6 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>, IBotBuil
     protected BaseBot.ContactSharedEventHandler? SharedContact;
     protected BaseBot.NewChatMembersEventHandler? NewChatMembers;
 
-    protected List<Action> BuildActions = new();
-    
     protected override void Assert()
     {
     }
@@ -112,13 +97,6 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>, IBotBuil
     {
         SharedContact += handler;
 
-        return this;
-    }
-    
-    public  virtual BotBuilder<TBot, TBotBuilder> AddBuildAction(Action buildAction)
-    {
-        BuildActions.Add(buildAction);
-        
         return this;
     }
 }

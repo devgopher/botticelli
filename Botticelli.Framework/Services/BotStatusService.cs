@@ -32,7 +32,7 @@ public class BotStatusService(
     }
 
     /// <summary>
-    ///     Get required status for a bot from server
+    ///     Get the required status for a bot from server
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
@@ -64,11 +64,31 @@ public class BotStatusService(
 
         var taskResult = task.Result;
 
-        if (taskResult == null) throw new BotException("No result from server!");
+        if (taskResult == null)
+        {
+            logger.LogError("No result from server!");
+            
+            return Task.FromResult<GetRequiredStatusFromServerResponse?>(new GetRequiredStatusFromServerResponse
+            {
+                Status = BotStatus.Unknown,
+                BotId = BotId ?? string.Empty,
+                BotContext = null
+            });
+        }
 
         var botContext = taskResult.BotContext;
 
-        if (botContext == null) throw new BotException("No bot context from server!");
+        if (botContext == null)
+        {
+            logger.LogError("No bot context from server!");
+            
+            return Task.FromResult<GetRequiredStatusFromServerResponse?>(new GetRequiredStatusFromServerResponse
+            {
+                Status = BotStatus.Unknown,
+                BotId = BotId ?? string.Empty,
+                BotContext = null
+            });
+        }
 
         var botData = new BotData.Entities.Bot.BotData
         {
@@ -77,7 +97,7 @@ public class BotStatusService(
             BotKey = botContext.BotKey,
             AdditionalInfo = botContext.Items?.Select(it => new BotAdditionalInfo
                                        {
-                                           BotId = taskResult!.BotId,
+                                           BotId = taskResult.BotId,
                                            ItemName = it.Key,
                                            ItemValue = it.Value
                                        })

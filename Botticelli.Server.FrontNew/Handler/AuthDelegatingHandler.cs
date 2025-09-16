@@ -1,31 +1,19 @@
 ﻿using System.Net.Http.Headers;
-using System.Security.Authentication;
 using Botticelli.Server.FrontNew.Clients;
 
 namespace Botticelli.Server.FrontNew.Handler;
 
-public class AuthDelegatingHandler : DelegatingHandler
+public class AuthDelegatingHandler(SessionClient sessionClient) : DelegatingHandler
 {
-    private readonly SessionClient _sessionClient;
-
-    public AuthDelegatingHandler(SessionClient sessionClient)
-    {
-        _sessionClient = sessionClient;
-    }
-
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-                                                                 CancellationToken cancellationToken)
+        CancellationToken cancellationToken)
     {
-        var session = _sessionClient.GetSession();
+        var session = sessionClient.GetSession();
 
-        Console.WriteLine($"Botticelli.Auth.Sample.Telegram delegating got session: {session?.Token}");
-
-        if (session == null) throw new AuthenticationException("Can't find session!");
+        if (session == null) throw new UnauthorizedAccessException("Can't find session!");
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", session.Token);
 
-        var response = await base.SendAsync(request, cancellationToken);
-
-        return response;
+        return await base.SendAsync(request, cancellationToken);
     }
 }

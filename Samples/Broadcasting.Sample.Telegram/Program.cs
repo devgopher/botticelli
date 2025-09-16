@@ -17,4 +17,8 @@ builder.Services.AddBotCommand<StartCommand>()
        .AddProcessor<StartCommandProcessor<ReplyKeyboardMarkup>>()
        .AddValidator<PassValidator<StartCommand>>();
 
-await builder.Build().RunAsync();
+var app = builder.Build();
+app.Urls.Clear();       
+app.Urls.Add("http://localhost:5044");
+
+await app.RunAsync();

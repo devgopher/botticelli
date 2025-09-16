@@ -32,7 +32,7 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider
     {
         try
         {
-            // caching updates in order to avoid message "cloning"
+            // caching updates to avoid message "cloning"
             if (_memoryCache.TryGetValue(update.Id, out _)) return;
 
             _memoryCache.Set(update.Id, update, _entryOptions);

@@ -21,8 +21,4 @@ builder.Services
        .AddInlineCalendar<InlineKeyboardMarkup, InlineTelegramLayoutSupplier, DateChosenCommandProcessor>()
        .AddOsmLocations(builder.Configuration);
 
-var app = builder.Build();
-
-app.Services.UseTelegramBot();
-
-await app.RunAsync();
+await builder.Build().RunAsync();
