@@ -112,6 +112,7 @@ public class BotController(
                 IsSuccess = true,
                 Messages = broadcastMessages.Select(bm => new Message
                                             {
+                                                Uid = bm.Id,
                                                 Type = Message.MessageType.Messaging,
                                                 Subject = string.Empty,
                                                 Body = bm.Body

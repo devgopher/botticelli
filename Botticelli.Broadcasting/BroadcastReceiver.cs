@@ -64,6 +64,8 @@ public class BroadcastReceiver<TBot> : IHostedService
                                 Message = update
                             };
 
+                            messageIds = [update.Uid];
+
                             var response = await _bot.SendMessageAsync(request, cancellationToken);
 
                             if (response.MessageSentStatus == MessageSentStatus.Ok) 

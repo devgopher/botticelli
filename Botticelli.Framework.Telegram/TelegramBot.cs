@@ -216,9 +216,8 @@ public class TelegramBot : BaseBot<TelegramBot>
                                                    replyMarkup,
                                                    response,
                                                    message);
-                message.NotNull();
-
-                AddChatIdInnerIdLink(response, link.chatId, message);
+                if (message != null)
+                    AddChatIdInnerIdLink(response, link.chatId, message);
             }
 
             response.MessageSentStatus = MessageSentStatus.Ok;
@@ -286,7 +285,7 @@ public class TelegramBot : BaseBot<TelegramBot>
         }
     }
 
-    private async Task<Message> ProcessAttachments(SendMessageRequest request,
+    private async Task<Message?> ProcessAttachments(SendMessageRequest request,
                                                    CancellationToken token,
                                                    (string chatId, string innerId) link,
                                                    ReplyMarkup? replyMarkup,
@@ -296,8 +295,6 @@ public class TelegramBot : BaseBot<TelegramBot>
         request.Message.NotNull();
 
         if (request.Message.Attachments == null) return message;
-
-        request.Message.Attachments.NotNullOrEmpty();
 
         foreach (var attachment in request.Message
                                           .Attachments
