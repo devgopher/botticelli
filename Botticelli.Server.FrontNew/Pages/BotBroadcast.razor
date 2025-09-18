@@ -20,8 +20,11 @@
                 <RadzenLabel Text="Bot id:" Component="BotId" style="width: 100%;"/>
             </div>
             <div class="col-md-9">
-                <RadzenTextArea MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotId"
-                                Name="BotId"/>
+                <RadzenTextArea MaxLength="255" 
+                                style="display: block; width: 100%;" 
+                                @bind-Value="@_model.BotId"
+                                Name="BotId" 
+                                ReadOnly="true"/>
             </div>
         </div>
 
@@ -30,8 +33,12 @@
                 <RadzenLabel Text="Broadcast message:" Component="Message" style="width: 100%;"/>
             </div>
             <div class="col-md-9">
-                <RadzenTextArea MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.Message"
-                                Name="Message" Placeholder="Enter a message..." Rows="5" Cols="40"/>
+                <RadzenTextArea MaxLength="4000" style="display: block; width: 100%; height: 300px;"  
+                                @bind-Value="@_model.Message"
+                                Name="Message" 
+                                Placeholder="Enter a message..."
+                                Cols="40" 
+                                Rows="100"/>
             </div>
         </div>
 
