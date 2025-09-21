@@ -39,8 +39,20 @@
                                 Cols="40"
                                 Rows="100"/>
             </div>
+        </div>
+
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Upload attachments:" Component="Message" style="width: 100%;"/>
+            </div>
             <div style="margin-bottom: 1rem;" class="row">
-                <RadzenUpload  Accept="image/png, image/gif, image/jpeg, video/*"
+                <RadzenUpload  Accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml, 
+                                        audio/mpeg, audio/ogg, audio/wav, audio/x-m4a, audio/aac,
+                                        video/mp4, video/quicktime, video/x-msvideo, 
+                                        video/x-ms-wmv, video/x-matroska, video/x-flv, video/mpeg, video/webm, video/3gpp, video/x-m4v, 
+                                        video/mp2t, video/vnd.dlna.mpeg-tts, video/vob, video/mpeg, video/x-ms-asf, application/x-shockwave-flash, 
+                                        application/vnd.rn-realmedia, video/ogg, video/x-dv, video/x-f4v, application/ogg, video/h264, video/hevc, 
+                                        video/xvid, video/divx"
                                Change="@OnFileChange"
                                Multiple="true"
                                Style="margin: 10px;" />
@@ -66,7 +78,10 @@
     readonly Message _message = new()
     {
         Uid = Guid.NewGuid().ToString(),
+        Attachments = []
     };
+
+    const int MaxAllowedFileSize = 10485760;
 
     [Parameter]
     public string? BotId { get; set; }
@@ -114,20 +129,30 @@
 
         foreach (var file in fileChange.Files)
         {
-            var mediaType = MimeTypeConverter.ConvertMimeTypeToMediaType(file.ContentType);
-            
-            if (mediaType == MediaType.Unknown)
-                continue;
-            
-            var stream = file.OpenReadStream();
-            var bytes = await stream.FromStreamToBytesAsync();
-            var content = new BinaryBaseAttachment(Guid.NewGuid().ToString(),
-                                                      file.Name,
-                                                      mediaType,
-                                                      string.Empty,
-                                                      bytes);
-            
-            _message.Attachments.Add(content);
+            try
+            {
+                if (file?.ContentType == null!) continue;
+
+                var mediaType = MimeTypeConverter.ConvertMimeTypeToMediaType(file.ContentType);
+
+                if (mediaType == MediaType.Unknown) continue;
+
+                var stream = file.OpenReadStream(MaxAllowedFileSize);
+                var bytes = await stream.FromStreamToBytesAsync();
+                var content = new BinaryBaseAttachment(Guid.NewGuid().ToString(),
+                                                       file.Name,
+                                                       mediaType,
+                                                       string.Empty,
+                                                       bytes);
+
+                _message.Attachments.Add(content);
+            }
+            catch (Exception ex)
+            {
+                // nothing to do: 
+            }
         }
+        
+        _message.Attachments.Clear();
     }
 }
