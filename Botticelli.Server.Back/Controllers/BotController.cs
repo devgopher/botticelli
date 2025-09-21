@@ -115,7 +115,14 @@ public class BotController(
                                                 Uid = bm.Id,
                                                 Type = Message.MessageType.Messaging,
                                                 Subject = string.Empty,
-                                                Body = bm.Body
+                                                Body = bm.Body,
+                                                Attachments = bm.Attachments?.Select(BaseAttachment (att) => new BinaryBaseAttachment(att.Id.ToString(),
+                                                                                                                                     att.Filename,
+                                                                                                                                     att.MediaType,
+                                                                                                                                     string.Empty,
+                                                                                                                                     att.Content))
+                                                                .ToList() ??
+                                                              []
                                             })
                                             .ToArray()
             };

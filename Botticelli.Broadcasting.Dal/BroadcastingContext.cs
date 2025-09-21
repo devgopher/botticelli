@@ -6,8 +6,6 @@ namespace Botticelli.Broadcasting.Dal;
 public class BroadcastingContext : DbContext
 {
     public DbSet<Chat> Chats { get; set; }
-    public DbSet<MessageCache> MessageCaches { get; set; }
-    public DbSet<MessageStatus> MessageStatuses { get; set; }
 
     public BroadcastingContext()
     {

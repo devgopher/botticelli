@@ -4,6 +4,8 @@
 @using System.Text.Json
 @using Botticelli.Server.FrontNew.Models
 @using Botticelli.Server.FrontNew.Settings
+@using Botticelli.Shared.Constants
+@using Botticelli.Shared.Utils
 @using Botticelli.Shared.ValueObjects
 @using Flurl
 @using Microsoft.Extensions.Options
@@ -20,11 +22,8 @@
                 <RadzenLabel Text="Bot id:" Component="BotId" style="width: 100%;"/>
             </div>
             <div class="col-md-9">
-                <RadzenTextArea MaxLength="255" 
-                                style="display: block; width: 100%;" 
-                                @bind-Value="@_model.BotId"
-                                Name="BotId" 
-                                ReadOnly="true"/>
+                <RadzenTextArea MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotId"
+                                Name="BotId"/>
             </div>
         </div>
 
@@ -33,12 +32,18 @@
                 <RadzenLabel Text="Broadcast message:" Component="Message" style="width: 100%;"/>
             </div>
             <div class="col-md-9">
-                <RadzenTextArea MaxLength="4000" style="display: block; width: 100%; height: 300px;"  
+                <RadzenTextArea MaxLength="4000" style="display: block; width: 100%; height: 300px;"
                                 @bind-Value="@_model.Message"
-                                Name="Message" 
+                                Name="Message"
                                 Placeholder="Enter a message..."
-                                Cols="40" 
+                                Cols="40"
                                 Rows="100"/>
+            </div>
+            <div style="margin-bottom: 1rem;" class="row">
+                <RadzenUpload  Accept="image/png, image/gif, image/jpeg, video/*"
+                               Change="@OnFileChange"
+                               Multiple="true"
+                               Style="margin: 10px;" />
             </div>
         </div>
 
@@ -58,6 +63,10 @@
     };
 
     readonly BotBroadcastModel _model = new();
+    readonly Message _message = new()
+    {
+        Uid = Guid.NewGuid().ToString(),
+    };
 
     [Parameter]
     public string? BotId { get; set; }
@@ -79,19 +88,13 @@
 
     private async Task OnSubmit(BotBroadcastModel model)
     {
-        var message = new Message
-        {
-            Uid = Guid.NewGuid().ToString(),
-            Body = model.Message
-        };
-
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
-
+        _message.Body = model.Message;
         if (string.IsNullOrWhiteSpace(sessionToken)) return;
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
 
-        var content = new StringContent(JsonSerializer.Serialize(message),
+        var content = new StringContent(JsonSerializer.Serialize(_message),
                                         Encoding.UTF8,
                                         "application/json");
 
@@ -104,5 +107,27 @@
 
         UriHelper.NavigateTo("/your_bots", true);
     }
+    
+    private async Task OnFileChange(UploadChangeEventArgs? fileChange)
+    {
+        if (fileChange == null) return;
 
+        foreach (var file in fileChange.Files)
+        {
+            var mediaType = MimeTypeConverter.ConvertMimeTypeToMediaType(file.ContentType);
+            
+            if (mediaType == MediaType.Unknown)
+                continue;
+            
+            var stream = file.OpenReadStream();
+            var bytes = await stream.FromStreamToBytesAsync();
+            var content = new BinaryBaseAttachment(Guid.NewGuid().ToString(),
+                                                      file.Name,
+                                                      mediaType,
+                                                      string.Empty,
+                                                      bytes);
+            
+            _message.Attachments.Add(content);
+        }
+    }
 }

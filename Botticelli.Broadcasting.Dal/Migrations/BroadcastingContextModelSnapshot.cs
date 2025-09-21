@@ -29,43 +29,6 @@ namespace Botticelli.Broadcasting.Dal.Migrations
 
                     b.ToTable("Chats");
                 });
-
-            modelBuilder.Entity("Botticelli.Broadcasting.Dal.Models.MessageCache", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SerializedMessageObject")
-                        .IsRequired()
-                        .HasMaxLength(100000)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MessageCaches");
-                });
-
-            modelBuilder.Entity("Botticelli.Broadcasting.Dal.Models.MessageStatus", b =>
-                {
-                    b.Property<string>("ChatId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MessageId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsSent")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("SentDate")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ChatId", "MessageId");
-
-                    b.ToTable("MessageStatuses");
-                });
 #pragma warning restore 612, 618
         }
     }

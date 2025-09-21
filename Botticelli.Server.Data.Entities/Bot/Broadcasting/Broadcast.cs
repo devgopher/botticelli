@@ -11,6 +11,7 @@ public class Broadcast
 
     public required string BotId { get; set; }
     public required string Body { get; set; }
+    public List<BroadcastAttachment>? Attachments { get; set; }
     public DateTime Timestamp { get; set; }
     public bool Sent { get; set; } = false;
     public bool Received { get; set; } = false;

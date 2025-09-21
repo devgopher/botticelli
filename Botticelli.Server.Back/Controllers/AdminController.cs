@@ -5,6 +5,7 @@ using Botticelli.Server.Data.Entities.Bot.Broadcasting;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
+using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -72,6 +73,23 @@ public class AdminController(
             Id = message.Uid  ?? throw new NullReferenceException("Id cannot be null!"),
             BotId = botId ?? throw new NullReferenceException("BotId cannot be null!"),
             Body = message.Body ?? throw new NullReferenceException("Body cannot be null!"),
+            Attachments = message.Attachments
+                                 .Where(a => a is BinaryBaseAttachment)
+                                 .Select(a =>
+                                 {
+                                     if (a is BinaryBaseAttachment baseAttachment)
+                                         return new BroadcastAttachment
+                                         {
+                                             Id = Guid.NewGuid(),
+                                             BroadcastId = message.Uid,
+                                             MediaType = baseAttachment.MediaType,
+                                             Filename = baseAttachment.Name,
+                                             Content = baseAttachment.Data
+                                         };
+
+                                     return null!;
+                                 })
+                                 .ToList(),
             Sent = true
         });
     }
