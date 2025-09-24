@@ -21,13 +21,14 @@ namespace Botticelli.Broadcasting;
 public class BroadcastReceiver<TBot> : IHostedService
     where TBot : BaseBot, IBot<TBot>
 {
-    private readonly IBot? _bot;
+    private readonly IBot _bot;
     private readonly BroadcastingContext _context;
     private readonly TimeSpan _longPollTimeout = TimeSpan.FromSeconds(30);
     private readonly TimeSpan _retryPause = TimeSpan.FromMilliseconds(150);
     private readonly BroadcastingSettings _settings;
     private readonly ILogger<BroadcastReceiver<TBot>> _logger;
-    
+    public CancellationTokenSource CancellationTokenSource { get; private set; }
+
     public BroadcastReceiver(IBot bot,
                              BroadcastingContext context,
                              BroadcastingSettings settings, 
@@ -41,6 +42,7 @@ public class BroadcastReceiver<TBot> : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
+        CancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         // Polls admin API for new messages to send to our chats and adds them to a MessageCache/MessageStatus
         _ = Task.Run(async () =>
             {
@@ -52,8 +54,6 @@ public class BroadcastReceiver<TBot> : IHostedService
 
                         if (updates?.Messages == null) continue;
 
-                        var messageIds = new List<string>();
-
                         foreach (var update in updates.Messages)
                         {
                             // if no chat were specified - broadcast on all chats, we've
@@ -64,7 +64,7 @@ public class BroadcastReceiver<TBot> : IHostedService
                                 Message = update
                             };
 
-                            messageIds = [update.Uid];
+                            List<string> messageIds = [update.Uid];
 
                             var response = await _bot.SendMessageAsync(request, cancellationToken);
 
@@ -81,11 +81,14 @@ public class BroadcastReceiver<TBot> : IHostedService
                 }
             },
             cancellationToken);
+        
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
+        CancellationTokenSource.Cancel(false);
+        
         return Task.CompletedTask;
     }
 

@@ -23,6 +23,9 @@ public class BotController(
         IBroadcastService broadcastService,
         ILogger<BotController> logger)
 {
+    private const int LongPollTimeoutSeconds = 30;
+    private const int DefaultPollIntervalMilliseconds = 10;
+    
     #region Client pane
 
     /// <summary>
@@ -101,11 +104,18 @@ public class BotController(
     {
         try
         {
-            logger.LogTrace($"{nameof(GetBroadcast)}({request.BotId})...");
             request.BotId?.NotNullOrEmpty();
 
-            var broadcastMessages = await broadcastService.GetMessages(request.BotId!);
-
+            var broadcastMessages = new List<Broadcast>();
+            var started = DateTime.UtcNow;
+            
+            while (!broadcastMessages.Any() && DateTime.UtcNow.Subtract(started).TotalSeconds < LongPollTimeoutSeconds)
+            {
+                broadcastMessages = (await broadcastService.GetMessages(request.BotId!)).ToList();
+                
+                await Task.Delay(DefaultPollIntervalMilliseconds);
+            } 
+            
             return new GetBroadCastMessagesResponse
             {
                 BotId = request.BotId!,
