@@ -11,12 +11,7 @@
 @inject CookieStorageAccessor Cookies;
 @inject IJSRuntime JsRuntime;
 
-@code {
-    private string _error = string.Empty;
-}
-
 <PageTitle>Your bots</PageTitle>
-
 <h1>Bot list</h1>
 
 @if (_bots == null)
@@ -64,8 +59,6 @@ else
         }
     </RadzenStack>
 
-    @*<RadzenLabel @bind-text="@_error" Style="color: red; font-weight: bold" />*@
-
     <RadzenButton Click="@(e => UriHelper.NavigateTo("/add_bot", true))"
                   ButtonStyle="ButtonStyle.Primary"
                   Style="width: 100%"
@@ -75,7 +68,7 @@ else
 @code {
 
     private BotInfo[]? _bots;
-    HttpClient _http;
+    HttpClient? _http;
 
     protected override bool ShouldRender()
     {
@@ -86,8 +79,6 @@ else
     {
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
 
-        _error = $"token:{sessionToken}";
-
         try
         {
             _http = HttpClientFactory.Create();
@@ -96,7 +87,6 @@ else
         }
         catch (Exception ex)
         {
-            _error = $"token:{sessionToken} ex:{ex.Message}";
         }
     }
 

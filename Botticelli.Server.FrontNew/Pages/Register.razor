@@ -22,6 +22,12 @@
 
 <PageTitle>Register User</PageTitle>
 
+<RadzenCard class="rz-my-auto rz-mx-auto rz-p-auto rz-p-md-auto" style="max-width: 160px">
+    <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenImage Path="new_logo_m.png" Style="width: 128px; height: 128px" />
+    </RadzenStack>
+</RadzenCard>
+
 <RadzenTemplateForm TItem="RegisterUser" Data="@_model" Submit="@OnValidSubmit">
     <ChildContent>
         <DataAnnotationsValidator/>
