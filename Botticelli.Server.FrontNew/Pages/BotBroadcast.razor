@@ -46,16 +46,18 @@
                 <RadzenLabel Text="Upload attachments:" Component="Message" style="width: 100%;"/>
             </div>
             <div style="margin-bottom: 1rem;" class="row">
-                <RadzenUpload  Accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml, 
+                <RadzenUpload Name="radzenUpload"
+                              Accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml, 
                                         audio/mpeg, audio/ogg, audio/wav, audio/x-m4a, audio/aac,
                                         video/mp4, video/quicktime, video/x-msvideo, 
                                         video/x-ms-wmv, video/x-matroska, video/x-flv, video/mpeg, video/webm, video/3gpp, video/x-m4v, 
                                         video/mp2t, video/vnd.dlna.mpeg-tts, video/vob, video/mpeg, video/x-ms-asf, application/x-shockwave-flash, 
                                         application/vnd.rn-realmedia, video/ogg, video/x-dv, video/x-f4v, application/ogg, video/h264, video/hevc, 
                                         video/xvid, video/divx"
-                               Change="@OnFileChange"
-                               Multiple="true"
-                               Style="margin: 10px;" />
+                              Change="@OnFileChange"
+                              Disabled="!_uploadEnabled"
+                              Multiple="true"
+                              Style="margin: 10px;" />
             </div>
         </div>
 
@@ -81,6 +83,8 @@
         Attachments = []
     };
 
+    private bool _uploadEnabled = true;
+    
     const int MaxAllowedFileSize = 10485760;
 
     [Parameter]
@@ -124,13 +128,17 @@
     }
     
     private async Task OnFileChange(UploadChangeEventArgs? fileChange)
-    {
+    {        
         if (fileChange == null) return;
-
+        // _message.Attachments.Clear();
+        //
+        // Console.WriteLine($"FileChange: Files {fileChange.Files.Count()}");
+        
         foreach (var file in fileChange.Files)
         {
             try
             {
+                Console.WriteLine($"FileChange: file content type {file.ContentType}");
                 if (file?.ContentType == null!) continue;
 
                 var mediaType = MimeTypeConverter.ConvertMimeTypeToMediaType(file.ContentType);
@@ -146,13 +154,14 @@
                                                        bytes);
 
                 _message.Attachments.Add(content);
+
+                _uploadEnabled = false;
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message + ": " + ex.StackTrace);
                 // nothing to do: 
             }
         }
-        
-        _message.Attachments.Clear();
     }
 }
