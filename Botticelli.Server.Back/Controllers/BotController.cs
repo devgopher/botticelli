@@ -24,7 +24,7 @@ public class BotController(
         ILogger<BotController> logger)
 {
     private const int LongPollTimeoutSeconds = 30;
-    private const int DefaultPollIntervalMilliseconds = 10;
+    private const int DefaultPollIntervalMilliseconds = 300;
     
     #region Client pane
 
