@@ -21,7 +21,7 @@ public class BotStatusService(
                                   logger,
                                   serverSettings)
 {
-    private const short GetStatusPeriod = 5000;
+    private const short GetStatusPeriod = 30000;
     private Task? _getRequiredStatusEventTask;
 
     public override Task StartAsync(CancellationToken cancellationToken)
