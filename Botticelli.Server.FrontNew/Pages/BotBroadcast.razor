@@ -138,7 +138,6 @@
         {
             try
             {
-                Console.WriteLine($"FileChange: file content type {file.ContentType}");
                 if (file?.ContentType == null!) continue;
 
                 var mediaType = MimeTypeConverter.ConvertMimeTypeToMediaType(file.ContentType);
@@ -159,7 +158,6 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + ": " + ex.StackTrace);
                 // nothing to do: 
             }
         }
