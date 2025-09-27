@@ -61,7 +61,8 @@ public class BroadcastReceiver<TBot> : IHostedService
                         foreach (var update in updates.Messages)
                         {
                             // if no chat were specified - broadcast on all chats, we've
-                            if (update.ChatIds.Count == 0) update.ChatIds = _context.Chats.Select(x => x.ChatId).ToList();
+                            if (update.ChatIds.Count == 0)
+                                update.ChatIds = _context.Chats.Select(x => x.ChatId).ToList();
 
                             var request = new SendMessageRequest
                             {
@@ -70,10 +71,14 @@ public class BroadcastReceiver<TBot> : IHostedService
 
                             List<string> messageIds = [update.Uid];
 
-                            var response = await _bot.SendMessageAsync(request, cancellationToken);
+                            var sendMessageResponse = await _bot.SendMessageAsync(request, cancellationToken);
 
-                            if (response.MessageSentStatus == MessageSentStatus.Ok) 
-                                await SendBroadcastReceived(messageIds, cancellationToken);
+                            if (sendMessageResponse.MessageSentStatus != MessageSentStatus.Ok) continue;
+                            
+                            var broadcastResult = await SendBroadcastReceived(messageIds, cancellationToken);
+
+                            if (broadcastResult is { IsSuccess: false }) 
+                                _logger.LogError("Error sending a BroadcastReceived message!");
                         }
                     }
                     catch (Exception ex)
