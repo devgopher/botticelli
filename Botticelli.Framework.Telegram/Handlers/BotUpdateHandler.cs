@@ -39,7 +39,7 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider
 
             logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
-            var botMessage = update.Message;
+            var botMessage = update.Message ?? update.ChannelPost;
 
             Message? botticelliMessage = null;
 
@@ -246,10 +246,10 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider
         var processorFactory = ProcessorFactoryBuilder.Build(serviceProvider);
 
         var clientNonChainedTasks = processorFactory.GetProcessors()
-            .Select(p => p.ProcessAsync(request, token));
+            .Select(p => p.ProcessAsync(request, token)).ToList();
 
         var clientChainedTasks = processorFactory.GetCommandChainProcessors()
-            .Select(p => p.ProcessAsync(request, token));
+            .Select(p => p.ProcessAsync(request, token)).ToList();
 
         var clientTasks = clientNonChainedTasks.Concat(clientChainedTasks).ToArray();
 

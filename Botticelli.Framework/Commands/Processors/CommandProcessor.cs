@@ -67,7 +67,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 return;
             }
 
-            if (message.From!.Id!.Equals(_bot?.BotUserId, StringComparison.InvariantCulture)) return;
+            if (message.From?.Id != null && message.From!.Id!.Equals(_bot?.BotUserId, StringComparison.InvariantCulture)) return;
 
             Classify(ref message);
 

@@ -1,4 +1,5 @@
-﻿using Telegram.Bot;
+﻿using Botticelli.Framework.Exceptions;
+using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Requests.Abstractions;
@@ -15,6 +16,12 @@ public class TelegramClientDecorator : ITelegramBotClient
     private TelegramBotClient? _innerClient;
     private TelegramBotClientOptions _options;
 
+    #region Limits
+    private const int MessagesInSecond = 30;
+    private DateTime? _prev;
+    private long? _sentMessageCount = 0;
+    #endregion Limits
+
     internal TelegramClientDecorator(TelegramBotClientOptions options,
                                      HttpClient? httpClient = null)
     {
@@ -29,7 +36,21 @@ public class TelegramClientDecorator : ITelegramBotClient
     {
         try
         {
-            return await _innerClient?.SendRequest(request, cancellationToken)!;
+            _prev ??= DateTime.UtcNow;
+            _sentMessageCount ??= 0;
+            var deltaT = (DateTime.UtcNow - _prev).Value;
+            
+            if (_sentMessageCount < MessagesInSecond && deltaT < TimeSpan.FromSeconds(1.0))
+                return await _innerClient?.SendRequest(request, cancellationToken)!;
+            else
+            {
+                await Task.Delay(deltaT, cancellationToken);
+
+                _sentMessageCount = 0;
+                _prev = DateTime.UtcNow;
+                
+                return await _innerClient?.SendRequest(request, cancellationToken);
+            }
         }
         catch (ApiRequestException ex)
         {
@@ -37,20 +58,10 @@ public class TelegramClientDecorator : ITelegramBotClient
 
             throw;
         }
-    }
-
-    [Obsolete("Use SendRequest")]
-    public Task<TResponse> MakeRequest<TResponse>(IRequest<TResponse> request,
-                                                  CancellationToken cancellationToken = new())
-    {
-        return SendRequest(request, cancellationToken);
-    }
-
-    [Obsolete("Use SendRequest")]
-    public async Task<TResponse> MakeRequestAsync<TResponse>(IRequest<TResponse> request,
-                                                             CancellationToken cancellationToken = new())
-    {
-        return await SendRequest(request, cancellationToken);
+        finally
+        {
+            ++_sentMessageCount;
+        }
     }
 
     public Task<bool> TestApi(CancellationToken cancellationToken = new())
