@@ -8,7 +8,8 @@ public static class MimeTypeConverter
 
         switch (mimeType.ToLowerInvariant())
         {
-            case var _ when mimeType.StartsWith("audio/"): return MediaType.Audio;
+            case var _ when mimeType.StartsWith("audio/"):
+            case "application/ogg": return MediaType.Audio;
             case var _ when mimeType.StartsWith("video/"): return MediaType.Video;
             case var _ when mimeType.StartsWith("text/"):  return MediaType.Text;
             case var _ when mimeType.StartsWith("image/"): return MediaType.Image;

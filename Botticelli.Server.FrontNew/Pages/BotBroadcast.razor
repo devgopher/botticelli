@@ -4,6 +4,7 @@
 @using System.Text.Json
 @using Botticelli.Server.FrontNew.Models
 @using Botticelli.Server.FrontNew.Settings
+@using Botticelli.Server.FrontNew.Utils
 @using Botticelli.Shared.Constants
 @using Botticelli.Shared.Utils
 @using Botticelli.Shared.ValueObjects
@@ -48,7 +49,7 @@
             <div style="margin-bottom: 1rem;" class="row">
                 <RadzenUpload Name="radzenUpload"
                               Accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml, 
-                                        audio/mpeg, audio/ogg, audio/wav, audio/x-m4a, audio/aac,
+                                        audio/mpeg, audio/ogg, audio/wav, audio/x-m4a, audio/mp4, audio/aac,
                                         video/mp4, video/quicktime, video/x-msvideo, 
                                         video/x-ms-wmv, video/x-matroska, video/x-flv, video/mpeg, video/webm, video/3gpp, video/x-m4v, 
                                         video/mp2t, video/vnd.dlna.mpeg-tts, video/vob, video/mpeg, video/x-ms-asf, application/x-shockwave-flash, 
@@ -84,8 +85,6 @@
     };
 
     private bool _uploadEnabled = true;
-    
-    const int MaxAllowedFileSize = 10485760;
 
     [Parameter]
     public string? BotId { get; set; }
@@ -130,9 +129,6 @@
     private async Task OnFileChange(UploadChangeEventArgs? fileChange)
     {        
         if (fileChange == null) return;
-        // _message.Attachments.Clear();
-        //
-        // Console.WriteLine($"FileChange: Files {fileChange.Files.Count()}");
         
         foreach (var file in fileChange.Files)
         {
@@ -141,10 +137,9 @@
                 if (file?.ContentType == null!) continue;
 
                 var mediaType = MimeTypeConverter.ConvertMimeTypeToMediaType(file.ContentType);
-
                 if (mediaType == MediaType.Unknown) continue;
 
-                var stream = file.OpenReadStream(MaxAllowedFileSize);
+                var stream = file.OpenReadStream(Constants.MaxAllowedFileSize);
                 var bytes = await stream.FromStreamToBytesAsync();
                 var content = new BinaryBaseAttachment(Guid.NewGuid().ToString(),
                                                        file.Name,
@@ -158,7 +153,7 @@
             }
             catch (Exception ex)
             {
-                // nothing to do: 
+                Console.WriteLine($"OnFileChange: exception {ex.Message}");
             }
         }
     }
