@@ -1,11 +1,12 @@
-﻿using Botticelli.Server.Back.Services;
+﻿using System.Text;
+using System.Text.Json;
+using Botticelli.Server.Back.Services;
 using Botticelli.Server.Back.Services.Broadcasting;
 using Botticelli.Server.Data.Entities.Bot;
 using Botticelli.Server.Data.Entities.Bot.Broadcasting;
 using Botticelli.Shared.API.Admin.Responses;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.API.Client.Responses;
-using Botticelli.Shared.Constants;
 using Botticelli.Shared.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ public class AdminController(
     IBotManagementService botManagementService,
     IBotStatusDataService botStatusDataService,
     ILogger<AdminController> logger,
-    IBroadcastService broadcastService)
+    IBroadcastService broadcastService) : ControllerBase
 {
     [HttpPost("[action]")]
     public async Task<RegisterBotResponse> AddNewBot([FromBody] RegisterBotRequest request)
@@ -66,7 +67,26 @@ public class AdminController(
     /// <param name="message"></param>
     /// <returns></returns>
     [HttpPost("[action]")]
-    public async Task SendBroadcast([FromQuery] string botId, [FromBody] Message message)
+    public async Task SendBroadcast([FromQuery] string botId, [FromBody] Message message) => await DoBroadcast(botId, message);
+
+    /// <summary>
+    ///     Sends a broadcast message in binary stream
+    /// </summary>
+    /// <param name="botId"></param>
+    /// <param name="stream"></param>
+    /// <returns></returns>
+    [HttpPost("[action]")]
+    public async Task SendBroadcastBinary([FromQuery] string botId)
+    {
+        using var memoryStream = new MemoryStream();
+        await Request.Body.CopyToAsync(memoryStream);
+
+        var message = JsonSerializer.Deserialize<Message>(Encoding.UTF8.GetString(memoryStream.ToArray()));
+        
+        await DoBroadcast(botId, message);
+    }
+
+    private async Task DoBroadcast(string botId, Message? message)
     {
         await broadcastService.BroadcastMessage(new Broadcast
         {
@@ -74,25 +94,26 @@ public class AdminController(
             BotId = botId ?? throw new NullReferenceException("BotId cannot be null!"),
             Body = message.Body ?? throw new NullReferenceException("Body cannot be null!"),
             Attachments = message.Attachments
-                                 .Where(a => a is BinaryBaseAttachment)
-                                 .Select(a =>
-                                 {
-                                     if (a is BinaryBaseAttachment baseAttachment)
-                                         return new BroadcastAttachment
-                                         {
-                                             Id = Guid.NewGuid(),
-                                             BroadcastId = message.Uid,
-                                             MediaType = baseAttachment.MediaType,
-                                             Filename = baseAttachment.Name,
-                                             Content = baseAttachment.Data
-                                         };
+                .Where(a => a is BinaryBaseAttachment)
+                .Select(a =>
+                {
+                    if (a is BinaryBaseAttachment baseAttachment)
+                        return new BroadcastAttachment
+                        {
+                            Id = Guid.NewGuid(),
+                            BroadcastId = message.Uid,
+                            MediaType = baseAttachment.MediaType,
+                            Filename = baseAttachment.Name,
+                            Content = baseAttachment.Data
+                        };
 
-                                     return null!;
-                                 })
-                                 .ToList(),
+                    return null!;
+                })
+                .ToList(),
             Sent = true
         });
     }
+
 
     [HttpGet("[action]")]
     public Task<ICollection<BotInfo>> GetBots()

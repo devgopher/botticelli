@@ -58,12 +58,15 @@
                               Change="@OnFileChange"
                               Disabled="!_uploadEnabled"
                               Multiple="true"
+                              Progress="@OnProgress"
                               Style="margin: 10px;" />
             </div>
         </div>
 
         <RadzenLabel Text="@_error.UserMessage" Style="color: red; font-weight: bold; border: none"/>
 
+        <RadzenProgressBar Value="@_uploadProgress" Max="100" Style="width: 80%;" />
+        
         <div style="margin-bottom: 1rem;" class="row">
             <RadzenButton ButtonType="ButtonType.Submit" Text="Send"/>
         </div>
@@ -85,6 +88,7 @@
     };
 
     private bool _uploadEnabled = true;
+    private int _uploadProgress = 0;
 
     [Parameter]
     public string? BotId { get; set; }
@@ -112,20 +116,47 @@
 
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
 
-        var content = new StringContent(JsonSerializer.Serialize(_message),
-                                        Encoding.UTF8,
-                                        "application/json");
+        if (!_message.Attachments.Any())
+        {
+            var content = new StringContent(JsonSerializer.Serialize(_message),
+                Encoding.UTF8,
+                "application/json");
 
-        var response = await Http.PostAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/SendBroadcast?botId={BotId}"),
-                                            content);
+            var response = await Http.PostAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/SendBroadcast?botId={BotId}"),
+                content);
 
-        #if DEBUG
-        if (!response.IsSuccessStatusCode) _error.UserMessage = $"Error sending a broadcast message: {response.ReasonPhrase}";
-        #endif
-
+#if DEBUG
+            if (!response.IsSuccessStatusCode) _error.UserMessage = $"Error sending a broadcast message: {response.ReasonPhrase}";
+            Console.WriteLine(_error.UserMessage);
+#endif
+        }
+        else
+        {
+            using var ms = new MemoryStream();
+            await JsonSerializer.SerializeAsync(ms, _message);
+            
+            var progressStreamContent = new ProgressStreamContent(ms,
+                (totalRead,
+                    totalBytes) =>
+                {
+                    _uploadProgress = (int)((double)totalRead / totalBytes);
+                    Console.WriteLine($"UploadProgress: {_uploadProgress}");
+                });
+            
+            progressStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            
+            var binaryResponse = await Http.PostAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/SendBroadcastBinary?botId={BotId}"),
+                progressStreamContent);
+            
+#if DEBUG
+            if (!binaryResponse.IsSuccessStatusCode) _error.UserMessage = $"Error sending a broadcast message (binary): {binaryResponse.ReasonPhrase}";
+            Console.WriteLine(_error.UserMessage);
+#endif
+        }
+        
         UriHelper.NavigateTo("/your_bots", true);
     }
-    
+
     private async Task OnFileChange(UploadChangeEventArgs? fileChange)
     {        
         if (fileChange == null) return;
@@ -157,4 +188,12 @@
             }
         }
     }
+
+    private Task OnProgress(UploadProgressArgs arg)
+    {
+        _uploadProgress = arg.Progress;
+        
+        return Task.CompletedTask;
+    }
+
 }
