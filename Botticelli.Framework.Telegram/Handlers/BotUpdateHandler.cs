@@ -118,7 +118,7 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider
         HandleErrorSource source,
         CancellationToken cancellationToken)
     {
-        logger.LogError($"{nameof(HandleErrorAsync)}() error: {exception.Message}", exception);
+        logger.LogError("{HandleErrorAsyncName}() error: {ExceptionMessage} exception: {Exception}", nameof(HandleErrorAsync), exception.Message, exception);
 
         return Task.CompletedTask;
     }
@@ -239,7 +239,7 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider
     /// <param name="token"></param>
     protected async Task ProcessInProcessors(Message request, CancellationToken token)
     {
-        logger.LogDebug($"{nameof(ProcessInProcessors)}({request.Uid}) started...");
+        logger.LogDebug("{ProcessInProcessorsName}({RequestUid}) started...", nameof(ProcessInProcessors), request.Uid);
 
         if (token is { CanBeCanceled: true, IsCancellationRequested: true }) return;
 
@@ -255,6 +255,6 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider
 
         await Parallel.ForEachAsync(clientTasks, token, async (t, ct) => await t.WaitAsync(ct));
 
-        logger.LogDebug($"{nameof(ProcessInProcessors)}({request.Uid}) finished...");
+        logger.LogDebug("{ProcessInProcessorsName}({RequestUid}) finished...", nameof(ProcessInProcessors), request.Uid);
     }
 }

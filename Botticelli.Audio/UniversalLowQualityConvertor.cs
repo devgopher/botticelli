@@ -35,7 +35,7 @@ public class UniversalLowQualityConvertor : IConvertor
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(Convert)} => ({tgtParams.AudioFormat}, {tgtParams.Bitrate}) error", ex);
+            _logger.LogError("{ConvertName} => ({TgtParamsAudioFormat}, {TgtParamsBitrate}) error: {Ex}!", nameof(Convert), tgtParams.AudioFormat, tgtParams.Bitrate, ex);
 
             throw new AudioConvertorException($"Audio conversion error: {ex.Message}", ex);
         }
@@ -94,9 +94,9 @@ public class UniversalLowQualityConvertor : IConvertor
         }
         catch (IOException ex)
         {
-            _logger.LogError($"{nameof(Convert)} => ({tgtParams.AudioFormat}, {tgtParams.Bitrate}) error", ex);
+            _logger.LogError("{ConvertName} => ({TgtParamsAudioFormat}, {TgtParamsBitrate}) error", nameof(Convert), tgtParams.AudioFormat, tgtParams.Bitrate, ex);
 
-            return Array.Empty<byte>();
+            return [];
         }
     }
 

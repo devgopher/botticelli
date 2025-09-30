@@ -15,15 +15,16 @@ public class BroadcastService(ServerDataContext context) : IBroadcastService
         await context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Broadcast>> GetMessages(string botId)
-    {
-        return await context.BroadcastMessages.Where(m => m.BotId.Equals(botId) && !m.Received).Include(m => m.Attachments).ToArrayAsync();
-    }
+    public async Task<IEnumerable<Broadcast>> GetMessages(string botId) =>
+        await context.BroadcastMessages
+            .Where(m => m.BotId.Equals(botId) && !m.Received)
+            .Include(m => m.Attachments)
+            .ToArrayAsync();
 
     public async Task MarkReceived(string botId, string messageId)
     {
         var messages = await context.BroadcastMessages.Where(bm => bm.BotId == botId && bm.Id == messageId)
-                              .ToListAsync();
+            .ToListAsync();
 
         foreach (var message in messages) message.Received = true;
 

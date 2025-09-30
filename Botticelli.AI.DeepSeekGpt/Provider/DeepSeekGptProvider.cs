@@ -67,19 +67,20 @@ public class DeepSeekGptProvider : ChatGptProvider<DeepSeekGptSettings>
         {
             Model = Settings.Value.Model,
             MaxTokens = Settings.Value.MaxTokens,
-            Messages = new List<DeepSeekInnerInputMessage>
-            {
+            Messages =
+            [
                 new()
                 {
                     Role = SystemRole,
                     Content = Settings.Value.Instruction
                 },
+
                 new()
                 {
                     Role = UserRole,
                     Content = message.Body
                 }
-            }
+            ]
         };
 
         deepSeekGptMessage.Messages.AddRange(message.AdditionalMessages?.Select(m => new DeepSeekInnerInputMessage
@@ -91,7 +92,7 @@ public class DeepSeekGptProvider : ChatGptProvider<DeepSeekGptSettings>
 
         var content = JsonContent.Create(deepSeekGptMessage);
 
-        Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
+        Logger.LogDebug("{SendAsyncName}({MessageChatIds}) content: {ContentValue}", nameof(SendAsync), message.ChatIds, content.Value);
 
         return await client.PostAsync(Completion,
                                       content,

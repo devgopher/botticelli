@@ -54,7 +54,7 @@ public class ChatGptProvider : ChatGptProvider<GptSettings>
                 text.AppendJoin(' ',
                                 part?.Choices?
                                         .Select(c => (c.Message ?? c.Delta)?.Content) ??
-                                Array.Empty<string>());
+                                []);
 
                 var responseMessage = new SendMessageResponse(message.Uid)
                 {
@@ -99,14 +99,14 @@ public class ChatGptProvider : ChatGptProvider<GptSettings>
         var content = JsonContent.Create(new ChatGptInputMessage
         {
             Model = Settings.Value.Model,
-            Messages = new List<ChatGptMessage>
-            {
+            Messages =
+            [
                 new()
                 {
                     Role = "user",
                     Content = message.Body
                 }
-            },
+            ],
             Temperature = Settings.Value.Temperature,
             Stream = Settings.Value.StreamGeneration
         });

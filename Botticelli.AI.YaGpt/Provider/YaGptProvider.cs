@@ -89,19 +89,20 @@ public class YaGptProvider : ChatGptProvider<YaGptSettings>
         var yaGptMessage = new YaGptInputMessage
         {
             ModelUri = Settings.Value.Model,
-            Messages = new List<YaGptMessage>
-            {
+            Messages =
+            [
                 new()
                 {
                     Role = SystemRole,
                     Text = Settings.Value.Instruction
                 },
+
                 new()
                 {
                     Role = UserRole,
                     Text = message.Body
                 }
-            },
+            ],
             CompletionOptions = new CompletionOptions
             {
                 MaxTokens = Settings.Value.MaxTokens,
@@ -119,7 +120,7 @@ public class YaGptProvider : ChatGptProvider<YaGptSettings>
 
         var content = JsonContent.Create(yaGptMessage);
 
-        Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
+        Logger.LogDebug("{SendAsyncName}({MessageChatIds}) content: {ContentValue}", nameof(SendAsync), message.ChatIds, content.Value);
 
         return await client.PostAsync(Url.Combine($"{Settings.Value.Url}", Completion),
                                       content,

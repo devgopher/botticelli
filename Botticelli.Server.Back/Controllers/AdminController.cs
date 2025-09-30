@@ -27,13 +27,13 @@ public class AdminController(
     [HttpPost("[action]")]
     public async Task<RegisterBotResponse> AddNewBot([FromBody] RegisterBotRequest request)
     {
-        logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) started...");
+        logger.LogInformation("{AddNewBotName}({RequestBotId}) started...", nameof(AddNewBot), request.BotId);
         var success = await botManagementService.RegisterBot(request.BotId,
                                                               request.BotKey,
                                                               request.BotName,
                                                               request.Type);
 
-        logger.LogInformation($"{nameof(AddNewBot)}({request.BotId}) success: {success}...");
+        logger.LogInformation("{AddNewBotName}({RequestBotId}) success: {Success}...", nameof(AddNewBot), request.BotId, success);
 
         return new RegisterBotResponse
         {
@@ -45,12 +45,12 @@ public class AdminController(
     [HttpPut("[action]")]
     public async Task<UpdateBotResponse> UpdateBot([FromBody] UpdateBotRequest request)
     {
-        logger.LogInformation($"{nameof(UpdateBot)}({request.BotId}) started...");
+        logger.LogInformation("{UpdateBotName}({RequestBotId}) started...", nameof(UpdateBot), request.BotId);
         var success = await botManagementService.UpdateBot(request.BotId,
                                                             request.BotKey,
                                                             request.BotName);
 
-        logger.LogInformation($"{nameof(UpdateBot)}({request.BotId}) success: {success}...");
+        logger.LogInformation("{UpdateBotName}({RequestBotId}) success: {Success}...", nameof(UpdateBot), request.BotId, success);
 
         return new UpdateBotResponse
         {

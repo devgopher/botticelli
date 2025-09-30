@@ -53,7 +53,7 @@ public class AdminAuthService : IAdminAuthService
     {
         try
         {
-            _logger.LogInformation($"{nameof(RegisterAsync)}({userRegister.UserName}) started...");
+            _logger.LogInformation("{RegisterAsyncName}({UserRegisterUserName}) started...", nameof(RegisterAsync), userRegister.UserName);
 
             ValidateRequest(userRegister);
 
@@ -83,11 +83,11 @@ public class AdminAuthService : IAdminAuthService
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation($"{nameof(RegisterAsync)}({userRegister.UserName}) finished...");
+            _logger.LogInformation("{RegisterAsyncName}({UserRegisterUserName}) finished...", nameof(RegisterAsync), userRegister.UserName);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(RegisterAsync)}({userRegister.UserName}) error: {ex.Message}", ex);
+            _logger.LogError("{RegisterAsyncName}({UserRegisterUserName}) error: {ExMessage}", nameof(RegisterAsync), userRegister.UserName, ex.Message, ex);
         }
     }
 
@@ -97,7 +97,7 @@ public class AdminAuthService : IAdminAuthService
     {
         try
         {
-            _logger.LogInformation($"{nameof(RegeneratePassword)}({userRegister.UserName}) started...");
+            _logger.LogInformation("{RegeneratePasswordName}({UserRegisterUserName}) started...", nameof(RegeneratePassword), userRegister.UserName);
 
             ValidateRequest(userRegister);
 
@@ -107,11 +107,11 @@ public class AdminAuthService : IAdminAuthService
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation($"{nameof(RegeneratePassword)}({userRegister.UserName}) finished...");
+            _logger.LogInformation("{RegeneratePasswordName}({UserRegisterUserName}) finished...", nameof(RegeneratePassword), userRegister.UserName);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(RegeneratePassword)}({userRegister.UserName}) error: {ex.Message}", ex);
+            _logger.LogError("{RegeneratePasswordName}({UserRegisterUserName}) error: {ExMessage}", nameof(RegeneratePassword), userRegister.UserName, ex.Message, ex);
         }
     }
 
@@ -120,13 +120,13 @@ public class AdminAuthService : IAdminAuthService
     {
         try
         {
-            _logger.LogInformation($"{nameof(GenerateToken)}({userLogin.Email}) started...");
+            _logger.LogInformation("{GenerateTokenName}({UserLoginEmail}) started...", nameof(GenerateToken), userLogin.Email);
 
             ValidateRequest(userLogin);
 
             if (!CheckAccess(userLogin, false).result)
             {
-                _logger.LogInformation($"{nameof(GenerateToken)}({userLogin.Email}) access denied...");
+                _logger.LogInformation("{GenerateTokenName}({UserLoginEmail}) access denied...", nameof(GenerateToken), userLogin.Email);
 
                 return new GetTokenResponse
                 {
@@ -184,7 +184,7 @@ public class AdminAuthService : IAdminAuthService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"{nameof(GenerateToken)}({userLogin.Email}) error {ex.Message}!");
+            _logger.LogError(ex, "{GenerateTokenName}({UserLoginEmail}) error {ExMessage}!", nameof(GenerateToken), userLogin.Email, ex.Message);
         }
 
         return null;
@@ -210,13 +210,13 @@ public class AdminAuthService : IAdminAuthService
                                   out var validatedToken);
 
 
-            _logger.LogInformation($"{nameof(CheckToken)}() validate token: {validatedToken != null}");
+            _logger.LogInformation("{CheckTokenName}() validate token: {B}", nameof(CheckToken), validatedToken != null);
 
             return validatedToken != null;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(CheckToken)}() error: {ex.Message}");
+            _logger.LogError("{CheckTokenName}() error: {ExMessage}", nameof(CheckToken), ex.Message);
 
             return false;
         }
