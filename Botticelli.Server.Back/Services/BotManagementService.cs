@@ -37,7 +37,7 @@ public class BotManagementService : IBotManagementService
     {
         try
         {
-            _logger.LogInformation($"{nameof(RegisterBot)}({botId}, {botKey}, {botName}, {botType}) started...");
+            _logger.LogInformation("{RegisterBotName}({BotId}, {BotKey}, {BotName}, {BotType}) started...", nameof(RegisterBot), botId, botKey, botName, botType);
 
             if (GetBotInfo(botId) == null)
                 AddNewBotInfo(botId,
@@ -144,7 +144,7 @@ public class BotManagementService : IBotManagementService
     {
         try
         {
-            _logger.LogInformation($"{nameof(UpdateBot)}({botId}, {botKey}, {botName}) started...");
+            _logger.LogInformation("{UpdateBotName}({BotId}, {BotKey}, {BotName}) started...", nameof(UpdateBot), botId, botKey, botName);
 
             var prevStatus = await GetRequiredBotStatus(botId);
             if (prevStatus is not BotStatus.Unlocked) await SetRequiredBotStatus(botId, BotStatus.Unlocked);
@@ -153,7 +153,7 @@ public class BotManagementService : IBotManagementService
 
             if (botInfo == null)
             {
-                _logger.LogInformation($"{nameof(UpdateBot)}() : bot with id '{botId}' wasn't found!");
+                _logger.LogInformation("{UpdateBotName}() : bot with id '{BotId}' wasn't found!", nameof(UpdateBot), botId);
 
                 return false;
             }

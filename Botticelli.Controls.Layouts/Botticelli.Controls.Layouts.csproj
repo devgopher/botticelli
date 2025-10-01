@@ -7,13 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Buttons\"/>
 		<Folder Include="Dialogs\"/>
 		<Folder Include="Resources\Images\Buttons\"/>
 		<Folder Include="Resources\Images\Calendar\"/>
 		<Folder Include="Resources\Images\Checkboxes\"/>
 		<Folder Include="Resources\Images\Common\"/>
-		<Folder Include="Tables\"/>
 	</ItemGroup>
 
 	<ItemGroup>

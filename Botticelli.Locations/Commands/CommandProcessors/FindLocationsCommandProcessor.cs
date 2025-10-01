@@ -29,7 +29,7 @@ public class FindLocationsCommandProcessor<TReplyMarkup>(
 {
     protected override async Task InnerProcess(Message message, CancellationToken token)
     {
-        var query = string.Join(" ", message.Body?.Split(" ").Skip(1) ?? Array.Empty<string>());
+        var query = string.Join(" ", message.Body?.Split(" ").Skip(1) ?? []);
 
         var results = await locationProvider.Search(query, 10);
 

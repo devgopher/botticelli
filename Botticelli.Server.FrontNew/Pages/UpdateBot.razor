@@ -71,14 +71,14 @@
         var sessionToken = await Cookies.GetValueAsync("SessionToken");
         var bot = await GetBot(sessionToken);
 
-        var botStatus = await GetBotStatus(bot, sessionToken);
+        var botStatus = await GetBotStatus(sessionToken);
 
         _model.BotId = BotId;
         _model.BotName = bot.BotName;
         _model.BotKey = botStatus.BotContext.BotKey;
     }
 
-    private async Task<GetRequiredStatusFromServerResponse?> GetBotStatus(BotInfo? bot, string sessionToken)
+    private async Task<GetRequiredStatusFromServerResponse?> GetBotStatus(string sessionToken)
     {
         using var http = HttpClientFactory.Create();
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);

@@ -67,7 +67,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
                 return;
             }
 
-            if (message.From!.Id!.Equals(_bot?.BotUserId, StringComparison.InvariantCulture)) return;
+            if (message.From?.Id != null && message.From!.Id!.Equals(_bot?.BotUserId, StringComparison.InvariantCulture)) return;
 
             Classify(ref message);
 
@@ -130,7 +130,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         catch (Exception ex)
         {
             _metricsProcessor?.Process(MetricNames.BotError, BotDataUtils.GetBotId());
-            Logger.LogError(ex, $"Error in {GetType().Name}: {ex.Message}");
+            Logger.LogError(ex, "Error in {Name}: {ExMessage}", GetType().Name, ex.Message);
 
             await InnerProcessError(message, ex, token);
         }

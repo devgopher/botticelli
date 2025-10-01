@@ -42,9 +42,9 @@ public class OpenTtsSpeaker : BaseTtsSpeaker
 
         if (!result.IsSuccessStatusCode)
         {
-            Logger.LogError($"Can't get response from voice: {result.StatusCode}: {result.ReasonPhrase}!");
+            Logger.LogError("Can't get response from voice: {ResultStatusCode}: {ResultReasonPhrase}!", result.StatusCode, result.ReasonPhrase);
 
-            return Array.Empty<byte>();
+            return [];
         }
 
         var byteResult = await result.Content.ReadAsByteArrayAsync(token);

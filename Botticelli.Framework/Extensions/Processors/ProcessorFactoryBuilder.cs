@@ -7,7 +7,7 @@ namespace Botticelli.Framework.Extensions.Processors;
 public static class ProcessorFactoryBuilder
 {
     private static IServiceCollection? _serviceCollection;
-    private static readonly List<Type> ProcessorTypes = new();
+    private static readonly List<Type> ProcessorTypes = [];
 
     public static void AddProcessor<TProcessor>(IServiceCollection serviceCollection)
             where TProcessor : class, ICommandProcessor

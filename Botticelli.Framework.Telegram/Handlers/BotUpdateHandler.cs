@@ -39,7 +39,7 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider
 
             logger.LogDebug($"{nameof(HandleUpdateAsync)}() started...");
 
-            var botMessage = update.Message;
+            var botMessage = update.Message ?? update.ChannelPost;
 
             Message? botticelliMessage = null;
 
@@ -118,7 +118,7 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider
         HandleErrorSource source,
         CancellationToken cancellationToken)
     {
-        logger.LogError($"{nameof(HandleErrorAsync)}() error: {exception.Message}", exception);
+        logger.LogError("{HandleErrorAsyncName}() error: {ExceptionMessage} exception: {Exception}", nameof(HandleErrorAsync), exception.Message, exception);
 
         return Task.CompletedTask;
     }
@@ -239,22 +239,22 @@ public class BotUpdateHandler(ILogger<BotUpdateHandler> logger, IServiceProvider
     /// <param name="token"></param>
     protected async Task ProcessInProcessors(Message request, CancellationToken token)
     {
-        logger.LogDebug($"{nameof(ProcessInProcessors)}({request.Uid}) started...");
+        logger.LogDebug("{ProcessInProcessorsName}({RequestUid}) started...", nameof(ProcessInProcessors), request.Uid);
 
         if (token is { CanBeCanceled: true, IsCancellationRequested: true }) return;
 
         var processorFactory = ProcessorFactoryBuilder.Build(serviceProvider);
 
         var clientNonChainedTasks = processorFactory.GetProcessors()
-            .Select(p => p.ProcessAsync(request, token));
+            .Select(p => p.ProcessAsync(request, token)).ToList();
 
         var clientChainedTasks = processorFactory.GetCommandChainProcessors()
-            .Select(p => p.ProcessAsync(request, token));
+            .Select(p => p.ProcessAsync(request, token)).ToList();
 
         var clientTasks = clientNonChainedTasks.Concat(clientChainedTasks).ToArray();
 
         await Parallel.ForEachAsync(clientTasks, token, async (t, ct) => await t.WaitAsync(ct));
 
-        logger.LogDebug($"{nameof(ProcessInProcessors)}({request.Uid}) finished...");
+        logger.LogDebug("{ProcessInProcessorsName}({RequestUid}) finished...", nameof(ProcessInProcessors), request.Uid);
     }
 }

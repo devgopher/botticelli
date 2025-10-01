@@ -37,7 +37,7 @@ public abstract class ChatGptProvider<TSettings> : IAiProvider
 
         try
         {
-            Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) started");
+            Logger.LogDebug("{SendAsyncName}({MessageChatIds}) started", nameof(SendAsync), message.ChatIds);
 
             using var client = GetClient();
 
@@ -53,7 +53,7 @@ public abstract class ChatGptProvider<TSettings> : IAiProvider
                 await SendErrorGptResponse(message, reason, token);
             }
 
-            Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) finished");
+            Logger.LogDebug("{SendAsyncName}({MessageChatIds}) finished", nameof(SendAsync), message.ChatIds);
         }
         catch (Exception ex)
         {

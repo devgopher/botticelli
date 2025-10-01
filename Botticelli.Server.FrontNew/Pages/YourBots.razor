@@ -92,7 +92,7 @@ else
 
     private async Task RemoveBot(string botId)
     {
-        if (!await JsRuntime.InvokeAsync<bool>("confirm", new object[] {"Are you sure?"})) return;
+        if (!await JsRuntime.InvokeAsync<bool>("confirm", ["Are you sure?"])) return;
 
         await _http.GetAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/RemoveBot?botId={botId}"));
         UriHelper.NavigateTo("/your_bots", true);
