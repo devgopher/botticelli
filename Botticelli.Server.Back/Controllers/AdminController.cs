@@ -20,21 +20,29 @@ namespace Botticelli.Server.Back.Controllers;
 [Authorize(AuthenticationSchemes = "Bearer")]
 [Route("/v1/admin")]
 public class AdminController(
-    IBotManagementService botManagementService,
-    IBotStatusDataService botStatusDataService,
-    ILogger<AdminController> logger,
-    IBroadcastService broadcastService) : ControllerBase
+        IBotManagementService botManagementService,
+        IBotStatusDataService botStatusDataService,
+        ILogger<AdminController> logger,
+        IBroadcastService broadcastService) : ControllerBase
 {
+    /// <summary>
+    ///     Adds a new bot
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("[action]")]
     public async Task<RegisterBotResponse> AddNewBot([FromBody] RegisterBotRequest request)
     {
         logger.LogInformation("{AddNewBotName}({RequestBotId}) started...", nameof(AddNewBot), request.BotId);
         var success = await botManagementService.RegisterBot(request.BotId,
-                                                              request.BotKey,
-                                                              request.BotName,
-                                                              request.Type);
+                                                             request.BotKey,
+                                                             request.BotName,
+                                                             request.Type);
 
-        logger.LogInformation("{AddNewBotName}({RequestBotId}) success: {Success}...", nameof(AddNewBot), request.BotId, success);
+        logger.LogInformation("{AddNewBotName}({RequestBotId}) success: {Success}...",
+                              nameof(AddNewBot),
+                              request.BotId,
+                              success);
 
         return new RegisterBotResponse
         {
@@ -43,15 +51,23 @@ public class AdminController(
         };
     }
 
+    /// <summary>
+    /// Updates a bot
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPut("[action]")]
     public async Task<UpdateBotResponse> UpdateBot([FromBody] UpdateBotRequest request)
     {
         logger.LogInformation("{UpdateBotName}({RequestBotId}) started...", nameof(UpdateBot), request.BotId);
         var success = await botManagementService.UpdateBot(request.BotId,
-                                                            request.BotKey,
-                                                            request.BotName);
+                                                           request.BotKey,
+                                                           request.BotName);
 
-        logger.LogInformation("{UpdateBotName}({RequestBotId}) success: {Success}...", nameof(UpdateBot), request.BotId, success);
+        logger.LogInformation("{UpdateBotName}({RequestBotId}) success: {Success}...",
+                              nameof(UpdateBot),
+                              request.BotId,
+                              success);
 
         return new UpdateBotResponse
         {
@@ -67,7 +83,10 @@ public class AdminController(
     /// <param name="message"></param>
     /// <returns></returns>
     [HttpPost("[action]")]
-    public async Task SendBroadcast([FromQuery] string botId, [FromBody] Message message) => await DoBroadcast(botId, message);
+    public async Task SendBroadcast([FromQuery] string botId, [FromBody] Message message)
+    {
+        await DoBroadcast(botId, message);
+    }
 
     /// <summary>
     ///     Sends a broadcast message in binary stream
@@ -82,7 +101,7 @@ public class AdminController(
         await Request.Body.CopyToAsync(memoryStream);
 
         var message = JsonSerializer.Deserialize<Message>(Encoding.UTF8.GetString(memoryStream.ToArray()));
-        
+
         await DoBroadcast(botId, message);
     }
 
@@ -90,49 +109,64 @@ public class AdminController(
     {
         await broadcastService.BroadcastMessage(new Broadcast
         {
-            Id = message.Uid  ?? throw new NullReferenceException("Id cannot be null!"),
+            Id = message.Uid ?? throw new NullReferenceException("Id cannot be null!"),
             BotId = botId ?? throw new NullReferenceException("BotId cannot be null!"),
             Body = message.Body ?? throw new NullReferenceException("Body cannot be null!"),
             Attachments = message.Attachments
-                .Where(a => a is BinaryBaseAttachment)
-                .Select(a =>
-                {
-                    if (a is BinaryBaseAttachment baseAttachment)
-                        return new BroadcastAttachment
-                        {
-                            Id = Guid.NewGuid(),
-                            BroadcastId = message.Uid,
-                            MediaType = baseAttachment.MediaType,
-                            Filename = baseAttachment.Name,
-                            Content = baseAttachment.Data
-                        };
+                                 .Where(a => a is BinaryBaseAttachment)
+                                 .Select(a =>
+                                 {
+                                     if (a is BinaryBaseAttachment baseAttachment)
+                                         return new BroadcastAttachment
+                                         {
+                                             Id = Guid.NewGuid(),
+                                             BroadcastId = message.Uid,
+                                             MediaType = baseAttachment.MediaType,
+                                             Filename = baseAttachment.Name,
+                                             Content = baseAttachment.Data
+                                         };
 
-                    return null!;
-                })
-                .ToList(),
+                                     return null!;
+                                 })
+                                 .ToList(),
             Sent = true
         });
     }
 
-
+    /// <summary>
+    ///     Get bots list
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("[action]")]
     public Task<ICollection<BotInfo>> GetBots()
     {
         return Task.FromResult(botStatusDataService.GetBots());
     }
 
+    /// <summary>
+    ///     Activates a bot (BotStatus.Unlocked)
+    /// </summary>
+    /// <param name="botId"></param>
     [HttpGet("[action]")]
     public async Task ActivateBot([FromQuery] string botId)
     {
         await botManagementService.SetRequiredBotStatus(botId, BotStatus.Unlocked);
     }
 
+    /// <summary>
+    ///     Deactivates a bot (BotStatus.Locked)
+    /// </summary>
+    /// <param name="botId"></param>
     [HttpGet("[action]")]
     public async Task DeactivateBot([FromQuery] string botId)
     {
         await botManagementService.SetRequiredBotStatus(botId, BotStatus.Locked);
     }
 
+    /// <summary>
+    ///     Removes a bot
+    /// </summary>
+    /// <param name="botId"></param>
     [HttpGet("[action]")]
     public async Task RemoveBot([FromQuery] string botId)
     {

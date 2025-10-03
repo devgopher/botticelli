@@ -12,7 +12,7 @@ using MediaType = Botticelli.Shared.Constants.MediaType;
 namespace Botticelli.Server.Back.Controllers;
 
 /// <summary>
-///     Bot status controller
+///     Bot status/data controller
 /// </summary>
 [ApiController]
 [AllowAnonymous]
