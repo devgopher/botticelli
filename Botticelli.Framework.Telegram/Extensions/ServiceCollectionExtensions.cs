@@ -58,12 +58,12 @@ public static class ServiceCollectionExtensions
                                  .Get<DataAccessSettings>() ??
                                  throw new ConfigurationErrorsException($"Can't load configuration for {nameof(DataAccessSettings)}!");
         
-        return services.AddTelegramBot<TBot, TBotBuilder>(o =>
-                                                                         o.Set(telegramBotSettings),
-                                                                 o => o.Set(analyticsClientSettings),
-                                                                 o => o.Set(serverSettings),
-                                                                 o => o.Set(dataAccessSettings),
-                                                                 telegramBotBuilderFunc);
+        return services.AddTelegramBot<TBot, TBotBuilder>(
+            o => o.Set(telegramBotSettings),
+            o => o.Set(analyticsClientSettings),
+            o => o.Set(serverSettings),
+            o => o.Set(dataAccessSettings),
+            telegramBotBuilderFunc);
     }
 
     public static TelegramBotBuilder<TelegramBot, TelegramBotBuilder<TelegramBot>> AddTelegramBot(this IServiceCollection services,

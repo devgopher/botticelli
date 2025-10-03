@@ -21,7 +21,7 @@ public class BotStatusService(
                                   logger,
                                   serverSettings)
 {
-    private const short GetStatusPeriod = 30000;
+    private const short GetStatusPeriod = 30;
     private Task? _getRequiredStatusEventTask;
 
     public override Task StartAsync(CancellationToken cancellationToken)
@@ -48,7 +48,7 @@ public class BotStatusService(
         };
 
         _getRequiredStatusEventTask = Policy.HandleResult<GetRequiredStatusFromServerResponse>(_ => true)
-                                            .WaitAndRetryForeverAsync(_ => TimeSpan.FromMilliseconds(GetStatusPeriod))
+                                            .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(GetStatusPeriod))
                                             .ExecuteAndCaptureAsync(ct => Process(request, ct)!,
                                                                     cancellationToken);
     }
@@ -70,7 +70,7 @@ public class BotStatusService(
             
             return Task.FromResult<GetRequiredStatusFromServerResponse?>(new GetRequiredStatusFromServerResponse
             {
-                Status = BotStatus.Unknown,
+                Status = BotStatus.Error,
                 BotId = BotId ?? string.Empty,
                 BotContext = null
             });
@@ -84,7 +84,7 @@ public class BotStatusService(
             
             return Task.FromResult<GetRequiredStatusFromServerResponse?>(new GetRequiredStatusFromServerResponse
             {
-                Status = BotStatus.Unknown,
+                Status = BotStatus.Error,
                 BotId = BotId ?? string.Empty,
                 BotContext = null
             });
@@ -122,6 +122,7 @@ public class BotStatusService(
                 break;
             case BotStatus.Locked:
             case BotStatus.Unknown:
+            case BotStatus.Error:
             case null:
                 Bot.StopBotAsync(StopBotRequest.GetInstance(), cancellationToken);
 

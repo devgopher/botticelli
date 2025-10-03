@@ -4,5 +4,6 @@ public enum BotStatus
 {
     Unlocked,
     Locked,
-    Unknown
+    Unknown,
+    Error
 }
