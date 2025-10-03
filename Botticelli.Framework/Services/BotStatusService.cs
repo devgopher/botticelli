@@ -21,7 +21,8 @@ public class BotStatusService(
                                   logger,
                                   serverSettings)
 {
-    private const short GetStatusPeriod = 30;
+    private const short GetStatusPeriod = 10;
+    private const short MaxGetStatusPeriod = 120;
     private Task? _getRequiredStatusEventTask;
 
     public override Task StartAsync(CancellationToken cancellationToken)
@@ -48,10 +49,20 @@ public class BotStatusService(
         };
 
         _getRequiredStatusEventTask = Policy.HandleResult<GetRequiredStatusFromServerResponse>(_ => true)
-                                            .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(GetStatusPeriod))
-                                            .ExecuteAndCaptureAsync(ct => Process(request, ct)!,
-                                                                    cancellationToken);
+            .WaitAndRetryForeverAsync((_, ctx) => !ctx.TryGetValue("delay", out var delay) ? TimeSpan.FromSeconds(GetStatusPeriod) : (TimeSpan)delay, (result, i, timeSpan, context) =>
+            {
+                var gotRetries = context.TryGetValue("gotRetries", out var gr) ? (int)gr + 1 : 0;
+                var delay = GetDelay(gotRetries);
+
+                context["gotRetries"] = result.Result.Status == BotStatus.Error ? gotRetries : 0;
+                context["delay"] = result.Result.Status == BotStatus.Error ?
+                        TimeSpan.FromSeconds(delay > MaxGetStatusPeriod ? MaxGetStatusPeriod : delay) :
+                        TimeSpan.FromSeconds(GetStatusPeriod);
+            })
+            .ExecuteAndCaptureAsync(ct => Process(request, ct)!, cancellationToken);
     }
+
+    private static double GetDelay(int i) => GetStatusPeriod + GetStatusPeriod * Math.Log(i + 1, Math.E);
 
     private Task<GetRequiredStatusFromServerResponse?> Process(GetRequiredStatusFromServerRequest request,
                                                                CancellationToken cancellationToken)
