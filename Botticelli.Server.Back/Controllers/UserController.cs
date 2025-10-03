@@ -1,9 +1,11 @@
 ﻿using Botticelli.Server.Back.Services.Auth;
+using Botticelli.Server.Back.Settings;
 using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Shared.Utils;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using PasswordGenerator;
 
 namespace Botticelli.Server.Back.Controllers;
@@ -14,13 +16,14 @@ namespace Botticelli.Server.Back.Controllers;
 [ApiController]
 [Authorize(AuthenticationSchemes = "Bearer")]
 [Route("/v1/user")]
-public class UserController(IUserService userService, IMapper mapper, IPasswordSender passwordSender) : Controller
+public class UserController(IUserService userService, IMapper mapper, IPasswordSender passwordSender, IOptionsMonitor<ServerSettings> settings) : Controller
 {
     private readonly IPassword _password = new Password(true,
                                                         true,
                                                         true,
                                                         false,
-                                                        12);
+                                                        Random.Shared.Next(settings.CurrentValue.PasswordMinLength, 
+                                                                           settings.CurrentValue.PasswordMaxLength));
 
     /// <summary>
     ///     Does system contain any users?

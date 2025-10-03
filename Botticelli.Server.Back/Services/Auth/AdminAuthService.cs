@@ -1,7 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Botticelli.Server.Back.Settings;
 using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Data.Exceptions;
@@ -9,7 +8,6 @@ using Botticelli.Server.Models.Responses;
 using Botticelli.Shared.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Botticelli.Server.Back.Services.Auth;
@@ -27,8 +25,7 @@ public class AdminAuthService : IAdminAuthService
     public AdminAuthService(IConfiguration config,
                             IHttpContextAccessor httpContextAccessor,
                             ServerDataContext context,
-                            ILogger<AdminAuthService> logger,
-                            IOptionsMonitor<ServerSettings> settings)
+                            ILogger<AdminAuthService> logger)
     {
         _config = config;
         _httpContextAccessor = httpContextAccessor;
