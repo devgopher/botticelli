@@ -1,5 +1,5 @@
-﻿using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.Parsers;
+﻿using Botticelli.Controls.Parsers;
+using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Telegram;
 using Botticelli.Framework.Telegram.Extensions;
@@ -13,8 +13,10 @@ using TelegramCommandChainSample.Commands.CommandProcessors;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-       .AddTelegramBot(builder.Configuration)
-       .AddLogging(cfg => cfg.AddNLog())
+    .AddTelegramBot(builder.Configuration)
+    .Prepare();
+        
+builder.Services.AddLogging(cfg => cfg.AddNLog())
        .AddSingleton<StartCommandProcessor<ReplyKeyboardMarkup>>()
        .AddSingleton<StopCommandProcessor<ReplyKeyboardMarkup>>()
        .AddSingleton<InfoCommandProcessor<ReplyKeyboardMarkup>>()
@@ -33,4 +35,4 @@ var app = builder.Build();
 
 app.Services.RegisterBotChainedCommand<GetNameCommand, TelegramBot>();
 
-app.Run();
+await app.RunAsync();

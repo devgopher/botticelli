@@ -15,7 +15,10 @@ using Telegram.Bot.Types.ReplyMarkups;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-       .AddTelegramBot(builder.Configuration)
+    .AddTelegramBot(builder.Configuration)
+    .Prepare();
+        
+builder.Services
        .AddLogging(cfg => cfg.AddNLog())
        .AddYaGptProvider(builder.Configuration)
        .AddAiValidation()
@@ -28,4 +31,4 @@ builder.Services
 
 var app = builder.Build();
 
-app.Run();
+await app.RunAsync();

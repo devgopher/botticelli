@@ -5,7 +5,7 @@ using Botticelli.AI.DeepSeekGpt.Message.DeepSeek;
 using Botticelli.AI.DeepSeekGpt.Provider;
 using Botticelli.AI.DeepSeekGpt.Settings;
 using NUnit.Framework;
-using Shared;
+using Mocks;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using Usage = Botticelli.AI.DeepSeekGpt.Message.DeepSeek.Usage;

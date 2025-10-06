@@ -7,7 +7,7 @@ namespace Botticelli.Framework.Extensions.Processors;
 public static class ProcessorFactoryBuilder
 {
     private static IServiceCollection? _serviceCollection;
-    private static readonly List<Type> ProcessorTypes = new();
+    private static readonly List<Type> ProcessorTypes = [];
 
     public static void AddProcessor<TProcessor>(IServiceCollection serviceCollection)
             where TProcessor : class, ICommandProcessor
@@ -16,11 +16,10 @@ public static class ProcessorFactoryBuilder
         ProcessorTypes.Add(typeof(TProcessor));
     }
 
-    public static ProcessorFactory Build()
+    public static ProcessorFactory Build(IServiceProvider sp)
     {
-        if (_serviceCollection == null) throw new NullReferenceException("Service collection is null! PLease, call AddProcessor() first!");
-
-        var sp = _serviceCollection.BuildServiceProvider();
+        if (_serviceCollection == null) 
+            return new ProcessorFactory([]);
 
         var processors = ProcessorTypes
                          .Select(pt =>

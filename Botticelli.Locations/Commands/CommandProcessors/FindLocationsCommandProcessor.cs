@@ -1,10 +1,10 @@
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.BasicControls;
-using Botticelli.Framework.Controls.Layouts;
-using Botticelli.Framework.Controls.Layouts.Inlines;
-using Botticelli.Framework.Controls.Parsers;
+using Botticelli.Controls.BasicControls;
+using Botticelli.Controls.Layouts;
+using Botticelli.Controls.Layouts.Inlines;
+using Botticelli.Controls.Parsers;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Locations.Integration;
 using Botticelli.Shared.API.Client.Requests;
@@ -23,13 +23,13 @@ public class FindLocationsCommandProcessor<TReplyMarkup>(
         IValidator<Message> messageValidator)
         : CommandProcessor<FindLocationsCommand>(logger,
                                                  commandValidator,
-                                                 metricsProcessor,
-                                                 messageValidator)
+                                                 messageValidator,
+                                                 metricsProcessor)
         where TReplyMarkup : class
 {
     protected override async Task InnerProcess(Message message, CancellationToken token)
     {
-        var query = string.Join(" ", message.Body?.Split(" ").Skip(1) ?? Array.Empty<string>());
+        var query = string.Join(" ", message.Body?.Split(" ").Skip(1) ?? []);
 
         var results = await locationProvider.Search(query, 10);
 
@@ -63,6 +63,6 @@ public class FindLocationsCommandProcessor<TReplyMarkup>(
             }
         };
 
-        await Bot.SendMessageAsync(request, replyOptions, token);
+        await SendMessage(request, replyOptions, token);
     }
 }

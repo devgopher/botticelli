@@ -5,7 +5,7 @@ using Botticelli.AI.ChatGpt.Message.ChatGpt;
 using Botticelli.AI.ChatGpt.Provider;
 using Botticelli.AI.ChatGpt.Settings;
 using NUnit.Framework;
-using Shared;
+using Mocks;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using Usage = Botticelli.AI.ChatGpt.Message.ChatGpt.Usage;

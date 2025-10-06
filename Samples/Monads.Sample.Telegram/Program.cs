@@ -1,22 +1,29 @@
+using Botticelli.Chained.Context.Redis.Extensions;
+using Botticelli.Chained.Monads.Commands.Processors;
+using Botticelli.Chained.Monads.Extensions;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.Extensions;
-using Botticelli.Framework.Monads.Commands.Processors;
-using Botticelli.Framework.Monads.Extensions;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Layout;
+using Botticelli.Interfaces;
 using NLog.Extensions.Logging;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramMonadsBasedBot.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-       .AddTelegramBot(builder.Configuration)
-       .AddLogging(cfg => cfg.AddNLog())
-       .AddTelegramLayoutsSupport();
+var bot = builder.Services
+                 .AddTelegramBot(builder.Configuration)
+                 .Prepare();
 
-builder.Services.AddBotCommand<MathCommand>()
-       .AddMonadsChain<MathCommand, PassValidator<MathCommand>, ReplyKeyboardMarkup, ReplyTelegramLayoutSupplier>(builder.Services,
+builder.Services
+    .AddLogging(cfg => cfg.AddNLog())
+    .AddTelegramLayoutsSupport();
+
+builder.Services
+    .AddChainedRedisStorage<string, string>(builder.Configuration)
+    .AddBotCommand<MathCommand>()
+    .AddMonadsChain<MathCommand, PassValidator<MathCommand>, ReplyKeyboardMarkup, ReplyTelegramLayoutSupplier>(builder.Services,
                                                                                                                   cb => cb.Next<InputCommandProcessor<MathCommand>>()
                                                                                                                           .Next<TransformArgumentsProcessor<MathCommand, double>>(tp => tp.SuccessFunc =
                                                                                                                                                                                           Math.Sqrt)
@@ -32,4 +39,4 @@ builder.Services.AddBotCommand<MathCommand>()
 
 var app = builder.Build();
 
-app.Run();
+await app.RunAsync();

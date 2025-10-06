@@ -28,10 +28,14 @@ public abstract class BaseBot
     public delegate void StartedEventHandler(object sender, StartedBotEventArgs e);
 
     public delegate void StoppedEventHandler(object sender, StoppedBotEventArgs e);
-
+    public delegate void ContactSharedEventHandler(object sender, SharedContactBotEventArgs e);
+    public delegate void NewChatMembersEventHandler(object sender, NewChatMembersBotEventArgs e);
+    
     public virtual event MsgSentEventHandler? MessageSent;
     public virtual event MsgReceivedEventHandler? MessageReceived;
     public virtual event MsgRemovedEventHandler? MessageRemoved;
+    public virtual event ContactSharedEventHandler? ContactShared;
+    public virtual event NewChatMembersEventHandler? NewChatMembers;
 }
 
 /// <summary>
@@ -43,10 +47,10 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
 {
     public delegate void MessengerSpecificEventHandler(object sender, MessengerSpecificBotEventArgs<T> e);
 
-    private readonly MetricsProcessor _metrics;
+    private readonly MetricsProcessor? _metrics;
     protected readonly ILogger Logger;
 
-    protected BaseBot(ILogger logger, MetricsProcessor metrics)
+    protected BaseBot(ILogger logger, MetricsProcessor? metrics)
     {
         Logger = logger;
         _metrics = metrics;
@@ -56,7 +60,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
     {
         if (BotStatusKeeper.IsStarted) return StartBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
 
-        _metrics.Process(MetricNames.BotStarted, BotDataUtils.GetBotId());
+        _metrics?.Process(MetricNames.BotStarted, BotDataUtils.GetBotId());
 
         var result = await InnerStartBotAsync(request, token);
 
@@ -67,7 +71,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
 
     public virtual async Task<StopBotResponse> StopBotAsync(StopBotRequest request, CancellationToken token)
     {
-        _metrics.Process(MetricNames.BotStopped, BotDataUtils.GetBotId());
+        _metrics?.Process(MetricNames.BotStopped, BotDataUtils.GetBotId());
 
         if (!BotStatusKeeper.IsStarted) return StopBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
 
@@ -78,7 +82,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
         return result;
     }
 
-    public abstract Task SetBotContext(BotData.Entities.Bot.BotData? botData, CancellationToken token);
+    public abstract Task SetBotContext(BotData.Entities.Bot.BotData? context, CancellationToken token);
 
     /// <summary>
     ///     Sends a message
@@ -104,7 +108,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
                                                                                   CancellationToken token)
             where TSendOptions : class
     {
-        _metrics.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
+        _metrics?.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
 
         return await InnerSendMessageAsync(request,
                                            optionsBuilder,
@@ -122,7 +126,7 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
                                                                             CancellationToken token)
             where TSendOptions : class
     {
-        _metrics.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
+        _metrics?.Process(MetricNames.MessageSent, BotDataUtils.GetBotId());
 
         return await InnerSendMessageAsync(request,
                                            optionsBuilder,
@@ -130,21 +134,16 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
                                            token);
     }
 
-    public virtual async Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request,
+    public virtual async Task<RemoveMessageResponse> DeleteMessageAsync(DeleteMessageRequest request,
                                                                         CancellationToken token)
     {
-        _metrics.Process(MetricNames.MessageRemoved, BotDataUtils.GetBotId());
+        _metrics?.Process(MetricNames.MessageRemoved, BotDataUtils.GetBotId());
 
         return await InnerDeleteMessageAsync(request, token);
     }
 
     public abstract BotType Type { get; }
-    public string BotUserId { get; set; }
-
-    public Task<PingResponse> PingAsync(PingRequest request)
-    {
-        return Task.FromResult(PingResponse.GetInstance(request.Uid));
-    }
+    public string? BotUserId { get; set; }
 
     protected abstract Task<StartBotResponse> InnerStartBotAsync(StartBotRequest request, CancellationToken token);
 
@@ -156,24 +155,9 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
                                                                                      CancellationToken token)
             where TSendOptions : class;
 
-    protected abstract Task<RemoveMessageResponse> InnerDeleteMessageAsync(RemoveMessageRequest request,
+    protected abstract Task<RemoveMessageResponse> InnerDeleteMessageAsync(DeleteMessageRequest request,
                                                                            CancellationToken token);
 
-    /// <summary>
-    ///     Additional message processing while sending a message
-    /// </summary>
-    /// <param name="request"></param>
-    /// <param name="optionsBuilder"></param>
-    /// <param name="isUpdate"></param>
-    /// <param name="chatId"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    protected abstract Task AdditionalProcessing<TSendOptions>(SendMessageRequest request,
-                                                               ISendOptionsBuilder<TSendOptions>? optionsBuilder,
-                                                               bool isUpdate,
-                                                               string chatId,
-                                                               CancellationToken token);
-
-    public event StartedEventHandler Started;
-    public event StoppedEventHandler Stopped;
+    public event StartedEventHandler? Started;
+    public event StoppedEventHandler? Stopped;
 }

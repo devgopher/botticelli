@@ -15,7 +15,7 @@ public class Throttler : IThrottler
         {
             var diff = DateTime.UtcNow - _prevDt;
             var randComponent =
-                    TimeSpan.FromMilliseconds(_random.Next(-MaxDeviation.Milliseconds, MaxDeviation.Milliseconds));
+                    TimeSpan.FromMilliseconds(_random.Next((int)-MaxDeviation.TotalMilliseconds, (int)MaxDeviation.TotalMilliseconds));
             var sumDelay = Delay + randComponent;
 
             if (diff < sumDelay) Task.Delay(sumDelay - diff, ct).WaitAsync(ct);

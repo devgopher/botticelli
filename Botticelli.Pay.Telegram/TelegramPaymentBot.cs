@@ -23,9 +23,9 @@ public class TelegramPaymentBot : TelegramBot
                               IBotDataAccess data) : base(client,
                                                           handler,
                                                           logger,
-                                                          metrics,
                                                           textTransformer,
-                                                          data)
+                                                          data,
+                                                          metrics)
     {
     }
 
@@ -35,12 +35,6 @@ public class TelegramPaymentBot : TelegramBot
                                                                      string chatId,
                                                                      CancellationToken token)
     {
-        await base.AdditionalProcessing(request,
-                                        optionsBuilder,
-                                        isUpdate,
-                                        chatId,
-                                        token);
-
         var invoice = (request.Message as PayInvoiceMessage)?.Invoice;
 
         if (invoice is not null)
@@ -56,7 +50,7 @@ public class TelegramPaymentBot : TelegramBot
                                      cancellationToken: token);
     }
 
-    private int ConvertPrice(decimal price, Currency currency)
+    private static int ConvertPrice(decimal price, Currency currency)
     {
         return Convert.ToInt32(price * (decimal) Math.Pow(10, currency.Decimals ?? 2));
     }

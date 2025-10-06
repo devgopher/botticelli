@@ -23,7 +23,7 @@ public abstract class MetricsHandler<TMetric> : IRequestHandler<IMetricRequest>
     {
         try
         {
-            _logger.LogTrace($"Metric {request.GetType().Name} handling...");
+            _logger.LogTrace("Metric {Name} handling...", request.GetType().Name);
 
             var metric = Convert(request, _context.BotId);
 

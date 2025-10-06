@@ -19,19 +19,35 @@ public abstract class BotActualizationService : IHostedService
     protected readonly string? BotId = BotDataUtils.GetBotId();
     protected readonly IHttpClientFactory HttpClientFactory;
     protected readonly ILogger Logger;
-    protected readonly ServerSettings ServerSettings;
+    protected readonly ServerSettings? ServerSettings;
 
     /// <summary>
     ///     This service is intended for sending keepalive/hello messages
     ///     to Botticelli Admin server and receiving status messages from it
     /// </summary>
     protected BotActualizationService(IHttpClientFactory httpClientFactory,
-                                      ServerSettings serverSettings,
                                       IBot bot,
                                       ILogger logger)
     {
         HttpClientFactory = httpClientFactory;
+        Bot = bot;
+        Logger = logger;
+
+        ActualizationEvent.Reset();
+    }
+
+
+    /// <summary>
+    ///     This service is intended for sending keepalive/hello messages
+    ///     to Botticelli Admin server and receiving status messages from it
+    /// </summary>
+    protected BotActualizationService(IHttpClientFactory httpClientFactory,
+                                      IBot bot,
+                                      ILogger logger,
+                                      ServerSettings? serverSettings)
+    {
         ServerSettings = serverSettings;
+        HttpClientFactory = httpClientFactory;
         Bot = bot;
         Logger = logger;
 
@@ -66,9 +82,9 @@ public abstract class BotActualizationService : IHostedService
 
             var content = JsonContent.Create(request);
 
-            Logger.LogDebug("InnerSend request: {request}", request);
+            Logger.LogDebug("InnerSend request: {Request}", request);
 
-            var response = await httpClient.PostAsync(Url.Combine(ServerSettings.ServerUri, funcName),
+            var response = await httpClient.PostAsync(Url.Combine(ServerSettings?.ServerUri, funcName),
                                                       content,
                                                       cancellationToken);
 

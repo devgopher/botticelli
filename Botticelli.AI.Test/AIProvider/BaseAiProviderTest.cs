@@ -12,7 +12,7 @@ using Botticelli.Shared.Utils;
 using FluentAssertions;
 using FluentValidation;
 using NUnit.Framework;
-using Shared;
+using Mocks;
 using WireMock.Server;
 
 namespace Botticelli.AI.Test.AIProvider;

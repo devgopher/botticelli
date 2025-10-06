@@ -16,7 +16,7 @@ public static class Assertions
 
     public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? input)
     {
-        return (input is null ? input : Array.Empty<T>())!;
+        return (input is null ? input : [])!;
     }
 
     public static string EmptyIfNull(this string? input)

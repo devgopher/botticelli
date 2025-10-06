@@ -1,0 +1,22 @@
+﻿using Botticelli.Controls.Parsers;
+using Botticelli.Framework.Telegram.Layout;
+
+namespace Botticelli.Controls.Tests.Layouts;
+
+[TestFixture]
+[TestOf(typeof(ReplyTelegramLayoutSupplier))]
+public class ReplyTelegramLayoutSupplierTest
+{
+    private readonly JsonLayoutParser _jsonLayoutParser = new();
+    private readonly IReplyTelegramLayoutSupplier _supplier = new ReplyTelegramLayoutSupplier();
+
+    [Test]
+    public void GetMarkupTest()
+    {
+        var jsonText = File.ReadAllText("TestCases/CorrectLayout.json");
+        var layout = _jsonLayoutParser.Parse(jsonText);
+        var markup = _supplier.GetMarkup(layout);
+
+        Assert.That(markup != null);
+    }
+}

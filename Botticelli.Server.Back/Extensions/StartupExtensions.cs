@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using Botticelli.Server.Back.Services.Broadcasting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
@@ -22,6 +23,9 @@ public static class StartupExtensions
 
         if (pendingMigrations.Any()) db.Database.Migrate();
     }
+    
+    public static IServiceCollection AddBroadcasting(this IServiceCollection services) 
+        => services.AddScoped<IBroadcastService, BroadcastService>();        
 
     public static IServiceCollection AddIdentity(this IServiceCollection services)
     {
@@ -60,6 +64,8 @@ public static class StartupExtensions
         return services;
     }
 
+    
+    
     public static IWebHostBuilder AddSsl(this IWebHostBuilder builder, IConfiguration config)
     {
         // in Linux put here: ~/.dotnet/corefx/cryptography/x509stores/
@@ -86,12 +92,7 @@ public static class StartupExtensions
                                        {
                                            ServerCertificate = certificate,
                                            ClientCertificateMode = ClientCertificateMode.AllowCertificate,
-                                           ClientCertificateValidation = (_, _, errors) =>
-                                           {
-                                               if (errors != SslPolicyErrors.None) return false;
-
-                                               return true;
-                                           }
+                                           ClientCertificateValidation = (_, _, errors) => errors == SslPolicyErrors.None
                                        };
 
                                        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;

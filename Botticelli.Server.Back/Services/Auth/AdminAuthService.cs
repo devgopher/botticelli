@@ -1,7 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Botticelli.Server.Back.Settings;
 using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Data.Exceptions;
@@ -9,7 +8,6 @@ using Botticelli.Server.Models.Responses;
 using Botticelli.Shared.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Botticelli.Server.Back.Services.Auth;
@@ -25,10 +23,9 @@ public class AdminAuthService : IAdminAuthService
     private readonly ILogger<AdminAuthService> _logger;
 
     public AdminAuthService(IConfiguration config,
-        IHttpContextAccessor httpContextAccessor,
-        ServerDataContext context,
-        ILogger<AdminAuthService> logger,
-        IOptionsMonitor<ServerSettings> settings)
+                            IHttpContextAccessor httpContextAccessor,
+                            ServerDataContext context,
+                            ILogger<AdminAuthService> logger)
     {
         _config = config;
         _httpContextAccessor = httpContextAccessor;
@@ -41,22 +38,24 @@ public class AdminAuthService : IAdminAuthService
     /// </summary>
     /// <returns></returns>
     /// <exception cref="DataException"></exception>
-    public async Task<bool> HasUsersAsync() =>
-        await _context
-            .ApplicationUsers
-            .AnyAsync();
+    public async Task<bool> HasUsersAsync()
+    {
+        return await _context
+                     .ApplicationUsers
+                     .AnyAsync();
+    }
 
     /// <inheritdoc />
     public async Task RegisterAsync(UserAddRequest userRegister)
     {
         try
         {
-            _logger.LogInformation($"{nameof(RegisterAsync)}({userRegister.UserName}) started...");
+            _logger.LogInformation("{RegisterAsyncName}({UserRegisterUserName}) started...", nameof(RegisterAsync), userRegister.UserName);
 
             ValidateRequest(userRegister);
 
             if (_context.ApplicationUsers.AsQueryable()
-                .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
+                        .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");
 
             var user = new IdentityUser
@@ -81,11 +80,11 @@ public class AdminAuthService : IAdminAuthService
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation($"{nameof(RegisterAsync)}({userRegister.UserName}) finished...");
+            _logger.LogInformation("{RegisterAsyncName}({UserRegisterUserName}) finished...", nameof(RegisterAsync), userRegister.UserName);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(RegisterAsync)}({userRegister.UserName}) error: {ex.Message}", ex);
+            _logger.LogError("{RegisterAsyncName}({UserRegisterUserName}) error: {ExMessage}", nameof(RegisterAsync), userRegister.UserName, ex.Message, ex);
         }
     }
 
@@ -95,21 +94,21 @@ public class AdminAuthService : IAdminAuthService
     {
         try
         {
-            _logger.LogInformation($"{nameof(RegeneratePassword)}({userRegister.UserName}) started...");
+            _logger.LogInformation("{RegeneratePasswordName}({UserRegisterUserName}) started...", nameof(RegeneratePassword), userRegister.UserName);
 
             ValidateRequest(userRegister);
 
             if (_context.ApplicationUsers.AsQueryable()
-                .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
+                        .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation($"{nameof(RegeneratePassword)}({userRegister.UserName}) finished...");
+            _logger.LogInformation("{RegeneratePasswordName}({UserRegisterUserName}) finished...", nameof(RegeneratePassword), userRegister.UserName);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(RegeneratePassword)}({userRegister.UserName}) error: {ex.Message}", ex);
+            _logger.LogError("{RegeneratePasswordName}({UserRegisterUserName}) error: {ExMessage}", nameof(RegeneratePassword), userRegister.UserName, ex.Message, ex);
         }
     }
 
@@ -118,13 +117,13 @@ public class AdminAuthService : IAdminAuthService
     {
         try
         {
-            _logger.LogInformation($"{nameof(GenerateToken)}({userLogin.Email}) started...");
+            _logger.LogInformation("{GenerateTokenName}({UserLoginEmail}) started...", nameof(GenerateToken), userLogin.Email);
 
             ValidateRequest(userLogin);
 
             if (!CheckAccess(userLogin, false).result)
             {
-                _logger.LogInformation($"{nameof(GenerateToken)}({userLogin.Email}) access denied...");
+                _logger.LogInformation("{GenerateTokenName}({UserLoginEmail}) access denied...", nameof(GenerateToken), userLogin.Email);
 
                 return new GetTokenResponse
                 {
@@ -133,8 +132,8 @@ public class AdminAuthService : IAdminAuthService
             }
 
             var user = _context.ApplicationUsers
-                .AsQueryable()
-                .FirstOrDefault(u => u.NormalizedEmail == GetNormalized(userLogin.Email));
+                               .AsQueryable()
+                               .FirstOrDefault(u => u.NormalizedEmail == GetNormalized(userLogin.Email));
 
             if (user == null)
                 return new GetTokenResponse
@@ -143,16 +142,16 @@ public class AdminAuthService : IAdminAuthService
                 };
 
             var userRole = _context.ApplicationUserRoles
-                .AsQueryable()
-                .FirstOrDefault(ur => ur.UserId == user.Id);
+                                   .AsQueryable()
+                                   .FirstOrDefault(ur => ur.UserId == user.Id);
 
             var roleName = string.Empty;
 
             if (userRole != null)
             {
                 var role = _context.ApplicationRoles
-                    .AsQueryable()
-                    .FirstOrDefault(r => r.Id == userRole.RoleId);
+                                   .AsQueryable()
+                                   .FirstOrDefault(r => r.Id == userRole.RoleId);
 
                 roleName = role?.Name;
             }
@@ -164,16 +163,15 @@ public class AdminAuthService : IAdminAuthService
                 new Claim("role", roleName ?? "no_role")
             };
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Authorization:Key"] ?? throw new InvalidOperationException()));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Authorization:Key"] ?? throw new InvalidOperationException()));
             var signCreds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(_config["Authorization:Issuer"],
-                _config["Authorization:Audience"],
-                claims,
-                expires: DateTime.Now.AddHours(24), // NOTE!!! Temporary!
-                //.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
-                signingCredentials: signCreds);
+                                             _config["Authorization:Audience"],
+                                             claims,
+                                             expires: DateTime.Now.AddHours(24), // NOTE!!! Temporary!
+                                             //.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
+                                             signingCredentials: signCreds);
 
             return new GetTokenResponse
             {
@@ -183,7 +181,7 @@ public class AdminAuthService : IAdminAuthService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"{nameof(GenerateToken)}({userLogin.Email}) error {ex.Message}!");
+            _logger.LogError(ex, "{GenerateTokenName}({UserLoginEmail}) error {ExMessage}!", nameof(GenerateToken), userLogin.Email, ex.Message);
         }
 
         return null;
@@ -200,22 +198,22 @@ public class AdminAuthService : IAdminAuthService
             var sign = _config["Authorization:Key"] ?? throw new InvalidOperationException();
             var handler = new JwtSecurityTokenHandler();
             handler.ValidateToken(token,
-                new TokenValidationParameters
-                {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(sign)),
-                    ValidIssuer = _config["Authorization:Issuer"],
-                    ValidateAudience = false
-                },
-                out var validatedToken);
+                                  new TokenValidationParameters
+                                  {
+                                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(sign)),
+                                      ValidIssuer = _config["Authorization:Issuer"],
+                                      ValidateAudience = false
+                                  },
+                                  out var validatedToken);
 
 
-            _logger.LogInformation($"{nameof(CheckToken)}() validate token: {validatedToken != null}");
+            _logger.LogInformation("{CheckTokenName}() validate token: {B}", nameof(CheckToken), validatedToken != null);
 
             return validatedToken != null;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(CheckToken)}() error: {ex.Message}");
+            _logger.LogError("{CheckTokenName}() error: {ExMessage}", nameof(CheckToken), ex.Message);
 
             return false;
         }
@@ -238,9 +236,9 @@ public class AdminAuthService : IAdminAuthService
     public string? GetCurrentUserId()
     {
         return _httpContextAccessor.HttpContext?.User
-            .Claims
-            .FirstOrDefault(c => c.Type == "applicationUserId")
-            ?.Value;
+                                   .Claims
+                                   .FirstOrDefault(c => c.Type == "applicationUserId")
+                                   ?.Value;
     }
 
     private static void ValidateRequest(UserAddRequest userRegister)
@@ -258,5 +256,8 @@ public class AdminAuthService : IAdminAuthService
         userLogin.Password!.NotNullOrEmpty();
     }
 
-    private static string GetNormalized(string input) => input.ToUpper();
+    private static string GetNormalized(string input)
+    {
+        return input.ToUpper();
+    }
 }

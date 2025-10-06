@@ -1,5 +1,5 @@
-using Botticelli.Framework.Controls.BasicControls;
-using Botticelli.Framework.Controls.Layouts;
+using Botticelli.Controls.BasicControls;
+using Botticelli.Controls.Layouts;
 
 namespace AiSample.Common.Layouts;
 

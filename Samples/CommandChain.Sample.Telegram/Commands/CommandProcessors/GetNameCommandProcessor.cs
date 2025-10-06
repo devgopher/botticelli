@@ -1,7 +1,6 @@
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using FluentValidation;
 
@@ -29,10 +28,6 @@ public class GetNameCommandProcessor : WaitForClientResponseCommandChainProcesso
             Body = "Hello! What's your name?"
         };
 
-        await Bot.SendMessageAsync(new SendMessageRequest
-                                   {
-                                       Message = responseMessage
-                                   },
-                                   token);
+        await SendMessage(responseMessage, token);
     }
 }

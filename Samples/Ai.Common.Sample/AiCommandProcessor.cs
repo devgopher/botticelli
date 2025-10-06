@@ -6,7 +6,7 @@ using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Utils;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.Parsers;
+using Botticelli.Controls.Parsers;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
@@ -27,8 +27,8 @@ public class AiCommandProcessor<TReplyMarkup> : CommandProcessor<AiCommand> wher
                               IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator,
+                   metricsProcessor)
     {
         _bus = bus;
         var responseLayout = new AiLayout();
@@ -38,15 +38,15 @@ public class AiCommandProcessor<TReplyMarkup> : CommandProcessor<AiCommand> wher
 
         _bus.OnReceived += async (sender, response) =>
         {
-            await Bot.SendMessageAsync(new SendMessageRequest(response.Uid)
-                                       {
-                                           Message = response.Message,
-                                           ExpectPartialResponse = response.IsPartial,
-                                           SequenceNumber = response.SequenceNumber,
-                                           IsFinal = response.IsFinal
-                                       },
-                                       options,
-                                       CancellationToken.None);
+            await SendMessage(new SendMessageRequest(response.Uid)
+                              {
+                                  Message = response.Message,
+                                  ExpectPartialResponse = response.IsPartial,
+                                  SequenceNumber = response.SequenceNumber,
+                                  IsFinal = response.IsFinal
+                              },
+                              options,
+                              CancellationToken.None);
         };
     }
 

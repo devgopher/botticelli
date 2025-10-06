@@ -8,12 +8,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Telegram.Bot" Version="22.4.4"/>
+		<PackageReference Include="Telegram.Bot" Version="22.5.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Botticelli.AI\Botticelli.AI.csproj"/>
-		<ProjectReference Include="..\..\Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj"/>
+		<ProjectReference Include="..\..\Botticelli.Controls\Botticelli.Controls.csproj" />
 		<ProjectReference Include="..\..\Botticelli.Framework\Botticelli.Framework.csproj"/>
 	</ItemGroup>
 

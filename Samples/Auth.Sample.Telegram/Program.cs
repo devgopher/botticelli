@@ -11,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
        .AddTelegramBot(builder.Configuration)
+       .Prepare();
+
+builder.Services
        .AddTelegramLayoutsSupport()
        .AddLogging(cfg => cfg.AddNLog())
        .AddSqliteBasicBotUserAuth(builder.Configuration);
@@ -27,4 +30,4 @@ builder.Services.AddBotCommand<InfoCommand>()
        .AddProcessor<InfoCommandProcessor<ReplyKeyboardMarkup>>()
        .AddValidator<PassValidator<InfoCommand>>();
 
-builder.Build().Run();
+await builder.Build().RunAsync();

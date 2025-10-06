@@ -1,5 +1,5 @@
 ﻿using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.Layouts.Extensions;
+using Botticelli.Controls.Layouts.Extensions;
 using Botticelli.Framework.Extensions;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Layout;
@@ -13,11 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
        .AddTelegramBot(builder.Configuration)
+       .Prepare();
+
+builder.Services
        .AddLogging(cfg => cfg.AddNLog())
        .AddBotCommand<GetCalendarCommand, GetCalendarCommandProcessor, PassValidator<GetCalendarCommand>>()
        .AddInlineCalendar<InlineKeyboardMarkup, InlineTelegramLayoutSupplier, DateChosenCommandProcessor>()
        .AddOsmLocations(builder.Configuration);
 
-var app = builder.Build();
-
-app.Run();
+await builder.Build().RunAsync();

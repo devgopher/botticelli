@@ -1,6 +1,7 @@
 ﻿using Botticelli.Bot.Data.Settings;
 using Botticelli.Client.Analytics.Settings;
 using Botticelli.Framework.Options;
+using Botticelli.Framework.Telegram.Builders;
 using Botticelli.Framework.Telegram.Extensions;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Pay.Extensions;
@@ -24,8 +25,8 @@ public static class ServiceCollectionExtensions
     /// <param name="serverSettingsBuilderFunc"></param>
     /// <param name="dataAccessSettingsBuilderFunc"></param>
     /// <returns></returns>
-    public static IServiceCollection AddTelegramPayBot<THandler, TProcessor, TQuery>(this IServiceCollection services,
-                                                                                     Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
+    public static TelegramBotBuilder<TelegramPaymentBot, TelegramBotBuilder<TelegramPaymentBot>> AddTelegramPayBot<THandler, TProcessor, TQuery>(this IServiceCollection services,
+                                                                                                                                                       Action<BotSettingsBuilder<TelegramBotSettings>> optionsBuilderFunc,
                                                                                      Action<AnalyticsClientSettingsBuilder<AnalyticsClientSettings>> analyticsOptionsBuilderFunc,
                                                                                      Action<ServerSettingsBuilder<ServerSettings>> serverSettingsBuilderFunc,
                                                                                      Action<DataAccessSettingsBuilder<DataAccessSettings>> dataAccessSettingsBuilderFunc)
@@ -34,12 +35,13 @@ public static class ServiceCollectionExtensions
     {
         services.AddPayments<THandler, TProcessor, TQuery>();
 
-        return services.AddTelegramBot<TelegramPaymentBot>(optionsBuilderFunc,
+        return services.AddTelegramBot<TelegramPaymentBot, TelegramBotBuilder<TelegramPaymentBot>>(optionsBuilderFunc,
                                                            analyticsOptionsBuilderFunc,
                                                            serverSettingsBuilderFunc,
                                                            dataAccessSettingsBuilderFunc,
-                                                           o => o.AddSubHandler<BotPreCheckoutSubHandler>()
-                                                                 .AddSubHandler<BotSuccessfulPaymentSubHandler>());
+                                                           o => o
+                                                                .AddSubHandler<BotPreCheckoutSubHandler>()
+                                                                .AddSubHandler<BotSuccessfulPaymentSubHandler>());
     }
 
     /// <summary>
@@ -48,14 +50,33 @@ public static class ServiceCollectionExtensions
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
-    public static IServiceCollection AddTelegramPayBot<THandler, TProcessor>(this IServiceCollection services, IConfiguration configuration)
+    public static TelegramBotBuilder<TelegramPaymentBot, TelegramBotBuilder<TelegramPaymentBot>> AddTelegramPayBot<THandler, TProcessor>(this IServiceCollection services, IConfiguration configuration)
             where THandler : IPreCheckoutHandler, new()
             where TProcessor : IPayProcessor<THandler, PreCheckoutQuery>
     {
         services.AddPayments<THandler, TProcessor, PreCheckoutQuery>();
 
-        return services.AddTelegramBot<TelegramPaymentBot>(configuration,
+        return services.AddTelegramBot<TelegramPaymentBot, TelegramBotBuilder<TelegramPaymentBot>>(configuration,
                                                            o => o.AddSubHandler<BotPreCheckoutSubHandler>()
                                                                  .AddSubHandler<BotSuccessfulPaymentSubHandler>());
+    }
+
+    /// <summary>
+    ///     Adds a standalone Telegram bot with a payment function
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    public static TelegramStandaloneBotBuilder<TelegramPaymentBot> AddStandaloneTelegramPayBot<THandler, TProcessor>(this IServiceCollection services,
+                                                                                                                      IConfiguration configuration)
+            where THandler : IPreCheckoutHandler, new()
+            where TProcessor : IPayProcessor<THandler, PreCheckoutQuery>
+    {
+        services.AddPayments<THandler, TProcessor, PreCheckoutQuery>();
+
+        return services.AddStandaloneTelegramBot<TelegramPaymentBot>(configuration,
+                                                                     o => o
+                                                                          .AddSubHandler<BotPreCheckoutSubHandler>()
+                                                                          .AddSubHandler<BotSuccessfulPaymentSubHandler>());
     }
 }

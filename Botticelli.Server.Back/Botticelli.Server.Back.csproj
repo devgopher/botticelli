@@ -8,7 +8,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>0.7.0</Version>
+		<Version>0.8.0</Version>
 		<Company>Botticelli</Company>
 		<Copyright>BotticelliBots</Copyright>
 		<PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
@@ -63,13 +63,13 @@
 		<PackageReference Include="Flurl" Version="4.0.0"/>
 		<PackageReference Include="Mapster" Version="7.4.0"/>
 		<PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.20"/>
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10"/>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10"/>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.16"/>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.16"/>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.16">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.10"/>
+		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.16"/>
 		<PackageReference Include="NLog" Version="5.4.0"/>
 		<PackageReference Include="NLog.Web.AspNetCore" Version="5.4.0"/>
 		<PackageReference Include="PasswordGenerator" Version="2.1.0"/>

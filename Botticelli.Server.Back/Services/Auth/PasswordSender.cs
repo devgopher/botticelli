@@ -20,9 +20,9 @@ public class PasswordSender : IPasswordSender
 
     public async Task SendPassword(string email, string password, CancellationToken ct)
     {
-        _logger.LogInformation($"Sending a password message to : {email}");
+        _logger.LogInformation("Sending a password message to : {Email}", email);
 
-        if (EnvironmentExtensions.IsDevelopment()) _logger.LogInformation($"!!! Email : {email} password: {password} !!! ONLY FOR DEVELOPMENT PURPOSES !!!");
+        if (EnvironmentExtensions.IsDevelopment()) _logger.LogInformation("!!! Email : {Email} password: {Password} !!! ONLY FOR DEVELOPMENT PURPOSES !!!", email, password);
 
         var message = Email.From(_serverSettings.ServerEmail, "BotticelliBots Admin Service")
                            .To(email)
@@ -35,11 +35,11 @@ public class PasswordSender : IPasswordSender
 
         if (!sendResult.Successful)
         {
-            _logger.LogError($"Sending a password message to : {email} error", sendResult.ErrorMessages);
+            _logger.LogError("Sending a password message to : {Email} error error mssage : {ErrMessage}", email, sendResult.ErrorMessages);
 
             throw new InvalidOperationException($"Sending mail errors:  {string.Join(',', sendResult.ErrorMessages)}");
         }
 
-        _logger.LogInformation($"Sending a password message to : {email} - OK");
+        _logger.LogInformation("Sending a password message to : {Email} - OK", email);
     }
 }

@@ -71,7 +71,7 @@ public class GptJProvider : ChatGptProvider<AiGptSettings>
             Temperature = Settings.Value.Temperature
         });
 
-        Logger.LogDebug($"{nameof(SendAsync)}({message.ChatIds}) content: {content.Value}");
+        Logger.LogDebug("{SendAsyncName}({MessageChatIds}) content: {ContentValue}", nameof(SendAsync), message.ChatIds, content.Value);
 
         return await client.PostAsync(Url.Combine($"{Settings.Value.Url}", "generate"),
                                       content,

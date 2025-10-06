@@ -1,0 +1,40 @@
+using Botticelli.Client.Analytics;
+using Botticelli.Chained.Context;
+using Botticelli.Framework.Commands.Processors;
+using Botticelli.Framework.Commands.Utils;
+using Botticelli.Framework.Commands.Validators;
+using Botticelli.Shared.ValueObjects;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+namespace Botticelli.Chained.Monads.Commands.Processors;
+
+public class ChainRunProcessor<TCommand>(
+        ILogger<ChainRunProcessor<TCommand>> logger,
+        ICommandValidator<TCommand> validator,
+        MetricsProcessor metricsProcessor,
+        ChainRunner<TCommand> chainRunner,
+        IValidator<Message> messageValidator,
+        IServiceProvider serviceProvider)
+        : CommandProcessor<TCommand>(logger,
+                                     validator,
+                                     messageValidator,
+                                     metricsProcessor)
+        where TCommand : class, IChainCommand, new()
+{
+    protected override async Task InnerProcess(Message message, CancellationToken token)
+    {
+        var storage = serviceProvider.GetRequiredService<IStorage<string, string>>();
+        
+        var command = new TCommand
+        {
+            Context = new CommandContext(storage)
+        };
+
+        command.Context.Set(Names.Message, message);
+        command.Context.Set(Names.Args, message.Body.GetArguments());
+
+        _ = await chainRunner.Run(command);
+    }
+}

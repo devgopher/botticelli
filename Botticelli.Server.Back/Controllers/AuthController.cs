@@ -11,19 +11,17 @@ namespace Botticelli.Server.Back.Controllers;
 [ApiController]
 [AllowAnonymous]
 [Route("/v1/auth")]
-public class AuthController
+public class AuthController(IAdminAuthService adminAuthService)
 {
-    private readonly IAdminAuthService _adminAuthService;
-
-    public AuthController(IAdminAuthService adminAuthService)
-    {
-        _adminAuthService = adminAuthService;
-    }
-
+    /// <summary>
+    /// Gets auth token for a user
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [AllowAnonymous]
     [HttpPost("[action]")]
     public IActionResult GetToken(UserLoginRequest request)
     {
-        return new OkObjectResult(_adminAuthService.GenerateToken(request));
+        return new OkObjectResult(adminAuthService.GenerateToken(request));
     }
 }

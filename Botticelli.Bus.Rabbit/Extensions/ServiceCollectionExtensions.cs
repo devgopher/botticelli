@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions
     {
         settings.NotNull();
         settings.Uri.NotNull();
-        
+
         if (!services.Any(s => s.ServiceType.IsAssignableFrom(typeof(IConnectionFactory))))
             services.AddSingleton<IConnectionFactory>(s => new ConnectionFactory
             {

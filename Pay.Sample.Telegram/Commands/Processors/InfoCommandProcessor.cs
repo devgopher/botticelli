@@ -7,19 +7,17 @@ using FluentValidation;
 
 namespace TelegramPayBot.Commands.Processors;
 
-public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> where TReplyMarkup : class
+public class InfoCommandProcessor<TReplyMarkup>(
+        ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
+        ICommandValidator<InfoCommand> commandValidator,
+        MetricsProcessor metricsProcessor,
+        IValidator<Message> messageValidator)
+        : CommandProcessor<InfoCommand>(logger,
+                                        commandValidator,
+                                        messageValidator,
+                                        metricsProcessor)
+        where TReplyMarkup : class
 {
-    public InfoCommandProcessor(ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
-                                ICommandValidator<InfoCommand> commandValidator,
-                                MetricsProcessor metricsProcessor,
-                                IValidator<Message> messageValidator)
-            : base(logger,
-                   commandValidator,
-                   metricsProcessor,
-                   messageValidator)
-    {
-    }
-
     protected override Task InnerProcessContact(Message message, CancellationToken token)
     {
         return Task.CompletedTask;
@@ -47,6 +45,6 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
             }
         };
 
-        await Bot.SendMessageAsync(greetingMessageRequest, token);
+        await SendMessage(greetingMessageRequest, token);
     }
 }

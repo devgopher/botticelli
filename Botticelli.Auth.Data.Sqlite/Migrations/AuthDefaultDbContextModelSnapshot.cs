@@ -17,7 +17,7 @@ namespace Botticelli.Auth.Data.Sqlite.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Botticelli.Auth.Sample.Telegram")
-                .HasAnnotation("ProductVersion", "8.0.13");
+                .HasAnnotation("ProductVersion", "8.0.16");
 
             modelBuilder.Entity("Botticelli.Auth.Data.Models.AccessHistory<Botticelli.Auth.Data.Models.BotUser>", b =>
                 {

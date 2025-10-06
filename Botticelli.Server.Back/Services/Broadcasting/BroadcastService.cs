@@ -15,15 +15,16 @@ public class BroadcastService(ServerDataContext context) : IBroadcastService
         await context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Broadcast>> GetMessages(string botId)
-    {
-        return await context.BroadcastMessages.Where(m => m.BotId.Equals(botId)).ToArrayAsync();
-    }
+    public async Task<IEnumerable<Broadcast>> GetMessages(string botId) =>
+        await context.BroadcastMessages
+            .Where(m => m.BotId.Equals(botId) && !m.Received)
+            .Include(m => m.Attachments)
+            .ToArrayAsync();
 
     public async Task MarkReceived(string botId, string messageId)
     {
-        var messages = context.BroadcastMessages.Where(bm => bm.BotId == botId && bm.Id == messageId)
-                              .ToList();
+        var messages = await context.BroadcastMessages.Where(bm => bm.BotId == botId && bm.Id == messageId)
+            .ToListAsync();
 
         foreach (var message in messages) message.Received = true;
 
@@ -32,24 +33,10 @@ public class BroadcastService(ServerDataContext context) : IBroadcastService
         await context.SaveChangesAsync();
     }
 
-
     public Task<List<Broadcast>> GetBroadcasts(string botId)
     {
         var broadcasts = context.BroadcastMessages.Where(x => x.BotId == botId && !x.Sent && !x.Received).ToList();
 
         return Task.FromResult(broadcasts);
-    }
-
-    public async Task MarkAsReceived(string messageId)
-    {
-        var broadcast = context.BroadcastMessages.FirstOrDefault(x => x.Id == messageId);
-
-        if (broadcast == null) return;
-
-        broadcast.Received = true;
-
-        context.Update(broadcast);
-
-        await context.SaveChangesAsync();
     }
 }

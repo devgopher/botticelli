@@ -29,8 +29,8 @@ public class RegisterCommandProcessor<TReplyMarkup>(
         IValidator<Message> messageValidator)
         : CommandProcessor<RegisterCommand>(logger,
                                             commandValidator,
-                                            metricsProcessor,
-                                            messageValidator)
+                                            messageValidator,
+                                            metricsProcessor)
         where TReplyMarkup : class
 {
     protected override Task InnerProcessContact(Message message, CancellationToken token)
@@ -69,7 +69,7 @@ public class RegisterCommandProcessor<TReplyMarkup>(
                     }
                 };
 
-                await Bot.SendMessageAsync(alreadyRegisteredRequest, token);
+                await SendMessage(alreadyRegisteredRequest, token);
 
                 return;
             }
@@ -103,7 +103,7 @@ public class RegisterCommandProcessor<TReplyMarkup>(
             }
         };
 
-        await Bot.SendMessageAsync(registeredRequest, token)!;
+        await SendMessage(registeredRequest, token);
     }
 
     private async Task<BotUserRoleInfo?> GetUserRole()

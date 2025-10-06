@@ -1,7 +1,6 @@
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
 using FluentValidation;
@@ -13,13 +12,11 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
     public InfoCommandProcessor(ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
                                 ICommandValidator<InfoCommand> commandValidator,
                                 MetricsProcessor metricsProcessor,
-                                ILayoutSupplier<TReplyMarkup> layoutSupplier,
-                                ILayoutParser layoutParser,
                                 IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator,
+                   metricsProcessor)
     {
     }
 
@@ -50,6 +47,6 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
             }
         };
 
-        await Bot?.SendMessageAsync(greetingMessageRequest, token)!;
+        await SendMessage(greetingMessageRequest, token);
     }
 }

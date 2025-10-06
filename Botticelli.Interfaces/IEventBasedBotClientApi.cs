@@ -45,5 +45,5 @@ public interface IEventBasedBotClientApi
                                                                       CancellationToken token)
             where TSendOptions : class;
 
-    public Task<RemoveMessageResponse> DeleteMessageAsync(RemoveMessageRequest request, CancellationToken token);
+    public Task<RemoveMessageResponse> DeleteMessageAsync(DeleteMessageRequest request, CancellationToken token);
 }

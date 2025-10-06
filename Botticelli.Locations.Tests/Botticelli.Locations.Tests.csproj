@@ -20,7 +20,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Botticelli.Locations\Botticelli.Locations.csproj"/>
-		<ProjectReference Include="..\Tests\Shared\Shared.csproj"/>
+		<ProjectReference Include="..\Tests\Mocks\Mocks.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -4,9 +4,9 @@ using Botticelli.Auth.Dto.Credentials;
 using Botticelli.Auth.Dto.User;
 using Botticelli.Auth.Services;
 using Botticelli.Client.Analytics;
+using Botticelli.Controls.Parsers;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
@@ -30,8 +30,8 @@ public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand
                                  IManager<BotUserRoleInfo> roleManager)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator,
+                   metricsProcessor)
     {
         _userInfo = userInfo;
         _roleManager = roleManager;
@@ -72,6 +72,6 @@ public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand
             }
         };
 
-        await Bot.SendMessageAsync(greetingMessageRequest, _options, token);
+        await SendMessage(greetingMessageRequest, _options, token);
     }
 }

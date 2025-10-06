@@ -18,4 +18,6 @@ public class ServerSettings
     public string? AnalyticsUrl { get; set; }
     public required string SecureStorageConnection { get; set; }
     public bool UseSsl { get; set; }
+    public int PasswordMinLength { get; set; } = 8;
+    public int PasswordMaxLength { get; set; } = 12;
 }

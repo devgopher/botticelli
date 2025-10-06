@@ -1,0 +1,199 @@
+@page "/broadcast/send/{botId}"
+@using System.Net.Http.Headers
+@using System.Text
+@using System.Text.Json
+@using Botticelli.Server.FrontNew.Models
+@using Botticelli.Server.FrontNew.Settings
+@using Botticelli.Server.FrontNew.Utils
+@using Botticelli.Shared.Constants
+@using Botticelli.Shared.Utils
+@using Botticelli.Shared.ValueObjects
+@using Flurl
+@using Microsoft.Extensions.Options
+@inject HttpClient Http
+@inject NavigationManager UriHelper;
+@inject IOptionsMonitor<BackSettings> BackSettings;
+@inject CookieStorageAccessor Cookies;
+
+
+<RadzenTemplateForm TItem="BotBroadcastModel" Data="@_model" Submit="@OnSubmit">
+    <ChildContent>
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Bot id:" Component="BotId" style="width: 100%;"/>
+            </div>
+            <div class="col-md-9">
+                <RadzenTextArea MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.BotId"
+                                Name="BotId"/>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Broadcast message:" Component="Message" style="width: 100%;"/>
+            </div>
+            <div class="col-md-9">
+                <RadzenTextArea MaxLength="4000" style="display: block; width: 100%; height: 300px;"
+                                @bind-Value="@_model.Message"
+                                Name="Message"
+                                Placeholder="Enter a message..."
+                                Cols="40"
+                                Rows="100"/>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 1rem;" class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Upload attachments:" Component="Message" style="width: 100%;"/>
+            </div>
+            <div style="margin-bottom: 1rem;" class="row">
+                <RadzenUpload Name="radzenUpload"
+                              Accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml, 
+                                        audio/mpeg, audio/ogg, audio/wav, audio/x-m4a, audio/mp4, audio/aac,
+                                        video/mp4, video/quicktime, video/x-msvideo, 
+                                        video/x-ms-wmv, video/x-matroska, video/x-flv, video/mpeg, video/webm, video/3gpp, video/x-m4v, 
+                                        video/mp2t, video/vnd.dlna.mpeg-tts, video/vob, video/mpeg, video/x-ms-asf, application/x-shockwave-flash, 
+                                        application/vnd.rn-realmedia, video/ogg, video/x-dv, video/x-f4v, application/ogg, video/h264, video/hevc, 
+                                        video/xvid, video/divx"
+                              Change="@OnFileChange"
+                              Disabled="!_uploadEnabled"
+                              Multiple="true"
+                              Progress="@OnProgress"
+                              Style="margin: 10px;" />
+            </div>
+        </div>
+
+        <RadzenLabel Text="@_error.UserMessage" Style="color: red; font-weight: bold; border: none"/>
+
+        <RadzenProgressBar Value="@_uploadProgress" Max="100" Style="width: 80%;" />
+        
+        <div style="margin-bottom: 1rem;" class="row">
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Send"/>
+        </div>
+    </ChildContent>
+</RadzenTemplateForm>
+
+@code {
+
+    private readonly Error _error = new()
+    {
+        UserMessage = string.Empty
+    };
+
+    readonly BotBroadcastModel _model = new();
+    readonly Message _message = new()
+    {
+        Uid = Guid.NewGuid().ToString(),
+        Attachments = []
+    };
+
+    private bool _uploadEnabled = true;
+    private int _uploadProgress = 0;
+
+    [Parameter]
+    public string? BotId { get; set; }
+
+    protected override bool ShouldRender()
+    {
+        return true;
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        if (BotId == null)
+            UriHelper.NavigateTo("/your_bots", true);
+        else
+            _model.BotId = BotId;
+
+        return Task.CompletedTask;
+    }
+
+    private async Task OnSubmit(BotBroadcastModel model)
+    {
+        var sessionToken = await Cookies.GetValueAsync("SessionToken");
+        _message.Body = model.Message;
+        if (string.IsNullOrWhiteSpace(sessionToken)) return;
+
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
+
+        if (!_message.Attachments.Any())
+        {
+            var content = new StringContent(JsonSerializer.Serialize(_message),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await Http.PostAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/SendBroadcast?botId={BotId}"),
+                content);
+
+#if DEBUG
+            if (!response.IsSuccessStatusCode) _error.UserMessage = $"Error sending a broadcast message: {response.ReasonPhrase}";
+            Console.WriteLine(_error.UserMessage);
+#endif
+        }
+        else
+        {
+            using var ms = new MemoryStream();
+            await JsonSerializer.SerializeAsync(ms, _message);
+            
+            var progressStreamContent = new ProgressStreamContent(ms,
+                (totalRead,
+                    totalBytes) =>
+                {
+                    _uploadProgress = (int)((double)totalRead / totalBytes);
+                    Console.WriteLine($"UploadProgress: {_uploadProgress}");
+                });
+            
+            progressStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            
+            var binaryResponse = await Http.PostAsync(Url.Combine(BackSettings.CurrentValue.BackUrl, $"/admin/SendBroadcastBinary?botId={BotId}"),
+                progressStreamContent);
+            
+#if DEBUG
+            if (!binaryResponse.IsSuccessStatusCode) _error.UserMessage = $"Error sending a broadcast message (binary): {binaryResponse.ReasonPhrase}";
+            Console.WriteLine(_error.UserMessage);
+#endif
+        }
+        
+        UriHelper.NavigateTo("/your_bots", true);
+    }
+
+    private async Task OnFileChange(UploadChangeEventArgs? fileChange)
+    {        
+        if (fileChange == null) return;
+        
+        foreach (var file in fileChange.Files)
+        {
+            try
+            {
+                if (file?.ContentType == null!) continue;
+
+                var mediaType = MimeTypeConverter.ConvertMimeTypeToMediaType(file.ContentType);
+                if (mediaType == MediaType.Unknown) continue;
+
+                var stream = file.OpenReadStream(Constants.MaxAllowedFileSize);
+                var bytes = await stream.FromStreamToBytesAsync();
+                var content = new BinaryBaseAttachment(Guid.NewGuid().ToString(),
+                                                       file.Name,
+                                                       mediaType,
+                                                       string.Empty,
+                                                       bytes);
+
+                _message.Attachments.Add(content);
+
+                _uploadEnabled = false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"OnFileChange: exception {ex.Message}");
+            }
+        }
+    }
+
+    private Task OnProgress(UploadProgressArgs arg)
+    {
+        _uploadProgress = arg.Progress;
+        
+        return Task.CompletedTask;
+    }
+
+}

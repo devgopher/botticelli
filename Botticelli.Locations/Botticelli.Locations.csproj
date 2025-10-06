@@ -18,8 +18,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Botticelli.Framework.Controls.Layouts\Botticelli.Framework.Controls.Layouts.csproj"/>
-		<ProjectReference Include="..\Botticelli.Framework.Controls\Botticelli.Framework.Controls.csproj"/>
+		<ProjectReference Include="..\Botticelli.Controls.Layouts\Botticelli.Controls.Layouts.csproj" />
+		<ProjectReference Include="..\Botticelli.Controls\Botticelli.Controls.csproj" />
 		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
 	</ItemGroup>
 

@@ -23,8 +23,8 @@ public class SendInvoiceCommandProcessor<TReplyMarkup> : CommandProcessor<SendIn
                                        IOptionsMonitor<PaySettings> paySettingsAccessor)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
-                   messageValidator)
+                   messageValidator,
+                   metricsProcessor)
     {
         _paySettingsAccessor = paySettingsAccessor;
     }
@@ -77,6 +77,6 @@ public class SendInvoiceCommandProcessor<TReplyMarkup> : CommandProcessor<SendIn
             }
         };
 
-        await Bot?.SendMessageAsync(sendInvoiceMessageRequest, token)!; // TODO: think about Bot mocks
+        await SendMessage(sendInvoiceMessageRequest, token);
     }
 }

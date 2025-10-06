@@ -8,8 +8,8 @@ public class ForwardGeocoderMock : IForwardGeocoder
 {
     public async Task<GeocodeResponse[]> Geocode(ForwardGeocodeRequest req)
     {
-        return new GeocodeResponse[]
-        {
+        return
+        [
             new()
             {
                 OSMID = 110,
@@ -32,6 +32,6 @@ public class ForwardGeocoderMock : IForwardGeocoder
                 },
                 GeoText = "Test Result"
             }
-        };
+        ];
     }
 }

@@ -9,57 +9,94 @@ public abstract class BotBuilder<TBot>
 {
     protected abstract void Assert();
 
-    public TBot? Build()
+    public virtual TBot? Build(IServiceProvider serviceProvider)
     {
         Assert();
 
-        return InnerBuild();
+        return InnerBuild(serviceProvider);
     }
 
-    protected abstract TBot? InnerBuild();
+    protected abstract TBot? InnerBuild(IServiceProvider serviceProvider);
 }
 
-public abstract class BotBuilder<TBotBuilder, TBot> : BotBuilder<TBot>
-        where TBotBuilder : BotBuilder<TBot>
+public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>, IBotBuilder<TBot, TBotBuilder> 
+    where TBotBuilder : BotBuilder<TBot, TBotBuilder>
 {
-    private readonly ServerSettings _serverSettings;
-    protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings> AnalyticsClientSettingsBuilder;
-    protected DataAccessSettingsBuilder<DataAccessSettings> BotDataAccessSettingsBuilder;
-    protected ServerSettingsBuilder<ServerSettings> ServerSettingsBuilder;
-    protected IServiceCollection? Services;
+    protected AnalyticsClientSettingsBuilder<AnalyticsClientSettings>? AnalyticsClientSettingsBuilder;
+    protected DataAccessSettingsBuilder<DataAccessSettings>? BotDataAccessSettingsBuilder;
+    protected ServerSettingsBuilder<ServerSettings>? ServerSettingsBuilder;
+    public IServiceCollection Services = null!;
+
+    protected BaseBot.MsgSentEventHandler? MessageSent;
+    protected BaseBot.MsgReceivedEventHandler? MessageReceived;
+    protected BaseBot.MsgRemovedEventHandler? MessageRemoved;
+    protected BaseBot.ContactSharedEventHandler? SharedContact;
+    protected BaseBot.NewChatMembersEventHandler? NewChatMembers;
 
     protected override void Assert()
     {
     }
 
-    protected TBotBuilder AddServices(IServiceCollection services)
+    public virtual BotBuilder<TBot, TBotBuilder> AddServices(IServiceCollection services)
     {
         Services = services;
 
-        return (this as TBotBuilder)!;
+        return this;
     }
 
-    public abstract TBotBuilder AddBotSettings<TBotSettings>(BotSettingsBuilder<TBotSettings> settingsBuilder)
-            where TBotSettings : BotSettings, new();
-
-    public TBotBuilder AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
+    public virtual BotBuilder<TBot, TBotBuilder> AddAnalyticsSettings(AnalyticsClientSettingsBuilder<AnalyticsClientSettings> clientSettingsBuilder)
     {
         AnalyticsClientSettingsBuilder = clientSettingsBuilder;
 
-        return (this as TBotBuilder)!;
+        return this;
     }
 
-    public TBotBuilder AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
+    protected virtual BotBuilder<TBot, TBotBuilder> AddServerSettings(ServerSettingsBuilder<ServerSettings> settingsBuilder)
     {
         ServerSettingsBuilder = settingsBuilder;
 
-        return (this as TBotBuilder)!;
+        return this;
     }
 
-    public TBotBuilder AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
+    public virtual  BotBuilder<TBot, TBotBuilder> AddBotDataAccessSettings(DataAccessSettingsBuilder<DataAccessSettings> botDataAccessBuilder)
     {
         BotDataAccessSettingsBuilder = botDataAccessBuilder;
 
-        return (this as TBotBuilder)!;
+        return this;
+    }
+    
+    public virtual  BotBuilder<TBot, TBotBuilder> AddOnMessageSent(BaseBot.MsgSentEventHandler handler)
+    {
+        MessageSent += handler;
+
+        return this;
+    }
+ 
+    public  virtual BotBuilder<TBot, TBotBuilder> AddOnMessageReceived(BaseBot.MsgReceivedEventHandler handler)
+    {
+        MessageReceived += handler;
+
+        return this;
+    }
+    
+    public virtual  BotBuilder<TBot, TBotBuilder> AddOnMessageRemoved(BaseBot.MsgRemovedEventHandler handler)
+    {
+        MessageRemoved += handler;
+
+        return this;
+    }
+    
+    public virtual  BotBuilder<TBot, TBotBuilder> AddNewChatMembers(BaseBot.NewChatMembersEventHandler handler)
+    {
+        NewChatMembers += handler;
+
+        return this;
+    }
+    
+    public  virtual BotBuilder<TBot, TBotBuilder> AddSharedContact(BaseBot.ContactSharedEventHandler handler)
+    {
+        SharedContact += handler;
+
+        return this;
     }
 }

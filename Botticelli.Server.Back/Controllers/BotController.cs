@@ -12,7 +12,7 @@ using MediaType = Botticelli.Shared.Constants.MediaType;
 namespace Botticelli.Server.Back.Controllers;
 
 /// <summary>
-///     Bot status controller
+///     Bot status/data controller
 /// </summary>
 [ApiController]
 [AllowAnonymous]
@@ -23,6 +23,9 @@ public class BotController(
         IBroadcastService broadcastService,
         ILogger<BotController> logger)
 {
+    private const int LongPollTimeoutSeconds = 30;
+    private const int DefaultPollIntervalMilliseconds = 300;
+    
     #region Client pane
 
     /// <summary>
@@ -40,13 +43,12 @@ public class BotController(
         var botInfo = await botStatusDataService.GetBotInfo(request.BotId!);
         botInfo.NotNull();
         botInfo?.BotKey?.NotNullOrEmpty();
-        botInfo!.AdditionalInfo!.NotNullOrEmpty();
 
         var context = new BotContext
         {
             BotId = botInfo!.BotId,
             BotKey = botInfo.BotKey!,
-            Items = botInfo.AdditionalInfo!.ToDictionary(k => k.ItemName, k => k.ItemValue)!
+            Items = botInfo.AdditionalInfo?.ToDictionary(k => k.ItemName, k => k.ItemValue)!
         };
 
         return new GetRequiredStatusFromServerResponse
@@ -69,7 +71,7 @@ public class BotController(
     {
         try
         {
-            logger.LogTrace($"{nameof(KeepAlive)}({request.BotId})...");
+            logger.LogTrace("{KeepAliveName}({RequestBotId})...", nameof(KeepAlive), request.BotId);
             request.BotId?.NotNullOrEmpty();
             await botManagementService.SetKeepAlive(request.BotId!);
 
@@ -81,7 +83,7 @@ public class BotController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, $"{nameof(KeepAlive)}({request.BotId}) error: {ex.Message}");
+            logger.LogError(ex, "{KeepAliveName}({RequestBotId}) error: {ExMessage}", nameof(KeepAlive), request.BotId, ex.Message);
 
             return new KeepAliveNotificationResponse
             {
@@ -98,38 +100,46 @@ public class BotController(
     /// <returns></returns>
     [AllowAnonymous]
     [HttpPost("client/[action]")]
-    public async Task<GetBroadCastMessagesResponse> Broadcast([FromBody] GetBroadCastMessagesRequest request)
+    public async Task<GetBroadCastMessagesResponse> GetBroadcast([FromBody] GetBroadCastMessagesRequest request)
     {
         try
         {
-            logger.LogTrace($"{nameof(Broadcast)}({request.BotId})...");
             request.BotId?.NotNullOrEmpty();
 
-            var broadcastMessages = await broadcastService.GetMessages(request.BotId!);
-
+            var broadcastMessages = new List<Broadcast>();
+            var started = DateTime.UtcNow;
+            
+            while (!broadcastMessages.Any() && DateTime.UtcNow.Subtract(started).TotalSeconds < LongPollTimeoutSeconds)
+            {
+                broadcastMessages = (await broadcastService.GetMessages(request.BotId!)).ToList();
+                
+                await Task.Delay(DefaultPollIntervalMilliseconds);
+            } 
+            
             return new GetBroadCastMessagesResponse
             {
                 BotId = request.BotId!,
                 IsSuccess = true,
                 Messages = broadcastMessages.Select(bm => new Message
                                             {
+                                                Uid = bm.Id,
                                                 Type = Message.MessageType.Messaging,
                                                 Subject = string.Empty,
                                                 Body = bm.Body,
-                                                Attachments = bm.Attachments?.Select<BroadcastAttachment, BaseAttachment>(a =>
-                                                                                                                                  new BinaryBaseAttachment(Guid.NewGuid().ToString(),
-                                                                                                                                                           a.Filename,
-                                                                                                                                                           (MediaType) a.MediaType,
-                                                                                                                                                           string.Empty,
-                                                                                                                                                           a.Content))
-                                                                .ToList()
+                                                Attachments = bm.Attachments?.Select(BaseAttachment (att) => new BinaryBaseAttachment(att.Id.ToString(),
+                                                                                                                                     att.Filename,
+                                                                                                                                     att.MediaType,
+                                                                                                                                     string.Empty,
+                                                                                                                                     att.Content))
+                                                                .ToList() ??
+                                                              []
                                             })
                                             .ToArray()
             };
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, $"{nameof(Broadcast)}({request.BotId}) error: {ex.Message}");
+            logger.LogError(ex, "{GetBroadcastName}({RequestBotId}) error: {ExMessage}", nameof(GetBroadcast), request.BotId, ex.Message);
 
             return new GetBroadCastMessagesResponse
             {
@@ -151,7 +161,7 @@ public class BotController(
     {
         try
         {
-            logger.LogTrace($"{nameof(Broadcast)}({request.BotId})...");
+            logger.LogTrace("{GetBroadcastName}({RequestBotId})...", nameof(GetBroadcast), request.BotId);
             request.BotId?.NotNullOrEmpty();
 
             foreach (var messageId in request.MessageIds) await broadcastService.MarkReceived(request.BotId!, messageId);
@@ -163,7 +173,7 @@ public class BotController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, $"{nameof(BroadcastReceived)}({request.BotId}) error: {ex.Message}");
+            logger.LogError(ex, "{BroadcastReceivedName}({RequestBotId}) error: {ExMessage}", nameof(BroadcastReceived), request.BotId, ex.Message);
 
             return new BroadCastMessagesReceivedResponse
             {

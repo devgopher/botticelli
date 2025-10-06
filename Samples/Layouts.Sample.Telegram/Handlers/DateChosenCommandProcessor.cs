@@ -2,7 +2,7 @@ using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Utils;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.Layouts.Commands.InlineCalendar;
+using Botticelli.Controls.Layouts.Commands.InlineCalendar;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
@@ -18,8 +18,8 @@ public class DateChosenCommandProcessor(
         IValidator<Message> messageValidator)
         : CommandProcessor<DateChosenCommand>(logger,
                                               commandValidator,
-                                              metricsProcessor,
-                                              messageValidator)
+                                              messageValidator,
+                                              metricsProcessor)
 {
     protected override async Task InnerProcess(Message message, CancellationToken token)
     {

@@ -63,18 +63,16 @@ public abstract class BaseTtsSpeaker : ISpeaker
             using var bufferStream = new MemoryStream(input);
             await using var wavReader = new WaveFileReader(bufferStream);
 
-            await using (var mp3Writer = new LameMP3FileWriter(resultStream, wavReader.WaveFormat, preset))
-            {
-                await wavReader.CopyToAsync(mp3Writer, token);
+            await using var mp3Writer = new LameMP3FileWriter(resultStream, wavReader.WaveFormat, preset);
+            await wavReader.CopyToAsync(mp3Writer, token);
 
-                return resultStream.ToArray();
-            }
+            return resultStream.ToArray();
         }
         catch (Exception ex)
         {
-            Logger.LogError($"Error while compressing: {ex.Message}", ex);
+            Logger.LogError("Error while compressing: {ExMessage} {ex}", ex.Message, ex);
         }
 
-        return Array.Empty<byte>();
+        return [];
     }
 }

@@ -1,8 +1,8 @@
 using System.Reflection;
 using Botticelli.Client.Analytics;
+using Botticelli.Controls.Parsers;
 using Botticelli.Framework.Commands.Processors;
 using Botticelli.Framework.Commands.Validators;
-using Botticelli.Framework.Controls.Parsers;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
@@ -17,14 +17,30 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
 
     public InfoCommandProcessor(ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
                                 ICommandValidator<InfoCommand> commandValidator,
-                                MetricsProcessor metricsProcessor,
                                 ILayoutSupplier<TReplyMarkup> layoutSupplier,
                                 ILayoutParser layoutParser,
                                 IValidator<Message> messageValidator)
             : base(logger,
                    commandValidator,
-                   metricsProcessor,
                    messageValidator)
+    {
+        var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+        var responseLayout = layoutParser.ParseFromFile(Path.Combine(location, "main_layout.json"));
+        var responseMarkup = layoutSupplier.GetMarkup(responseLayout);
+
+        _options = SendOptionsBuilder<TReplyMarkup>.CreateBuilder(responseMarkup);
+    }
+
+    public InfoCommandProcessor(ILogger<InfoCommandProcessor<TReplyMarkup>> logger,
+                                ICommandValidator<InfoCommand> commandValidator,
+                                ILayoutSupplier<TReplyMarkup> layoutSupplier,
+                                ILayoutParser layoutParser,
+                                IValidator<Message> messageValidator,
+                                MetricsProcessor? metricsProcessor)
+            : base(logger,
+                   commandValidator,
+                   messageValidator,
+                   metricsProcessor)
     {
         var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
         var responseLayout = layoutParser.ParseFromFile(Path.Combine(location, "main_layout.json"));
@@ -60,6 +76,6 @@ public class InfoCommandProcessor<TReplyMarkup> : CommandProcessor<InfoCommand> 
             }
         };
 
-        await Bot?.SendMessageAsync(greetingMessageRequest, _options, token)!; // TODO: think about Bot mocks
+        await SendMessage(greetingMessageRequest, _options, token);
     }
 }

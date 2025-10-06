@@ -52,7 +52,7 @@ public class UserService : IUserService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(CheckAndAddAsync)}({request.UserName}) error: {ex.Message}", ex);
+            _logger.LogError("{CheckAndAddAsyncName}({RequestUserName}) error: {ExMessage} {Ex}", nameof(CheckAndAddAsync), request.UserName, ex.Message, ex);
 
             throw;
         }
@@ -62,7 +62,7 @@ public class UserService : IUserService
     {
         try
         {
-            _logger.LogInformation($"{nameof(AddAsync)}({request.UserName}) started...");
+            _logger.LogInformation("{AddAsyncName}({RequestUserName}) started...", nameof(AddAsync), request.UserName);
             request.NotNull();
             request.UserName.NotNull();
             request.Email.NotNull();
@@ -110,15 +110,15 @@ public class UserService : IUserService
 
             if (needConfirmation)
             {
-                _logger.LogInformation($"{nameof(AddAsync)}({request.UserName}) sending a confirmation email to {request.Email}...");
+                _logger.LogInformation("{AddAsyncName}({RequestUserName}) sending a confirmation email to {RequestEmail}...", nameof(AddAsync), request.UserName, request.Email);
                 await _confirmationService.SendConfirmationCode(user, token);
             }
 
-            _logger.LogInformation($"{nameof(AddAsync)}({request.UserName}) finished...");
+            _logger.LogInformation("{AddAsyncName}({RequestUserName}) finished...", nameof(AddAsync), request.UserName);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(AddAsync)}({request.UserName}) error: {ex.Message}", ex);
+            _logger.LogError("{AddAsyncName}({RequestUserName}) error: {ExMessage}", nameof(AddAsync), request.UserName, ex.Message, ex);
 
             throw;
         }
@@ -128,7 +128,7 @@ public class UserService : IUserService
     {
         try
         {
-            _logger.LogInformation($"{nameof(UpdateAsync)}({request.UserName}) started...");
+            _logger.LogInformation("{UpdateAsyncName}({RequestUserName}) started...", nameof(UpdateAsync), request.UserName);
 
             request.NotNull();
             request.UserName.NotNull();
@@ -154,11 +154,11 @@ public class UserService : IUserService
 
             await _context.SaveChangesAsync(token);
 
-            _logger.LogInformation($"{nameof(UpdateAsync)}({request.UserName}) finished...");
+            _logger.LogInformation("{UpdateAsyncName}({RequestUserName}) finished...", nameof(UpdateAsync), request.UserName);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(UpdateAsync)}({request.UserName}) error: {ex.Message}", ex);
+            _logger.LogError("{UpdateAsyncName}({RequestUserName}) error: {ExMessage}", nameof(UpdateAsync), request.UserName, ex.Message, ex);
 
             throw;
         }
@@ -168,7 +168,7 @@ public class UserService : IUserService
     {
         try
         {
-            _logger.LogInformation($"{nameof(DeleteAsync)}({request.UserName}) started...");
+            _logger.LogInformation("{DeleteAsyncName}({RequestUserName}) started...", nameof(DeleteAsync), request.UserName);
 
             request.NotNull();
             request.UserName.NotNull();
@@ -184,11 +184,11 @@ public class UserService : IUserService
 
             await _context.SaveChangesAsync(token);
 
-            _logger.LogInformation($"{nameof(DeleteAsync)}({request.UserName}) finished...");
+            _logger.LogInformation("{DeleteAsyncName}({RequestUserName}) finished...", nameof(DeleteAsync), request.UserName);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(DeleteAsync)}({request.UserName}) error: {ex.Message}", ex);
+            _logger.LogError("{DeleteAsyncName}({RequestUserName}) error: {ExMessage}", nameof(DeleteAsync), request.UserName, ex.Message, ex);
 
             throw;
         }
@@ -198,7 +198,7 @@ public class UserService : IUserService
     {
         try
         {
-            _logger.LogInformation($"{nameof(GetAsync)}({request.UserName}) started...");
+            _logger.LogInformation("{GetAsyncName}({RequestUserName}) started...", nameof(GetAsync), request.UserName);
 
             if (_context.ApplicationUsers.AsQueryable()
                         .All(u => u.NormalizedUserName != GetNormalized(request.UserName!)))
@@ -209,7 +209,7 @@ public class UserService : IUserService
             user.NotNull();
             user!.Email.NotNull();
 
-            _logger.LogInformation($"{nameof(GetAsync)}({request.UserName}) finished...");
+            _logger.LogInformation("{GetAsyncName}({RequestUserName}) finished...", nameof(GetAsync), request.UserName);
 
             return new UserGetResponse
             {
@@ -219,7 +219,7 @@ public class UserService : IUserService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(GetAsync)}({request.UserName}) error: {ex.Message}", ex);
+            _logger.LogError("{GetAsyncName}({RequestUserName}) error: {ExMessage}", nameof(GetAsync), request.UserName, ex.Message, ex);
 
             throw;
         }
