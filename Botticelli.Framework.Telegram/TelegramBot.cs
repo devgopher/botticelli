@@ -32,6 +32,7 @@ public class TelegramBot : BaseBot<TelegramBot>
     private readonly IBotDataAccess _data;
     private readonly IBotUpdateHandler _handler;
     private readonly ITextTransformer _textTransformer;
+    private bool _handlerLoaded = false;
     protected readonly ITelegramBotClient Client;
 
     // ReSharper disable once MemberCanBeProtected.Global
@@ -512,13 +513,16 @@ public class TelegramBot : BaseBot<TelegramBot>
             BotStatusKeeper.IsStarted = true;
 
             // Rethrowing events from BotUpdateHandler
-            _handler.MessageReceived += (sender, e)
+            if (!_handlerLoaded)
+            {
+                _handler.MessageReceived += (sender, e)
                     => MessageReceived?.Invoke(sender, e);
-            _handler.ContactShared += (sender, e)
-                => ContactShared?.Invoke(sender, e);
-            _handler.NewChatMembers += (sender, e)
-                => NewChatMembers?.Invoke(sender, e);
-
+                _handler.ContactShared += (sender, e)
+                    => ContactShared?.Invoke(sender, e);
+                _handler.NewChatMembers += (sender, e)
+                    => NewChatMembers?.Invoke(sender, e);
+                _handlerLoaded = true;
+            }
             Client.StartReceiving(_handler, cancellationToken: token);
 
             Logger.LogInformation($"{nameof(StartBotAsync)}: started");
