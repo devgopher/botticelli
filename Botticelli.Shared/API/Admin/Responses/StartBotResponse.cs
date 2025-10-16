@@ -4,7 +4,7 @@ namespace Botticelli.Shared.API.Admin.Responses;
 
 public class StartBotResponse : BaseResponse<StartBotResponse>
 {
-    protected StartBotResponse(string? uid, string techMessage, AdminCommandStatus status)
+    public StartBotResponse(string? uid, string techMessage, AdminCommandStatus status)
             : base(uid, techMessage)
     {
         Status = status;

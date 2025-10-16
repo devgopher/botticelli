@@ -18,7 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
     <ProjectReference Include="..\..\Botticelli.Framework\Botticelli.Framework.csproj" />
+    <ProjectReference Include="..\Mocks\Mocks.csproj" />
   </ItemGroup>
   
 </Project>
