@@ -72,7 +72,7 @@ public abstract class BotBuilder<TBot, TBotBuilder> : BotBuilder<TBot>, IBotBuil
         return this;
     }
  
-    public  virtual BotBuilder<TBot, TBotBuilder> AddOnMessageReceived(BaseBot.MsgReceivedEventHandler handler)
+    public virtual BotBuilder<TBot, TBotBuilder> AddOnMessageReceived(BaseBot.MsgReceivedEventHandler handler)
     {
         MessageReceived += handler;
 

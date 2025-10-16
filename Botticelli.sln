@@ -267,6 +267,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Broadcasting.Tel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Framework.Tests", "Tests\Botticelli.Framework.Tests\Botticelli.Framework.Tests.csproj", "{E24DBD9C-EB7F-4A9B-8560-91BEB714F2A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bot.Utils.Tests", "Tests\Botticelli.Bot.Utils.Tests\Botticelli.Bot.Utils.Tests.csproj", "{F002F370-8999-4368-B5F6-B17E33E7E470}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -561,6 +563,10 @@ Global
 		{E24DBD9C-EB7F-4A9B-8560-91BEB714F2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E24DBD9C-EB7F-4A9B-8560-91BEB714F2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E24DBD9C-EB7F-4A9B-8560-91BEB714F2A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F002F370-8999-4368-B5F6-B17E33E7E470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F002F370-8999-4368-B5F6-B17E33E7E470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F002F370-8999-4368-B5F6-B17E33E7E470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F002F370-8999-4368-B5F6-B17E33E7E470}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -674,6 +680,7 @@ Global
 		{F0B6FF75-499F-463D-A39E-AB39BFAC0F8D} = {4B590BAD-B92D-427C-B340-68A40A9C9B95}
 		{B64F1EA1-9AEA-4828-BC8B-363FDFD8210F} = {39412AE4-B325-4827-B24E-C15415DCA7E9}
 		{E24DBD9C-EB7F-4A9B-8560-91BEB714F2A6} = {346A18CA-EB1F-483B-8BC3-EDF250DA72E6}
+		{F002F370-8999-4368-B5F6-B17E33E7E470} = {346A18CA-EB1F-483B-8BC3-EDF250DA72E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2012E26A-91F8-40F9-9118-457668C6B7BA}
