@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Botticelli.Shared.Utils;
 
 namespace Botticelli.Bot.Utils;
@@ -15,6 +16,10 @@ public static class BotDataUtils
 
     public static string? GetBotId()
     {
+        var envBotId = Environment.GetEnvironmentVariable("BOTTICELLI_BOT_ID");
+        if (!string.IsNullOrWhiteSpace(envBotId))
+            return envBotId;
+        
         if (!File.Exists(GetPath()))
         {
             Directory.CreateDirectory(SubDir);
