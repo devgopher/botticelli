@@ -1,4 +1,5 @@
 using Botticelli.Framework.Commands.Utils;
+using FluentAssertions;
 using NUnit.Framework;
 // ReSharper disable InvokeAsExtensionMethod
 
@@ -17,7 +18,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.Equals(string.Empty, result);
+        result.Should().Be(string.Empty);
     }
 
     [Test]
@@ -30,7 +31,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.Equals(string.Empty, result);
+        result.Should().Be(string.Empty);
     }
 
     [Test]
@@ -43,7 +44,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.Equals(string.Empty, result);
+        result.Should().Be(string.Empty);
     }
 
     [Test]
@@ -56,7 +57,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.Equals("argument1 argument2", result);
+        result.Should().Be("argument1 argument2");
     }
 
     [Test]
@@ -69,7 +70,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.Equals(string.Empty, result);
+        result.Should().Be(string.Empty);
     }
 
     [Test]
@@ -82,7 +83,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.Equals("Argument1 Argument2", result);
+        result.Should().Be("Argument1 Argument2");
     }
 
     [Test]
@@ -95,7 +96,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.Equals("argument1 argument2", result);
+        result.Should().Be("argument1 argument2");
     }
 
     [Test]
@@ -108,6 +109,6 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.Equals("arg1 arg2", result);
+        result.Should().Be("arg1 arg2");
     }
 }
