@@ -34,7 +34,7 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1"/>
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1"/>
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2"/>
-		<PackageReference Include="NLog.Extensions.Logging" Version="5.4.0"/>
+		<PackageReference Include="NLog.Extensions.Logging" Version="6.0.5"/>
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\logo.jpg">

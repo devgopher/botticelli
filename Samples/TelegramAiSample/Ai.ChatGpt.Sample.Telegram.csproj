@@ -14,8 +14,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NLog.Extensions.Logging" Version="5.4.0"/>
-		<PackageReference Include="NLog.Web.AspNetCore" Version="5.4.0"/>
+		<PackageReference Include="NLog.Extensions.Logging" Version="6.0.5"/>
+		<PackageReference Include="NLog.Web.AspNetCore" Version="6.0.5"/>
 	</ItemGroup>
 
 	<ItemGroup>

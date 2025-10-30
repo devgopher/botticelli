@@ -17,7 +17,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.AreEqual(string.Empty, result);
+        Assert.Equals(string.Empty, result);
     }
 
     [Test]
@@ -30,7 +30,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.AreEqual(string.Empty, result);
+        Assert.Equals(string.Empty, result);
     }
 
     [Test]
@@ -43,7 +43,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.AreEqual(string.Empty, result);
+        Assert.Equals(string.Empty, result);
     }
 
     [Test]
@@ -56,7 +56,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.AreEqual("argument1 argument2", result);
+        Assert.Equals("argument1 argument2", result);
     }
 
     [Test]
@@ -69,7 +69,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.AreEqual(string.Empty, result);
+        Assert.Equals(string.Empty, result);
     }
 
     [Test]
@@ -82,7 +82,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.AreEqual("Argument1 Argument2", result);
+        Assert.Equals("Argument1 Argument2", result);
     }
 
     [Test]
@@ -95,7 +95,7 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.AreEqual("argument1 argument2", result);
+        Assert.Equals("argument1 argument2", result);
     }
 
     [Test]
@@ -108,6 +108,6 @@ public class CommandUtilsTests
         var result = CommandUtils.GetArguments(input);
 
         // Assert
-        Assert.AreEqual("arg1 arg2", result);
+        Assert.Equals("arg1 arg2", result);
     }
 }

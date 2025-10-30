@@ -70,8 +70,8 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.16"/>
-		<PackageReference Include="NLog" Version="5.4.0"/>
-		<PackageReference Include="NLog.Web.AspNetCore" Version="5.4.0"/>
+		<PackageReference Include="NLog" Version="6.0.5"/>
+		<PackageReference Include="NLog.Web.AspNetCore" Version="6.0.5"/>
 		<PackageReference Include="PasswordGenerator" Version="2.1.0"/>
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.4" />
 	</ItemGroup>
