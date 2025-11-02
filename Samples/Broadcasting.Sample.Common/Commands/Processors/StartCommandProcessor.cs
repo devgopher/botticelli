@@ -10,11 +10,11 @@ namespace Broadcasting.Sample.Common.Commands.Processors;
 public class StartCommandProcessor<TReplyMarkup> : CommandProcessor<StartCommand> where TReplyMarkup : class
 {
     public StartCommandProcessor(ILogger<StartCommandProcessor<TReplyMarkup>> logger,
-                                 ICommandValidator<StartCommand> commandValidator,
-                                 IValidator<Message> messageValidator)
-            : base(logger,
-                   commandValidator,
-                   messageValidator)
+        ICommandValidator<StartCommand> commandValidator,
+        IValidator<Message> messageValidator)
+        : base(logger,
+            commandValidator,
+            messageValidator)
     {
     }
 
