@@ -171,8 +171,8 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
         #region Data
 
         Services.AddDbContext<BotInfoContext>(o =>
-            o.UseSqlite($"Data source={BotDataAccessSettingsBuilder!.Build().ConnectionString}"));
-        Services.AddScoped<IBotDataAccess, BotDataAccess>();
+            o.UseSqlite($"Data source={BotDataAccessSettingsBuilder!.Build().ConnectionString}"), contextLifetime: ServiceLifetime.Singleton);
+        Services.AddSingleton<IBotDataAccess, BotDataAccess>();
 
         #endregion
 
