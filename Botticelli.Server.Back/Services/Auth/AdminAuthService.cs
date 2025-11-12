@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Botticelli.Auth.Shared.Settings;
 using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Data.Exceptions;
@@ -8,6 +9,7 @@ using Botticelli.Server.Models.Responses;
 using Botticelli.Shared.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Botticelli.Server.Back.Services.Auth;
@@ -21,16 +23,19 @@ public class AdminAuthService : IAdminAuthService
     private readonly ServerDataContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<AdminAuthService> _logger;
-
+    private readonly IOptionsSnapshot<AuthSettings> _settings;
+        
     public AdminAuthService(IConfiguration config,
                             IHttpContextAccessor httpContextAccessor,
                             ServerDataContext context,
+                            IOptionsSnapshot<AuthSettings> settings,
                             ILogger<AdminAuthService> logger)
     {
         _config = config;
         _httpContextAccessor = httpContextAccessor;
         _context = context;
         _logger = logger;
+        _settings = settings;
     }
 
     /// <summary>
@@ -80,11 +85,11 @@ public class AdminAuthService : IAdminAuthService
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("{RegisterAsyncName}({UserRegisterUserName}) finished...", nameof(RegisterAsync), userRegister.UserName);
+            _logger.LogInformation("({UserRegisterUserName}) finished...", userRegister.UserName);
         }
         catch (Exception ex)
         {
-            _logger.LogError("{RegisterAsyncName}({UserRegisterUserName}) error: {ExMessage}", nameof(RegisterAsync), userRegister.UserName, ex.Message, ex);
+            _logger.LogError("({UserRegisterUserName}) error: {ExMessage}, {ex}", userRegister.UserName, ex.Message, ex);
         }
     }
 
@@ -108,7 +113,7 @@ public class AdminAuthService : IAdminAuthService
         }
         catch (Exception ex)
         {
-            _logger.LogError("{RegeneratePasswordName}({UserRegisterUserName}) error: {ExMessage}", nameof(RegeneratePassword), userRegister.UserName, ex.Message, ex);
+            _logger.LogError("({UserRegisterUserName}) error: {ExMessage} {ex}", userRegister.UserName, ex.Message, ex);
         }
     }
 
@@ -169,8 +174,7 @@ public class AdminAuthService : IAdminAuthService
             var token = new JwtSecurityToken(_config["Authorization:Issuer"],
                                              _config["Authorization:Audience"],
                                              claims,
-                                             expires: DateTime.Now.AddHours(24), // NOTE!!! Temporary!
-                                             //.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
+                                             expires: DateTime.Now.AddMinutes(_settings.Value.TokenLifetimeMin),
                                              signingCredentials: signCreds);
 
             return new GetTokenResponse

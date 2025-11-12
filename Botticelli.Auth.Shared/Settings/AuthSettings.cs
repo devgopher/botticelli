@@ -3,4 +3,5 @@
 public class AuthSettings
 {
     public string? ConnectionString { get; set; }
+    public int TokenLifetimeMin { get; set; } = 60;
 }
