@@ -200,6 +200,7 @@ public class AdminAuthService : IAdminAuthService
             _logger.LogInformation($"{nameof(CheckToken)}() started...");
 
             var sign = _config["Authorization:Key"] ?? throw new InvalidOperationException();
+            
             var handler = new JwtSecurityTokenHandler();
             handler.ValidateToken(token,
                                   new TokenValidationParameters
@@ -226,6 +227,7 @@ public class AdminAuthService : IAdminAuthService
     /// <inheritdoc />
     public (bool result, string err) CheckAccess(UserLoginRequest login, bool checkEmailConfirmed)
     {
+        if (login is not { Password: not null, Email: not null }) return (true, string.Empty);
         var hashedPassword = HashUtils.GetHash(login.Password, _config["Authorization:Salt"]);
         var normalizedEmail = GetNormalized(login.Email);
         var user = _context.ApplicationUsers.FirstOrDefault(u => u.NormalizedEmail == normalizedEmail &&
@@ -237,13 +239,11 @@ public class AdminAuthService : IAdminAuthService
         return (true, string.Empty);
     }
 
-    public string? GetCurrentUserId()
-    {
-        return _httpContextAccessor.HttpContext?.User
-                                   .Claims
-                                   .FirstOrDefault(c => c.Type == "applicationUserId")
-                                   ?.Value;
-    }
+    public string? GetCurrentUserId() =>
+        _httpContextAccessor.HttpContext?.User
+            .Claims
+            .FirstOrDefault(c => c.Type == "applicationUserId")
+            ?.Value;
 
     private static void ValidateRequest(UserAddRequest userRegister)
     {
