@@ -32,11 +32,4 @@ public class BroadcastService(ServerDataContext context) : IBroadcastService
 
         await context.SaveChangesAsync();
     }
-
-    public Task<List<Broadcast>> GetBroadcasts(string botId)
-    {
-        var broadcasts = context.BroadcastMessages.Where(x => x.BotId == botId && !x.Sent && !x.Received).ToList();
-
-        return Task.FromResult(broadcasts);
-    }
 }

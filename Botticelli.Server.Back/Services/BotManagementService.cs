@@ -8,18 +8,10 @@ namespace Botticelli.Server.Back.Services;
 /// <summary>
 ///     This class is intended for managing bots state (start/ stop/ block/ remove)
 /// </summary>
-public class BotManagementService : IBotManagementService
+public class BotManagementService(
+        ServerDataContext context,
+        ILogger<BotManagementService> logger) : IBotManagementService
 {
-    private readonly ServerDataContext _context;
-    private readonly ILogger<BotManagementService> _logger;
-
-    public BotManagementService(ServerDataContext context,
-                                ILogger<BotManagementService> logger)
-    {
-        _context = context;
-        _logger = logger;
-    }
-
     /// <summary>
     ///     Registers a bot if it's not registered
     /// </summary>
@@ -37,7 +29,7 @@ public class BotManagementService : IBotManagementService
     {
         try
         {
-            _logger.LogInformation("{RegisterBotName}({BotId}, {BotKey}, {BotName}, {BotType}) started...", nameof(RegisterBot), botId, botKey, botName, botType);
+            logger.LogInformation("{RegisterBotName}({BotId}, {BotKey}, {BotName}, {BotType}) started...", nameof(RegisterBot), botId, botKey, botName, botType);
 
             if (GetBotInfo(botId) == null)
                 AddNewBotInfo(botId,
@@ -45,16 +37,16 @@ public class BotManagementService : IBotManagementService
                               botType,
                               botName);
 
-            _logger.LogInformation($"{nameof(RegisterBot)} successful");
+            logger.LogInformation($"{nameof(RegisterBot)} successful");
 
             return Task.FromResult(true);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            logger.LogError(ex, ex.Message);
         }
 
-        _logger.LogInformation($"{nameof(RegisterBot)} failed");
+        logger.LogInformation($"{nameof(RegisterBot)} failed");
 
         return Task.FromResult(false);
     }
@@ -67,17 +59,17 @@ public class BotManagementService : IBotManagementService
     /// <returns></returns>
     public async Task SetRequiredBotStatus(string botId, BotStatus status)
     {
-        _logger.LogInformation($"{nameof(SetRequiredBotStatus)} started");
+        logger.LogInformation($"{nameof(SetRequiredBotStatus)} started");
 
         var botInfo = GetBotInfo(botId);
 
         if (botInfo != null)
         {
             botInfo.Status = status;
-            _context.BotInfos.Update(botInfo);
+            context.BotInfos.Update(botInfo);
         }
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     /// <summary>
@@ -89,7 +81,7 @@ public class BotManagementService : IBotManagementService
     {
         try
         {
-            _logger.LogInformation($"{nameof(SetKeepAlive)} started");
+            logger.LogInformation($"{nameof(SetKeepAlive)} started");
 
             var botInfo = GetBotInfo(botId);
 
@@ -98,16 +90,16 @@ public class BotManagementService : IBotManagementService
             if (botInfo != null)
             {
                 botInfo.LastKeepAlive = keepAlive;
-                _context.BotInfos.Update(botInfo);
+                context.BotInfos.Update(botInfo);
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            _logger.LogInformation($"{nameof(SetKeepAlive)} finished");
+            logger.LogInformation($"{nameof(SetKeepAlive)} finished");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            logger.LogError(ex, ex.Message);
         }
     }
 
@@ -120,12 +112,12 @@ public class BotManagementService : IBotManagementService
     {
         await SetRequiredBotStatus(botId, BotStatus.Unlocked);
 
-        var bot = _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
+        var bot = context.BotInfos.FirstOrDefault(b => b.BotId == botId);
 
         if (bot != null)
         {
-            _context.BotInfos.Remove(bot);
-            await _context.SaveChangesAsync();
+            context.BotInfos.Remove(bot);
+            await context.SaveChangesAsync();
         }
     }
 
@@ -144,7 +136,7 @@ public class BotManagementService : IBotManagementService
     {
         try
         {
-            _logger.LogInformation("{UpdateBotName}({BotId}, {BotKey}, {BotName}) started...", nameof(UpdateBot), botId, botKey, botName);
+            logger.LogInformation("{UpdateBotName}({BotId}, {BotKey}, {BotName}) started...", nameof(UpdateBot), botId, botKey, botName);
 
             var prevStatus = await GetRequiredBotStatus(botId);
             if (prevStatus is not BotStatus.Unlocked) await SetRequiredBotStatus(botId, BotStatus.Unlocked);
@@ -153,7 +145,7 @@ public class BotManagementService : IBotManagementService
 
             if (botInfo == null)
             {
-                _logger.LogInformation("{UpdateBotName}() : bot with id '{BotId}' wasn't found!", nameof(UpdateBot), botId);
+                logger.LogInformation("{UpdateBotName}() : bot with id '{BotId}' wasn't found!", nameof(UpdateBot), botId);
 
                 return false;
             }
@@ -162,21 +154,21 @@ public class BotManagementService : IBotManagementService
             botInfo.BotName = botName;
             // botInfo.Items = additionalParams;
 
-            _context.BotInfos.Update(botInfo);
-            await _context.SaveChangesAsync();
+            context.BotInfos.Update(botInfo);
+            await context.SaveChangesAsync();
 
             await SetRequiredBotStatus(botId, prevStatus.Value);
 
-            _logger.LogInformation($"{nameof(UpdateBot)} successful");
+            logger.LogInformation($"{nameof(UpdateBot)} successful");
 
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            logger.LogError(ex, ex.Message);
         }
 
-        _logger.LogInformation($"{nameof(UpdateBot)} failed");
+        logger.LogInformation($"{nameof(UpdateBot)} failed");
 
         return false;
     }
@@ -188,7 +180,7 @@ public class BotManagementService : IBotManagementService
     /// <returns></returns>
     private Task<BotStatus?> GetRequiredBotStatus(string botId)
     {
-        return Task.FromResult<BotStatus?>(_context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown);
+        return Task.FromResult<BotStatus?>(context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ?? BotStatus.Unknown);
     }
 
     /// <summary>
@@ -207,7 +199,7 @@ public class BotManagementService : IBotManagementService
     {
         try
         {
-            _logger.LogInformation($"{nameof(AddNewBotInfo)} started");
+            logger.LogInformation($"{nameof(AddNewBotInfo)} started");
 
             var botInfo = new BotInfo
             {
@@ -218,15 +210,15 @@ public class BotManagementService : IBotManagementService
                 Type = botType
             };
 
-            _context.BotInfos.Add(botInfo);
-            _context.SaveChanges();
+            context.BotInfos.Add(botInfo);
+            context.SaveChanges();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            logger.LogError(ex, ex.Message);
         }
 
-        _logger.LogInformation($"{nameof(AddNewBotInfo)} finished");
+        logger.LogInformation($"{nameof(AddNewBotInfo)} finished");
     }
 
     /// <summary>
@@ -236,6 +228,6 @@ public class BotManagementService : IBotManagementService
     /// <returns></returns>
     private BotInfo? GetBotInfo(string botId)
     {
-        return _context.BotInfos.FirstOrDefault(b => b.BotId == botId);
+        return context.BotInfos.FirstOrDefault(b => b.BotId == botId);
     }
 }
