@@ -26,5 +26,9 @@
 		<ProjectReference Include="..\Messaging.Sample.Common\Messaging.Sample.Common.csproj"/>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Filename=database.db-shm" />
+	</ItemGroup>
+
 
 </Project>

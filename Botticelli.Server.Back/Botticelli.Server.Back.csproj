@@ -18,7 +18,7 @@
 		<Title>Botticelli.Server</Title>
 		<Authors>BotticelliBots</Authors>
 		<Description>A server part of Botticelli Framework</Description>
-		<PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+		<PackageTags>telegram, bots, botticelli, facebook, whatsapp</PackageTags>
 		<IsPackable>true</IsPackable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>

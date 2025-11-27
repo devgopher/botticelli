@@ -12,14 +12,13 @@
 		<Copyright>BotticelliBots</Copyright>
 		<PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-		<PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+		<PackageTags>telegram, bots, botticelli, facebook, whatsapp</PackageTags>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\new_logo_compact.png">
 			<Pack>True</Pack>
-			<PackagePath></PackagePath>
 			<Link>new_logo_compact.png</Link>
 		</None>
 	</ItemGroup>
@@ -36,10 +35,5 @@
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
-	</ItemGroup>
-	<ItemGroup>
-	  <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-	    <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.17\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-	  </Reference>
 	</ItemGroup>
 </Project>

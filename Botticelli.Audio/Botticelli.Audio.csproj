@@ -13,7 +13,7 @@
 		<Copyright>BotticelliBots</Copyright>
 		<PackageProjectUrl>http://botticellibots.com</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-		<PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+		<PackageTags>telegram, bots, botticelli, facebook, whatsapp</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

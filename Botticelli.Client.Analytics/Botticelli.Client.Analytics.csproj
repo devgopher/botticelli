@@ -9,7 +9,7 @@
 		<PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
 		<PackageIcon>new_logo_compact.png</PackageIcon>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-		<PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+		<PackageTags>telegram, bots, botticelli, facebook, whatsapp</PackageTags>
 		<Title>Botticelli.Client.Analytics</Title>
 		<Authors>BotticelliBots</Authors>
 		<Description>Botticelli analytics client part</Description>
