@@ -15,6 +15,7 @@ Fully open-source · Cross-platform
 [![Telegram](https://img.shields.io/badge/Telegram-channel-orange)](https://t.me/botticelli_bots) 
 
 **There are several reasons to choose Botticelli:**
+
 ✅ **Multi-platform** – Telegram + custom providers  
 ✅ **AI integrations out-of-the-box** – ChatGPT, DeepSeek, YandexGPT, GPT-J  
 ✅ **Databases & queues** – SQL/NoSQL + RabbitMQ/Kafka support  
