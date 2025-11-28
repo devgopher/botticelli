@@ -1,5 +1,7 @@
 # Botticelli 🤖 – Universal .NET Framework for AI-Powered Bots
 
+<img src="https://github.com/user-attachments/assets/004b4af6-5bfb-4f23-90f0-d5da6c998027" alt="Logo" style="width: 100%; height: auto;"/>
+
 Build smart chatbots in minutes for Telegram, WhatsApp, and beyond.  
 Seamless integration with ChatGPT, DeepSeek, YandexGPT, databases, queues, speech, and scheduling.  
 Fully open-source · Cross-platform
