@@ -15,18 +15,16 @@ Fully open-source · Cross-platform
 [![Telegram](https://img.shields.io/badge/Telegram-channel-orange)](https://t.me/botticelli_bots) 
 
 **There are several reasons to choose Botticelli:**
-- cross-platform
-- supports a wide range of messengers (Telegram, Facebook, VK)
-- extensible (you may add support of any other messenger, that has an open API)
-- reliable
-- easy to use
-- easy to deploy
-- easy to manage/administrate bots
-- easy to integrate with **databases**
-- easy to integrate with **AI** (**ChatGPT**, **YandexGPT**, **DeepSeek**) solutions (Botticelli.AI)
-- easy to integrate with **speech synthesizers** (Botticelli.Talks)
-- easy to integrate with queue brokers for highload systems (Botticelli.Bus)
-- easy to schedule (Botticelli.Scheduler)
+- ✅ **Multi-platform** – Telegram + custom providers  
+- ✅ **AI integrations out-of-the-box** – ChatGPT, DeepSeek, YandexGPT, GPT-J  
+- ✅ **Databases & queues** – SQL/NoSQL + RabbitMQ/Kafka support  
+- ✅ **Voice & speech** – built-in TTS/STT (Botticelli.Talks)  
+- ✅ **Task scheduler** – cron jobs & delayed messages  
+- ✅ **Web admin panel** – monitor and control all bots from one place  
+- ✅ **Minimal boilerplate** – production bot in 20–50 lines  
+- ✅ **Production-ready** – Docker, logging, health checks  
+- ✅ **100 % open-source** – no hidden paid features  
+- ✅ **.NET 8+** – runs everywhere
 
 # Getting Started
 
