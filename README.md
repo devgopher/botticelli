@@ -1,4 +1,9 @@
-# Botticelli
+# Botticelli 🤖 – Universal .NET Framework for AI-Powered Bots
+
+Build smart chatbots in minutes for Telegram, WhatsApp, and beyond.  
+Seamless integration with ChatGPT, DeepSeek, YandexGPT, databases, queues, speech, and scheduling.  
+Fully open-source · Cross-platform
+
 **Botticelli** framework: a chat bot development platform for .NET 
 
 [![License](https://img.shields.io/badge/GPL-license-orange)](https://github.com/devgopher/botticelli?tab=GPL-3.0-1-ov-file)
@@ -60,3 +65,5 @@ On a bot side we can implement any business logic we want.
 [WikiBooks finder bot](https://t.me/wikibooks_search_bot) - WikiBooks finder Telegram bot
 
 [WikiBooks finder bot sources](https://github.com/devgopher/wikibooks_bot) - WikiBooks finder bot sources
+
+[![Star History Chart](https://api.star-history.com/svg?repos=devgopher/botticelli&type=date&legend=top-left)](https://www.star-history.com/#devgopher/botticelli&type=date&legend=top-left)
