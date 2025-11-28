@@ -15,16 +15,16 @@ Fully open-source · Cross-platform
 [![Telegram](https://img.shields.io/badge/Telegram-channel-orange)](https://t.me/botticelli_bots) 
 
 **There are several reasons to choose Botticelli:**
-- ✅ **Multi-platform** – Telegram + custom providers  
-- ✅ **AI integrations out-of-the-box** – ChatGPT, DeepSeek, YandexGPT, GPT-J  
-- ✅ **Databases & queues** – SQL/NoSQL + RabbitMQ/Kafka support  
-- ✅ **Voice & speech** – built-in TTS/STT (Botticelli.Talks)  
-- ✅ **Task scheduler** – cron jobs & delayed messages  
-- ✅ **Web admin panel** – monitor and control all bots from one place  
-- ✅ **Minimal boilerplate** – production bot in 20–50 lines  
-- ✅ **Production-ready** – Docker, logging, health checks  
-- ✅ **100 % open-source** – no hidden paid features  
-- ✅ **.NET 8+** – runs everywhere
+✅ **Multi-platform** – Telegram + custom providers  
+✅ **AI integrations out-of-the-box** – ChatGPT, DeepSeek, YandexGPT, GPT-J  
+✅ **Databases & queues** – SQL/NoSQL + RabbitMQ/Kafka support  
+✅ **Voice & speech** – built-in TTS/STT (Botticelli.Talks)  
+✅ **Task scheduler** – cron jobs & delayed messages  
+✅ **Web admin panel** – monitor and control all bots from one place  
+✅ **Minimal boilerplate** – production bot in 20–50 lines  
+✅ **Production-ready** – Docker, logging, health checks  
+✅ **100 % open-source** – no hidden paid features  
+✅ **.NET 8+** – runs everywhere (Windows / Linux / macOS / ARM)
 
 # Getting Started
 
