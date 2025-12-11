@@ -23,6 +23,10 @@ public class BotController(
         IBroadcastService broadcastService,
         ILogger<BotController> logger)
 {
+    private readonly IBotManagementService _botManagementService = botManagementService;
+    private readonly IBotStatusDataService _botStatusDataService = botStatusDataService;
+    private readonly IBroadcastService _broadcastService = broadcastService;
+    private readonly ILogger<BotController> _logger = logger;
     private const int LongPollTimeoutSeconds = 30;
     private const int DefaultPollIntervalMilliseconds = 300;
     
@@ -40,7 +44,7 @@ public class BotController(
         request.NotNull();
         request.BotId?.NotNullOrEmpty();
 
-        var botInfo = await botStatusDataService.GetBotInfo(request.BotId!);
+        var botInfo = await _botStatusDataService.GetBotInfo(request.BotId!);
         botInfo.NotNull();
         botInfo?.BotKey?.NotNullOrEmpty();
 
@@ -55,7 +59,7 @@ public class BotController(
         {
             BotId = request.BotId!,
             IsSuccess = true,
-            Status = await botStatusDataService.GetRequiredBotStatus(request.BotId!),
+            Status = await _botStatusDataService.GetRequiredBotStatus(request.BotId!),
             BotContext = context
         };
     }
@@ -71,9 +75,9 @@ public class BotController(
     {
         try
         {
-            logger.LogTrace("{KeepAliveName}({RequestBotId})...", nameof(KeepAlive), request.BotId);
+            _logger.LogTrace("{KeepAliveName}({RequestBotId})...", nameof(KeepAlive), request.BotId);
             request.BotId?.NotNullOrEmpty();
-            await botManagementService.SetKeepAlive(request.BotId!);
+            await _botManagementService.SetKeepAlive(request.BotId!);
 
             return new KeepAliveNotificationResponse
             {
@@ -83,7 +87,7 @@ public class BotController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "{KeepAliveName}({RequestBotId}) error: {ExMessage}", nameof(KeepAlive), request.BotId, ex.Message);
+            _logger.LogError(ex, "{KeepAliveName}({RequestBotId}) error: {ExMessage}", nameof(KeepAlive), request.BotId, ex.Message);
 
             return new KeepAliveNotificationResponse
             {
@@ -111,7 +115,7 @@ public class BotController(
             
             while (!broadcastMessages.Any() && DateTime.UtcNow.Subtract(started).TotalSeconds < LongPollTimeoutSeconds)
             {
-                broadcastMessages = (await broadcastService.GetMessages(request.BotId!)).ToList();
+                broadcastMessages = (await _broadcastService.GetMessages(request.BotId!)).ToList();
                 
                 await Task.Delay(DefaultPollIntervalMilliseconds);
             } 
@@ -139,7 +143,7 @@ public class BotController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "{GetBroadcastName}({RequestBotId}) error: {ExMessage}", nameof(GetBroadcast), request.BotId, ex.Message);
+            _logger.LogError(ex, "{GetBroadcastName}({RequestBotId}) error: {ExMessage}", nameof(GetBroadcast), request.BotId, ex.Message);
 
             return new GetBroadCastMessagesResponse
             {
@@ -161,10 +165,10 @@ public class BotController(
     {
         try
         {
-            logger.LogTrace("{GetBroadcastName}({RequestBotId})...", nameof(GetBroadcast), request.BotId);
+            _logger.LogTrace("{GetBroadcastName}({RequestBotId})...", nameof(GetBroadcast), request.BotId);
             request.BotId?.NotNullOrEmpty();
 
-            foreach (var messageId in request.MessageIds) await broadcastService.MarkReceived(request.BotId!, messageId);
+            foreach (var messageId in request.MessageIds) await _broadcastService.MarkReceived(request.BotId!, messageId);
 
             return new BroadCastMessagesReceivedResponse
             {
@@ -173,7 +177,7 @@ public class BotController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "{BroadcastReceivedName}({RequestBotId}) error: {ExMessage}", nameof(BroadcastReceived), request.BotId, ex.Message);
+            _logger.LogError(ex, "{BroadcastReceivedName}({RequestBotId}) error: {ExMessage}", nameof(BroadcastReceived), request.BotId, ex.Message);
 
             return new BroadCastMessagesReceivedResponse
             {

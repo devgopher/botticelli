@@ -25,6 +25,11 @@ public class AdminController(
         ILogger<AdminController> logger,
         IBroadcastService broadcastService) : ControllerBase
 {
+    private readonly IBotManagementService _botManagementService = botManagementService;
+    private readonly IBotStatusDataService _botStatusDataService = botStatusDataService;
+    private readonly ILogger<AdminController> _logger = logger;
+    private readonly IBroadcastService _broadcastService = broadcastService;
+
     /// <summary>
     ///     Adds a new bot
     /// </summary>
@@ -33,13 +38,13 @@ public class AdminController(
     [HttpPost("[action]")]
     public async Task<RegisterBotResponse> AddNewBot([FromBody] RegisterBotRequest request)
     {
-        logger.LogInformation("{AddNewBotName}({RequestBotId}) started...", nameof(AddNewBot), request.BotId);
-        var success = await botManagementService.RegisterBot(request.BotId,
+        _logger.LogInformation("{AddNewBotName}({RequestBotId}) started...", nameof(AddNewBot), request.BotId);
+        var success = await _botManagementService.RegisterBot(request.BotId,
                                                              request.BotKey,
                                                              request.BotName,
                                                              request.Type);
 
-        logger.LogInformation("{AddNewBotName}({RequestBotId}) success: {Success}...",
+        _logger.LogInformation("{AddNewBotName}({RequestBotId}) success: {Success}...",
                               nameof(AddNewBot),
                               request.BotId,
                               success);
@@ -59,12 +64,12 @@ public class AdminController(
     [HttpPut("[action]")]
     public async Task<UpdateBotResponse> UpdateBot([FromBody] UpdateBotRequest request)
     {
-        logger.LogInformation("{UpdateBotName}({RequestBotId}) started...", nameof(UpdateBot), request.BotId);
-        var success = await botManagementService.UpdateBot(request.BotId,
+        _logger.LogInformation("{UpdateBotName}({RequestBotId}) started...", nameof(UpdateBot), request.BotId);
+        var success = await _botManagementService.UpdateBot(request.BotId,
                                                            request.BotKey,
                                                            request.BotName);
 
-        logger.LogInformation("{UpdateBotName}({RequestBotId}) success: {Success}...",
+        _logger.LogInformation("{UpdateBotName}({RequestBotId}) success: {Success}...",
                               nameof(UpdateBot),
                               request.BotId,
                               success);
@@ -107,7 +112,7 @@ public class AdminController(
 
     private async Task DoBroadcast(string botId, Message? message)
     {
-        await broadcastService.BroadcastMessage(new Broadcast
+        await _broadcastService.BroadcastMessage(new Broadcast
         {
             Id = message.Uid ?? throw new NullReferenceException("Id cannot be null!"),
             BotId = botId ?? throw new NullReferenceException("BotId cannot be null!"),
@@ -140,7 +145,7 @@ public class AdminController(
     [HttpGet("[action]")]
     public Task<ICollection<BotInfo>> GetBots()
     {
-        return Task.FromResult(botStatusDataService.GetBots());
+        return Task.FromResult(_botStatusDataService.GetBots());
     }
 
     /// <summary>
@@ -150,7 +155,7 @@ public class AdminController(
     [HttpGet("[action]")]
     public async Task ActivateBot([FromQuery] string botId)
     {
-        await botManagementService.SetRequiredBotStatus(botId, BotStatus.Unlocked);
+        await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Unlocked);
     }
 
     /// <summary>
@@ -160,7 +165,7 @@ public class AdminController(
     [HttpGet("[action]")]
     public async Task DeactivateBot([FromQuery] string botId)
     {
-        await botManagementService.SetRequiredBotStatus(botId, BotStatus.Locked);
+        await _botManagementService.SetRequiredBotStatus(botId, BotStatus.Locked);
     }
 
     /// <summary>
@@ -170,6 +175,6 @@ public class AdminController(
     [HttpGet("[action]")]
     public async Task RemoveBot([FromQuery] string botId)
     {
-        await botManagementService.RemoveBot(botId);
+        await _botManagementService.RemoveBot(botId);
     }
 }

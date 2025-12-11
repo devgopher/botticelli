@@ -30,7 +30,7 @@ public abstract class FluentCommandProcessor<TCommand>(
 
         if (!CheckCommand(message))
         {
-            logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: failed",
+            logger.LogDebug("{ProcessorName}.ProcessAsync() : processing a message {MessageUid}: failed",
                             nameof(FluentCommandProcessor<TCommand>),
                             message.Uid);
 
@@ -39,7 +39,7 @@ public abstract class FluentCommandProcessor<TCommand>(
 
         if (await commandValidator.Validate(message))
         {
-            logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: command is valid",
+            logger.LogDebug("{ProcessorName}.ProcessAsync() : processing a message {MessageUid}: command is valid",
                             nameof(FluentCommandProcessor<TCommand>),
                             message.Uid);
             SendMetric();

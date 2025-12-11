@@ -25,6 +25,12 @@ public class AdminAuthService(
         ILogger<AdminAuthService> logger)
         : IAdminAuthService
 {
+    private readonly IConfiguration _config = config;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly ServerDataContext _context = context;
+    private readonly IOptionsSnapshot<AuthSettings> _settings = settings;
+    private readonly ILogger<AdminAuthService> _logger = logger;
+
     /// <summary>
     ///     Do we have any users?
     /// </summary>
@@ -32,7 +38,7 @@ public class AdminAuthService(
     /// <exception cref="DataException"></exception>
     public async Task<bool> HasUsersAsync()
     {
-        return await context
+        return await _context
                      .ApplicationUsers
                      .AnyAsync();
     }
@@ -42,11 +48,11 @@ public class AdminAuthService(
     {
         try
         {
-            logger.LogInformation("{RegisterAsyncName}({UserRegisterUserName}) started...", nameof(RegisterAsync), userRegister.UserName);
+            _logger.LogInformation("{RegisterAsyncName}({UserRegisterUserName}) started...", nameof(RegisterAsync), userRegister.UserName);
 
             ValidateRequest(userRegister);
 
-            if (context.ApplicationUsers.AsQueryable()
+            if (_context.ApplicationUsers.AsQueryable()
                         .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");
 
@@ -57,26 +63,26 @@ public class AdminAuthService(
                 NormalizedEmail = GetNormalized(userRegister.Email!),
                 UserName = userRegister.Email,
                 NormalizedUserName = GetNormalized(userRegister.Email!),
-                PasswordHash = HashUtils.GetHash(userRegister.Password!, config["Authorization:Salt"])
+                PasswordHash = HashUtils.GetHash(userRegister.Password!, _config["Authorization:Salt"])
             };
 
             // Temporary - because now we assume, that we've only a single role - "admin"! 
             var appRole = new IdentityUserRole<string>
             {
                 UserId = user.Id,
-                RoleId = context.ApplicationRoles.FirstOrDefault()?.Id ?? "-1"
+                RoleId = _context.ApplicationRoles.FirstOrDefault()?.Id ?? "-1"
             };
 
-            await context.ApplicationUsers.AddAsync(user);
-            await context.ApplicationUserRoles.AddAsync(appRole);
+            await _context.ApplicationUsers.AddAsync(user);
+            await _context.ApplicationUserRoles.AddAsync(appRole);
 
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-            logger.LogInformation("({UserRegisterUserName}) finished...", userRegister.UserName);
+            _logger.LogInformation("({UserRegisterUserName}) finished...", userRegister.UserName);
         }
         catch (Exception ex)
         {
-            logger.LogError("({UserRegisterUserName}) error: {ExMessage}, {ex}", userRegister.UserName, ex.Message, ex);
+            _logger.LogError("({UserRegisterUserName}) error: {ExMessage}, {Ex}", userRegister.UserName, ex.Message, ex);
         }
     }
 
@@ -86,21 +92,21 @@ public class AdminAuthService(
     {
         try
         {
-            logger.LogInformation("{RegeneratePasswordName}({UserRegisterUserName}) started...", nameof(RegeneratePassword), userRegister.UserName);
+            _logger.LogInformation("{RegeneratePasswordName}({UserRegisterUserName}) started...", nameof(RegeneratePassword), userRegister.UserName);
 
             ValidateRequest(userRegister);
 
-            if (context.ApplicationUsers.AsQueryable()
+            if (_context.ApplicationUsers.AsQueryable()
                         .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");
 
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-            logger.LogInformation("{RegeneratePasswordName}({UserRegisterUserName}) finished...", nameof(RegeneratePassword), userRegister.UserName);
+            _logger.LogInformation("{RegeneratePasswordName}({UserRegisterUserName}) finished...", nameof(RegeneratePassword), userRegister.UserName);
         }
         catch (Exception ex)
         {
-            logger.LogError("({UserRegisterUserName}) error: {ExMessage} {ex}", userRegister.UserName, ex.Message, ex);
+            _logger.LogError(ex, "({UserRegisterUserName}) error: {ExMessage} {Ex}", userRegister.UserName, ex.Message);
         }
     }
 
@@ -109,13 +115,13 @@ public class AdminAuthService(
     {
         try
         {
-            logger.LogInformation("{GenerateTokenName}({UserLoginEmail}) started...", nameof(GenerateToken), userLogin.Email);
+            _logger.LogInformation("{GenerateTokenName}({UserLoginEmail}) started...", nameof(GenerateToken), userLogin.Email);
 
             ValidateRequest(userLogin);
 
             if (!CheckAccess(userLogin, false).result)
             {
-                logger.LogInformation("{GenerateTokenName}({UserLoginEmail}) access denied...", nameof(GenerateToken), userLogin.Email);
+                _logger.LogInformation("{GenerateTokenName}({UserLoginEmail}) access denied...", nameof(GenerateToken), userLogin.Email);
 
                 return new GetTokenResponse
                 {
@@ -123,7 +129,7 @@ public class AdminAuthService(
                 };
             }
 
-            var user = context.ApplicationUsers
+            var user = _context.ApplicationUsers
                                .AsQueryable()
                                .FirstOrDefault(u => u.NormalizedEmail == GetNormalized(userLogin.Email));
 
@@ -133,7 +139,7 @@ public class AdminAuthService(
                     IsSuccess = false
                 };
 
-            var userRole = context.ApplicationUserRoles
+            var userRole = _context.ApplicationUserRoles
                                    .AsQueryable()
                                    .FirstOrDefault(ur => ur.UserId == user.Id);
 
@@ -141,7 +147,7 @@ public class AdminAuthService(
 
             if (userRole != null)
             {
-                var role = context.ApplicationRoles
+                var role = _context.ApplicationRoles
                                    .AsQueryable()
                                    .FirstOrDefault(r => r.Id == userRole.RoleId);
 
@@ -155,13 +161,13 @@ public class AdminAuthService(
                 new Claim("role", roleName ?? "no_role")
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Authorization:Key"] ?? throw new InvalidOperationException()));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Authorization:Key"] ?? throw new InvalidOperationException()));
             var signCreds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(config["Authorization:Issuer"],
-                                             config["Authorization:Audience"],
+            var token = new JwtSecurityToken(_config["Authorization:Issuer"],
+                                             _config["Authorization:Audience"],
                                              claims,
-                                             expires: DateTime.Now.AddMinutes(settings.Value.TokenLifetimeMin),
+                                             expires: DateTime.Now.AddMinutes(_settings.Value.TokenLifetimeMin),
                                              signingCredentials: signCreds);
 
             return new GetTokenResponse
@@ -172,7 +178,7 @@ public class AdminAuthService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "{GenerateTokenName}({UserLoginEmail}) error {ExMessage}!", nameof(GenerateToken), userLogin.Email, ex.Message);
+            _logger.LogError(ex, "{GenerateTokenName}({UserLoginEmail}) error {ExMessage}!", nameof(GenerateToken), userLogin.Email, ex.Message);
         }
 
         return null;
@@ -184,28 +190,28 @@ public class AdminAuthService(
     {
         try
         {
-            logger.LogInformation($"{nameof(CheckToken)}() started...");
+            _logger.LogInformation($"{nameof(CheckToken)}() started...");
 
-            var sign = config["Authorization:Key"] ?? throw new InvalidOperationException();
+            var sign = _config["Authorization:Key"] ?? throw new InvalidOperationException();
             
             var handler = new JwtSecurityTokenHandler();
             handler.ValidateToken(token,
                                   new TokenValidationParameters
                                   {
                                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(sign)),
-                                      ValidIssuer = config["Authorization:Issuer"],
+                                      ValidIssuer = _config["Authorization:Issuer"],
                                       ValidateAudience = false
                                   },
                                   out var validatedToken);
 
 
-            logger.LogInformation("{CheckTokenName}() validate token: {B}", nameof(CheckToken), validatedToken != null);
+            _logger.LogInformation("{CheckTokenName}() validate token: {B}", nameof(CheckToken), validatedToken != null);
 
             return validatedToken != null;
         }
         catch (Exception ex)
         {
-            logger.LogError("{CheckTokenName}() error: {ExMessage}", nameof(CheckToken), ex.Message);
+            _logger.LogError(ex, "{CheckTokenName}() error: {ExMessage}", nameof(CheckToken), ex.Message);
 
             return false;
         }
@@ -215,9 +221,9 @@ public class AdminAuthService(
     public (bool result, string err) CheckAccess(UserLoginRequest login, bool checkEmailConfirmed)
     {
         if (login is not { Password: not null, Email: not null }) return (true, string.Empty);
-        var hashedPassword = HashUtils.GetHash(login.Password, config["Authorization:Salt"]);
+        var hashedPassword = HashUtils.GetHash(login.Password, _config["Authorization:Salt"]);
         var normalizedEmail = GetNormalized(login.Email);
-        var user = context.ApplicationUsers.FirstOrDefault(u => u.NormalizedEmail == normalizedEmail &&
+        var user = _context.ApplicationUsers.FirstOrDefault(u => u.NormalizedEmail == normalizedEmail &&
                                                                  u.PasswordHash == hashedPassword);
 
         if (user == null) return (false, "user not found");
@@ -227,7 +233,7 @@ public class AdminAuthService(
     }
 
     public string? GetCurrentUserId() =>
-        httpContextAccessor.HttpContext?.User
+        _httpContextAccessor.HttpContext?.User
             .Claims
             .FirstOrDefault(c => c.Type == "applicationUserId")
             ?.Value;

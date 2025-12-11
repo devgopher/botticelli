@@ -9,27 +9,29 @@ namespace Botticelli.Server.Back.Services.Broadcasting;
 /// </summary>
 public class BroadcastService(ServerDataContext context) : IBroadcastService
 {
+    private readonly ServerDataContext _context = context;
+
     public async Task BroadcastMessage(Broadcast message)
     {
-        context.BroadcastMessages.Add(message);
-        await context.SaveChangesAsync();
+        _context.BroadcastMessages.Add(message);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Broadcast>> GetMessages(string botId) =>
-        await context.BroadcastMessages
+        await _context.BroadcastMessages
             .Where(m => m.BotId.Equals(botId) && !m.Received)
             .Include(m => m.Attachments)
             .ToArrayAsync();
 
     public async Task MarkReceived(string botId, string messageId)
     {
-        var messages = await context.BroadcastMessages.Where(bm => bm.BotId == botId && bm.Id == messageId)
+        var messages = await _context.BroadcastMessages.Where(bm => bm.BotId == botId && bm.Id == messageId)
             .ToListAsync();
 
         foreach (var message in messages) message.Received = true;
 
-        context.UpdateRange(messages);
+        _context.UpdateRange(messages);
 
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 }

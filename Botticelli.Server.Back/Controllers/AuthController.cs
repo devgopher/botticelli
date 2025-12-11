@@ -13,6 +13,8 @@ namespace Botticelli.Server.Back.Controllers;
 [Route("/v1/auth")]
 public class AuthController(IAdminAuthService adminAuthService)
 {
+    private readonly IAdminAuthService _adminAuthService = adminAuthService;
+
     /// <summary>
     /// Gets auth token for a user
     /// </summary>
@@ -22,6 +24,6 @@ public class AuthController(IAdminAuthService adminAuthService)
     [HttpPost("[action]")]
     public IActionResult GetToken(UserLoginRequest request)
     {
-        return new OkObjectResult(adminAuthService.GenerateToken(request));
+        return new OkObjectResult(_adminAuthService.GenerateToken(request));
     }
 }
