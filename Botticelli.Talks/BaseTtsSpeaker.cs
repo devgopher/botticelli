@@ -56,7 +56,8 @@ public abstract class BaseTtsSpeaker : ISpeaker
                 CompressionLevels.Low    => LAMEPreset.EXTREME_FAST,
                 CompressionLevels.Medium => LAMEPreset.MEDIUM_FAST,
                 CompressionLevels.High   => LAMEPreset.ABR_16,
-                _                        => throw new ArgumentOutOfRangeException()
+                CompressionLevels.None => LAMEPreset.EXTREME,
+                _                        => throw new ArgumentOutOfRangeException(nameof(Settings.CurrentValue.CompressionLevel))
             };
 
             using var resultStream = new MemoryStream();
@@ -70,7 +71,7 @@ public abstract class BaseTtsSpeaker : ISpeaker
         }
         catch (Exception ex)
         {
-            Logger.LogError("Error while compressing: {ExMessage} {ex}", ex.Message, ex);
+            Logger.LogError(ex, "Error while compressing: {ExMessage}", ex.Message);
         }
 
         return [];

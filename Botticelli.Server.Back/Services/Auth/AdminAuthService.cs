@@ -52,8 +52,8 @@ public class AdminAuthService(
 
             ValidateRequest(userRegister);
 
-            if (_context.ApplicationUsers.AsQueryable()
-                        .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
+            if (await _context.ApplicationUsers.AsQueryable()
+                        .AnyAsync(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");
 
             var user = new IdentityUser
@@ -70,7 +70,7 @@ public class AdminAuthService(
             var appRole = new IdentityUserRole<string>
             {
                 UserId = user.Id,
-                RoleId = _context.ApplicationRoles.FirstOrDefault()?.Id ?? "-1"
+                RoleId = (await _context.ApplicationRoles.FirstOrDefaultAsync())?.Id ?? "-1"
             };
 
             await _context.ApplicationUsers.AddAsync(user);
@@ -82,7 +82,7 @@ public class AdminAuthService(
         }
         catch (Exception ex)
         {
-            _logger.LogError("({UserRegisterUserName}) error: {ExMessage}, {Ex}", userRegister.UserName, ex.Message, ex);
+            _logger.LogError(ex, "({UserRegisterUserName}) error: {ExMessage}", userRegister.UserName, ex.Message);
         }
     }
 
@@ -96,8 +96,8 @@ public class AdminAuthService(
 
             ValidateRequest(userRegister);
 
-            if (_context.ApplicationUsers.AsQueryable()
-                        .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
+            if (await _context.ApplicationUsers.AsQueryable()
+                        .AnyAsync(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");
 
             await _context.SaveChangesAsync();
@@ -106,7 +106,7 @@ public class AdminAuthService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "({UserRegisterUserName}) error: {ExMessage} {Ex}", userRegister.UserName, ex.Message);
+            _logger.LogError(ex, "({UserRegisterUserName}) error: {ExMessage}", userRegister.UserName, ex.Message);
         }
     }
 

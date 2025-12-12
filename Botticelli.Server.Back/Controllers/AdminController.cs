@@ -114,7 +114,7 @@ public class AdminController(
     {
         await _broadcastService.BroadcastMessage(new Broadcast
         {
-            Id = message.Uid ?? throw new NullReferenceException("Id cannot be null!"),
+            Id = message?.Uid ?? throw new NullReferenceException("Id cannot be null!"),
             BotId = botId ?? throw new NullReferenceException("BotId cannot be null!"),
             Body = message.Body ?? throw new NullReferenceException("Body cannot be null!"),
             Attachments = message.Attachments

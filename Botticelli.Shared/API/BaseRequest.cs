@@ -1,20 +1,9 @@
 ﻿namespace Botticelli.Shared.API;
 
-public abstract class BaseRequest<T> : BaseRequest
-        where T : BaseRequest
-{
-    protected BaseRequest(string? uid)
-            : base(uid)
-    {
-    }
-}
+public abstract class BaseRequest<T>(string? uid) : BaseRequest(uid)
+    where T : BaseRequest;
 
-public abstract class BaseRequest
+public abstract class BaseRequest(string? uid)
 {
-    protected BaseRequest(string? uid)
-    {
-        Uid = uid;
-    }
-
-    public string? Uid { get; }
+    public string? Uid { get; } = uid;
 }

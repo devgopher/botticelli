@@ -7,7 +7,6 @@
 		<Version>0.9.0</Version>
 		<Title>Botticelli.Framework.Telegram</Title>
 		<Authors>BotticelliBots</Authors>
-		<PackageIcon>new_logo_compact.png</PackageIcon>
 		<Description>Botticelli Telegram messenger integration</Description>
 		<Copyright>BotticelliBots</Copyright>
 		<PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
@@ -15,13 +14,6 @@
 		<PackageTags>telegram, bots, botticelli, facebook, whatsapp</PackageTags>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="..\new_logo_compact.png">
-			<Pack>True</Pack>
-			<Link>new_logo_compact.png</Link>
-		</None>
-	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Botticelli.Controls\Botticelli.Controls.csproj" />
 		<ProjectReference Include="..\Botticelli.Bot.Utils\Botticelli.Bot.Utils.csproj"/>
