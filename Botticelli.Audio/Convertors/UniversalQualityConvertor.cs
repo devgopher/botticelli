@@ -67,8 +67,6 @@ public class UniversalQualityConvertor(IAnalyzer analyzer, ILogger<UniversalQual
                     codec = "opus";
 
                     break;
-                case AudioFormat.Wav:
-                case AudioFormat.Unknown:
                 default:
                     codec = "wav";
                     break;
@@ -111,15 +109,13 @@ public class UniversalQualityConvertor(IAnalyzer analyzer, ILogger<UniversalQual
     {
         var ms = new MemoryStream();
 
-        Stream writerStream = tgtParams.AudioFormat switch
+        using Stream writerStream = tgtParams.AudioFormat switch
         {
             AudioFormat.Mp3 => new LameMP3FileWriter(ms, input.WaveFormat, GetLamePreset(tgtParams)),
             _ => new WaveFileWriter(ms, input.WaveFormat)
         };
 
         input.CopyTo(writerStream);
-
-        writerStream.Dispose();
 
         return ms;
     }
