@@ -32,18 +32,18 @@ public static class ServiceCollectionExtensions
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 
         return services.Configure<LocationsProcessorOptions>(config)
-                       .AddScoped<ICommandValidator<FindLocationsCommand>, PassValidator<FindLocationsCommand>>()
-                       .AddScoped<ICommandValidator<MapCommand>, PassValidator<MapCommand>>()
+                       .AddSingleton<ICommandValidator<FindLocationsCommand>, PassValidator<FindLocationsCommand>>()
+                       .AddSingleton<ICommandValidator<MapCommand>, PassValidator<MapCommand>>()
                        .AddScoped<FindLocationsCommandProcessor<InlineKeyboardMarkup>>()
                        .AddScoped<MapCommandProcessor<ReplyKeyboardMarkup>>()
                        .AddScoped<ILocationProvider, OsmLocationProvider>()
-                       .AddScoped<INominatimWebInterface, NominatimWebInterface>()
-                       .AddScoped<IAddressSearcher, AddressSearcher>()
-                       .AddScoped<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
-                       .AddScoped<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
-                       .AddScoped<IForwardGeocoder, ForwardGeocoder>(sp => new ForwardGeocoder(sp.GetRequiredService<INominatimWebInterface>(),
+                       .AddSingleton<INominatimWebInterface, NominatimWebInterface>()
+                       .AddSingleton<IAddressSearcher, AddressSearcher>()
+                       .AddSingleton<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
+                       .AddSingleton<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
+                       .AddSingleton<IForwardGeocoder, ForwardGeocoder>(sp => new ForwardGeocoder(sp.GetRequiredService<INominatimWebInterface>(),
                                                                                                Url.Combine(url, "search")))
-                       .AddScoped<IReverseGeocoder, ReverseGeocoder>(sp => new ReverseGeocoder(sp.GetRequiredService<INominatimWebInterface>(),
+                       .AddSingleton<IReverseGeocoder, ReverseGeocoder>(sp => new ReverseGeocoder(sp.GetRequiredService<INominatimWebInterface>(),
                                                                                                Url.Combine(url, "reverse")));
     }
 }
