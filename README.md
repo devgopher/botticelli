@@ -9,7 +9,7 @@ Fully open-source · Cross-platform
 **Botticelli** framework: a chat bot development platform for .NET 
 
 [![License](https://img.shields.io/badge/GPL-license-orange)](https://github.com/devgopher/botticelli?tab=GPL-3.0-1-ov-file)
-[![Release](https://img.shields.io/badge/Release-0.8.1-orange)](https://github.com/devgopher/botticelli/releases/tag/0.8.1)
+[![Release](https://img.shields.io/badge/Release-0.8.2-orange)](https://github.com/devgopher/botticelli/releases/tag/0.8.2)
 [![Documentations](https://img.shields.io/badge/Documentation-docs-orange.svg?style=flat-square)](http://botticellibots.com/documentation/)
 [![Youtrack Dashboard](https://img.shields.io/badge/Youtrack-dashboard-orange.svg?style=flat-square)](https://botticelli.youtrack.cloud/dashboard)
 
