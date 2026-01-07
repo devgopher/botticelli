@@ -53,6 +53,7 @@ public class OsmLocationProvider : ILocationProvider
                 })).Select(gr =>
                    {
                        var address = gr.Address?.Adapt<Address>() ?? new Address();
+                       address.ObjectId = gr.OSMID.ToString();
                        address.Longitude = gr.Longitude;
                        address.Latitude = gr.Latitude;
                        address.DisplayName = gr.DisplayName;
