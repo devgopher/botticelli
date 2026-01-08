@@ -14,14 +14,17 @@ public class OsmLocationProvider : ILocationProvider
     private readonly IForwardGeocoder _forwardGeocoder;
     private readonly IOptionsSnapshot<LocationsProcessorOptions> _options;
     private readonly IReverseGeocoder _reverseGeoCoder;
+    private readonly IAddressSearcher _addressSearcher;
 
     public OsmLocationProvider(IReverseGeocoder reverseGeoCoder,
                                IForwardGeocoder forwardGeocoder,
+                               IAddressSearcher addressSearcher,
                                IOptionsSnapshot<LocationsProcessorOptions> options)
     {
         _reverseGeoCoder = reverseGeoCoder;
         _forwardGeocoder = forwardGeocoder;
         _options = options;
+        _addressSearcher = addressSearcher;
     }
 
     public async Task<Address?> GetAddress(Location location)
@@ -54,17 +57,40 @@ public class OsmLocationProvider : ILocationProvider
                    {
                        var address = gr.Address?.Adapt<Address>() ?? new Address();
                        address.ObjectId = gr.OSMID.ToString();
+                       address.ObjectType = gr.OSMType;
                        address.Longitude = gr.Longitude;
                        address.Latitude = gr.Latitude;
                        address.DisplayName = gr.DisplayName;
 
                        return address;
                    })
+                   .Take(maxPoints)
                    .ToList();
 
         return results;
     }
 
+    public async Task<IEnumerable<Address>> SearchByIds(string[] ids)
+    {
+        var results = (await _addressSearcher.Lookup(new AddressSearchRequest
+            {
+                OSMIDs = ids
+            })).Select(gr =>
+            {
+                var address = gr.Address?.Adapt<Address>() ?? new Address();
+                address.ObjectId = gr.OSMID.ToString();
+                address.ObjectType = gr.OSMType;
+                address.Longitude = gr.Longitude;
+                address.Latitude = gr.Latitude;
+                address.DisplayName = gr.DisplayName;
+
+                return address;
+            })
+            .ToList();
+
+        return results;
+    }
+    
     public Task<TimeZoneInfo?> GetTimeZone(Location location)
     {
         var tz = TimeZoneLookup.GetTimeZone(location.Lat, location.Lng).Result;

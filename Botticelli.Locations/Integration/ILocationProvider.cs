@@ -10,8 +10,9 @@ public interface ILocationProvider
 
     public Task<string> GetMapLink(Address address);
 
-
     public Task<IEnumerable<Address>> Search(string query, int maxPoints);
+
+    public Task<IEnumerable<Address>> SearchByIds(string[] ids);
 
     public Task<TimeZoneInfo?> GetTimeZone(Location location);
 }
