@@ -10,20 +10,34 @@ namespace Botticelli.Framework.Extensions;
 public class CommandAddServices<TCommand>(IServiceCollection services)
         where TCommand : class, ICommand
 {
-    public CommandAddServices<TCommand> AddProcessor<TCommandProcessor, TConfiguration>(IConfiguration configuration)
+    public CommandAddServices<TCommand> AddProcessor<TCommandProcessor, TConfiguration>(IConfiguration configuration, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
             where TCommandProcessor : class, ICommandProcessor
             where TConfiguration : class
     {
         services.Configure<TConfiguration>(configuration.GetSection(typeof(TConfiguration).Name));
-        AddProcessor<TCommandProcessor>();
+        AddProcessor<TCommandProcessor>(serviceLifetime);
 
         return this;
     }
 
-    public CommandAddServices<TCommand> AddProcessor<TCommandProcessor>()
+    public CommandAddServices<TCommand> AddProcessor<TCommandProcessor>(ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
             where TCommandProcessor : class, ICommandProcessor
     {
-        services.AddSingleton<TCommandProcessor>();
+        switch (serviceLifetime)
+        {
+            case ServiceLifetime.Singleton:
+                services.AddSingleton<TCommandProcessor>();
+                break;
+            case ServiceLifetime.Scoped:
+                services.AddScoped<TCommandProcessor>();
+                break;
+            case ServiceLifetime.Transient:
+                services.AddTransient<TCommandProcessor>();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(serviceLifetime), serviceLifetime, null);
+        }
+
         ProcessorFactoryBuilder.AddProcessor<TCommandProcessor>(services);
 
         return this;
