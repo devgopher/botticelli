@@ -18,15 +18,16 @@ public static class ProcessorFactoryBuilder
 
     public static ProcessorFactory Build(IServiceProvider sp)
     {
+        var scope = sp.CreateScope();
         if (_serviceCollection == null) 
             return new ProcessorFactory([]);
 
         var processors = ProcessorTypes
                          .Select(pt =>
                          {
-                             var processor = sp.GetRequiredService(pt) as ICommandProcessor;
-                             processor?.SetBot(sp.GetRequiredService<IBot>());
-                             processor?.SetServiceProvider(sp);
+                             var processor = scope.ServiceProvider.GetRequiredService(pt) as ICommandProcessor;
+                             processor?.SetBot(scope.ServiceProvider.GetRequiredService<IBot>());
+                             processor?.SetServiceProvider(scope.ServiceProvider);
 
                              return processor;
                          })
