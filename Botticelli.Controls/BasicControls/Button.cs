@@ -2,6 +2,15 @@
 
 public class Button : IControl
 {
+    public Button()
+    {
+    }
+
+    public Button(string? content)
+    {
+        Content = content;
+    }
+
     public string? Image { get; set; }
     public string? Content { get; set; }
 
