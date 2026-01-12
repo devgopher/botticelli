@@ -121,4 +121,18 @@ public class Message()
     ///     Chain id for chained command processing
     /// </summary>
     public Guid? ChainId { get; set; }
+
+    public virtual Message Copy()
+    {
+        var newMessage = new Message(Uid!)
+        {
+            ChatIds = ChatIds,
+            ChainId = ChainId,
+            From = From,
+            ForwardedFrom = ForwardedFrom,
+            ChatIdInnerIdLinks = ChatIdInnerIdLinks
+        };
+
+        return newMessage;
+    }
 }
