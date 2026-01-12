@@ -48,11 +48,12 @@ public class OsmLocationProvider : ILocationProvider
                $"{address.Longitude.ToString("0.00000", CultureInfo.InvariantCulture)}";
     }
 
-    public async Task<IEnumerable<Address>> Search(string query, int maxPoints)
+    public async Task<IEnumerable<Address>> Search(string query, int maxPoints, string language = "")
     {
         var results = (await _forwardGeocoder.Geocode(new ForwardGeocodeRequest
                 {
-                    queryString = query
+                    queryString = query,
+                    PreferredLanguages = language
                 })).Select(gr =>
                    {
                        var address = gr.Address?.Adapt<Address>() ?? new Address();
@@ -99,12 +100,13 @@ public class OsmLocationProvider : ILocationProvider
         return Task.FromResult(tzi)!;
     }
 
-    private async Task<Address?> InnerGetAddress(Location location)
+    private async Task<Address?> InnerGetAddress(Location location, string language = "")
     {
         var response = await _reverseGeoCoder.ReverseGeocode(new ReverseGeocodeRequest
         {
             Latitude = location.Lat,
-            Longitude = location.Lng
+            Longitude = location.Lng,
+            PreferredLanguages = language
         });
 
         var result = response.Address?.Adapt<Address>();
