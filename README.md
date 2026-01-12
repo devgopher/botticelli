@@ -1,8 +1,15 @@
-# Botticelli
+# Botticelli 🤖 – Universal .NET Framework for AI-Powered Bots
+
+<img src="https://github.com/user-attachments/assets/004b4af6-5bfb-4f23-90f0-d5da6c998027" alt="Logo" style="width: 100%; height: auto;"/>
+
+Build smart chatbots in minutes for Telegram, WhatsApp, and beyond.  
+Seamless integration with ChatGPT, DeepSeek, YandexGPT, databases, queues, speech, and scheduling.  
+Fully open-source · Cross-platform
+
 **Botticelli** framework: a chat bot development platform for .NET 
 
 [![License](https://img.shields.io/badge/GPL-license-orange)](https://github.com/devgopher/botticelli?tab=GPL-3.0-1-ov-file)
-[![Release](https://img.shields.io/badge/Release-0.8-orange)](https://github.com/devgopher/botticelli/releases/tag/0.8)
+[![Release](https://img.shields.io/badge/Release-0.8.2-orange)](https://github.com/devgopher/botticelli/releases/tag/v0.8.2)
 [![Documentations](https://img.shields.io/badge/Documentation-docs-orange.svg?style=flat-square)](http://botticellibots.com/documentation/)
 [![Youtrack Dashboard](https://img.shields.io/badge/Youtrack-dashboard-orange.svg?style=flat-square)](https://botticelli.youtrack.cloud/dashboard)
 
@@ -10,18 +17,17 @@
 [![Telegram](https://img.shields.io/badge/Telegram-channel-orange)](https://t.me/botticelli_bots) 
 
 **There are several reasons to choose Botticelli:**
-- cross-platform
-- supports a wide range of messengers (Telegram, Facebook, VK)
-- extensible (you may add support of any other messenger, that has an open API)
-- reliable
-- easy to use
-- easy to deploy
-- easy to manage/administrate bots
-- easy to integrate with **databases**
-- easy to integrate with **AI** (**ChatGPT**, **YandexGPT**, **DeepSeek**) solutions (Botticelli.AI)
-- easy to integrate with **speech synthesizers** (Botticelli.Talks)
-- easy to integrate with queue brokers for highload systems (Botticelli.Bus)
-- easy to schedule (Botticelli.Scheduler)
+
+✅ **Multi-platform** – Telegram + custom providers  
+✅ **AI integrations out-of-the-box** – ChatGPT, DeepSeek, YandexGPT, GPT-J  
+✅ **Databases & queues** – SQL/NoSQL + RabbitMQ/Kafka support  
+✅ **Voice & speech** – built-in TTS/STT (Botticelli.Talks)  
+✅ **Task scheduler** – cron jobs & delayed messages  
+✅ **Web admin panel** – monitor and control all bots from one place  
+✅ **Minimal boilerplate** – production bot in 20–50 lines  
+✅ **Production-ready** – Docker, logging, health checks  
+✅ **100 % open-source** – no hidden paid features  
+✅ **.NET 8+** – runs everywhere (Windows / Linux / macOS / ARM)
 
 # Getting Started
 
@@ -60,3 +66,5 @@ On a bot side we can implement any business logic we want.
 [WikiBooks finder bot](https://t.me/wikibooks_search_bot) - WikiBooks finder Telegram bot
 
 [WikiBooks finder bot sources](https://github.com/devgopher/wikibooks_bot) - WikiBooks finder bot sources
+
+[![Star History Chart](https://api.star-history.com/svg?repos=devgopher/botticelli&type=date&legend=top-left)](https://www.star-history.com/#devgopher/botticelli&type=date&legend=top-left)
