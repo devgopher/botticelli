@@ -10,7 +10,8 @@ public interface ILocationProvider
 
     public Task<string> GetMapLink(Address address);
 
-    public Task<IEnumerable<Address>> Search(string query, int maxPoints, string language = "");
+    public Task<IEnumerable<Address>> Search(string query, int maxPoints, double? latitude = null,
+        double? longitude = null, int? radiusInMeters = null, string? language = null);
 
     public Task<IEnumerable<Address>> SearchByIds(string[] ids);
 
