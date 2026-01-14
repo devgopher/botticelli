@@ -62,21 +62,40 @@ public static class StartupExtensions
     }
 
     public static CommandChainProcessorBuilder<TCommand> AddBotChainProcessedCommand<TCommand,
-                                                                                     TCommandValidator>(this IServiceCollection services)
-            where TCommand : class, ICommand where TCommandValidator : class, ICommandValidator<TCommand>
+        TCommandValidator>(this IServiceCollection services,
+        ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+        where TCommand : class, ICommand where TCommandValidator : class, ICommandValidator<TCommand>
     {
         var builder = new CommandChainProcessorBuilder<TCommand>(services);
 
-        services.AddSingleton<TCommand>()
-                .AddSingleton<ICommandValidator<TCommand>, TCommandValidator>()
-                .AddSingleton(_ => builder);
+        switch (serviceLifetime)
+        {
+            case ServiceLifetime.Singleton:
+                services.AddSingleton<TCommand>()
+                    .AddSingleton<ICommandValidator<TCommand>, TCommandValidator>()
+                    .AddSingleton(_ => builder);
+                break;
+            case ServiceLifetime.Scoped:
+                services.AddScoped<TCommand>()
+                    .AddScoped<ICommandValidator<TCommand>, TCommandValidator>()
+                    .AddScoped(_ => builder);
+                break;
+            case ServiceLifetime.Transient:
+                services.AddTransient<TCommand>()
+                    .AddTransient<ICommandValidator<TCommand>, TCommandValidator>()
+                    .AddTransient(_ => builder);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(serviceLifetime), serviceLifetime, null);
+        }
+
 
         return builder;
     }
 
     public static IServiceProvider RegisterBotChainedCommand<TCommand, TBot>(this IServiceProvider sp)
-            where TCommand : class, ICommand
-            where TBot : IBot<TBot>
+        where TCommand : class, ICommand
+        where TBot : IBot<TBot>
     {
         var commandChainProcessorBuilder = sp.GetRequiredService<CommandChainProcessorBuilder<TCommand>>();
         commandChainProcessorBuilder.Build(sp);

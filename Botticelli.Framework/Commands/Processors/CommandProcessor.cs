@@ -21,7 +21,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
     private readonly IValidator<Message> _messageValidator;
     private readonly MetricsProcessor? _metricsProcessor;
     protected readonly ILogger Logger;
-    private IBot? _bot;
+    protected IBot? _bot;
 
     protected CommandProcessor(ILogger logger,
                                ICommandValidator<TCommand> commandValidator,
