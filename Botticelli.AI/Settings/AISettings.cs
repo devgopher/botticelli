@@ -3,7 +3,8 @@
 public class AiSettings : ProviderSettings
 {
     public string? Url { get; set; }
-    public string AiName { get; set; }
+    public required string AiName { get; set; }
     public bool StreamGeneration { get; set; }
-    public string ApiKey { get; set; }
+    public string AuthMethod { get; set; } = "Bearer";
+    public string? ApiKey { get; set; }
 }
