@@ -11,9 +11,9 @@ public interface ILocationProvider
     public Task<string> GetMapLink(Address address);
 
     public Task<IEnumerable<Address>> Search(string query, int maxPoints, double? latitude = null,
-        double? longitude = null, int? radiusInMeters = null, string? language = null);
+        double? longitude = null, int? radiusInMeters = null, string[]? languages = null);
 
-    public Task<IEnumerable<Address>> SearchByIds(string[] ids);
+    public Task<IEnumerable<Address>> SearchByIds(string[] ids, string[]? languages = null);
 
     public Task<TimeZoneInfo?> GetTimeZone(Location location);
 }

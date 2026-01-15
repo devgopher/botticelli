@@ -49,7 +49,7 @@ public class OsmLocationProvider : ILocationProvider
     }
 
     public async Task<IEnumerable<Address>> Search(string query, int maxPoints, double? latitude = null,
-        double? longitude = null, int? radiusInMeters = null, string? language = null)
+        double? longitude = null, int? radiusInMeters = null, string[]? languages = null)
     {
         if (radiusInMeters != null && (!latitude.HasValue || !longitude.HasValue))
             throw new ArgumentException("Please provide a valid latitude and longitude!");
@@ -60,7 +60,7 @@ public class OsmLocationProvider : ILocationProvider
         var results = (await _forwardGeocoder.Geocode(new ForwardGeocodeRequest
             {
                 queryString = query,
-                PreferredLanguages = language ?? string.Empty,
+                PreferredLanguages = languages != null ? string.Join(',', languages) : null,
                 LimitResults = maxPoints,
                 DedupeResults = true,
                 ViewBox = radiusInMeters == null
@@ -90,11 +90,12 @@ public class OsmLocationProvider : ILocationProvider
         return results;
     }
 
-    public async Task<IEnumerable<Address>> SearchByIds(string[] ids)
+    public async Task<IEnumerable<Address>> SearchByIds(string[] ids, string[]? languages = null)
     {
         var results = (await _addressSearcher.Lookup(new AddressSearchRequest
             {
-                OSMIDs = ids
+                OSMIDs = ids,
+                PreferredLanguages = languages != null ? string.Join(',', languages) : null,
             })).Select(gr =>
             {
                 var address = gr.Address?.Adapt<Address>() ?? new Address();
