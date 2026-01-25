@@ -95,7 +95,7 @@ public class OsmLocationProvider : ILocationProvider
         var results = (await _addressSearcher.Lookup(new AddressSearchRequest
             {
                 OSMIDs = ids,
-                PreferredLanguages = languages != null ? string.Join(',', languages) : null,
+                PreferredLanguages = languages != null ? string.Join(',', languages) : null
             })).Select(gr =>
             {
                 var address = gr.Address?.Adapt<Address>() ?? new Address();
