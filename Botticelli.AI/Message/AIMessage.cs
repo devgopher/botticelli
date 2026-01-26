@@ -10,7 +10,16 @@ public class AiMessage : Shared.ValueObjects.Message
     {
     }
 
-    public string Instruction { get; set; }
+    public string Instruction { get; set; } = string.Empty;
 
-    public List<AiMessage> AdditionalMessages { get; set; }
+    public List<AiMessage> AdditionalMessages { get; set; } = new List<AiMessage>();
+    
+    public override Shared.ValueObjects.Message Copy()
+    {
+        var newMessage = (AiMessage)(base.Copy());
+        newMessage.Instruction = Instruction;
+        newMessage.AdditionalMessages = AdditionalMessages;
+        
+        return newMessage;
+    }
 }

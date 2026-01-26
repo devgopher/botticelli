@@ -159,6 +159,8 @@ public class TelegramBot : BaseBot<TelegramBot>
         {
             if (optionsBuilder.Build() is ReplyMarkup markup)
                 replyMarkup = markup;
+            else if (optionsBuilder.Build() is InlineKeyboardMarkup keyboardMarkup)
+                replyMarkup = keyboardMarkup;
             else
                 replyMarkup = null;
         }

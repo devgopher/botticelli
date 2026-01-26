@@ -5,6 +5,11 @@ namespace Botticelli.Locations.Models;
 
 public class Address
 {
+    [JsonPropertyName("ObjectId")]
+    public string ObjectId { get; set; }
+    [JsonPropertyName("ObjectType")]
+    public string ObjectType { get; set; }
+
     [JsonPropertyName("country")]
     public string? Country { get; set; }
 

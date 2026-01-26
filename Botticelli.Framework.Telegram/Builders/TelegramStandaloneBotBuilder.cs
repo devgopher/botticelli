@@ -45,19 +45,13 @@ public class TelegramStandaloneBotBuilder<TBot> : TelegramBotBuilder<TBot, Teleg
 
         AddToken(BotData.BotKey);
 
+        Services.AddSingleton(BotData);
+        
         return this;
     }
 
     protected override TBot? InnerBuild(IServiceProvider serviceProvider)
     {
-        Services.AddHttpClient<BotStandaloneService>()
-                .AddServerCertificates(BotSettings);
-
-        if (BotData == null) throw new ConfigurationErrorsException("BotData is null!");
-
-        Services.AddHostedService<BotStandaloneService>()
-                .AddSingleton(BotData);
-
         return base.InnerBuild(serviceProvider);
     }
 }

@@ -96,11 +96,10 @@ public class YaGptProvider : ChatGptProvider<YaGptSettings>
                     Role = SystemRole,
                     Text = Settings.Value.Instruction
                 },
-
                 new()
                 {
                     Role = UserRole,
-                    Text = message.Body
+                    Text = message.Body ?? string.Empty
                 }
             ],
             CompletionOptions = new CompletionOptions
@@ -114,7 +113,7 @@ public class YaGptProvider : ChatGptProvider<YaGptSettings>
         yaGptMessage.Messages.AddRange(message.AdditionalMessages?.Select(m => new YaGptMessage
                                        {
                                            Role = UserRole,
-                                           Text = m.Body
+                                           Text = m.Body ?? string.Empty,
                                        }) ??
                                        new List<YaGptMessage>());
 

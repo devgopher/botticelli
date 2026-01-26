@@ -4,7 +4,7 @@ namespace Botticelli.AI.YaGpt.Message.YaGpt;
 
 public class YaGptInputMessage
 {
-    [JsonPropertyName("modelUri")]
+    [JsonPropertyName("model_uri")]
     public string ModelUri { get; set; }
 
     [JsonPropertyName("completionOptions")]
@@ -22,7 +22,7 @@ public class CompletionOptions
     [JsonPropertyName("temperature")]
     public double Temperature { get; set; }
 
-    [JsonPropertyName("maxTokens")]
+    [JsonPropertyName("max_tokens")]
     public int MaxTokens { get; set; }
 }
 
