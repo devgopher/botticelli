@@ -68,9 +68,12 @@ public class JsonLayoutParser : ILayoutParser
     {
         if (itemElement.TryGetProperty("Button", out var buttonElement))
         {
+            var hasCallback = buttonElement.TryGetProperty("Callback", out var callbackElement);
             var button = new Button
             {
-                Content = buttonElement.GetProperty("Content").GetString()
+                Content = buttonElement.GetProperty("Content")
+                    .GetString(),
+                CallbackData = hasCallback ? callbackElement.GetString() : null
             };
 
             item.Control = button;

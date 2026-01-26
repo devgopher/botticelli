@@ -15,14 +15,29 @@ public class CommandChainProcessorBuilder<TInputCommand> where TInputCommand : c
 
         _typesChain.Add(typeof(CommandChainFirstElementProcessor<TInputCommand>));
         _services.AddSingleton<CommandChainFirstElementProcessor<TInputCommand>>();
+
         ProcessorFactoryBuilder.AddProcessor<CommandChainFirstElementProcessor<TInputCommand>>(_services);
     }
 
-    public CommandChainProcessorBuilder<TInputCommand> AddNext<TNextProcessor>()
+    public CommandChainProcessorBuilder<TInputCommand> AddNext<TNextProcessor>(ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
             where TNextProcessor : class, ICommandChainProcessor<TInputCommand>
     {
         _typesChain.Add(typeof(TNextProcessor));
-        _services.AddSingleton<TNextProcessor>();
+        switch (serviceLifetime)
+        {
+            case ServiceLifetime.Singleton:
+                _services.AddSingleton<TNextProcessor>();
+                break;
+            case ServiceLifetime.Scoped:
+                _services.AddScoped<TNextProcessor>();
+                break;
+            case ServiceLifetime.Transient:
+                _services.AddTransient<TNextProcessor>();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(serviceLifetime), serviceLifetime, null);
+        } 
+        
         ProcessorFactoryBuilder.AddProcessor<TNextProcessor>(_services);
 
         return this;
@@ -31,6 +46,7 @@ public class CommandChainProcessorBuilder<TInputCommand> where TInputCommand : c
     public ICommandChainProcessor<TInputCommand>? Build(IServiceProvider sp)
     {
         if (_typesChain.Count == 0) return null;
+        var scope = sp.CreateScope();
 
         // initializing chain processors...
 
@@ -41,7 +57,7 @@ public class CommandChainProcessorBuilder<TInputCommand> where TInputCommand : c
 
         foreach (var type in _typesChain.Skip(1))
         {
-            var proc = sp.GetRequiredService(type) as ICommandChainProcessor<TInputCommand>;
+            var proc = scope.ServiceProvider.GetRequiredService(type) as ICommandChainProcessor<TInputCommand>;
 
             if (prev != null) prev.Next = proc;
 

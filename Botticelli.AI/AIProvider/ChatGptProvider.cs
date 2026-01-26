@@ -95,7 +95,7 @@ public abstract class ChatGptProvider<TSettings> : IAiProvider
 
         client.BaseAddress = new Uri(Settings.Value.Url);
         client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", Settings.Value.ApiKey);
+                new AuthenticationHeaderValue(Settings.Value.AuthMethod, Settings.Value.ApiKey);
 
         return client;
     }

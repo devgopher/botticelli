@@ -58,7 +58,11 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
         if (Next != null)
         {
             Next.ChainIds.Add(message.ChainId.Value);
-            await Next.ProcessAsync(message, token);
+            if (_bot != null)
+            {
+                Next.SetBot(_bot);
+                await Next.ProcessAsync(message, token);
+            }
         }
         else
         {

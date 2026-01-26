@@ -1,3 +1,4 @@
+using System.Configuration;
 using Botticelli.Bot.Data;
 using Botticelli.Bot.Data.Repositories;
 using Botticelli.Bot.Data.Settings;
@@ -18,6 +19,7 @@ using Botticelli.Framework.Telegram.Http;
 using Botticelli.Framework.Telegram.Layout;
 using Botticelli.Framework.Telegram.Options;
 using Botticelli.Framework.Telegram.Utils;
+using Botticelli.Interfaces;
 using Botticelli.Shared.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -171,7 +173,7 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
         #region Data
 
         Services.AddDbContext<BotInfoContext>(o =>
-            o.UseSqlite($"Data source={BotDataAccessSettingsBuilder!.Build().ConnectionString}"), contextLifetime: ServiceLifetime.Singleton);
+            o.UseSqlite($"Data source={BotDataAccessSettingsBuilder!.Build().ConnectionString}"), ServiceLifetime.Singleton);
         Services.AddSingleton<IBotDataAccess, BotDataAccess>();
 
         #endregion
@@ -197,6 +199,19 @@ public class TelegramBotBuilder<TBot, TBotBuilder> : BotBuilder<TBot, TBotBuilde
             .AddBotticelliFramework()
             .AddSingleton<IBotUpdateHandler, BotUpdateHandler>()
             .AddSingleton(client);
+
+        if (_isStandalone)
+        {
+            Services.AddHttpClient<BotStandaloneService>()
+                .AddServerCertificates(BotSettings);
+
+            if (BotData == null) throw new ConfigurationErrorsException("BotData is null!");
+
+            Services.AddHostedService<BotStandaloneService>()
+                .AddSingleton(BotData);
+            
+            Services.AddSingleton<IBot>(sp => this .Build(sp)!);
+        }
         
         return this;
     }

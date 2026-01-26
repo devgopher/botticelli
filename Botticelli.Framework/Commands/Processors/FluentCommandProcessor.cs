@@ -13,12 +13,12 @@ namespace Botticelli.Framework.Commands.Processors;
 public abstract class FluentCommandProcessor<TCommand>(
         ILogger logger,
         MetricsProcessor metricsProcessor,
-        ICommandValidator<TCommand> commandValidator,
-        IBot bot)
+        ICommandValidator<TCommand> commandValidator)
         : ICommandProcessor
         where TCommand : class, IFluentCommand
 {
-    protected IBot Bot = bot;
+    protected IBot? Bot;
+    
     public string CommandText { get; init; }
 
     public async Task ProcessAsync(Message message, CancellationToken token)

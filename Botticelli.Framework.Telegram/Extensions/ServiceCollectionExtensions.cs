@@ -217,6 +217,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ILayoutParser, JsonLayoutParser>()
             .AddSingleton<ILayoutSupplier<ReplyKeyboardMarkup>, ReplyTelegramLayoutSupplier>()
             .AddSingleton<ILayoutSupplier<InlineKeyboardMarkup>, InlineTelegramLayoutSupplier>()
+            .AddSingleton<IReplyTelegramLayoutSupplier, ReplyTelegramLayoutSupplier>()
+            .AddSingleton<IInlineTelegramLayoutSupplier, InlineTelegramLayoutSupplier>()
             .AddSingleton<ILayoutLoader<ReplyKeyboardMarkup>, LayoutLoader<ILayoutParser,
                 ILayoutSupplier<ReplyKeyboardMarkup>, ReplyKeyboardMarkup>>()
             .AddSingleton<ILayoutLoader<InlineKeyboardMarkup>, LayoutLoader<ILayoutParser,
