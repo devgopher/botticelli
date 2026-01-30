@@ -3,6 +3,7 @@ using Botticelli.Bot.Interfaces.Processors;
 using Botticelli.Bot.Utils;
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.SendOptions;
 using Botticelli.Interfaces;
 using Botticelli.Shared.API.Client.Requests;
 using Botticelli.Shared.ValueObjects;
@@ -19,7 +20,7 @@ public abstract class FluentCommandProcessor<TCommand>(
 {
     protected IBot? Bot;
     
-    public string CommandText { get; init; }
+    public abstract string CommandText { get; }
 
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
@@ -85,6 +86,15 @@ public abstract class FluentCommandProcessor<TCommand>(
                                  BotDataUtils.GetBotId()!);
     }
 
+    protected async Task SendMessage<TReplyMarkup>(SendMessageRequest request,
+        SendOptionsBuilder<TReplyMarkup>? options,
+        CancellationToken token)
+        where TReplyMarkup : class
+    {
+        if (Bot == null) return;
+
+        await Bot.SendMessageAsync(request, options, token);
+    }
 
     protected abstract Task InnerProcess(Message message, CancellationToken token);
 }
