@@ -4,42 +4,28 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>0.8.0</Version>
+		<Version>0.9.0</Version>
 		<Title>Botticelli.Framework.Telegram</Title>
 		<Authors>BotticelliBots</Authors>
-		<PackageIcon>new_logo_compact.png</PackageIcon>
 		<Description>Botticelli Telegram messenger integration</Description>
 		<Copyright>BotticelliBots</Copyright>
 		<PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-		<PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+		<PackageTags>telegram, bots, botticelli, facebook, whatsapp</PackageTags>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="..\new_logo_compact.png">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-			<Link>new_logo_compact.png</Link>
-		</None>
-	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Botticelli.Controls\Botticelli.Controls.csproj" />
 		<ProjectReference Include="..\Botticelli.Bot.Utils\Botticelli.Bot.Utils.csproj"/>
 		<ProjectReference Include="..\Botticelli.Framework.Common\Botticelli.Framework.Events.csproj"/>
 		<ProjectReference Include="..\Botticelli.Framework\Botticelli.Framework.csproj"/>
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2"/>
-		<PackageReference Include="Telegram.Bot" Version="22.6.0" />
+		<PackageReference Include="Telegram.Bot" Version="22.7.5" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\logo.jpg">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
-	</ItemGroup>
-	<ItemGroup>
-	  <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-	    <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.17\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-	  </Reference>
 	</ItemGroup>
 </Project>

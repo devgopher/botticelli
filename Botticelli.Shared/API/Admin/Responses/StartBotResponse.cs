@@ -2,15 +2,10 @@
 
 namespace Botticelli.Shared.API.Admin.Responses;
 
-public class StartBotResponse : BaseResponse<StartBotResponse>
+public class StartBotResponse(string? uid, string techMessage, AdminCommandStatus status)
+    : BaseResponse<StartBotResponse>(uid, techMessage)
 {
-    protected StartBotResponse(string? uid, string techMessage, AdminCommandStatus status)
-            : base(uid, techMessage)
-    {
-        Status = status;
-    }
-
-    public AdminCommandStatus Status { get; }
+    public AdminCommandStatus Status { get; } = status;
 
     public static StartBotResponse GetInstance(AdminCommandStatus status, string techMessage)
     {

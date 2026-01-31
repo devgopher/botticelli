@@ -9,9 +9,11 @@ namespace Botticelli.Server.Back.Services;
 /// </summary>
 public class BotStatusDataService(ServerDataContext context) : IBotStatusDataService
 {
+    private readonly ServerDataContext _context = context;
+
     public ICollection<BotInfo> GetBots()
     {
-        return context.BotInfos.ToArray();
+        return _context.BotInfos.ToArray();
     }
 
     /// <summary>
@@ -21,18 +23,18 @@ public class BotStatusDataService(ServerDataContext context) : IBotStatusDataSer
     /// <returns></returns>
     public Task<BotStatus?> GetRequiredBotStatus(string botId)
     {
-        return Task.FromResult<BotStatus?>(context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ??
+        return Task.FromResult<BotStatus?>(_context.BotInfos.FirstOrDefault(b => b.BotId == botId)?.Status ??
                                            BotStatus.Unknown);
     }
 
     [Obsolete("Use GetRequiredBotContext")]
     public Task<string> GetRequiredBotKey(string botId)
     {
-        return Task.FromResult(context.BotInfos.FirstOrDefault(bi => bi.BotId == botId)?.BotKey ?? string.Empty);
+        return Task.FromResult(_context.BotInfos.FirstOrDefault(bi => bi.BotId == botId)?.BotKey ?? string.Empty);
     }
 
     public Task<BotInfo?> GetBotInfo(string botId)
     {
-        return Task.FromResult(context.BotInfos.FirstOrDefault(bi => bi.BotId == botId));
+        return Task.FromResult(_context.BotInfos.FirstOrDefault(bi => bi.BotId == botId));
     }
 }

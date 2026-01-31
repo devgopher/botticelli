@@ -60,6 +60,8 @@ public abstract class BaseBot<T> : BaseBot, IBot<T>
     {
         if (BotStatusKeeper.IsStarted) return StartBotResponse.GetInstance(request.Uid, string.Empty, AdminCommandStatus.Ok);
 
+        Console.WriteLine($"Your BotId is: {BotDataUtils.GetBotId()}");
+        
         _metrics?.Process(MetricNames.BotStarted, BotDataUtils.GetBotId());
 
         var result = await InnerStartBotAsync(request, token);

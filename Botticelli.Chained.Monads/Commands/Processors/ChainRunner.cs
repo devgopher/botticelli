@@ -16,16 +16,16 @@ public class ChainRunner<TCommand>(List<IChainProcessor<TCommand>> chain, ILogge
 
         foreach (var tc in chain)
         {
-            logger.LogInformation("Chain processor {tc} for {TCommand} start...",
+            logger.LogInformation("Chain processor {Tc} for {TCommand} start...",
                                   tc.GetType().Name,
                                   typeof(TCommand).Name);
 
             await output.BiIter(r => tc.Process(r),
-                                l => logger.LogInformation("Chain processor {tc}  for {TCommand} finished: fail!",
+                                l => logger.LogInformation("Chain processor {Tc}  for {TCommand} finished: fail!",
                                                            tc.GetType().Name,
                                                            typeof(TCommand).Name));
 
-            logger.LogInformation("Chain processor {tc} for {TCommand} finished: success",
+            logger.LogInformation("Chain processor {Tc} for {TCommand} finished: success",
                                   tc.GetType().Name,
                                   typeof(TCommand).Name);
         }

@@ -2,19 +2,14 @@
 
 namespace Botticelli.Shared.API.Client.Requests;
 
-public class SendMessageRequest : BaseRequest<SendMessageRequest>
+public class SendMessageRequest(string uid) : BaseRequest<SendMessageRequest>(uid)
 {
     public SendMessageRequest() : this(Guid.NewGuid().ToString())
     {
     }
 
-    public SendMessageRequest(string uid) : base(uid)
-    {
-        Message = new Message(uid);
-    }
-
     public bool? ExpectPartialResponse { get; set; }
     public int? SequenceNumber { get; set; }
     public bool? IsFinal { get; set; }
-    public Message Message { get; set; }
+    public Message Message { get; set; } = new(uid);
 }

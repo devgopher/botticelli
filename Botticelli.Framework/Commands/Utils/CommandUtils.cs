@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Botticelli.Framework.Commands.Utils;
@@ -14,11 +15,33 @@ public static class CommandUtils
         var match = ArgsCommandRegex.Matches(body)
                                     .FirstOrDefault();
 
-        return match == null ? string.Empty : match.Groups[2].Value;
+        if (match == null) 
+            return string.Empty;
+
+        var result = RemoveOddWhitespaces(match);
+
+        return result.ToString();
+
     }
 
-    public static string[] GetArguments(this string? body, char separator)
+    private static StringBuilder RemoveOddWhitespaces(Match match)
     {
-        return GetArguments(body).Split(separator);
+        var current = match.Groups[2].Value.Trim();
+        var result = new StringBuilder();
+
+        char prev = default;
+        foreach (var chr in current)
+        {
+            if (prev != default)
+            {
+                if (Char.IsWhiteSpace(prev) && Char.IsWhiteSpace(chr))
+                    continue;
+            }
+                
+            result.Append(chr);
+            prev = chr;
+        }
+
+        return result;
     }
 }

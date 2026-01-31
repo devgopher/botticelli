@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="8.8.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.0.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.1" />
+    <PackageReference Include="NUnit" Version="4.4.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
+    <PackageReference Include="WireMock.Net" Version="1.15.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Botticelli.Framework.Telegram\Botticelli.Framework.Telegram.csproj" />
+    <ProjectReference Include="..\..\Botticelli.Framework\Botticelli.Framework.csproj" />
+    <ProjectReference Include="..\Mocks\Mocks.csproj" />
+  </ItemGroup>
+  
+</Project>

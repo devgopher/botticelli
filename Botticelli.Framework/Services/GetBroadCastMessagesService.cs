@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Botticelli.Framework.Services;
 
 /// <summary>
-///     Receives broadcast message
+///     Receives a broadcast message
 /// </summary>
 /// <param name="httpClientFactory"></param>
 /// <param name="serverSettings"></param>

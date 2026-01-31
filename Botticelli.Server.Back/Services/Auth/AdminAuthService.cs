@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Botticelli.Auth.Shared.Settings;
 using Botticelli.Server.Data;
 using Botticelli.Server.Data.Entities.Auth;
 using Botticelli.Server.Data.Exceptions;
@@ -8,6 +9,7 @@ using Botticelli.Server.Models.Responses;
 using Botticelli.Shared.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Botticelli.Server.Back.Services.Auth;
@@ -15,23 +17,19 @@ namespace Botticelli.Server.Back.Services.Auth;
 /// <summary>
 ///     Authentication service
 /// </summary>
-public class AdminAuthService : IAdminAuthService
+public class AdminAuthService(
+        IConfiguration config,
+        IHttpContextAccessor httpContextAccessor,
+        ServerDataContext context,
+        IOptionsSnapshot<AuthSettings> settings,
+        ILogger<AdminAuthService> logger)
+        : IAdminAuthService
 {
-    private readonly IConfiguration _config;
-    private readonly ServerDataContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogger<AdminAuthService> _logger;
-
-    public AdminAuthService(IConfiguration config,
-                            IHttpContextAccessor httpContextAccessor,
-                            ServerDataContext context,
-                            ILogger<AdminAuthService> logger)
-    {
-        _config = config;
-        _httpContextAccessor = httpContextAccessor;
-        _context = context;
-        _logger = logger;
-    }
+    private readonly IConfiguration _config = config;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly ServerDataContext _context = context;
+    private readonly IOptionsSnapshot<AuthSettings> _settings = settings;
+    private readonly ILogger<AdminAuthService> _logger = logger;
 
     /// <summary>
     ///     Do we have any users?
@@ -54,8 +52,8 @@ public class AdminAuthService : IAdminAuthService
 
             ValidateRequest(userRegister);
 
-            if (_context.ApplicationUsers.AsQueryable()
-                        .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
+            if (await _context.ApplicationUsers.AsQueryable()
+                        .AnyAsync(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");
 
             var user = new IdentityUser
@@ -72,7 +70,7 @@ public class AdminAuthService : IAdminAuthService
             var appRole = new IdentityUserRole<string>
             {
                 UserId = user.Id,
-                RoleId = _context.ApplicationRoles.FirstOrDefault()?.Id ?? "-1"
+                RoleId = (await _context.ApplicationRoles.FirstOrDefaultAsync())?.Id ?? "-1"
             };
 
             await _context.ApplicationUsers.AddAsync(user);
@@ -80,11 +78,11 @@ public class AdminAuthService : IAdminAuthService
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("{RegisterAsyncName}({UserRegisterUserName}) finished...", nameof(RegisterAsync), userRegister.UserName);
+            _logger.LogInformation("({UserRegisterUserName}) finished...", userRegister.UserName);
         }
         catch (Exception ex)
         {
-            _logger.LogError("{RegisterAsyncName}({UserRegisterUserName}) error: {ExMessage}", nameof(RegisterAsync), userRegister.UserName, ex.Message, ex);
+            _logger.LogError(ex, "({UserRegisterUserName}) error: {ExMessage}", userRegister.UserName, ex.Message);
         }
     }
 
@@ -98,8 +96,8 @@ public class AdminAuthService : IAdminAuthService
 
             ValidateRequest(userRegister);
 
-            if (_context.ApplicationUsers.AsQueryable()
-                        .Any(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
+            if (await _context.ApplicationUsers.AsQueryable()
+                        .AnyAsync(u => u.NormalizedEmail == GetNormalized(userRegister.Email!)))
                 throw new DataException($"User with email {userRegister.Email} already exists!");
 
             await _context.SaveChangesAsync();
@@ -108,7 +106,7 @@ public class AdminAuthService : IAdminAuthService
         }
         catch (Exception ex)
         {
-            _logger.LogError("{RegeneratePasswordName}({UserRegisterUserName}) error: {ExMessage}", nameof(RegeneratePassword), userRegister.UserName, ex.Message, ex);
+            _logger.LogError(ex, "({UserRegisterUserName}) error: {ExMessage}", userRegister.UserName, ex.Message);
         }
     }
 
@@ -169,8 +167,7 @@ public class AdminAuthService : IAdminAuthService
             var token = new JwtSecurityToken(_config["Authorization:Issuer"],
                                              _config["Authorization:Audience"],
                                              claims,
-                                             expires: DateTime.Now.AddHours(24), // NOTE!!! Temporary!
-                                             //.AddMinutes(_settings.CurrentValue.TokenLifetimeMin),
+                                             expires: DateTime.Now.AddMinutes(_settings.Value.TokenLifetimeMin),
                                              signingCredentials: signCreds);
 
             return new GetTokenResponse
@@ -196,6 +193,7 @@ public class AdminAuthService : IAdminAuthService
             _logger.LogInformation($"{nameof(CheckToken)}() started...");
 
             var sign = _config["Authorization:Key"] ?? throw new InvalidOperationException();
+            
             var handler = new JwtSecurityTokenHandler();
             handler.ValidateToken(token,
                                   new TokenValidationParameters
@@ -213,7 +211,7 @@ public class AdminAuthService : IAdminAuthService
         }
         catch (Exception ex)
         {
-            _logger.LogError("{CheckTokenName}() error: {ExMessage}", nameof(CheckToken), ex.Message);
+            _logger.LogError(ex, "{CheckTokenName}() error: {ExMessage}", nameof(CheckToken), ex.Message);
 
             return false;
         }
@@ -222,6 +220,7 @@ public class AdminAuthService : IAdminAuthService
     /// <inheritdoc />
     public (bool result, string err) CheckAccess(UserLoginRequest login, bool checkEmailConfirmed)
     {
+        if (login is not { Password: not null, Email: not null }) return (true, string.Empty);
         var hashedPassword = HashUtils.GetHash(login.Password, _config["Authorization:Salt"]);
         var normalizedEmail = GetNormalized(login.Email);
         var user = _context.ApplicationUsers.FirstOrDefault(u => u.NormalizedEmail == normalizedEmail &&
@@ -233,13 +232,11 @@ public class AdminAuthService : IAdminAuthService
         return (true, string.Empty);
     }
 
-    public string? GetCurrentUserId()
-    {
-        return _httpContextAccessor.HttpContext?.User
-                                   .Claims
-                                   .FirstOrDefault(c => c.Type == "applicationUserId")
-                                   ?.Value;
-    }
+    public string? GetCurrentUserId() =>
+        _httpContextAccessor.HttpContext?.User
+            .Claims
+            .FirstOrDefault(c => c.Type == "applicationUserId")
+            ?.Value;
 
     private static void ValidateRequest(UserAddRequest userRegister)
     {
