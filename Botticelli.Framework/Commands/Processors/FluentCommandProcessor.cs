@@ -114,7 +114,7 @@ public abstract class FluentCommandProcessor<TCommand>(
     {
         if (Bot == null) return;
 
-        await Bot.SendMessageAsync(request, options, token);
+        await Bot.SendMessageAsync(request, options, token).ConfigureAwait(false);
     }
 
     protected abstract Task InnerProcess(Message message, CancellationToken token);
