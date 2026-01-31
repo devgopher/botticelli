@@ -50,7 +50,7 @@ public class PassAgent<THandler> : IBotticelliBusAgent<THandler>
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
     private void InnerProcess(THandler handler, CancellationToken token)

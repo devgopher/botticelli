@@ -1,5 +1,6 @@
 using Botticelli.Client.Analytics;
 using Botticelli.Framework.Commands.Validators;
+using Botticelli.Framework.Exceptions;
 using Botticelli.Shared.ValueObjects;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -25,6 +26,11 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
     {
     }
 
+    /// <summary>
+    /// IsSuccessful is mandatory property for setting up in processing
+    /// </summary>
+    public bool? IsSuccessful { get; set; }
+    
     private TimeSpan Timeout { get; } = TimeSpan.FromMinutes(10);
 
     public override async Task ProcessAsync(Message message, CancellationToken token)
@@ -60,7 +66,12 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
             Next.ChainIds.Add(message.ChainId.Value);
             if (_bot != null)
             {
+                // IsSuccessful must be defined in InnerProcess: true or false 
+                if (IsSuccessful == null)
+                    throw new BotException("IsSuccessful is null!");
+                
                 Next.SetBot(_bot);
+                
                 await Next.ProcessAsync(message, token);
             }
         }
