@@ -2,5 +2,5 @@
 
 public interface IFluentCommand : ICommand
 {
-    static string? Command { get; }
+    public static abstract string? CommandName { get; }
 }

@@ -18,20 +18,21 @@ public abstract class FluentCommandProcessor<TCommand>(
     : ICommandProcessor
     where TCommand : class, IFluentCommand
 {
-    protected IBot? Bot;
+    private IBot? Bot { get; set; }
+    protected readonly ILogger Logger = logger;
 
-    public abstract string CommandText { get; }
+    protected abstract string CommandText { get; }
 
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
-        logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: {message}",
+        Logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: {message}",
             nameof(FluentCommandProcessor<TCommand>),
             message.Uid,
             JsonSerializer.Serialize(message));
 
         if (!CheckCommand(message))
         {
-            logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: failed",
+            Logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: failed",
                 nameof(FluentCommandProcessor<TCommand>),
                 message.Uid);
 
@@ -40,7 +41,7 @@ public abstract class FluentCommandProcessor<TCommand>(
 
         if (await commandValidator.Validate(message))
         {
-            logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: command is valid",
+            Logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: command is valid",
                 nameof(FluentCommandProcessor<TCommand>),
                 message.Uid);
             SendMetric();
@@ -56,7 +57,7 @@ public abstract class FluentCommandProcessor<TCommand>(
                 }
             };
 
-            logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: command is NOT valid!",
+            Logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: command is NOT valid!",
                 nameof(FluentCommandProcessor<TCommand>),
                 message.Uid);
 
@@ -83,7 +84,7 @@ public abstract class FluentCommandProcessor<TCommand>(
 
     private void SendMetric()
     {
-        logger.LogDebug("{processorName}.SendMetric() : sending a metric...", nameof(FluentCommandProcessor<TCommand>));
+        Logger.LogDebug("{processorName}.SendMetric() : sending a metric...", nameof(FluentCommandProcessor<TCommand>));
         metricsProcessor.Process($"{GetType().Name.Replace("Processor", string.Empty)}Command",
             BotDataUtils.GetBotId()!);
     }
