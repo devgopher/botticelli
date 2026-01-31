@@ -30,6 +30,7 @@ public abstract class FluentCommandProcessor<TCommand>(
             message.Uid,
             JsonSerializer.Serialize(message));
 
+        
         if (!CheckCommand(message))
         {
             Logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: failed",
@@ -45,7 +46,13 @@ public abstract class FluentCommandProcessor<TCommand>(
                 nameof(FluentCommandProcessor<TCommand>),
                 message.Uid);
             SendMetric();
-            await InnerProcess(message, token);
+            
+            if(!string.IsNullOrWhiteSpace(message.Body) || !string.IsNullOrWhiteSpace(message.CallbackData))
+                await InnerProcess(message, token);
+            
+            if (message.Location != null) await InnerProcessLocation(message, token);
+            if (message.Poll != null) await InnerProcessPoll(message, token);
+            if (message.Contact != null) await InnerProcessContact(message, token);
         }
         else
         {
@@ -60,10 +67,6 @@ public abstract class FluentCommandProcessor<TCommand>(
             Logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: command is NOT valid!",
                 nameof(FluentCommandProcessor<TCommand>),
                 message.Uid);
-
-            if (message.Location != null) await InnerProcessLocation(message, token);
-            if (message.Poll != null) await InnerProcessPoll(message, token);
-            if (message.Contact != null) await InnerProcessContact(message, token);
         }
     }
 
@@ -78,7 +81,7 @@ public abstract class FluentCommandProcessor<TCommand>(
 
     private bool CheckCommand(Message message)
     {
-        return message.Body?.ToLowerInvariant().Trim() == CommandText.ToLowerInvariant().Trim();
+        return message.Body?.ToLowerInvariant().Trim() == CommandText.ToLowerInvariant().Trim() || message.Location != null || message.Poll != null || message.Contact != null;
     }
 
 
