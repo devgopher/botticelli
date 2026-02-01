@@ -77,6 +77,9 @@ public abstract class FluentCommandProcessor<TCommand>(
             message.Contact == null) 
             return false;
 
+        if (message.Location != null || message.Poll != null || message.Contact != null)
+            return true;
+        
         if (message.Body != null)
             return message.Body!.ToLowerInvariant().Trim().StartsWith(CommandText.ToLowerInvariant().Trim()); 
        
