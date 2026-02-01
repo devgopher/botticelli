@@ -56,14 +56,6 @@ public abstract class FluentCommandProcessor<TCommand>(
         }
         else
         {
-            var errMessageRequest = new SendMessageRequest
-            {
-                Message =
-                {
-                    Body = commandValidator.Help()
-                }
-            };
-
             Logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: command is NOT valid!",
                 nameof(FluentCommandProcessor<TCommand>),
                 message.Uid);
@@ -81,7 +73,14 @@ public abstract class FluentCommandProcessor<TCommand>(
 
     private bool CheckCommand(Message message)
     {
-        return message.Body?.ToLowerInvariant().Trim() == CommandText.ToLowerInvariant().Trim() || message.Location != null || message.Poll != null || message.Contact != null;
+        if (message.Body == null && message.CallbackData == null && message.Location == null && message.Poll == null &&
+            message.Contact == null) 
+            return false;
+
+        if (message.Body != null)
+            return message.Body!.ToLowerInvariant().Trim().StartsWith(CommandText.ToLowerInvariant().Trim()); 
+       
+        return message.CallbackData != null && message.CallbackData!.ToLowerInvariant().Trim().StartsWith(CommandText.ToLowerInvariant().Trim());
     }
 
 

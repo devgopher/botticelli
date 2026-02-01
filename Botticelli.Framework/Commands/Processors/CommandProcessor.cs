@@ -16,7 +16,7 @@ namespace Botticelli.Framework.Commands.Processors;
 public abstract class CommandProcessor<TCommand> : ICommandProcessor
         where TCommand : class, ICommand
 {
-    private readonly string _command;
+    protected readonly string _command;
     private readonly ICommandValidator<TCommand> _commandValidator;
     private readonly IValidator<Message> _messageValidator;
     private readonly MetricsProcessor? _metricsProcessor;
@@ -119,8 +119,23 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             else
             {
                 if (GetType().IsAssignableTo(typeof(CommandChainProcessor<TCommand>)))
-                    await ValidateAndProcess(message,
-                                             token);
+                {
+                    if (message.Type is Message.MessageType.Command or Message.MessageType.Extended)
+                    {
+                        var match = CommandUtils.ArgsCommandRegex.Matches(body)
+                            .FirstOrDefault();
+
+                        if (match == null) return;
+
+                        var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
+
+                        if (commandName != _command) return;
+                    }
+
+                    await ValidateAndProcess(message, token);
+                    
+                    SendMetric(MetricNames.CommandReceived);
+                }
             }
 
             if (message.Location != null) await InnerProcessLocation(message, token);
@@ -152,6 +167,8 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
         if (CommandUtils.SimpleCommandRegex.IsMatch(body) || CommandUtils.ArgsCommandRegex.IsMatch(body))
             message.Type = Message.MessageType.Command;
+        else if (!string.IsNullOrWhiteSpace(message.CallbackData))
+            message.Type = Message.MessageType.Extended;
         else
             message.Type = Message.MessageType.Messaging;
     }

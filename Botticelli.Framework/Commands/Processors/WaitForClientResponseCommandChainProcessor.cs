@@ -42,11 +42,17 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
         Classify(ref message);
         ChainIds.Add(message.ChainId.Value);
 
-        if (message.Type != Message.MessageType.Messaging)
+        if (message.Type == Message.MessageType.Command)
         {
             // sets input state to true
             ChainStateKeeper.SetState(message.ChatIds.Single(), true);
-            await base.ProcessAsync(message, token);
+
+            if (message.CallbackData != null &&
+                (message.CallbackData.ToLowerInvariant()).StartsWith("/" + _command.ToLowerInvariant()))
+                await base.ProcessAsync(message, token);
+            
+            if (message.Body != null && (message.Body.ToLowerInvariant()).StartsWith("/"+_command.ToLowerInvariant()))
+                await base.ProcessAsync(message, token);
 
             return;
         }
@@ -60,7 +66,7 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
 
         message.ProcessingArgs ??= new List<string>();
         message.ProcessingArgs.Add(message.Body!);
-
+        
         if (Next != null)
         {
             Next.ChainIds.Add(message.ChainId.Value);
@@ -72,7 +78,8 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
                 
                 Next.SetBot(_bot);
                 
-                await Next.ProcessAsync(message, token);
+                if (IsSuccessful.Value)
+                    await Next.ProcessAsync(message, token);
             }
         }
         else
