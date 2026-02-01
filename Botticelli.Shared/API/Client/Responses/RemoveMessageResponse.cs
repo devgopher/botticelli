@@ -2,12 +2,9 @@
 
 namespace Botticelli.Shared.API.Client.Responses;
 
-public class RemoveMessageResponse : BaseResponse<RemoveMessageResponse>
+public class RemoveMessageResponse(string? uid, string? techMessage)
+    : BaseResponse<RemoveMessageResponse>(uid, techMessage)
 {
-    public RemoveMessageResponse(string? uid, string? techMessage) : base(uid, techMessage)
-    {
-    }
-
     public string? MessageUid { get; set; }
 
     public MessageRemovedStatus MessageRemovedStatus { get; set; }

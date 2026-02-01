@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Http.Json;
 using Botticelli.Broadcasting.Dal;
 using Botticelli.Broadcasting.Settings;
@@ -31,7 +30,7 @@ public class BroadcastReceiver<TBot> : IHostedService
     private const int RetryCount = 3;
     private readonly BroadcastingSettings _settings;
     private readonly ILogger<BroadcastReceiver<TBot>> _logger;
-    public CancellationTokenSource CancellationTokenSource { get; private set; }
+    private CancellationTokenSource CancellationTokenSource { get; set; }
 
     public BroadcastReceiver(IBot bot,
                              BroadcastingContext context,

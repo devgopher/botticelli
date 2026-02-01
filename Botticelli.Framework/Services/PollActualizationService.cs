@@ -50,7 +50,7 @@ public class PollActualizationService<TRequest, TResponse>(
 
             var content = JsonContent.Create(request);
 
-            Logger.LogDebug("InnerSend request: {request}", request);
+            Logger.LogTrace("InnerSend request: {request}", request);
 
             var response = await httpClient.PostAsync(Url.Combine(ServerSettings.ServerUri, funcName),
                                                       content,
@@ -90,7 +90,7 @@ public class PollActualizationService<TRequest, TResponse>(
 
         if (_periodicTask.IsFaulted) return;
 
-        Logger.LogTrace("{where} sent for bot: {botId}", typeof(TRequest).Name, BotId);
+        Logger.LogInformation("{request} sent for bot: {botId}", typeof(TRequest).Name, BotId);
     }
 
     private async Task<TResponse> Process(TRequest request, CancellationToken ct)

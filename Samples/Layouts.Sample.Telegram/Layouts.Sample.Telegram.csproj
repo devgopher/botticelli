@@ -4,7 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>0.8.0</Version>
+		<Version>0.9.0</Version>
 		<Company>Botticelli</Company>
 		<Copyright>Igor Evdokimov</Copyright>
 		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
@@ -14,7 +14,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NLog.Extensions.Logging" Version="5.4.0"/>
+		<PackageReference Include="NLog.Extensions.Logging" Version="6.0.5"/>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -24,6 +24,10 @@
 		<ProjectReference Include="..\..\Botticelli.Locations.Telegram\Botticelli.Locations.Telegram.csproj"/>
 		<ProjectReference Include="..\..\Botticelli.Locations\Botticelli.Locations.csproj"/>
 		<ProjectReference Include="..\Messaging.Sample.Common\Messaging.Sample.Common.csproj"/>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Filename=database.db-shm" />
 	</ItemGroup>
 
 

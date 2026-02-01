@@ -35,7 +35,7 @@ public class AiHandler : IHandler<SendMessageRequest, SendMessageResponse>
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error while handling a message from AI backend: {ExMessage}", ex.Message, ex);
+            _logger.LogError(ex, "Error while handling a message from AI backend: {ExMessage}", ex.Message);
         }
     }
 }

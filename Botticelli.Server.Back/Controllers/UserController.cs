@@ -25,6 +25,10 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
                                                         Random.Shared.Next(settings.CurrentValue.PasswordMinLength, 
                                                                            settings.CurrentValue.PasswordMaxLength));
 
+    private readonly IUserService _userService = userService;
+    private readonly IMapper _mapper = mapper;
+    private readonly IPasswordSender _passwordSender = passwordSender;
+
     /// <summary>
     ///     Does system contain any users?
     /// </summary>
@@ -34,7 +38,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
     [AllowAnonymous]
     public async Task<ObjectResult> HasUsersAsync(CancellationToken token)
     {
-        return Ok(await userService.HasUsers(token));
+        return Ok(await _userService.HasUsers(token));
     }
 
     /// <summary>
@@ -54,10 +58,10 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
             request.Email.NotNull();
 
             var password = _password.Next();
-            var mapped = mapper.Map<UserAddRequest>(request);
+            var mapped = _mapper.Map<UserAddRequest>(request);
             mapped.Password = password;
 
-            if (await userService.CheckAndAddAsync(mapped, token)) await passwordSender.SendPassword(request.Email!, password, token);
+            if (await _userService.CheckAndAddAsync(mapped, token)) await _passwordSender.SendPassword(request.Email!, password, token);
         }
         catch (Exception ex)
         {
@@ -84,11 +88,11 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
             passwordRequest.UserName.NotNull();
             passwordRequest.Email.NotNull();
 
-            var mapped = mapper.Map<UserUpdateRequest>(passwordRequest);
+            var mapped = _mapper.Map<UserUpdateRequest>(passwordRequest);
             mapped.Password = _password.Next();
 
-            await userService.UpdateAsync(mapped, token);
-            await passwordSender.SendPassword(passwordRequest.Email!, mapped.Password, token);
+            await _userService.UpdateAsync(mapped, token);
+            await _passwordSender.SendPassword(passwordRequest.Email!, mapped.Password, token);
         }
         catch (Exception ex)
         {
@@ -110,7 +114,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
     {
         try
         {
-            await userService.AddAsync(request, true, token);
+            await _userService.AddAsync(request, true, token);
         }
         catch (Exception ex)
         {
@@ -155,7 +159,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
     {
         try
         {
-            return new ActionResult<UserGetResponse>(await userService.GetAsync(request, token));
+            return new ActionResult<UserGetResponse>(await _userService.GetAsync(request, token));
         }
         catch (Exception ex)
         {
@@ -189,7 +193,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
     {
         try
         {
-            await userService.UpdateAsync(request, token);
+            await _userService.UpdateAsync(request, token);
 
             return Ok();
         }
@@ -214,7 +218,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
 
             if (request.UserName == user) return BadRequest("You can't delete yourself!");
 
-            await userService.DeleteAsync(request, token);
+            await _userService.DeleteAsync(request, token);
 
             return Ok();
         }
@@ -240,7 +244,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
             request.Email.NotNull();
             request.Token.NotNull();
 
-            await userService.ConfirmCodeAsync(request.Email!, request.Token!, token);
+            await _userService.ConfirmCodeAsync(request.Email!, request.Token!, token);
 
             return Ok();
         }

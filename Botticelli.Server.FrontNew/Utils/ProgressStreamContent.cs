@@ -11,8 +11,7 @@ public class ProgressStreamContent(Stream content, Action<long, long> progress) 
         var totalBytes = Headers.ContentLength ?? -1;
         var buffer = new byte[BufferSize];
         long totalRead = 0;
-        int bytesRead;
-
+        int bytesRead; 
         var contentStream = await ReadAsStreamAsync();
         contentStream.Seek(0, SeekOrigin.Begin);
         while ((bytesRead = await contentStream.ReadAsync(buffer)) > 0)

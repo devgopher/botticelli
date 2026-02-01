@@ -4,7 +4,7 @@ namespace Botticelli.Server.Back.Services.Broadcasting;
 
 /// <summary>
 ///     Broadcasting service.
-///     A lifecycle of a broadcasted message: create => receive (poll model) => delete when received
+///     A lifecycle of a broadcast message: create => receive (poll model) => delete when received
 /// </summary>
 public interface IBroadcastService
 {

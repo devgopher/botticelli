@@ -1,17 +1,18 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
+﻿using Botticelli.Audio.Convertors;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
 namespace Botticelli.Audio.Tests;
 
 [TestFixture]
-public class UniversalLowQualityConvertorTests
+public class UniversalQualityConvertorTests
 {
     private readonly IConvertor _convertor;
 
-    public UniversalLowQualityConvertorTests()
+    public UniversalQualityConvertorTests()
     {
         IAnalyzer analyzer = new InputAnalyzer();
-        _convertor = new UniversalLowQualityConvertor(analyzer, new NullLogger<UniversalLowQualityConvertor>());
+        _convertor = new UniversalQualityConvertor(analyzer, new NullLogger<UniversalQualityConvertor>());
     }
 
     [Test]

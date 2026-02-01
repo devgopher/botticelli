@@ -4,7 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>0.8.0</Version>
+		<Version>0.9.0</Version>
 		<Title>Botticelli.Framework</Title>
 		<Authors>BotticelliBots</Authors>
 		<PackageIcon>new_logo_compact.png</PackageIcon>
@@ -12,7 +12,7 @@
 		<Copyright>BotticelliBots</Copyright>
 		<PackageProjectUrl>https://botticellibots.com</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/devgopher/botticelli</RepositoryUrl>
-		<PackageTags>telegram, bots, botticelli, vk, facebook, wechat, whatsapp</PackageTags>
+		<PackageTags>telegram, bots, botticelli, facebook, whatsapp</PackageTags>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
@@ -41,14 +41,14 @@
 	<ItemGroup>
 		<PackageReference Include="EasyCaching.Core" Version="1.9.2"/>
 		<PackageReference Include="EasyCaching.InMemory" Version="1.9.2"/>
-		<PackageReference Include="MediatR" Version="12.4.1"/>
+		<PackageReference Include="MediatR" Version="13.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0"/>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1"/>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2"/>
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1"/>
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1"/>
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2"/>
-		<PackageReference Include="NLog.Extensions.Logging" Version="5.4.0"/>
+		<PackageReference Include="NLog.Extensions.Logging" Version="6.0.5" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\logo.jpg">

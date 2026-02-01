@@ -6,6 +6,7 @@ using Botticelli.Locations.Options;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
+using Nominatim.API.Address;
 using NUnit.Framework;
 using Location = Botticelli.Locations.Models.Location;
 
@@ -21,8 +22,10 @@ public class OsmLocationProviderTest
     {
         var reverseGeocoder = new ReverseGeocoderMock();
         var forwardGeocoder = new ForwardGeocoderMock();
+        var addressSearcher = new AddressSearcherMock();
+        
         var options = Mock.Of<IOptionsSnapshot<LocationsProcessorOptions>>();
-        _locationProvider = new OsmLocationProvider(reverseGeocoder, forwardGeocoder, options);
+        _locationProvider = new OsmLocationProvider(reverseGeocoder, forwardGeocoder, addressSearcher, options);
     }
 
     [Test]

@@ -6,6 +6,7 @@ public interface ISpeaker
     ///     Speaking
     /// </summary>
     /// <param name="markedText">SSML-marked text</param>
+    /// <param name="voice">Voice type</param>
     /// <param name="lang">Language</param>
     /// <param name="token">Cancellation token</param>
     /// <returns></returns>

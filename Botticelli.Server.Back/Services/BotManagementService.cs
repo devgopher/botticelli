@@ -8,17 +8,12 @@ namespace Botticelli.Server.Back.Services;
 /// <summary>
 ///     This class is intended for managing bots state (start/ stop/ block/ remove)
 /// </summary>
-public class BotManagementService : IBotManagementService
+public class BotManagementService(
+        ServerDataContext context,
+        ILogger<BotManagementService> logger) : IBotManagementService
 {
-    private readonly ServerDataContext _context;
-    private readonly ILogger<BotManagementService> _logger;
-
-    public BotManagementService(ServerDataContext context,
-                                ILogger<BotManagementService> logger)
-    {
-        _context = context;
-        _logger = logger;
-    }
+    private readonly ServerDataContext _context = context;
+    private readonly ILogger<BotManagementService> _logger = logger;
 
     /// <summary>
     ///     Registers a bot if it's not registered

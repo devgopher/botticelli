@@ -4,7 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>0.8.0</Version>
+		<Version>0.9.0</Version>
 		<Company>Botticelli</Company>
 		<Copyright>Igor Evdokimov</Copyright>
 		<PackageProjectUrl>https://github.com/devgopher/botticelli</PackageProjectUrl>
@@ -18,7 +18,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="NLog.Extensions.Logging" Version="5.4.0"/>
+		<PackageReference Include="NLog.Extensions.Logging" Version="6.0.5"/>
 	</ItemGroup>
 
 	<ItemGroup>

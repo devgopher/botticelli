@@ -1,11 +1,6 @@
 ﻿namespace Botticelli.Shared.API.Client.Requests;
 
-public class DeleteMessageRequest : BaseRequest<DeleteMessageRequest>
+public class DeleteMessageRequest(string? uid, string chatId) : BaseRequest<DeleteMessageRequest>(uid)
 {
-    public DeleteMessageRequest(string? uid, string chatId) : base(uid)
-    {
-        ChatId = chatId;
-    }
-
-    public string? ChatId { get; set; }
+    public string? ChatId { get; set; } = chatId;
 }
