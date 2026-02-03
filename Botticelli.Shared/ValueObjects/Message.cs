@@ -9,6 +9,9 @@ public class Message()
     /// <summary>
     ///     Type of message
     /// </summary>
+    /// <summary>
+    ///     Type of message
+    /// </summary>
     public enum MessageType
     {
         /// <summary>
@@ -20,12 +23,28 @@ public class Message()
         ///     A command message
         /// </summary>
         Command,
+    
+        /// <summary>
+        ///     A message containing location information
+        /// </summary>
+        Location,
+    
+        /// <summary>
+        ///     A message that includes contact information
+        /// </summary>
+        Contact,
+    
+        /// <summary>
+        ///     A message involving a poll for gathering opinions
+        /// </summary>
+        Poll,
 
         /// <summary>
         ///     A specific type with some type extensions
         /// </summary>
         Extended
     }
+
 
     public Message(string uid) : this()
     {

@@ -2,6 +2,7 @@
 using Botticelli.Bot.Interfaces.Processors;
 using Botticelli.Bot.Utils;
 using Botticelli.Client.Analytics;
+using Botticelli.Framework.Commands.Utils;
 using Botticelli.Framework.Commands.Validators;
 using Botticelli.Framework.SendOptions;
 using Botticelli.Interfaces;
@@ -21,8 +22,35 @@ public abstract class FluentCommandProcessor<TCommand>(
     private IBot? Bot { get; set; }
     protected readonly ILogger Logger = logger;
 
+    protected abstract Message.MessageType MessageType { get; }
+
     protected abstract string CommandText { get; }
 
+    protected static void Classify(ref Message message)
+    {
+        var body = GetBody(message);
+
+        if (CommandUtils.SimpleCommandRegex.IsMatch(body) || CommandUtils.ArgsCommandRegex.IsMatch(body))
+            message.Type = Message.MessageType.Command;
+        else if (!string.IsNullOrWhiteSpace(message.CallbackData))
+            message.Type = Message.MessageType.Extended;
+        else if (message.Poll != null)
+            message.Type = Message.MessageType.Poll;
+        else if (message.Contact != null)
+            message.Type = Message.MessageType.Contact;
+        else if (message.Location != null)
+            message.Type = Message.MessageType.Location;
+        else
+            message.Type = Message.MessageType.Messaging;
+    }
+
+    private static string GetBody(Message message)
+    {
+        return !string.IsNullOrWhiteSpace(message.CallbackData) ? message.CallbackData
+            : !string.IsNullOrWhiteSpace(message.Body) ? message.Body
+            : string.Empty;
+    }
+    
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
         Logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: {message}",
@@ -30,6 +58,7 @@ public abstract class FluentCommandProcessor<TCommand>(
             message.Uid,
             JsonSerializer.Serialize(message));
 
+        Classify(ref message);
         
         if (!CheckCommand(message))
         {
@@ -46,9 +75,8 @@ public abstract class FluentCommandProcessor<TCommand>(
                             nameof(FluentCommandProcessor<TCommand>),
                             message.Uid);
             SendMetric();
-            
-            if(!string.IsNullOrWhiteSpace(message.Body) || !string.IsNullOrWhiteSpace(message.CallbackData))
-                await InnerProcess(message, token);
+
+            await InnerProcess(message, token);
             
             if (message.Location != null) await InnerProcessLocation(message, token);
             if (message.Poll != null) await InnerProcessPoll(message, token);
@@ -73,17 +101,22 @@ public abstract class FluentCommandProcessor<TCommand>(
 
     private bool CheckCommand(Message message)
     {
+        if (message.Type != MessageType)
+            return false;
+            
+        if (string.IsNullOrWhiteSpace(message.Body) && string.IsNullOrWhiteSpace(message.CallbackData) &&
+            (message.Location != null || message.Poll != null || message.Contact != null))
+            return true;
+
         if (message.Body == null && message.CallbackData == null && message.Location == null && message.Poll == null &&
-            message.Contact == null) 
+            message.Contact == null)
             return false;
 
-        if (message.Location != null || message.Poll != null || message.Contact != null)
-            return true;
-        
         if (message.Body != null)
-            return message.Body!.ToLowerInvariant().Trim().StartsWith(CommandText.ToLowerInvariant().Trim()); 
-       
-        return message.CallbackData != null && message.CallbackData!.ToLowerInvariant().Trim().StartsWith(CommandText.ToLowerInvariant().Trim());
+            return message.Body!.ToLowerInvariant().Trim().StartsWith(CommandText.ToLowerInvariant().Trim());
+
+        return message.CallbackData != null && message.CallbackData!.ToLowerInvariant().Trim()
+            .StartsWith(CommandText.ToLowerInvariant().Trim());
     }
 
 

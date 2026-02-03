@@ -169,6 +169,12 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
             message.Type = Message.MessageType.Command;
         else if (!string.IsNullOrWhiteSpace(message.CallbackData))
             message.Type = Message.MessageType.Extended;
+        else if (message.Poll != null)
+            message.Type = Message.MessageType.Poll;
+        else if (message.Contact != null)
+            message.Type = Message.MessageType.Contact;
+        else if (message.Location != null)
+            message.Type = Message.MessageType.Location;
         else
             message.Type = Message.MessageType.Messaging;
     }
