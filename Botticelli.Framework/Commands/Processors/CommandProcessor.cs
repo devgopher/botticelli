@@ -16,7 +16,7 @@ namespace Botticelli.Framework.Commands.Processors;
 public abstract class CommandProcessor<TCommand> : ICommandProcessor
         where TCommand : class, ICommand
 {
-    protected readonly string _command;
+    protected readonly string Command;
     private readonly ICommandValidator<TCommand> _commandValidator;
     private readonly IValidator<Message> _messageValidator;
     private readonly MetricsProcessor? _metricsProcessor;
@@ -30,7 +30,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         Logger = logger;
         _commandValidator = commandValidator;
         _messageValidator = messageValidator;
-        _command = GetOldFashionedCommandName(typeof(TCommand).Name);
+        Command = GetOldFashionedCommandName(typeof(TCommand).Name);
     }
 
     protected CommandProcessor(ILogger logger,
@@ -42,7 +42,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
         _commandValidator = commandValidator;
         _metricsProcessor = metricsProcessor;
         _messageValidator = messageValidator;
-        _command = GetOldFashionedCommandName(typeof(TCommand).Name);
+        Command = GetOldFashionedCommandName(typeof(TCommand).Name);
     }
 
     public virtual async Task ProcessAsync(Message message, CancellationToken token)
@@ -95,7 +95,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
                 var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
-                if (commandName != _command) return;
+                if (commandName != Command) return;
 
                 await ValidateAndProcess(message, token);
 
@@ -110,7 +110,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
                 var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
-                if (commandName != _command) return;
+                if (commandName != Command) return;
 
                 await ValidateAndProcess(message, token);
 
@@ -129,7 +129,7 @@ public abstract class CommandProcessor<TCommand> : ICommandProcessor
 
                         var commandName = GetOldFashionedCommandName(match.Groups[1].Value);
 
-                        if (commandName != _command) return;
+                        if (commandName != Command) return;
                     }
 
                     await ValidateAndProcess(message, token);

@@ -48,10 +48,10 @@ public abstract class WaitForClientResponseCommandChainProcessor<TInputCommand> 
             ChainStateKeeper.SetState(message.ChatIds.Single(), true);
 
             if (message.CallbackData != null &&
-                (message.CallbackData.ToLowerInvariant()).StartsWith("/" + _command.ToLowerInvariant()))
+                (message.CallbackData.ToLowerInvariant()).StartsWith($"/{Command.ToLowerInvariant()}"))
                 await base.ProcessAsync(message, token);
             
-            if (message.Body != null && (message.Body.ToLowerInvariant()).StartsWith("/"+_command.ToLowerInvariant()))
+            if (message.Body != null && (message.Body.ToLowerInvariant()).StartsWith($"/{Command.ToLowerInvariant()}"))
                 await base.ProcessAsync(message, token);
 
             return;
