@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Botticelli.AI.AIProvider;
 
-public abstract class ChatGptProvider<TSettings> : IAiProvider
+public abstract class OpenAiProvider<TSettings> : IAiProvider
         where TSettings : AiSettings
 {
     private readonly IHttpClientFactory? _factory;
@@ -18,7 +18,7 @@ public abstract class ChatGptProvider<TSettings> : IAiProvider
     protected readonly ILogger Logger;
     protected readonly IOptions<TSettings> Settings;
 
-    protected ChatGptProvider(IOptions<TSettings> settings,
+    protected OpenAiProvider(IOptions<TSettings> settings,
                               IHttpClientFactory? factory,
                               ILogger logger,
                               IBusClient? bus,

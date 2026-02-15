@@ -13,8 +13,8 @@ using Usage = Botticelli.AI.ChatGpt.Message.ChatGpt.Usage;
 namespace Botticelli.AI.Test.AIProvider;
 
 [TestFixture]
-[TestOf(typeof(ChatGptProvider))]
-public class ChatGptProviderTest : BaseAiProviderTest
+[TestOf(typeof(OpenAiProvider))]
+public class OpenAiProviderTest : BaseAiProviderTest
 {
     [SetUp]
     public void StartMockServer()
@@ -53,9 +53,9 @@ public class ChatGptProviderTest : BaseAiProviderTest
                                    .WithStatusCode(200)
                                    .WithBody(JsonSerializer.Serialize(responseMessage)));
 
-        AiProvider = new ChatGptProvider(new OptionsMock<GptSettings>(ChatGptSettings),
+        AiProvider = new OpenAiProvider(new OptionsMock<GptSettings>(ChatGptSettings),
                                          ClientFactory,
-                                         LoggerMocks.CreateConsoleLogger<ChatGptProvider>(),
+                                         LoggerMocks.CreateConsoleLogger<OpenAiProvider>(),
                                          BusClient,
                                          Validator);
     }

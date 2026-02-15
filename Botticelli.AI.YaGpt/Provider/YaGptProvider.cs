@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace Botticelli.AI.YaGpt.Provider;
 
-public class YaGptProvider : ChatGptProvider<YaGptSettings>
+public class YaGptProvider : OpenAiProvider<YaGptSettings>
 {
     private const string SystemRole = "system";
     private const string UserRole = "user";

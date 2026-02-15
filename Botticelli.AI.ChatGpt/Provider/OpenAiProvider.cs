@@ -14,11 +14,11 @@ using Newtonsoft.Json;
 
 namespace Botticelli.AI.ChatGpt.Provider;
 
-public class ChatGptProvider : ChatGptProvider<GptSettings>
+public class OpenAiProvider : OpenAiProvider<GptSettings>
 {
-    public ChatGptProvider(IOptions<GptSettings> gptSettings,
+    public OpenAiProvider(IOptions<GptSettings> gptSettings,
                            IHttpClientFactory? factory,
-                           ILogger<ChatGptProvider> logger,
+                           ILogger<OpenAiProvider> logger,
                            IBusClient? bus,
                            IValidator<AiMessage>? messageValidator) : base(gptSettings,
                                                                            factory,

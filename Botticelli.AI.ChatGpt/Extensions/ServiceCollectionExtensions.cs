@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
             s.StreamGeneration = chatGptSettings.StreamGeneration;
         });
 
-        services.AddSingleton<IAiProvider, ChatGptProvider>();
+        services.AddSingleton<IAiProvider, OpenAiProvider>();
 
         return services;
     }
