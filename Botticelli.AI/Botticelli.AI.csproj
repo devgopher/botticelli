@@ -35,8 +35,5 @@
 		<ProjectReference Include="..\Botticelli.Interfaces\Botticelli.Interfaces.csproj"/>
 		<ProjectReference Include="..\Botticelli.Shared\Botticelli.Shared.csproj"/>
 	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Agents\" />
-	</ItemGroup>
 
 </Project>
