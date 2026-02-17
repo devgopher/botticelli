@@ -1,11 +1,11 @@
 using System.Net.Http.Headers;
+using Botticelli.AI.Agents.Models;
 using Botticelli.AI.Message;
-using Botticelli.AI.Settings;
 using Botticelli.Bot.Interfaces.Client;
+using Botticelli.Shared.API;
 using Botticelli.Shared.API.Client.Responses;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Botticelli.AI.Agents;
 
@@ -14,20 +14,19 @@ namespace Botticelli.AI.Agents;
 /// with AI agents. This class serves as an abstract base for specific agent providers,
 /// encapsulating common functionalities such as message validation, logging, and settings management.
 /// </summary>
-public abstract class BasicAgentProvider<TSettings>(
-    IOptions<TSettings> settings,
-    IHttpClientFactory factory,
+public abstract class BasicAgentProvider(
+    HttpClient client,
     ILogger logger,
     IBusClient bus,
     IValidator<AiMessage> messageValidator)
     : IAgentProvider
-    where TSettings : AgentSettings
 {
+    public HttpClient Client { get; } = client;
+
     /// <summary>
     /// Sends an AI message asynchronously to the designated AI agent for processing.
     /// </summary>
     public async Task SendAsync(AiMessage inputMessage, CancellationToken token)
-
     {
         await ValidateMessage(inputMessage, token);
 
@@ -35,19 +34,24 @@ public abstract class BasicAgentProvider<TSettings>(
         {
             logger.LogDebug("{SendAsyncName}({MessageChatIds}) started", nameof(SendAsync), inputMessage.ChatIds);
 
-            using var client = GetClient();
+            var response = await GetAgentResponse(inputMessage, token);
 
-            var response = await GetAgentResponse(inputMessage, token, client);
+            var result = inputMessage.Copy();
 
-            if (response.IsSuccessStatusCode)
+            result.Body = response.Output.FirstOrDefault(o => o.Content != null && o.Content.Count != 0)
+                ?.Content
+                ?.FirstOrDefault(c => !string.IsNullOrEmpty(c.Text))
+                ?.Text;
+            
+            result.CallbackData = null;
+            result.Attachments = null;
+
+            await bus.SendResponse(new SendMessageResponse(inputMessage.Uid)
             {
-                await ProcessAgentResponse(inputMessage, token, response);
-            }
-            else
-            {
-                var reason = await response.Content.ReadAsStringAsync(token);
-                await SendErrorGptResponse(inputMessage, reason, token);
-            }
+                MessageUid = inputMessage.Uid,
+                MessageSentStatus = MessageSentStatus.Ok,
+                Message = result
+            }, token);
 
             logger.LogDebug("{SendAsyncName}({MessageChatIds}) finished", nameof(SendAsync), inputMessage.ChatIds);
         }
@@ -69,10 +73,7 @@ public abstract class BasicAgentProvider<TSettings>(
                                    {
                                        ChatIds = message.ChatIds,
                                        Subject = message.Subject,
-                                       Body = $"Error getting a response from {AiName}!",
-                                       Attachments = null,
-                                       From = null,
-                                       ForwardedFrom = null
+                                       Body = $"Error getting a response from {AiName}!"
                                    }
                                },
                                token);
@@ -85,41 +86,6 @@ public abstract class BasicAgentProvider<TSettings>(
         await messageValidator.ValidateAsync(message, token);
     }
 
-    private HttpClient GetClient()
-    {
-        var client = factory.CreateClient();
 
-        client.BaseAddress = new Uri(settings.Value.Url);
-        if (settings.Value.AuthMethod != null)
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue(settings.Value.AuthMethod, settings.Value.ApiKey);
-
-        return client;
-    }
-
-    protected virtual async Task SendErrorGptResponse(AiMessage message, string reason, CancellationToken token)
-    {
-        await bus.SendResponse(new SendMessageResponse(message.Uid)
-                               {
-                                   Message = new Shared.ValueObjects.Message(message.Uid)
-                                   {
-                                       ChatIds = message.ChatIds,
-                                       Subject = message.Subject,
-                                       Body = $"Error getting a response from {AiName}: {reason}!",
-                                       Attachments = null,
-                                       From = null,
-                                       ForwardedFrom = null,
-                                       ReplyToMessageUid = message.ReplyToMessageUid
-                                   }
-                               },
-                               token);
-    }
-
-    protected abstract Task ProcessAgentResponse(AiMessage message,
-                                               CancellationToken token,
-                                               HttpResponseMessage response);
-
-    protected abstract Task<HttpResponseMessage> GetAgentResponse(AiMessage message,
-                                                                CancellationToken token,
-                                                                HttpClient client);
+    protected abstract Task<AssistantResponse> GetAgentResponse(AiMessage message, CancellationToken token);
 }

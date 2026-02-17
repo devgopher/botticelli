@@ -1,5 +1,6 @@
 ﻿using Botticelli.AI.AIProvider;
 using Botticelli.AI.Exceptions;
+using Botticelli.AI.YaGpt.Agents;
 using Botticelli.AI.YaGpt.Provider;
 using Botticelli.AI.YaGpt.Settings;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,7 @@ public static class ServiceCollectionExtensions
     {
         services.Configure<YaGptSettings>(config.GetSection(nameof(YaGptSettings)));
         services.AddSingleton<IAiProvider, YaGptProvider>();
+        services.AddHttpClient<YandexAgentProvider>();
 
         return services;
     }
