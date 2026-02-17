@@ -9,5 +9,5 @@ public interface IAgentProvider
 {
     Task SendAsync(AiMessage inputMessage, CancellationToken token);
     
-    public abstract string AiName { get; }
+    public string AiName { get; }
 }

@@ -63,7 +63,7 @@ public abstract class BasicAgentProvider(
 
     public abstract string AiName { get; }
 
-    protected virtual async Task SendErrorResponse(AiMessage message, CancellationToken token, Exception ex)
+    private async Task SendErrorResponse(AiMessage message, CancellationToken token, Exception ex)
     {
         logger.LogError(ex, ex.Message);
         await bus.SendResponse(new SendMessageResponse(message.Uid)
@@ -79,7 +79,7 @@ public abstract class BasicAgentProvider(
                                token);
     }
 
-    protected virtual async Task ValidateMessage(AiMessage message, CancellationToken token)
+    private async Task ValidateMessage(AiMessage message, CancellationToken token)
     {
         logger.LogError($"{nameof(SendAsync)}() body is null or empty!");
 
