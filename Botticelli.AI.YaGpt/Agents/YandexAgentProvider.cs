@@ -15,11 +15,17 @@ using Microsoft.Extensions.Options;
 
 namespace Botticelli.AI.YaGpt.Agents;
 
+/// <summary>
+/// Agent provider that communicates with the Yandex GPT (YaGpt) API.
+/// Sends user messages as assistant requests and maps assistant responses back to bus messages.
+/// </summary>
 public class YandexAgentProvider : BasicAgentProvider
 {
+    /// <inheritdoc />
     public override string AiName => "YaGpt";
+
     private const string ContentType = "application/json";
-    
+
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -30,6 +36,14 @@ public class YandexAgentProvider : BasicAgentProvider
     private readonly IOptions<AgentSettings> _settings;
     private readonly HttpClient _client;
 
+    /// <summary>
+    /// Creates a new Yandex GPT agent provider with the given settings and dependencies.
+    /// </summary>
+    /// <param name="settings">Agent configuration (URL, model, temperature, max tokens).</param>
+    /// <param name="client">HTTP client for API calls.</param>
+    /// <param name="logger">Logger instance.</param>
+    /// <param name="bus">Bus client for sending responses.</param>
+    /// <param name="messageValidator">Validator for incoming AI messages.</param>
     public YandexAgentProvider(IOptions<AgentSettings> settings,
         HttpClient client,
         ILogger logger,
@@ -43,6 +57,7 @@ public class YandexAgentProvider : BasicAgentProvider
         _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(ContentType));
     }
 
+    /// <inheritdoc />
     protected override async Task<AssistantResponse> GetAgentResponse(AiMessage message, CancellationToken token)
     {
         try

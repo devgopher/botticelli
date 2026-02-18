@@ -21,6 +21,9 @@ public abstract class BasicAgentProvider(
     IValidator<AiMessage> messageValidator)
     : IAgentProvider
 {
+    /// <summary>
+    /// HTTP client used for outbound requests to the AI agent API.
+    /// </summary>
     public HttpClient Client { get; } = client;
 
     /// <summary>
@@ -61,6 +64,9 @@ public abstract class BasicAgentProvider(
         }
     }
 
+    /// <summary>
+    /// Display name of the AI provider; used in logs and user-facing error messages.
+    /// </summary>
     public abstract string AiName { get; }
 
     private async Task SendErrorResponse(AiMessage message, CancellationToken token, Exception ex)
@@ -87,5 +93,11 @@ public abstract class BasicAgentProvider(
     }
 
 
+    /// <summary>
+    /// Calls the concrete AI agent API and returns the deserialized assistant response.
+    /// </summary>
+    /// <param name="message">The user message to send.</param>
+    /// <param name="token">Cancellation token.</param>
+    /// <returns>The assistant response from the AI backend.</returns>
     protected abstract Task<AssistantResponse> GetAgentResponse(AiMessage message, CancellationToken token);
 }
