@@ -10,7 +10,7 @@ rm -rf botticelli/
 git clone https://github.com/devgopher/botticelli.git
 
 pushd botticelli/ || exit
-git checkout release/0.7
+git checkout dev/0.9
 git pull
 
 pushd Botticelli.Server.FrontNew || exit
