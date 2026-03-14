@@ -19,13 +19,12 @@ public abstract class FluentCommandProcessor<TCommand>(
     where TCommand : class, IFluentCommand
 {
     private IBot? Bot { get; set; }
-    protected readonly ILogger Logger = logger;
 
     protected abstract string CommandText { get; }
 
     public async Task ProcessAsync(Message message, CancellationToken token)
     {
-        Logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: {message}",
+        logger.LogDebug("{ProcessorName}.ProcessAsync() : processing a message {MessageUid}: {Message}",
             nameof(FluentCommandProcessor<TCommand>),
             message.Uid,
             JsonSerializer.Serialize(message));
@@ -56,15 +55,17 @@ public abstract class FluentCommandProcessor<TCommand>(
         }
         else
         {
-            var errMessageRequest = new SendMessageRequest
+            var errorMessageRequest = new SendMessageRequest
             {
                 Message =
                 {
                     Body = commandValidator.Help()
                 }
             };
+            
+            await SendMessage(errorMessageRequest, token);
 
-            Logger.LogDebug("{processorName}.ProcessAsync() : processing a message {messageUid}: command is NOT valid!",
+            logger.LogDebug("{ProcessorName}.ProcessAsync() : processing a message {MessageUid}: command is NOT valid!",
                 nameof(FluentCommandProcessor<TCommand>),
                 message.Uid);
         }
@@ -87,7 +88,7 @@ public abstract class FluentCommandProcessor<TCommand>(
 
     private void SendMetric()
     {
-        Logger.LogDebug("{processorName}.SendMetric() : sending a metric...", nameof(FluentCommandProcessor<TCommand>));
+        logger.LogDebug("{ProcessorName}.SendMetric() : sending a metric...", nameof(FluentCommandProcessor<TCommand>));
         metricsProcessor.Process($"{GetType().Name.Replace("Processor", string.Empty)}Command",
             BotDataUtils.GetBotId()!);
     }
@@ -117,5 +118,13 @@ public abstract class FluentCommandProcessor<TCommand>(
         await Bot.SendMessageAsync(request, options, token).ConfigureAwait(false);
     }
 
+    private async Task SendMessage(SendMessageRequest request,
+        CancellationToken token)
+    {
+        if (Bot == null) return;
+
+        await Bot.SendMessageAsync(request, token).ConfigureAwait(false);
+    }
+    
     protected abstract Task InnerProcess(Message message, CancellationToken token);
 }
