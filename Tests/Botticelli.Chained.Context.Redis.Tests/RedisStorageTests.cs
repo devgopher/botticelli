@@ -13,7 +13,7 @@ public class RedisStorageTests
 {
     private Mock<IDatabase> _mockDatabase;
     private RedisStorage<string, string> _redisStorage;
-    private Dictionary<string, string> _storage;
+    private readonly Dictionary<string, string> _storage = new();
     
     [SetUp]
     public void SetUp()
