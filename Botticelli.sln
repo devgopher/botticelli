@@ -185,7 +185,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Locations.Telegr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandChain.Sample.Telegram", "Samples\CommandChain.Sample.Telegram\CommandChain.Sample.Telegram.csproj", "{E33D4F38-48D2-44C7-A56B-4CE080A5B593}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.Test", "Botticelli.AI.Test\Botticelli.AI.Test.csproj", "{332A0B08-B1C9-4321-AD31-B2102B95AFEA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.AI.Tests", "Botticelli.AI.Tests\Botticelli.AI.Tests.csproj", "{332A0B08-B1C9-4321-AD31-B2102B95AFEA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Botticelli.Bot.Dal", "Botticelli.Bot.Dal\Botticelli.Bot.Dal.csproj", "{1A6572FD-D274-4700-901F-6F9F7A49F57B}"
 EndProject

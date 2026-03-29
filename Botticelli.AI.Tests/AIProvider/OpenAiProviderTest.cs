@@ -75,4 +75,17 @@ public class OpenAiProviderTest : BaseAiProviderTest
     {
         await InnerSendAsyncTest(query);
     }
+
+    [Test]
+    public async Task SendAsync_WhenProviderUrlUnavailable_ShouldSendErrorResponse()
+    {
+        AiSettings.Url = "http://127.0.0.1:65534";
+        AiProvider = new OpenAiProvider(new OptionsMock<GptSettings>(ChatGptSettings),
+                                        ClientFactory,
+                                        LoggerMocks.CreateConsoleLogger<OpenAiProvider>(),
+                                        BusClient,
+                                        Validator);
+
+        await InnerSendWithExpectedBodyAsync("test query", "Error getting a response from chatgpt!");
+    }
 }

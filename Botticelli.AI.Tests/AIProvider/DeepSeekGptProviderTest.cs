@@ -77,4 +77,17 @@ public class DeepSeekGptProviderTest : BaseAiProviderTest
     {
         await InnerSendAsyncTest(query);
     }
+
+    [Test]
+    public async Task SendAsync_WhenProviderUrlUnavailable_ShouldSendErrorResponse()
+    {
+        AiSettings.Url = "http://127.0.0.1:65534";
+        AiProvider = new DeepSeekGptProvider(new OptionsMock<DeepSeekGptSettings>(DeepSeekGptSettings),
+                                             ClientFactory,
+                                             LoggerMocks.CreateConsoleLogger<DeepSeekGptProvider>(),
+                                             BusClient,
+                                             Validator);
+
+        await InnerSendWithExpectedBodyAsync("test query", "Error getting a response from deepseek!");
+    }
 }

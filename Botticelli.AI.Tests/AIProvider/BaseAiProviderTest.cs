@@ -45,8 +45,9 @@ public abstract class BaseAiProviderTest
         {
             Type = Shared.ValueObjects.Message.MessageType.Messaging,
             Uid = Guid.NewGuid().ToString(),
-            Subject = string.Empty,
-            Body = query
+            Subject = "test-subject",
+            Body = query,
+            Instruction = "test-instruction"
         };
 
         AiProvider.NotNull();
@@ -61,11 +62,35 @@ public abstract class BaseAiProviderTest
         result.Message.Body.Should().NotBeEmpty();
     }
 
+    protected async Task InnerSendWithExpectedBodyAsync(string query, string expectedBodyPart)
+    {
+        var message = new AiMessage
+        {
+            Type = Shared.ValueObjects.Message.MessageType.Messaging,
+            Uid = Guid.NewGuid().ToString(),
+            Subject = "test-subject",
+            Body = query,
+            Instruction = "test-instruction"
+        };
+
+        AiProvider.NotNull();
+        await AiProvider.SendAsync(message, CancellationToken.None);
+
+        Thread.Sleep(2000);
+        var result = NoneBus.SendMessageResponses.Dequeue();
+
+        result.Should().NotBeNull();
+        result.Message.Should().NotBeNull();
+        result.Message.Body.Should().Contain(expectedBodyPart);
+    }
+
     protected void Setup()
     {
         Server = WireMockServer.Start();
         Validator = new AiMessageValidator();
         BusClient = new PassClient();
+        NoneBus.SendMessageRequests.Clear();
+        NoneBus.SendMessageResponses.Clear();
 
         ClientFactory = new HttpClientFactoryMock();
 
@@ -77,6 +102,6 @@ public abstract class BaseAiProviderTest
     public void TearDown()
     {
         Server.NotNull();
-        Server.Stop();
+        Server?.Stop();
     }
 }
