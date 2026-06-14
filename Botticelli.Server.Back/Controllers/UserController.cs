@@ -16,18 +16,14 @@ namespace Botticelli.Server.Back.Controllers;
 [ApiController]
 [Authorize(AuthenticationSchemes = "Bearer")]
 [Route("/v1/user")]
-public class UserController(IUserService userService, IMapper mapper, IPasswordSender passwordSender, IOptionsMonitor<ServerSettings> settings) : Controller
+public class UserController(IUserService userService, IMapper mapper, IPasswordSender passwordSender, ServerSettings settings) : Controller
 {
     private readonly IPassword _password = new Password(true,
                                                         true,
                                                         true,
                                                         false,
-                                                        Random.Shared.Next(settings.CurrentValue.PasswordMinLength, 
-                                                                           settings.CurrentValue.PasswordMaxLength));
-
-    private readonly IUserService _userService = userService;
-    private readonly IMapper _mapper = mapper;
-    private readonly IPasswordSender _passwordSender = passwordSender;
+                                                        Random.Shared.Next(settings.PasswordMinLength, 
+                                                                           settings.PasswordMaxLength));
 
     /// <summary>
     ///     Does system contain any users?
@@ -38,7 +34,20 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
     [AllowAnonymous]
     public async Task<ObjectResult> HasUsersAsync(CancellationToken token)
     {
-        return Ok(await _userService.HasUsers(token));
+        return Ok(await userService.HasUsers(token));
+    }
+
+    /// <summary>
+    ///     Gets registration settings for admin UI
+    /// </summary>
+    [HttpGet("[action]")]
+    [AllowAnonymous]
+    public ActionResult<RegistrationSettingsResponse> GetRegistrationSettings()
+    {
+        return Ok(new RegistrationSettingsResponse
+        {
+            PasswordDeliveryMode = settings.PasswordDeliveryMode
+        });
     }
 
     /// <summary>
@@ -58,17 +67,28 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
             request.Email.NotNull();
 
             var password = _password.Next();
-            var mapped = _mapper.Map<UserAddRequest>(request);
+            var mapped = mapper.Map<UserAddRequest>(request);
             mapped.Password = password;
 
-            if (await _userService.CheckAndAddAsync(mapped, token)) await _passwordSender.SendPassword(request.Email!, password, token);
+            if (await userService.CheckAndAddAsync(mapped, token))
+            {
+                if (settings.PasswordDeliveryMode == PasswordDeliveryMode.Email)
+                    await passwordSender.SendPassword(request.Email!, password, token);
+
+                return Ok(new DefaultUserAddResponse
+                {
+                    Password = settings.PasswordDeliveryMode == PasswordDeliveryMode.RegistrationWindow
+                        ? password
+                        : null
+                });
+            }
+
+            return BadRequest("User already exists or registration failed.");
         }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
-
-        return Ok();
     }
 
     /// <summary>
@@ -88,11 +108,11 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
             passwordRequest.UserName.NotNull();
             passwordRequest.Email.NotNull();
 
-            var mapped = _mapper.Map<UserUpdateRequest>(passwordRequest);
+            var mapped = mapper.Map<UserUpdateRequest>(passwordRequest);
             mapped.Password = _password.Next();
 
-            await _userService.UpdateAsync(mapped, token);
-            await _passwordSender.SendPassword(passwordRequest.Email!, mapped.Password, token);
+            await userService.UpdateAsync(mapped, token);
+            await passwordSender.SendPassword(passwordRequest.Email!, mapped.Password, token);
         }
         catch (Exception ex)
         {
@@ -114,7 +134,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
     {
         try
         {
-            await _userService.AddAsync(request, true, token);
+            await userService.AddAsync(request, true, token);
         }
         catch (Exception ex)
         {
@@ -159,7 +179,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
     {
         try
         {
-            return new ActionResult<UserGetResponse>(await _userService.GetAsync(request, token));
+            return new ActionResult<UserGetResponse>(await userService.GetAsync(request, token));
         }
         catch (Exception ex)
         {
@@ -193,7 +213,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
     {
         try
         {
-            await _userService.UpdateAsync(request, token);
+            await userService.UpdateAsync(request, token);
 
             return Ok();
         }
@@ -218,7 +238,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
 
             if (request.UserName == user) return BadRequest("You can't delete yourself!");
 
-            await _userService.DeleteAsync(request, token);
+            await userService.DeleteAsync(request, token);
 
             return Ok();
         }
@@ -244,7 +264,7 @@ public class UserController(IUserService userService, IMapper mapper, IPasswordS
             request.Email.NotNull();
             request.Token.NotNull();
 
-            await _userService.ConfirmCodeAsync(request.Email!, request.Token!, token);
+            await userService.ConfirmCodeAsync(request.Email!, request.Token!, token);
 
             return Ok();
         }

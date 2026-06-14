@@ -1,24 +1,10 @@
 ﻿@page "/register"
+@using Botticelli.Server.Data.Entities.Auth
 @using Botticelli.Server.FrontNew.Clients
 @using Botticelli.Server.FrontNew.Models
-@inject SessionClient SessionClient;
-@inject NavigationManager UriHelper;
-
-@code
-
-{
-    private bool _hasNoUsers;
-
-    private readonly Error _error = new()
-    {
-        UserMessage = string.Empty
-    };
-
-    protected override async Task OnInitializedAsync()
-    {
-        _hasNoUsers = !await SessionClient.HasUsersAsync();
-    }
-}
+@inject SessionClient SessionClient
+@inject NavigationManager UriHelper
+@inject ClipboardAccessor Clipboard
 
 <PageTitle>Register User</PageTitle>
 
@@ -28,49 +14,140 @@
     </RadzenStack>
 </RadzenCard>
 
-<RadzenTemplateForm TItem="RegisterUser" Data="@_model" Submit="@OnValidSubmit">
-    <ChildContent>
-        <DataAnnotationsValidator/>
-        <div style="margin-bottom: 1rem;" class="row">
-            <div class="col-md-3">
-                <RadzenLabel Text="UserName:" Component="UserName" style="width: 100%;"/>
+@if (_registrationCompleted)
+{
+    <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
+        <RadzenStack Orientation="Orientation.Vertical" Gap="12px">
+            <RadzenLabel Text="User registered successfully." Style="font-weight: bold;" />
+
+            @if (_passwordDeliveryMode == PasswordDeliveryMode.RegistrationWindow && !string.IsNullOrEmpty(_generatedPassword))
+            {
+                <RadzenLabel Text="Save this password before continuing:" />
+                <div class="row">
+                    <div class="col-md-9">
+                        <RadzenTextBox ReadOnly="true"
+                                       style="display: block; width: 100%; font-family: monospace;"
+                                       Value="@_generatedPassword" />
+                    </div>
+                    <div class="col-md-3">
+                        <RadzenButton Text="Copy"
+                                      Icon="content_copy"
+                                      Click="@CopyPasswordAsync"
+                                      Style="width: 100%;" />
+                    </div>
+                </div>
+                @if (_passwordCopied)
+                {
+                    <RadzenLabel Text="Password copied to clipboard." Style="color: green;" />
+                }
+            }
+            else
+            {
+                <RadzenLabel Text="Password has been sent to your email." />
+            }
+
+            <RadzenButton Text="Go to login" Click="@(() => UriHelper.NavigateTo("/", true))" />
+        </RadzenStack>
+    </RadzenCard>
+}
+else
+{
+    <RadzenTemplateForm TItem="RegisterUser" Data="@_model" Submit="@OnValidSubmit">
+        <ChildContent>
+            <DataAnnotationsValidator/>
+            <div style="margin-bottom: 1rem;" class="row">
+                <div class="col-md-3">
+                    <RadzenLabel Text="UserName:" Component="UserName" style="width: 100%;"/>
+                </div>
+                <div class="col-md-9">
+                    <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.Email"
+                                   Name="UserName"/>
+                </div>
             </div>
-            <div class="col-md-9">
-                <RadzenTextBox MaxLength="255" style="display: block; width: 100%;" @bind-Value="@_model.Email"
-                               Name="UserName"/>
+            <div style="margin-bottom: 1rem;" class="row">
+                <div class="col-md-3">
+                    <RadzenLabel Text="Password:" Component="Password" style="width: 100%;"/>
+                </div>
+                <div class="col-md-9">
+                    <RadzenPassword MaxLength="255" style="display: block; width: 100%;" Disabled="@_hasNoUsers"
+                                    @bind-Value="@_model.Password" Name=""/>
+                </div>
             </div>
-        </div>
-        <div style="margin-bottom: 1rem;" class="row">
-            <div class="col-md-3">
-                <RadzenLabel Text="Password:" Component="Password" style="width: 100%;"/>
+            @if (_hasNoUsers && _passwordDeliveryMode == PasswordDeliveryMode.Email)
+            {
+                <div style="margin-bottom: 1rem;" class="row">
+                    <RadzenLabel Text="A generated password will be sent to your email after registration." />
+                </div>
+            }
+            <div style="margin-bottom: 1rem;" class="row">
+                <RadzenLabel @bind-text="@_error.UserMessage" Style="color: red; font-weight: bold"/>
             </div>
-            <div class="col-md-9">
-                <RadzenPassword MaxLength="255" style="display: block; width: 100%;" Disabled="@_hasNoUsers"
-                                @bind-Value="@_model.Password" Name=""/>
+            <div style="margin-bottom: 1rem;" class="row">
+                <RadzenButton ButtonType="ButtonType.Submit" Text="Save"/>
             </div>
-        </div>
-        <div style="margin-bottom: 1rem;" class="row">
-            <RadzenLabel @bind-text="@_error.UserMessage" Style="color: red; font-weight: bold"/>
-        </div>
-        <div style="margin-bottom: 1rem;" class="row">
-            <RadzenButton ButtonType="ButtonType.Submit" Text="Save"/>
-        </div>
-        <ValidationMessage For="@(() => _model.Email)"/>
-        <ValidationMessage For="@(() => _model.Password)"/>
-    </ChildContent>
-</RadzenTemplateForm>
+            <ValidationMessage For="@(() => _model.Email)"/>
+            <ValidationMessage For="@(() => _model.Password)"/>
+        </ChildContent>
+    </RadzenTemplateForm>
+}
 
 @code
-
 {
+    private bool _hasNoUsers;
+    private bool _registrationCompleted;
+    private bool _passwordCopied;
+    private string? _generatedPassword;
+    private PasswordDeliveryMode _passwordDeliveryMode = PasswordDeliveryMode.Email;
+
+    private readonly Error _error = new()
+    {
+        UserMessage = string.Empty
+    };
+
     private readonly RegisterUser _model = new()
     {
         Password = "11111111"
     };
 
+    protected override async Task OnInitializedAsync()
+    {
+        _hasNoUsers = !await SessionClient.HasUsersAsync();
+        var settings = await SessionClient.GetRegistrationSettingsAsync();
+        _passwordDeliveryMode = settings.PasswordDeliveryMode;
+    }
+
     private async Task OnValidSubmit()
     {
-        var result = _hasNoUsers ? await SessionClient.RegisterDefaultUser(_model.Email) : await SessionClient.RegisterUser(_model.Email, _model.Password);
-        if (result.Code == 0) UriHelper.NavigateTo("/", true);
+        _error.UserMessage = string.Empty;
+        _passwordCopied = false;
+
+        if (_hasNoUsers)
+        {
+            var (error, password) = await SessionClient.RegisterDefaultUser(_model.Email);
+            if (error.Code != 0)
+            {
+                _error.UserMessage = error.UserMessage;
+                return;
+            }
+
+            _generatedPassword = password;
+            _registrationCompleted = true;
+            return;
+        }
+
+        var registerResult = await SessionClient.RegisterUser(_model.Email, _model.Password);
+        if (registerResult.Code == 0)
+            UriHelper.NavigateTo("/", true);
+        else
+            _error.UserMessage = registerResult.UserMessage;
+    }
+
+    private async Task CopyPasswordAsync()
+    {
+        if (string.IsNullOrEmpty(_generatedPassword))
+            return;
+
+        await Clipboard.CopyTextAsync(_generatedPassword);
+        _passwordCopied = true;
     }
 }

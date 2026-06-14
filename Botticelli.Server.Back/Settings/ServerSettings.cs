@@ -1,4 +1,5 @@
-﻿using FluentEmail.MailKitSmtp;
+﻿using Botticelli.Server.Data.Entities.Auth;
+using FluentEmail.MailKitSmtp;
 
 namespace Botticelli.Server.Back.Settings;
 
@@ -20,4 +21,5 @@ public class ServerSettings
     public bool UseSsl { get; set; }
     public int PasswordMinLength { get; set; } = 8;
     public int PasswordMaxLength { get; set; } = 12;
+    public PasswordDeliveryMode PasswordDeliveryMode { get; set; } = PasswordDeliveryMode.Email;
 }

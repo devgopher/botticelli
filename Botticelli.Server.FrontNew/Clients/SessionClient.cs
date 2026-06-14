@@ -20,7 +20,18 @@ public class SessionClient
         _backSettings = backSettings;
     }
 
-    public async Task<Error> RegisterDefaultUser(string email)
+    public async Task<RegistrationSettingsResponse> GetRegistrationSettingsAsync()
+    {
+        var response = await _httpClient.GetFromJsonAsync<RegistrationSettingsResponse>(
+            Url.Combine(_backSettings.CurrentValue.BackUrl, "/user/GetRegistrationSettings"));
+
+        return response ?? new RegistrationSettingsResponse
+        {
+            PasswordDeliveryMode = PasswordDeliveryMode.Email
+        };
+    }
+
+    public async Task<(Error error, string? password)> RegisterDefaultUser(string email)
     {
         var request = new UserAddRequest
         {
@@ -33,17 +44,19 @@ public class SessionClient
                                                          request);
 
         if (!response.IsSuccessStatusCode)
-            return new Error
+            return (new Error
             {
                 Code = 1,
                 UserMessage = $"Error registering user: {response.ReasonPhrase}!"
-            };
+            }, null);
 
-        return new Error
+        var result = await response.Content.ReadFromJsonAsync<DefaultUserAddResponse>();
+
+        return (new Error
         {
             Code = 0,
             UserMessage = string.Empty
-        };
+        }, result?.Password);
     }
 
     public async Task<Error> RegisterUser(string email, string password)

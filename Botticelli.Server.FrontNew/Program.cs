@@ -16,6 +16,7 @@ builder.Configuration
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<SessionClient>();
+builder.Services.AddScoped<ClipboardAccessor>();
 builder.Services.Configure<BackSettings>(builder.Configuration.GetSection(nameof(BackSettings)));
 builder.Services.AddScoped<AuthDelegatingHandler>();
 builder.Services.AddScoped<CookieStorageAccessor>();
