@@ -394,12 +394,11 @@ public class TelegramBot : BaseBot<TelegramBot>
                                                ReplyMarkup? replyMarkup,
                                                SendMessageResponse response)
     {
-        Message? message;
-
         request.Message.Poll.NotNull();
         request.Message.Poll?.Question.NotNull();
         request.Message.Poll?.Variants.NotNull();
-
+        request.Message.Poll?.CorrectAnswerId.NotNull();
+        
         var type = request.Message.Poll?.Type switch
         {
             Poll.PollType.Quiz    => PollType.Quiz,
@@ -407,15 +406,15 @@ public class TelegramBot : BaseBot<TelegramBot>
             _                     => throw new ArgumentOutOfRangeException(nameof(Type))
         };
 
-        message = await Client.SendPoll(link.chatId,
-                                        request.Message.Poll?.Question ?? "No question",
-                                        GetPollOptions(request),
-                                        request.Message.Poll?.IsAnonymous ?? false,
-                                        type,
-                                        correctOptionId: request.Message.Poll?.CorrectAnswerId,
-                                        replyParameters: GetReplyParameters(request, link.chatId),
-                                        replyMarkup: replyMarkup,
-                                        cancellationToken: token);
+        var message = await Client.SendPoll(link.chatId,
+                                            request.Message.Poll.Question ?? "No question",
+                                            GetPollOptions(request),
+                                            request.Message.Poll.IsAnonymous,
+                                            type,
+                                            correctOptionIds: [(int)request.Message.Poll!.CorrectAnswerId!],
+                                            replyParameters: GetReplyParameters(request, link.chatId),
+                                            replyMarkup: replyMarkup,
+                                            cancellationToken: token);
 
         AddChatIdInnerIdLink(response, link.chatId, message);
 
