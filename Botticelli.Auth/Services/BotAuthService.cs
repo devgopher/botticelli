@@ -31,8 +31,7 @@ public abstract class BotAuthService<TDto, TEntity, TUserInfo>(
             {
                 TimestampUtc = DateTime.UtcNow,
                 IsSuccess = true,
-                ErrorMessage = string.Empty,
-                Entity = dto.Adapt<TEntity>()
+                ErrorMessage = string.Empty
             });
         }
         else
