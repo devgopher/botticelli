@@ -1,0 +1,6 @@
+{
+  "AuthSettings": {
+    "ConnectionString": "Data Source=:memory:",
+    "TokenLifetimeMin": 45
+  }
+}
