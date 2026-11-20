@@ -68,7 +68,8 @@ public static class ServiceCollectionExtensions
         var sp = services.BuildServiceProvider();
         var context = sp.GetRequiredService<BroadcastingContext>();
 
-        if (context.Database.EnsureCreated())
-            context.Database.Migrate();
+        // Prefer Migrate over EnsureCreated+Migrate: EnsureCreated builds the model schema
+        // without __EFMigrationsHistory, so a subsequent Migrate() fails with "table already exists".
+        context.Database.Migrate();
     }
 }

@@ -34,6 +34,11 @@ public class MetricsContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<MetricModel>();
+        modelBuilder.Entity<MetricModel>(entity =>
+        {
+            entity.Ignore(x => x.AdditionalParameters);
+            entity.Property(x => x.InternalValue).IsRequired(false);
+            entity.Property(x => x.Name).IsRequired(false);
+        });
     }
 }

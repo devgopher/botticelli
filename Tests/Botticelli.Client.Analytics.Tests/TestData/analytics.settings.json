@@ -1,0 +1,6 @@
+{
+  "AnalyticsClientSettings": {
+    "TargetUrl": "http://from-config",
+    "UseSsl": false
+  }
+}

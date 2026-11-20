@@ -20,7 +20,8 @@ public class MetricsReaderWriter
                                                  Id = input.Id,
                                                  Timestamp = input.Timestamp.ToUniversalTime(),
                                                  BotId = input.BotId,
-                                                 Name = input.Name
+                                                 Name = input.Name,
+                                                 InternalValue = string.Empty
                                              },
                                              token);
 

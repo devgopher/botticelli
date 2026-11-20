@@ -1,0 +1,6 @@
+{
+  "AuthSettings": {
+    "ConnectionString": "Host=localhost;Database=auth_test;Username=test;Password=test",
+    "TokenLifetimeMin": 90
+  }
+}
