@@ -1,0 +1,7 @@
+{
+  "Broadcasting": {
+    "BotId": "bot-telegram-1",
+    "ServerUri": "http://localhost",
+    "ConnectionString": "REPLACE_ME"
+  }
+}
