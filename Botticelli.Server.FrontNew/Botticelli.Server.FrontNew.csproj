@@ -83,4 +83,8 @@
 	<ItemGroup>
 		<_ContentIncludedByDefault Remove="Pages\BotMetrics.razor"/>
 	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Botticelli.Server.FrontNew.Tests" />
+	</ItemGroup>
 </Project>
